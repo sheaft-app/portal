@@ -1,0 +1,113 @@
+<script>
+  import { onMount } from "svelte";
+  import Icon from "svelte-awesome";
+  import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import CitySearch from "./../../components/search/CitySearch.svelte";
+  import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
+  import Toggle from "./../../components/controls/Toggle.svelte";
+  import { timeToTimeSpan, normalizeOpeningHours } from "./../../helpers/app";
+
+  export let submit, initialValues, isLoading;
+  let sellingPoint = initialValues;
+  let openings = sellingPoint.openingHours;
+  let isValid = false;
+
+  const selectKind = (kind) => {
+     if (!isLoading)
+      return sellingPoint.kind = kind;
+     
+     return console.error("Can't change kind when form hasn't been initialized.");
+  }
+
+  const handleSubmit = () => {
+    sellingPoint.openingHours = normalizeOpeningHours(openings);
+    submit();
+  }
+
+  $: isValid = sellingPoint &&
+    sellingPoint.kind &&
+    sellingPoint.address &&
+    sellingPoint.address.line1 &&
+    sellingPoint.address.zipcode &&
+    sellingPoint.address.city &&
+    sellingPoint.address.latitude &&
+    sellingPoint.address.longitude &&
+    openings.length > 0;
+</script>
+
+<form class="w-full" on:submit|preventDefault={handleSubmit}>
+  <div class="flex flex-wrap mb-6 lg:mb-0">
+    <div class="w-full lg:w-1/2">
+      <div class="form-control">
+        <div class="w-full">
+          <label for="grid-name">Nom du point</label>
+          <input
+            bind:value={sellingPoint.name}
+            class:disabled={isLoading}
+            disabled={isLoading}
+            id="grid-name"
+            type="text"
+            placeholder="Donner un nom pour le retrouver plus facilement dans votre liste (optionnel)" />
+        </div>
+      </div>
+      <div class="form-control">
+        <label>Type de point de vente *</label>
+        <div class="w-full justify-center button-group">
+          <button
+            on:click={() => selectKind('MARKET')}
+            type="button"
+            class:selected={sellingPoint.kind === 'MARKET'}
+            class:disabled={isLoading}>
+            Marché ouvert
+          </button>
+          <button
+            on:click={() => selectKind('FARM')}
+            type="button"
+            class:selected={sellingPoint.kind === 'FARM'}  
+            class:disabled={isLoading}>
+            À la ferme
+          </button>
+          <button
+            on:click={() => selectKind('COLLECTIVE')}
+            type="button"
+            class:selected={sellingPoint.kind === 'COLLECTIVE'}  
+            class:disabled={isLoading}>
+            Magasin de producteurs
+          </button>
+        </div>
+      </div>
+      <div class="form-control w-full" style="display: block;">
+          <label for="grid-address">Adresse *</label>
+          <CitySearch bind:selectedAddress={sellingPoint.address} />
+      </div>
+      <div class="form-control">
+        <div class="w-full">
+          <label for="grid-timestamp">Horaires de vente *</label>
+          <OpeningHoursContainer bind:openings={openings} />
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="form-control" style="display: block;">
+    <label>Bloquer les commandes</label>
+    <Toggle disabled={isLoading} classNames="ml-1" isChecked={sellingPoint.lockOrderHoursBeforeDelivery}>
+      <div class="ml-2">
+          <input type="number" style="width: 70px; display: inline-block;" bind:value={sellingPoint.lockOrderHoursBeforeDelivery}>
+          <span class="ml-1">heures avant le début de la vente</span>
+      </div>
+    </Toggle>
+  </div>
+  <div class="form-control justify-end mt-5">
+    <button
+      type="submit"
+      class:disabled={isLoading || !isValid}
+      disabled={isLoading || !isValid}
+      class="btn btn-primary btn-lg justify-center w-full md:w-auto">
+      <Icon
+        data={isLoading ? faCircleNotch : faPaperPlane}
+        class="mr-2 inline"
+        spin={isLoading} />
+      Valider
+    </button>
+  </div>
+</form>

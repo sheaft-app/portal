@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr-FR" class="back-bg-clr h-full">
+	<head>
+		<base href="/" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+		<link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-touch-icon-60x60.png?v=lk24Jx578Cj">
+		<link rel="apple-touch-icon" sizes="76x76" href="/assets/apple-touch-icon-76x76.png?v=lk24Jx578Cj">
+		<link rel="apple-touch-icon" sizes="120x120" href="/assets/apple-touch-icon-120x120.png?v=lk24Jx578Cj">
+		<link rel="apple-touch-icon" sizes="152x152" href="/assets/apple-touch-icon-152x152.png?v=lk24Jx578Cj">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-180x180.png?v=lk24Jx578Cj">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png?v=lk24Jx578Cj">
+		<link rel="icon" type="image/png" sizes="192x192" href="/assets/android-chrome-192x192.png?v=lk24Jx578Cj">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png?v=lk24Jx578Cj">
+		<link rel="manifest" href="/assets/site.webmanifest?v=lk24Jx578Cj">
+		<link rel="mask-icon" href="/assets/safari-pinned-tab.svg?v=lk24Jx578Cj" color="#009688">
+		<link rel="shortcut icon" href="/assets/favicon.ico?v=lk24Jx578Cj">
+		<meta name="apple-mobile-web-app-title" content="Sheaft">
+		<meta name="application-name" content="Sheaft">
+		<meta name="msapplication-TileColor" content="#009688">
+		<meta name="msapplication-config" content="/assets/browserconfig.xml?v=lk24Jx578Cj">
+		<meta name="theme-color" content="#009688">
+		<meta
+			name="description"
+			content="Découvrez et commandez en quelques clics des produits de qualité issus de la production locale."
+		/>
+
+		<!-- Google / Search Engine Tags -->
+		<meta itemprop="name" content="Sheaft - Consommer local, plus facilement" />
+		<meta
+			itemprop="description"
+			content="Découvrez et commandez en quelques clics des produits de qualité issus de la production locale."
+		/>
+		<!--Insert url for image to be used in search results-->
+		<meta itemprop="image" content="./assets/android-chrome-192x192.png?v=00BjLdbNG6" />
+
+		<!-- Facebook Meta Tags -->
+		<!--Insert url of site-->
+		<meta property="og:url" content="https://app.sheaft.com" />
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:title"
+			content="Sheaft - Consommer local, plus facilement"
+		/>
+		<meta
+			property="og:description"
+			content="Découvrez et commandez en quelques clics des produits de qualité issus de la production locale."
+		/>
+		<!--Insert url for image to be used in facebook share post-->
+		<meta property="og:image" content="./assets/android-chrome-96x96.png" />
+
+		<!-- Twitter Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta
+			name="twitter:title"
+			content="Sheaft - Consommer local, plus facilement"
+		/>
+		<meta
+			name="twitter:description"
+			content="Découvrez et commandez en quelques clics des produits de qualité issus de la production locale."
+		/>
+		<!--Insert url for image to be used in twitter share post-->
+		<meta name="twitter:image" content="./assets/android-chrome-192x192.png?v=00BjLdbNG6" />
+
+		
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet"
+		/>
+
+		<title>Sheaft - Consommer local, plus facilement</title>
+	</head>
+
+	<body class="h-full">
+		<noscript>
+			<div class="flex items-center h-full">
+				<div
+					class="px-6 m-auto text-center"
+					style="transform: translateY(50%); margin-top: -4.5em;"
+				>
+					<img
+						src="./img/nojs.svg"
+						class="m-auto"
+						style="width: 400px; height: auto;"
+						alt="Technologies web"
+					/>
+					<div class="py-5">
+						<h1 class="font-bold">Hmmm, il manque quelque chose !</h1>
+						<p class="m-3">
+							Nous ne pouvons pas vous présenter les produits locaux si
+							Javascript n'est pas activé sur votre navigateur.
+						</p>
+						<p class="m-3">
+							Besoin d'un peu d'aide pour l'activer ?
+							<a href="https://enablejavascript.co/fr/" target="_blank"
+								>cliquez-ici</a
+							>
+							pour suivre un tutoriel.
+						</p>
+						<p class="text-sm text-gray-500 mt-8">
+							Erreur de traitement - Javascript est requis
+						</p>
+					</div>
+				</div>
+			</div>
+		</noscript>
+		<script
+			defer 
+			type="module"
+			src="./dist/index.js"
+		></script>		
+		<!-- <script
+			nomodule
+			src="./dimport.js?nomodule"
+			data-main="./dist/nomodule/index.js"
+		></script> -->
+		<script>
+			window.fwSettings = {
+				widget_id: 47000003600,
+			};
+			!(function () {
+				if ("function" != typeof window.FreshworksWidget) {
+					var n = function () {
+						n.q.push(arguments);
+					};
+					(n.q = []), (window.FreshworksWidget = n);
+				}
+			})();
+		</script>
+		<script
+			type="text/javascript"
+			src="https://widget.freshworks.com/widgets/47000003600.js"
+			async
+			defer
+		></script>
+		<script>
+			FreshworksWidget("hide", "launcher");
+		</script>
+	</body>
+</html>

@@ -1,0 +1,56 @@
+<script>
+  import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
+  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+  import { SET_PRODUCTS_AVAILABILITY } from "./mutations.js";
+  import SheaftErrors from "./../../services/SheaftErrors";
+
+  const errorsHandler = new SheaftErrors();
+
+  export let selectedItems, close, onClose, status;
+  const graphQLInstance = GetGraphQLInstance();
+
+  let isLoading = false;
+
+  const handleSubmit = async () => {
+    isLoading = true;
+
+    var res = await graphQLInstance.mutate(SET_PRODUCTS_AVAILABILITY, {
+      ids: selectedItems.map(s => s.id),
+      available: status
+    }, errorsHandler.Uuid);
+
+    isLoading = false;
+    if (!res.success) {
+      //TODO
+    }
+
+    await handleClose(res);
+  };
+
+  const handleClose = async res => {
+    close();
+    await onClose(res);
+  };
+</script>
+
+<ActionConfirm
+  title={status ? 'Activation' : 'Désactivation'}
+  level="success"
+  isLoading={isLoading}
+  {errorsHandler}
+  submit={handleSubmit}
+  close={() => handleClose({ success: false, data: null })}>
+  <p class="leading-5">
+    Vous vous apprêtez à
+    <b>{status ? 'activer' : 'désactiver'} {selectedItems.length} produits.</b>
+  </p>
+  <p>
+    Cette opération rendra les produits ci-dessous {status ? '' : 'non'}
+    disponibles à la commande.
+  </p>
+  <ul class="text-sm mt-2 font-semibold">
+    {#each selectedItems as product}
+      <li>{product.name}</li>
+    {/each}
+  </ul>
+</ActionConfirm>

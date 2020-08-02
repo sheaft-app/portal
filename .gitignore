@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+package-lock.json
+yarn.lock
+dist/
+public/sw.*
+public/workbox-*
+src/configs/config.js

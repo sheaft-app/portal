@@ -1,0 +1,250 @@
+<script>
+  import Loader from "./../../components/Loader.svelte";
+  import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
+  import { REGISTER_CONSUMER } from "./mutations.js";
+  import { GET_DEPARTMENTS } from "./queries.js";
+  import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
+  import GetAuthInstance from "./../../services/SheaftAuth";
+  import GetGraphQLInstance from "./../../services/SheaftGraphQL";
+  import GetRouterInstance from "./../../services/SheaftRouter";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications";
+  import { onMount } from "svelte";
+  import { authRegistered } from "./../../stores/auth.js";
+  import { departments } from "./../../stores/app.js";
+  import Select from "./../../components/controls/select/Select.js";
+
+  const authInstance = GetAuthInstance();
+  const routerInstance = GetRouterInstance();
+  const graphQLInstance = GetGraphQLInstance();
+  const notificationsInstance = GetNotificationsInstance();
+
+  let isRegistering = false;
+  let sponsorShow = false;
+  let selectedDepartment = null;
+
+  let user = {
+    id: authInstance.user.profile.sub,
+    firstName: authInstance.user.profile.given_name,
+    lastName: authInstance.user.profile.family_name,
+    email: authInstance.user.profile.email,
+    phone: authInstance.user.profile.phone,
+    picture: authInstance.user.profile.picture,
+    departmentId: null,
+    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")),
+    anonymous: true
+  };
+
+  let isLoading = true;
+
+  const handleSubmit = async () => {
+    user.departmentId = selectedDepartment.id;
+    isRegistering = true;
+
+    var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user);
+
+    if (!res.success) {
+      isRegistering = false;
+      notificationsInstance.error(
+        "Une erreur est survenue lors de l'enregistrement."
+      );
+      //TODO
+      return;
+    }
+
+    await authInstance.loginSilent();
+    localStorage.removeItem("user_choosen_role");
+    localStorage.removeItem("sponsoring");
+    routerInstance.goTo("/");
+    isRegistering = false;
+  };
+
+  const handleCancel = () => {
+    localStorage.removeItem("user_choosen_role");
+    routerInstance.goBack();
+  };
+
+  const getDepartments = async () => {
+    isLoading = true;
+    var res = await graphQLInstance.query(GET_DEPARTMENTS);
+
+    if (!res.success) {
+      //TODO
+      return;
+    }
+
+    isLoading = false;
+    departments.set(res.data);
+  };
+
+  $: isValid =
+    selectedDepartment &&
+    user.firstName &&
+    user.firstName.length > 0 &&
+    user.lastName &&
+    user.lastName.length > 0 &&
+    user.email &&
+    user.email.length > 0;
+
+  onMount(async () => {
+    await getDepartments();
+  });
+
+  const getLabel = option => `${option.code} - ${option.name}`;
+</script>
+
+<svelte:head>
+  <title>Enregistrement consommateur</title>
+</svelte:head>
+
+<TransitionWrapper>
+  <div class="-my-2 m-auto py-2 overflow-x-auto md:w-3/5 mt-2 mb-8 h-full">
+    <div class="text-center">
+      <img src="img/form.svg" alt="bandeau formulaire" />
+    </div>
+    {#if !isRegistering && !isLoading}
+      <div class="w-full text-center pt-2 pb-4">
+        <h1 class="font-bold text-xl">Terminons votre inscription</h1>
+      </div>
+      <form>
+        <fieldset>
+          <div class="w-full flex flex-wrap justify-center">
+            <div class="mb-2 mt-2 form-control w-full">
+              <label for="family_name">Nom*</label>
+              <input
+                id="family_name"
+                type="text"
+                required="required"
+                bind:value={user.lastName} />
+            </div>
+            <div class="mb-2 mt-2 form-control w-full">
+              <label for="given_name">Prénom*</label>
+              <input
+                id="given_name"
+                type="text"
+                required="required"
+                bind:value={user.firstName} />
+            </div>
+          </div>
+          <div class="w-full justify-center hidden">
+            <div>
+              <label
+                for="email"
+                class="block uppercase tracking-wide text-xs font-bold mb-2">
+                Adresse email*
+              </label>
+              <input
+                id="email"
+                type="email"
+                disabled="disabled"
+                required="required"
+                bind:value={user.email}
+                class="disabled appearance-none block w-full border back-bg-clr
+                rounded py-3 px-4 leading-tight focus:outline-none
+                focus:bg-white" />
+            </div>
+          </div>
+          <div class="flex flex-wrap justify-center mb-2 mt-2">
+            <div class="form-control w-full" style="display: block;">
+              <label for="dept">Département*</label>
+              <div class="themed">
+                <Select
+                  getOptionLabel={getLabel}
+                  getSelectionLabel={getLabel}
+                  items={$departments.sort((a, b) =>
+                    a.code >= b.code ? 1 : -1
+                  )}
+                  iconClasses="mr-3"
+                  isClearable={false}
+                  showChevron={true}
+                  hideSelectedOnFocus={true}
+                  optionIdentifier="id"
+                  placeholder="Tapez le numéro de votre département"
+                  bind:selectedValue={selectedDepartment}
+                  containerStyles="font-weight: 600;" />
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
+            <button
+              type="button"
+              class:hidden={sponsorShow}
+              class="btn-link"
+              on:click={() => (sponsorShow = true)}>
+              J'ai un code parrain
+            </button>
+            {#if sponsorShow}
+              <div class="form-control w-full">
+                <label for="code">Code parrain</label>
+                <input id="code" type="code" bind:value={user.sponsoringCode} />
+              </div>
+            {/if}
+          </div>
+          <div class="flex flex-wrap justify-center">
+            <div>
+              <label
+                for="anonymous"
+                class="block uppercase tracking-wide text-gray-700 text-xs
+                font-bold mb-2 cursor-pointer">
+                <InputCheckbox
+                  checked={!user.anonymous}
+                  onClick={() => (user.anonymous = !user.anonymous)} />
+                <label for="checkbox">
+                  Je souhaite afficher mon prénom et mon image de profil dans
+                  les classements Sheaft (j'apparaîtrai en "Anonyme" dans le cas
+                  échéant)
+                </label>
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      <div class="flex w-full justify-center mt-6">
+        <div>
+          <button
+            on:click={() => handleCancel()}
+            aria-label="Retour"
+            class="form-button uppercase text-sm cursor-pointer rounded-full
+            px-6 py-2 flex items-center justify-center m-auto">
+            Retour
+          </button>
+        </div>
+        <div>
+          <button
+            class:disabled={!isValid}
+            on:click={handleSubmit}
+            aria-label="Valider"
+            disabled={!isValid}
+            class="form-button uppercase text-sm cursor-pointer text-white
+            shadow rounded-full px-6 py-2 flex items-center justify-center
+            m-auto bg-primary">
+            Terminer
+          </button>
+        </div>
+      </div>
+    {/if}
+    {#if isLoading}
+      <Loader />
+    {/if}
+    {#if isRegistering}
+      <Loader text="Validation de votre compte en cours..." />
+    {/if}
+  </div>
+</TransitionWrapper>
+
+<style>
+  img {
+    height: 80px;
+    width: 100%;
+  }
+  .themed {
+    display: contents;
+    --cursor: text;
+    --padding: 22px 16px;
+    --borderFocusColor: #a0aec0;
+    --borderHoverColor: #a0aec0;
+    --border: 1px solid #cbd5e0;
+    --placeholderColor: #a0aec0;
+    --inputPadding: 1rem;
+    --inputColor: #205164;
+  }
+</style>

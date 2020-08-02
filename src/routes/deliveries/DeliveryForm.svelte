@@ -1,0 +1,55 @@
+<script>
+  import { onMount } from "svelte";
+  import Icon from "svelte-awesome";
+  import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
+  import Toggle from "./../../components/controls/Toggle.svelte";
+  import { timeToTimeSpan, normalizeOpeningHours } from "../../helpers/app";
+
+  export let submit, initialValues, isLoading;
+  let delivery = initialValues;
+
+  // pour éviter d'avoir un two-way binding avec delivery directement
+  // comme on normalise l'envoi, donc qu'on modifie delivery, le two-way binding peut provoquer une boucle
+  let openings = delivery.openingHours;
+
+  const handleSubmit = () => {
+    delivery.openingHours = normalizeOpeningHours(openings);
+    submit();
+  }
+</script>
+
+<form class="w-full" on:submit|preventDefault={handleSubmit}>
+  <div class="flex flex-wrap mb-6 lg:mb-0">
+    <div class="w-full lg:w-1/2">
+      <div class="form-control">
+        <div class="w-full">
+          <label for="grid-timestamp">Horaires de livraison *</label>
+          <OpeningHoursContainer bind:openings={openings} />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-control" style="display: block;">
+    <label>Bloquer les commandes</label>
+    <Toggle disabled={isLoading} classNames="ml-1" isChecked={delivery.lockOrderHoursBeforeDelivery}>
+      <div class="ml-2">
+          <input type="number" style="width: 70px; display: inline-block;" bind:value={delivery.lockOrderHoursBeforeDelivery}>
+          <span class="ml-1">heures avant le début de la livraison</span>
+      </div>
+    </Toggle>
+  </div>
+  <div class="form-control justify-end mt-5">
+    <button
+      type="submit"
+      class:disabled={isLoading}
+      disabled={isLoading}
+      class="btn btn-primary btn-lg justify-center w-full md:w-auto">
+      <Icon
+        data={isLoading ? faCircleNotch : faPaperPlane}
+        class="mr-2 inline"
+        spin={isLoading} />
+      Valider
+    </button>
+  </div>
+</form>
