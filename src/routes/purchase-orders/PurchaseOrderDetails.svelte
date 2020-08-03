@@ -7,6 +7,7 @@
   import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
   import ProcessPurchaseOrders from "./ProcessPurchaseOrders.svelte";
   import CompletePurchaseOrders from "./CompletePurchaseOrders.svelte";
+	import CreatePickingOrders from "./CreatePickingOrders.svelte";
   import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
   import { format } from "date-fns";
   import { fr } from "date-fns/locale";
