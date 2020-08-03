@@ -251,7 +251,7 @@
 
 <div
   class:active={productsCount > 0}
-  class="fixed bottom-0 py-2 px-4 md:px-8 border-t border-gray-300 border-solid
+  class="fixed bottom-0 py-2 px-4 md:px-8 border-t border-gray-400 border-solid
   bg-white w-full left-0 block xl:hidden bottom-mobile-cta transition
   duration-500 ease-in-out">
   <div class="flex justify-between items-center">
@@ -344,11 +344,11 @@
         {#if $isLoading}
           <div class="mb-1 h-6 w-24 skeleton-box" />
         {:else if $searchResults.length > 0}
-          <p class="text-xs lg:text-xl pr-2 border-r border-gray-300">
+          <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
             {$searchResults.length} résultat{$searchResults.length > 1 ? 's' : ''}
           </p>
         {:else}
-          <p class="text-xs lg:text-xl pr-2 border-r border-gray-300">
+          <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
             0 résultat
           </p>
         {/if}

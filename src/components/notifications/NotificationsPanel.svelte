@@ -119,7 +119,7 @@
 <div
   transition:fly={{ x: 300 }}
   class="notification-center fixed bg-white right-0 bottom-0 border border-solid
-  border-gray-300 overflow-auto pb-2 z-10 text-gray-600">
+  border-gray-400 overflow-auto pb-2 z-10 text-gray-600">
   <div class="flex items-center p-3 text-center">
     <h3 class="font-semibold w-11/12 m-0">Notifications</h3>
     <span

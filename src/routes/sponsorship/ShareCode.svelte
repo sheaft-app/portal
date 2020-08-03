@@ -83,7 +83,7 @@
         </p>
         <div class="mt-6 mb-6">
           <span
-            class="px-6 py-3 uppercase border border-gray-300 font-semibold
+            class="px-6 py-3 uppercase border border-gray-400 font-semibold
             text-2xl bg-green-100">
             {code}
           </span>
@@ -100,7 +100,7 @@
           <div class="flex flex-wrap justify-center">
             <span
               id="link"
-              class="w-full md:w-auto px-4 py-2 border border-gray-300 mb-2 mr-0
+              class="w-full md:w-auto px-4 py-2 border border-gray-400 mb-2 mr-0
               md:mb-0 md:mr-2">
               {link}
             </span>

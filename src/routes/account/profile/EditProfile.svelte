@@ -97,7 +97,7 @@
     <Loader />
   {:else}
     <section
-      class="mb-4 pb-2 md:mb-6 md:pb-4 border-b border-gray-300 border-solid">
+      class="mb-4 pb-2 md:mb-6 md:pb-4 border-b border-gray-400 border-solid">
       <div class="flex flex-wrap items-center relative justify-between">
         <div class="flex flex-wrap items-center">
           <div class="mr-4 md:mb-0">

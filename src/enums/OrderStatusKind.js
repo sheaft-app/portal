@@ -58,7 +58,7 @@ let enums = {
 		Value: "CANCELLED",
 		Label: "Annulée",
 		Icon: faBackspace,
-		Color: "gray-400",
+		Color: "gray-600",
 	},
 	None: {
 		Value: "NONE",

@@ -32,6 +32,7 @@ export const GET_ORDERS = gql`
 					reference
 					productsCount
 					expectedDelivery {
+						kind
 						expectedDeliveryDate
 					}
 					createdOn

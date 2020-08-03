@@ -12,8 +12,9 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
-	$: isLoading = true;
+	let isLoading = true;
 	let items = [];
+	let noResults = true;
 	let selectedItems = [];
 
 	const headers = [
@@ -39,8 +40,6 @@
 			color: "green",
 		},
 	];
-
-	$: displayNoResults = !isLoading && items.length < 1;
 </script>
 
 <svelte:head>
@@ -49,13 +48,13 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
-	{#if !displayNoResults}
+	{#if !noResults}
 		<Actions {actions} />
 	{/if}
 	<Table
 		bind:items
-		bind:selectedItems
-		{isLoading}
+		bind:isLoading
+		bind:noResults
 		{errorsHandler}
 		{headers}
 		let:rowItem={packaging}
@@ -80,7 +79,7 @@
 			<div class="text-sm leading-5">{packaging.onSalePrice}€</div>
 		</td>
 	</Table>
-	{#if displayNoResults}
+	{#if noResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
 				<p class="mb-3">Vous n'avez pas encore de consignes.</p>

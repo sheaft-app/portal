@@ -196,7 +196,7 @@
       <div class="form-control" style="height: 300px;">
         <div class="w-full" on:click={() => changeImage()}>
           <label for="grid-image">Image</label>
-          <div class="border border-gray-300 cursor-pointer text-center h-full">
+          <div class="border border-gray-400 cursor-pointer text-center h-full">
             {#if product.picture}
               <div
                 class="h-full"

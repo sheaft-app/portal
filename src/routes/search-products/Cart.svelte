@@ -54,7 +54,7 @@
   {/each}
 </section>
 <div
-  class="fixed bottom-0 py-2 px-3 border-t border-gray-300 border-solid bg-white
+  class="fixed bottom-0 py-2 px-3 border-t border-gray-400 border-solid bg-white
   bottom-items"
   class:opacity-50={$cartItems.length === 0}>
   <div class="flex justify-between items-center">

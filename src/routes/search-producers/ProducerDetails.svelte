@@ -282,7 +282,7 @@
         style="margin-bottom:1px;"
         class="rounded hover:bg-gray-100 transition duration-200
         ease-in-out focus:outline-none">
-        <div class="h-full bg-white border-gray-300" class:border-b={index !== producer.products.length - 1}>
+        <div class="h-full bg-white border-gray-400" class:border-b={index !== producer.products.length - 1}>
           <div class="relative p-4 w-full">
             <div class="bg-white rounded-lg p-0 w-full flex justify-between">
               <div class="pr-8">

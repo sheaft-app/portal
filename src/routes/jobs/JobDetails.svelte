@@ -248,7 +248,7 @@
       </div>
     {/if}
     <div
-      class="bg-white shadow border-b border-solid border-gray-300 mt-5 px-0
+      class="bg-white shadow border-b border-solid border-gray-400 mt-5 px-0
       md:px-5 py-5 overflow-x-auto -mx-5 md:mx-0">
       <div class="flex">
         <button
@@ -295,10 +295,10 @@
     </div>
     <div class="px-0 md:px-5 overflow-x-auto -mx-5">
       <div
-        class="flex flex-wrap bg-white w-full shadow items-center border-b border-gray-300">
+        class="flex flex-wrap bg-white w-full shadow items-center border-b border-gray-400">
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold text-gray-700 pb-2">Tâche</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -317,7 +317,7 @@
         </div>
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold text-gray-700 pb-2">Traitement</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -345,7 +345,7 @@
         {#if job.completedOn}
           <div
             class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-            border-gray-300 px-4 lg:px-8 py-5">
+            border-gray-400 px-4 lg:px-8 py-5">
             <p class="uppercase font-bold text-gray-700 pb-2">Résultat</p>
             <div class="mt-3">
               <div class="flex items-center mb-2">
@@ -367,7 +367,7 @@
         {:else}
           <div
             class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-            border-gray-300 px-4 lg:px-8 py-5">
+            border-gray-400 px-4 lg:px-8 py-5">
             <p class="uppercase font-bold text-gray-700 pb-2">Résultat</p>
             <div class="mt-3">
               <div class="flex items-center mb-2">

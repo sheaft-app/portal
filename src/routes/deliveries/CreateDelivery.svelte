@@ -59,7 +59,7 @@
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
   <section
-    class="mb-4 pb-4 border-b border-gray-300 border-solid md:pt-12 lg:pt-2">
+    class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2">
     <h1 class="text-2xl mb-0 text-gray-700">Renseignez vos horaires de livraison</h1>
   </section>
   <DeliveryForm

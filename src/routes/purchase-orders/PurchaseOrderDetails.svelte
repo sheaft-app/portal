@@ -13,7 +13,8 @@
   import { fr } from "date-fns/locale";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-  import GetRouterInstance from "./../../services/SheaftRouter";
+  import GetRouterInstance from "./../../services/SheaftRouter";``
+  import { timeSpanToFrenchHour } from "./../../helpers/app";
   import { GET_ORDER_DETAILS } from "./queries.js";
   import { 
     canCreatePickingOrder,
@@ -42,6 +43,7 @@ faFileExport
   } from "@fortawesome/free-solid-svg-icons";
   import PurchaseOrderRoutes from "./routes";
   import OrderStatusKind from "./../../enums/OrderStatusKind";
+  import DeliveryKind from "./../../enums/DeliveryKind";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
 
@@ -145,95 +147,47 @@ faFileExport
         </div>
       </div>
     </section>
+    {#if order.status === OrderStatusKind.Waiting.Value}
+      <div
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
+        md:rounded mb-3">
+        <p class="font-semibold leading-none">
+          Commande en attente de traitement.
+        </p>
+      </div>
+    {/if}
     {#if order.status == OrderStatusKind.Cancelled.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-orange-400
-        shadow rounded mb-5 text-white">
-        <div class="flex">
-          <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande annulée</p>
-            <div class="mt-2">
-              {#if order.reason}
-                <p>Cette commande a été annulée pour la raison suivante :</p>
-                <p class="mt-2 font-semibold">{order.reason}</p>
-              {:else}
-                <p>
-                  Cette commande a été annulée, vous ne pouvez plus interagir
-                  avec.
-                </p>
-              {/if}
-            </div>
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-orange-100 shadow
+        md:rounded mb-3">
+        <p class="font-semibold leading-none">
+          Commande annulée.
+        </p>
+        {#if order.reason}
+          <div class="mt-2">
+            <p>Raison : {order.reason}</p>
           </div>
-        </div>
+        {/if}
       </div>
     {/if}
     {#if order.status == OrderStatusKind.Refused.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-400
-        text-white shadow rounded mb-5">
-        <div class="flex">
-          <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande refusée</p>
-            <div class="mt-2">
-              {#if order.reason}
-                <p>Cette commande a été refusée pour la raison suivante :</p>
-                <p>{order.reason}</p>
-              {:else}
-                <p>Cette commande a été refusée.</p>
-              {/if}
-            </div>
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100 shadow
+        md:rounded mb-3">
+        <p class="font-semibold leading-none">
+          Commande refusée.
+        </p>
+        {#if order.reason}
+          <div class="mt-2">
+            <p>Raison : {order.reason}</p>
           </div>
-        </div>
-      </div>
-    {/if}
-    {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status != OrderStatusKind.Delivered.Value}
-      <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
-        <div class="flex">
-          {#if order.status == 'COMPLETED'}
-            <Icon data={faCheck} scale="1.5" class="mr-5 text-green-400" />
-          {:else}
-            <Icon data={faCircleNotch} scale="1.5" class="mr-5 text-blue-400" />
-          {/if}
-          <div>
-            <div class="mt-2">
-              <p class="leading-none">
-                La commande est à livrer le
-                <b class="text-blue-400">
-                  {format(
-                    new Date(order.expectedDelivery.expectedDeliveryDate),
-                    'PPPP',
-                    {
-                      locale: fr
-                    }
-                  )}
-                </b>
-                entre
-                <b class="text-blue-400">{order.expectedDelivery.from}</b>
-                et
-                <b class="text-blue-400">{order.expectedDelivery.to}</b>
-              </p>
-              {#if order.expectedDelivery.address}
-                <p>
-                  Adresse de livraison :
-                  <b class="text-blue-400">
-                    {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
-                    {order.expectedDelivery.address.city}
-                  </b>
-                </p>
-              {/if}
-            </div>
-          </div>
-        </div>
+        {/if}
       </div>
     {/if}
     {#if order.status == OrderStatusKind.Shipping.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
+        md:rounded mb-3">
         <div class="flex">
           <Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
           <div>
@@ -249,39 +203,67 @@ faFileExport
     {/if}
     {#if order.status == OrderStatusKind.Delivered.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
-        <div class="flex">
-          <Icon data={faTruckLoading} scale="1.5" class="mr-5 text-green-400" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande livrée</p>
-            <div class="mt-2">
-              <p>
-                Cette commande a été livrée, vous ne pouvez plus interagir avec.
-              </p>
-            </div>
-          </div>
-        </div>
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+        md:rounded mb-3">
+        <p class="font-semibold leading-none">
+          Commande terminée.
+        </p>
       </div>
     {/if}
-    {#if order.status === OrderStatusKind.Waiting.Value}
+    {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status != OrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
+        md:rounded md:mb-3">
         <div class="flex">
-          <Icon data={faHourglass} scale="1.3" class="mr-5 text-orange-400" />
+          {#if order.status == 'COMPLETED'}
+            <Icon data={faCheck} scale="1.2" class="mr-5" />
+          {:else}
+            <Icon data={faTruck} scale="1.2" class="mr-5" />
+          {/if}
           <div>
-            <p class="uppercase font-bold leading-none">
-              Cette commande est en attente d'acceptation de votre part.
-            </p>
+            <div>
+              <p class="leading-none">
+                {#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
+                  À livrer le : 
+                {:else}
+                  À récupérer le :
+                {/if}
+                <b class="font-semibold">
+                  {format(
+                    new Date(order.expectedDelivery.expectedDeliveryDate),
+                    'PPPP',
+                    {
+                      locale: fr
+                    }
+                  )}
+                </b>
+                entre
+                <b class="font-semibold">{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
+                et
+                <b class="font-semibold">{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
+              </p>
+              {#if order.expectedDelivery.address}
+                <p>
+                  {#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
+                    Adresse de livraison :
+                  {:else}
+                    Adresse de récupération :
+                  {/if}
+                  <b class="font-semibold">
+                    {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+                    {order.expectedDelivery.address.city}
+                  </b>
+                </p>
+              {/if}
+            </div>
           </div>
         </div>
       </div>
     {/if}
     {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value}
       <div
-        class="bg-white shadow border-b border-solid border-gray-300 mt-5 px-0
-        md:px-5 py-5 overflow-x-auto -mx-4 md:mx-0">
+        class="bg-white md:mt-3 px-0
+        md:px-5 py-5 overflow-x-auto -mx-4 md:mx-0 border border-gray-400" style="border-bottom: 0;">
         <div class="flex">
           <button
             on:click={createPickingOrder}
@@ -297,7 +279,7 @@ faFileExport
             class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-green-500">
             <Icon data={faCheck} class="mr-2 hidden lg:inline" />
-            <span>Accepter la commande</span>
+            <span>Accepter</span>
           </button>
           <button
             on:click={refuseOrder}
@@ -305,7 +287,7 @@ faFileExport
             class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-red-500">
             <Icon data={faTimes} class="mr-2 hidden lg:inline" />
-            <span>Refuser la commande</span>
+            <span>Refuser</span>
           </button>
           <button
             class:hidden={!canCancelOrder(order)}
@@ -344,11 +326,11 @@ faFileExport
     {/if}
     <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5">
       <div
-        class="flex flex-wrap bg-white w-full shadow items-center border-b
-        border-gray-300">
+        class="flex flex-wrap bg-white w-full items-center border
+        border-gray-400">
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">La commande</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -379,7 +361,7 @@ faFileExport
         </div>
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">Le panier</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -398,7 +380,7 @@ faFileExport
         </div>
         <div
           class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-          border-gray-300 px-4 lg:px-8 py-5">
+          border-gray-400 px-4 lg:px-8 py-5">
           <p class="uppercase font-bold pb-2">Le client</p>
           <div class="mt-3">
             <div>
@@ -419,8 +401,8 @@ faFileExport
         </div>
       </div>
     </div>
-    <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 mb-5">
-      <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8 shadow">
+    <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5">
+      <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
         <div class="w-full">
           <section>
             <div class="-mx-4 lg:-mx-8">
@@ -428,25 +410,25 @@ faFileExport
                 <thead>
                   <tr>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-l border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Produit
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider hidden lg:table-cell">
                       Prix unitaire
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider">
                       Qté
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Prix total
@@ -457,7 +439,7 @@ faFileExport
                   {#each order.products as line, index}
                     <tr>
                       <td
-                        class="px-4 md:px-8 py-5 border-b border-gray-200
+                        class="px-4 md:px-8 py-5 border-b border-l border-gray-400
                         bg-white text-sm lg:text-base">
                         <div class="items-center">
                           <p>{line.name}</p>
@@ -470,19 +452,19 @@ faFileExport
                         </div>
                       </td>
                       <td
-                        class="px-4 md:px-8 py-5 border-b border-gray-200
+                        class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base hidden lg:table-cell">
                         <p class="whitespace-no-wrap">
                           {line.unitOnSalePrice}€
                         </p>
                       </td>
                       <td
-                        class="px-4 md:px-8 py-5 border-b border-gray-200
+                        class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left">
                         <p class="whitespace-no-wrap">{line.quantity}</p>
                       </td>
                       <td
-                        class="px-4 md:px-8 py-5 border-b border-gray-200
+                        class="px-4 md:px-8 py-5 border-b border-r border-gray-400
                         bg-white text-sm lg:text-base text-right">
                         <p class="whitespace-no-wrap">
                           {line.totalOnSalePrice}€
@@ -492,14 +474,20 @@ faFileExport
                   {/each}
                   <tr>
                     <td
-                      class="border-b-2 border-gray-200 bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold hidden"
+                      class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+                      colspan="2">
+                      Total :
+                    </td>
+                    <td
+                      class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
                       colspan="3">
                       Total :
                     </td>
                     <td
-                      class="border-b-2 border-gray-200 bg-white px-4 md:px-8
-                      py-5 text-lg text-right font-bold"
+                      class="border-b border-gray-400 bg-white px-4 md:px-8
+                      py-5 text-lg text-right font-bold col-span-1 border-r"
                       colspan="1">
                       {order.totalWholeSalePrice}€
                     </td>

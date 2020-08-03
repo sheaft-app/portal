@@ -3,6 +3,7 @@
   import setHours from "date-fns/setHours";
   import { fr } from "date-fns/locale";
   import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
+  import { faCheck } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import { getClient, query, mutate } from "svelte-apollo";
   import { push } from "svelte-spa-router";
@@ -24,6 +25,7 @@
   let purchaseOrderIds = purchaseOrders.map((object, key) => {
     return object.id;
   });
+  let isLoading = false;
 
   let name = null;
 
@@ -56,6 +58,7 @@
   }
 
   async function submit() {
+    isLoading = true;
     const hours = moment === "am" ? 9 : 14;
     const expectedDeliveryDate = dateSelectionRequired
       ? format(setHours(new Date(date), hours), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
@@ -83,6 +86,8 @@
         "Une erreur est survenue pendant    la demande de création du bon de préparation."
       );
     }
+
+    isLoading = false;
 
     return await closeModal(result);
   }
@@ -155,7 +160,7 @@
               on:click={() => (moment = 'am')}
               type="button"
               class:selected={moment === 'am'}
-              class="bg-white hover:bg-gray-100 border-r border-gray-300
+              class="bg-white hover:bg-gray-100 border-r border-gray-400
               border-solid py-2 px-4 rounded-l transition
               duration-200 w-full ease-in-out">
               Matin

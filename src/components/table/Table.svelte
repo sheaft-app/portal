@@ -15,6 +15,8 @@
 		isLoading,
 		graphQuery,
 		errorsHandler,
+		noResults,
+		disableRowSelection = () => false,
 		defaultSearchValues = {
 			cursor: null,
 			orderBy: "createdOn",
@@ -53,8 +55,10 @@
 	};
 
 	const toggleSelectAll = () => {
-		if (selectedItems && selectedItems.length > 0) selectedItems = [];
-		else selectedItems = items;
+		if (selectedItems && selectedItems.length > 0) 
+			selectedItems = [];
+		else 
+			selectedItems = items.filter((i) => !disableRowSelection(i));
 	};
 
 	const selectRow = (item) => {
@@ -217,31 +221,32 @@
 	};
 
 	$: canSelect = selectedItems && items.length > 0;
-	$: hasSelectedAllItems = selectedItems && selectedItems.length == items.length;
+	$: hasSelectedAllItems = selectedItems && selectedItems.length == items.filter((i) => !disableRowSelection(i)).length;
 	$: isRowSelected = (item) => selectedItems && selectedItems.some((si) => si.id == item.id);
 	$: rowColor = (item) => {
-		if (isRowSelected(item)) return "bg-blue-100";
+		if (isRowSelected(item)) return "bg-gray-100";
 
 		if (getRowBackgroundColor) return getRowBackgroundColor(item);
 		else return "";
 	};
+	$: noResults = !isLoading && items.length < 1;
 
 	$: refetch($querystring);
 </script>
 
 {#if isLoading}
 	<Loader />
-{:else}
+{:else if !noResults}
 	{#if $toggleMoreActions}
-		<div class="fixed w-full h-full bg-black opacity-25 -mx-4" style="z-index: 1;" on:click={() => toggleMoreActions.set(false)}></div>
+		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;" on:click={() => toggleMoreActions.set(false)}></div>
 	{/if}
-	<div class="overflow-x-auto bg-white shadow -mx-4 -my-4 lg:mx:0 lg:my-0 table-container">
+	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0 table-container">
 		<table class={classes}>
 			<thead>
 				<tr class="bg-white">
 					{#if canSelect}
 						<th
-							class="px-3 md:px-6 py-3 border-b border-gray-200 bg-gray-50
+							class="px-3 md:px-6 py-3 border-b border-gray-300
 							text-left text-xs leading-4 font-medium text-gray-500 uppercase
 							tracking-wider"
 							style="width:30px;">
@@ -257,8 +262,8 @@
 								on:click={sort(header.sortLabel)}
 								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
 								md:px-6 py-3 cursor-pointer hover:text-gray-700 border-b
-								border-gray-200 bg-gray-50 text-left text-xs leading-4
-								font-medium text-gray-500 uppercase tracking-wider">
+								border-gray-300 text-left text-xs leading-4
+								font-medium text-gray-600 uppercase tracking-wider">
 								{header.name}
 								<Icon
 									data={faLongArrowAltDown}
@@ -274,8 +279,8 @@
 							<th
 								class:px-3={!header.noMobilePadding}
 								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
-								md:px-6 py-3 border-b border-gray-200 bg-gray-50 text-left
-								text-xs leading-4 font-medium text-gray-500 uppercase
+								md:px-6 py-3 border-b border-gray-300 text-left
+								text-xs leading-4 font-medium text-gray-600 uppercase
 								tracking-wider">
 								{header.name}
 							</th>
@@ -294,12 +299,15 @@
 								<td
 									class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200"
+									class:disabled={disableRowSelection(item)}
 									on:click|stopPropagation={(e) => {
-										selectRow(item);
+										if (!disableRowSelection(item)) {
+											selectRow(item);
+										}
 									}}>
 									<div class="flex items-center">
 										<div class="flex-shrink-0">
-											<InputCheckbox checked={isRowSelected(item)} />
+											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)} />
 										</div>
 									</div>
 								</td>
@@ -310,7 +318,7 @@
 				{:else}
 					<tr>
 						<td colspan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
-						border-gray-200">
+						border-gray-200 hover:bg-white">
 							Aucun résultat à afficher
 						</td>
 					</tr>
@@ -325,7 +333,7 @@
           on:click={() => goToFirstPage()}
           class:disabled={!_pageInfo.hasPreviousPage}
           disabled={!_pageInfo.hasPreviousPage}
-          class="relative inline-flex items-center px-4 py-2 border border-gray-300
+          class="relative inline-flex items-center px-4 py-2 border border-gray-400
           text-sm leading-5 font-medium rounded-md text-gray-700 bg-white
           hover:text-gray-500 focus:outline-none focus:shadow-outline-blue
           focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition
@@ -338,7 +346,7 @@
 						class:disabled={!_pageInfo.hasPreviousPage}
 						disabled={!_pageInfo.hasPreviousPage}
 						class="ml-3 relative inline-flex items-center px-4 py-2 border
-						border-gray-300 text-sm leading-5 font-medium rounded-md
+						border-gray-400 text-sm leading-5 font-medium rounded-md
 						text-gray-700 bg-white hover:text-gray-500 focus:outline-none
 						focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100
 						active:text-gray-700 transition ease-in-out duration-150">
@@ -349,7 +357,7 @@
 						class:disabled={!_pageInfo.hasNextPage}
 						disabled={!_pageInfo.hasNextPage}
 						class="ml-3 relative inline-flex items-center px-4 py-2 border
-						border-gray-300 text-sm leading-5 font-medium rounded-md
+						border-gray-400 text-sm leading-5 font-medium rounded-md
 						text-gray-700 bg-white hover:text-gray-500 focus:outline-none
 						focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100
 						active:text-gray-700 transition ease-in-out duration-150">
@@ -360,7 +368,7 @@
           class:disabled={!_pageInfo.hasNextPage}
           disabled={!_pageInfo.hasNextPage}
           class="ml-3 relative inline-flex items-center px-4 py-2 border
-          border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700
+          border-gray-400 text-sm leading-5 font-medium rounded-md text-gray-700
           bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue
           focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition
           ease-in-out duration-150">
@@ -379,11 +387,17 @@
 		}
 
 		@media (min-width: 768px) and (max-width: 1024px) {
-			margin-top: 55px;
+			margin-top: 86px;
 		}
 
 		@media (min-width: 1025px) {
-			margin-top: 40px;
+			margin-top: 71px;
+		}
+	}
+
+	td {
+		&.disabled {
+			cursor: not-allowed;
 		}
 	}
 	
@@ -411,9 +425,7 @@
 
 		tbody tr {
 			&:hover {
-				box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0,
-					0 1px 2px 0 rgba(60, 64, 67, 0.3),
-					0 1px 3px 1px rgba(60, 64, 67, 0.15);
+				@apply bg-gray-100;
 			}
 		}
 

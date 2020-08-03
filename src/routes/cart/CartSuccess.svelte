@@ -85,7 +85,7 @@
 						<a
 							href="javascript:void(0)"
 							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
-							mes commandes
+							"Mes Commandes"
 						</a>
 						.
 					</p>

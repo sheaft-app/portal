@@ -6,6 +6,12 @@ export const GET_SELLING_POINTS = gql`
 			first: 50
 			where: { kind_not_in: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] }
 		) {
+			pageInfo{
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
 			nodes {
 				id
 				name

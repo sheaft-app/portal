@@ -81,7 +81,7 @@
   {#if !product}
     <Loader />
   {:else}
-    <section class="mb-4 pb-4 border-b border-gray-300 border-solid">
+    <section class="mb-4 pb-4 border-b border-gray-400 border-solid">
       <div class="mb-3">
         <button
           class="text-gray-600 items-center flex uppercase"

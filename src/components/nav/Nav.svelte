@@ -352,19 +352,19 @@
       {#if isInRole($authUserAccount, [Roles.Store.Value])}
         <NavLink route={QuickOrderRoutes.Purchase} />
         <NavLink route={MyOrderRoutes.List} />
-        <NavLink route={JobRoutes.List} />
         <NavLink route={SearchProducerRoutes.Search} />
         <NavLink route={AgreementRoutes.List} />
+        <NavLink route={JobRoutes.List} />
       {/if}
       {#if isInRole($authUserAccount, [Roles.Producer.Value])}
         <NavLink route={ProductRoutes.List} />
         <NavLink route={PurchaseOrderRoutes.List} />
-        <NavLink route={JobRoutes.List} />
         <NavLink route={PackagingRoutes.List} />
         <NavLink route={SellingPointRoutes.List} />
         <NavLink route={DeliveryRoutes.List} />
         <NavLink route={SearchStoreRoutes.Search} />
         <NavLink route={AgreementRoutes.List} />
+        <NavLink route={JobRoutes.List} />
       {/if}
       {#if !$authAuthenticated || isInRole($authUserAccount, [
           Roles.Consumer.Value

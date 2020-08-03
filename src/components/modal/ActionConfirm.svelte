@@ -78,7 +78,7 @@
       on:click={handleClose}
       type="button"
       aria-label={closeText}
-      class="inline-flex justify-center w-full rounded-md border border-gray-300
+      class="inline-flex justify-center w-full rounded-md border border-gray-400
       px-4 py-2 bg-white text-base leading-6 font-medium shadow-sm
       focus:outline-none focus:border-blue-300
       focus:shadow-outline transition ease-in-out duration-150 sm:text-sm

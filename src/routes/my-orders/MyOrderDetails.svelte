@@ -4,7 +4,7 @@
   import CancelMyOrders from "./CancelMyOrders.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
-  import { faTruck, faTruckLoading, faChevronLeft, faHourglass, faCheck, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+  import { faTruck, faTruckLoading, faChevronLeft, faHourglass, faCheck, faTimesCircle, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import { format } from "date-fns";
   import { fr } from "date-fns/locale";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -17,6 +17,7 @@
   import { GET_MY_ORDER_DETAILS } from "./queries.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import { timeSpanToFrenchHour } from "./../../helpers/app";
 
   export let params = {};
 
@@ -119,112 +120,76 @@
     </section>
     {#if order.status == OrderStatusKind.Cancelled.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-orange-400
-        shadow rounded mb-5 text-white">
-        <div class="flex">
-          <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande annulée</p>
-            <div class="mt-2">
-              {#if order.reason}
-                <p>Cette commande a été annulée pour la raison suivante :</p>
-                <p class="mt-2 font-semibold">{order.reason}</p>
-              {:else}
-                <p>
-                  Cette commande a été annulée, vous ne pouvez plus interagir
-                  avec.
-                </p>
-              {/if}
-            </div>
-          </div>
+        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-orange-100
+        shadow rounded mb-3">
+        <p class="uppercase font-bold leading-none">Commande annulée</p>
+        <div class="mt-2">
+          {#if order.reason}
+            <p>Cette commande a été annulée pour la raison suivante :</p>
+            <p class="mt-2 font-semibold">{order.reason}</p>
+          {/if}
         </div>
       </div>
     {/if}
     {#if order.status == OrderStatusKind.Refused.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-red-400
-        text-white shadow rounded mb-5">
-        <div class="flex">
-          <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande refusée</p>
-            <div class="mt-2">
-              {#if order.reason}
-                <p>Cette commande a été refusée pour la raison suivante :</p>
-                <p>{order.reason}</p>
-              {:else}
-                <p>
-                  Cette commande a été refusée car le producteur n'était pas en
-                  capacité de la délivrer.
-                </p>
-              {/if}
-            </div>
-          </div>
+        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-red-100
+        text-white shadow rounded mb-3">
+        <p class="uppercase font-bold leading-none">Commande refusée</p>
+        <div class="mt-2">
+          {#if order.reason}
+            <p>Cette commande a été refusée pour la raison suivante :</p>
+            <p>{order.reason}</p>
+          {/if}
         </div>
       </div>
     {/if}
     {#if order.status === OrderStatusKind.Waiting.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white shadow
-        rounded mb-5">
-        <div class="flex">
-          <Icon data={faHourglass} scale="1.3" class="mr-5 text-orange-400" />
-          <div>
-            <p class="uppercase font-bold leading-none">
-              Votre commande est en cours de traitement
-            </p>
-            <div class="mt-2">
-              <p>
-                Votre commande a été envoyée au producteur. Celui-ci doit
-                maintenant définir s'il est apte à la traiter en fonction de son
-                stock et de sa capacité de production.
-              </p>
-              <p>
-                Vous serez informé dès l'instant où le producteur aura traité
-                votre commande.
-              </p>
-            </div>
-          </div>
+        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-blue-100 shadow
+        rounded mb-3">
+        <p class="uppercase font-bold leading-none">
+          Votre commande est en cours de traitement
+        </p>
+        <div class="mt-2">
+          <p>
+            Votre commande a été envoyée au producteur. Celui-ci doit
+            maintenant définir s'il est apte à la traiter en fonction de son
+            stock et de sa capacité de production.
+          </p>
+          <p>
+            Vous serez informé dès l'instant où le producteur aura traité
+            votre commande.
+          </p>
         </div>
       </div>
     {/if}
-
     {#if order.status == OrderStatusKind.Shipping.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
-        <div class="flex">
-          <Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
-          <div>
-            <p class="uppercase font-bold leading-none">
-              Commande en livraison
-            </p>
-            <div class="mt-2">
-              <p>Votre commande est en cours de livraison</p>
-            </div>
-          </div>
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+        rounded mb-3">
+        <p class="uppercase font-bold leading-none">
+          Commande en livraison
+        </p>
+        <div class="mt-2">
+          <p>Votre commande est en cours de livraison</p>
         </div>
       </div>
     {/if}
     {#if order.status == OrderStatusKind.Delivered.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        rounded mb-5">
-        <div class="flex">
-          <Icon data={faTruckLoading} scale="1.5" class="mr-5 text-green-400" />
-          <div>
-            <p class="uppercase font-bold leading-none">Commande livrée</p>
-            <div class="mt-2">
-              <p>Votre commande vous a été livrée</p>
-            </div>
-          </div>
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+        rounded mb-3">
+        <p class="uppercase font-bold leading-none">Commande livrée</p>
+        <div class="mt-2">
+          <p>Votre commande vous a été livrée</p>
         </div>
       </div>
     {/if}
     {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
       <div
         class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white shadow
-        rounded mb-5">
+        rounded md:mb-3">
         <div class="flex">
           {#if authInstance.isInRole([Roles.Store.Value])}
             <Icon data={faTruck} scale="1" class="mr-5" />
@@ -235,8 +200,8 @@
               <div class="mt-2">
                 <p class="leading-none">
                   {#if order.status !== OrderStatusKind.Accepted.Value}
-                    Si la commande est acceptée, la livraison aura lieu
-                  {:else}La commande sera livrée le{/if}
+                    Si votre commande est acceptée, la livraison aura lieu
+                  {:else}Votre commande sera livrée le{/if}
                   <b>
                     {format(
                       new Date(order.expectedDelivery.expectedDeliveryDate),
@@ -254,15 +219,15 @@
               </div>
             </div>
           {:else}
-            <Icon data={faCheck} scale="1.5" class="mr-5" />
+            <Icon data={faMapMarkerAlt} scale="1.5" class="mr-5" />
             <div>
               <p class="uppercase font-bold leading-none">
                 Où et quand récupérer ma commande ?
               </p>
               <div class="mt-2">
-                <p class="leading-none">
-                  La commande est à récupérer le
-                  <b class="text-blue-400">
+                <p class="mb-1">
+                  Votre commande est à récupérer le
+                  <b>
                     {format(
                       new Date(order.expectedDelivery.expectedDeliveryDate),
                       'PPPP',
@@ -272,13 +237,13 @@
                     )}
                   </b>
                   entre
-                  <b class="text-blue-400">{order.expectedDelivery.from}</b>
+                  <b>{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
                   et
-                  <b class="text-blue-400">{order.expectedDelivery.to}</b>
+                  <b>{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
                 </p>
                 <p>
                   Adresse de récupération :
-                  <b class="text-blue-400">
+                  <b>
                     {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
                     {order.expectedDelivery.address.city}
                   </b>
@@ -286,7 +251,7 @@
 
                 <a
                   target="_blank"
-                  class="btn btn-lg shadow font-semibold bg-white mt-2
+                  class="btn btn-lg bg-accent text-white shadow font-semibold mt-2
                   hover:bg-gray-100"
                   style="width: fit-content"
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}>
@@ -301,7 +266,7 @@
     {#if order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Refused.Value}
       <div
         class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
-        shadow rounded-t-lg">
+        border-t border-l border-r border-gray-400">
         <div class="md-stepper-horizontal green mb-5">
           <div
             class="md-step p-0 md:p-6"
@@ -367,11 +332,10 @@
     {/if}
     <div class="px-0 md:px-5 overflow-x-auto -mx-5">
       <div
-        class="flex flex-wrap bg-white w-full shadow items-center border-b
-        border-gray-300">
+        class="flex flex-wrap bg-white w-full items-center border border-gray-400">
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">La commande</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -402,7 +366,7 @@
         </div>
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-300">
+          lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">Le panier</p>
           <div class="mt-3">
             <div class="flex items-center mb-2">
@@ -421,7 +385,7 @@
         </div>
         <div
           class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-          border-gray-300 px-4 lg:px-8 py-5">
+          border-gray-400 px-4 lg:px-8 py-5">
           <p class="uppercase font-bold pb-2">Le producteur</p>
           <div class="mt-3">
             <div>
@@ -443,8 +407,8 @@
         </div>
       </div>
     </div>
-    <div class="px-0 md:px-5 overflow-x-auto -mx-5 mb-5">
-      <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8 shadow">
+    <div class="px-0 md:px-5 overflow-x-auto -mx-5 md:mb-3">
+      <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
         <div class="w-full">
           <section>
             <div class="-mx-4 lg:-mx-8">
@@ -452,32 +416,32 @@
                 <thead>
                   <tr>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-l border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Produit
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider hidden lg:table-cell">
                       Prix unitaire
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider">
                       Qté
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-gray-300
+                      class="px-4 md:px-8 py-3 border-b border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Prix total
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="border border-gray-400">
                   {#each order.products as line, index}
                     <tr>
                       <td
@@ -516,14 +480,19 @@
                   {/each}
                   <tr>
                     <td
-                      class="border-b-2 border-gray-200 bg-white px-4 md:px-8
-                      py-5 text-lg text-right
-                      uppercase font-semibold hidden lg:table-cell"
+                      class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+                      colspan="2">
+                      Total :
+                    </td>
+                    <td
+                      class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
                       colspan="3">
                       Total :
                     </td>
                     <td
-                      class="border-b-2 border-gray-200 bg-white px-4 md:px-8
+                      class="bg-white px-4 md:px-8
                       py-5 text-lg text-right
                       font-bold"
                       colspan="1">
@@ -539,7 +508,7 @@
     </div>
     <div
       class:hidden={!canCancelOrder}
-      class="bg-white shadow rounded rounded-t-lg overflow-hidden mb-5">
+      class="bg-white shadow md:rounded md:rounded-t-lg overflow-hidden mb-3 -mx-5 md:mx-0">
       <div class="px-4 md:px-8 py-5">
         <p class="uppercase font-bold">Annuler la commande</p>
         <div class="mt-5">

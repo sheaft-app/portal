@@ -231,7 +231,7 @@
           on:click={() => toggleProducerInfo()}
           class:hidden={!product.producer.description}
           class="absolute bottom-0 rounded-b-lg w-full py-3 -mx-6 bg-white
-          text-center font-semibold border-t border-gray-300 border-solid flex
+          text-center font-semibold border-t border-gray-400 border-solid flex
           justify-center items-center cursor-pointer">
           {#if !producerDescriptionExpanded}
             <Icon data={faChevronDown} class="mr-2" />

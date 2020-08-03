@@ -11,6 +11,7 @@
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import PurchaseOrderRoutes from "./routes";
 	import OrderStatusKind from "./../../enums/OrderStatusKind";
+	import DeliveryKind from "./../../enums/DeliveryKind";
 	import CreatePickingOrders from "./CreatePickingOrders.svelte";
 	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
 	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
@@ -45,6 +46,7 @@
 		faCalendarAlt,
 		faFileImport,
 		faFileExport,
+		faMapMarkerAlt
 	} from "@fortawesome/free-solid-svg-icons";
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -59,15 +61,15 @@
 	const headers = [
 		{ name: "Commande", sortLabel: "reference" },
 		{ name: "Panier" },
-		{ name: "Livraison", displayOn: "md" },
+		{ name: "Livraison/Récupération", displayOn: "md" },
 		{ name: "Statut", displayOn: "md" },
 		{ name: "Passée le", displayOn: "md", sortLabel: "createdOn" },
 	];
 
 	let selectedItems = [];
 	let items = [];
-	$: isLoading = true;
-	$: hasPendingJobs = false;
+	let isLoading = true;
+	let hasPendingJobs = false;
 
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
@@ -146,31 +148,24 @@
 
 	$: actions = [
 		{
-			click: () => createPickingOrder(),
-			disabled: !canCreatePickingOrders(selectedItems),
-			icon: faFileExport,
-			text: "Créer un bon de préparation",
-			color: "indigo",
-		},
-		{
 			click: () => acceptOrders(),
 			disabled: !canAcceptOrders(selectedItems),
 			icon: faCheck,
-			text: "Accepter les commandes",
+			text: "Accepter",
 			color: "green",
 		},
 		{
 			click: () => refuseOrders(),
 			disabled: !canRefuseOrders(selectedItems),
 			icon: faTimes,
-			text: "Refuser les commandes",
+			text: "Refuser",
 			color: "red",
 		},
 		{
 			click: () => cancelOrders(),
 			disabled: !canCancelOrders(selectedItems),
 			icon: faBackspace,
-			text: "Annuler les commandes",
+			text: "Annuler",
 			color: "orange",
 		},
 		{
@@ -179,6 +174,7 @@
 			icon: faPlay,
 			text: "Démarrer la préparation",
 			color: "green",
+			hideIfDisabled: true
 		},
 		{
 			click: () => completeOrders(),
@@ -186,6 +182,15 @@
 			icon: faClipboardCheck,
 			text: "Terminer la préparation",
 			color: "green",
+			hideIfDisabled: true
+		},
+		{
+			click: () => createPickingOrder(),
+			disabled: !canCreatePickingOrders(selectedItems),
+			icon: faFileExport,
+			text: "Créer un bon de préparation",
+			color: "indigo",
+			hideIfDisabled: true
 		},
 		{
 			click: () => deliverOrders(),
@@ -193,6 +198,7 @@
 			icon: faTruckLoading,
 			text: "Marquer comme livrées",
 			color: "teal",
+			hideIfDisabled: true
 		},
 	];
 
@@ -234,7 +240,7 @@
 		</div>
 	{/if}
 	{#if !displayNoResults}
-		<Actions {actions} />
+		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 	{/if}
 	<Table
 		let:rowItem={order}
@@ -245,25 +251,26 @@
 		{errorsHandler}
 		defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
 		bind:selectedItems
+		disableRowSelection={(order) => order && (order.status == OrderStatusKind.Cancelled.Value || order.status == OrderStatusKind.Refused.Value)}
 		{getRowBackgroundColor}
 		{onRowClick}>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+			<div class="text-xs leading-5 font-semibold text-{OrderStatusKind.color(order.status)} block md:hidden">
+				{OrderStatusKind.label(order.status)}
+			</div>
 			<div
 				class="text-sm leading-5 font-medium text-gray-900 truncate"
 				style="max-width: 180px;">
 				{order.sender.name}
 			</div>
-			<div class="text-sm leading-5 text-gray-500">#{order.reference}</div>
+			<div class="text-sm leading-5 text-gray-600">#{order.reference}</div>
 		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5 text-gray-900">
 				{order.totalOnSalePrice} €
 			</div>
-			<div class="text-sm leading-5 text-gray-500 hidden md:block">
+			<div class="text-sm leading-5 text-gray-600">
 				{order.productsCount} produits
-			</div>
-			<div class="text-sm leading-5 text-gray-500 block md:hidden">
-				#{order.reference}
 			</div>
 		</td>
 		<td
@@ -280,15 +287,9 @@
 							}
 						)}
 					</p>
-					<p class="text-gray-500">
-						<Icon data={faClock} scale=".8" class=" inline" />
-						{format(
-							new Date(order.expectedDelivery.expectedDeliveryDate),
-							'BB',
-							{
-								locale: fr,
-							}
-						)}
+					<p class="text-gray-600">
+						<Icon data={faMapMarkerAlt} scale=".8" class=" inline" />
+						{DeliveryKind.label(order.expectedDelivery.kind)}
 					</p>
 				</div>
 			{/if}
@@ -307,7 +308,7 @@
 					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
 					{format(new Date(order.createdOn), 'PP', { locale: fr })}
 				</p>
-				<p class="text-gray-500">
+				<p class="text-gray-600">
 					<Icon data={faClock} scale=".8" class=" inline" />
 					{format(new Date(order.createdOn), 'p', { locale: fr })}
 				</p>

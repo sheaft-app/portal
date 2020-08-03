@@ -118,7 +118,7 @@
           </p>
           {#each groups as group}
             <div
-              class="flex justify-between border-b border-gray-300 border-solid
+              class="flex justify-between border-b border-gray-400 border-solid
               py-4">
               <div class="inline-flex items-center">
                 <p class="leading-none font-semibold">{group.regionName}</p>
@@ -138,7 +138,7 @@
           </p>
           {#each users as user}
             <div
-              class="flex justify-between border-b border-gray-300 border-solid
+              class="flex justify-between border-b border-gray-400 border-solid
               py-4">
               <div class="inline-flex">
                 <div
@@ -162,14 +162,14 @@
           {/each}
           {#if showUserPosition}
             <div
-              class="flex justify-between border-b border-gray-300 border-solid
+              class="flex justify-between border-b border-gray-400 border-solid
               py-4">
               <div class="inline-flex">
                 <p>...</p>
               </div>
             </div>
             <div
-              class="flex justify-between border-b border-gray-300 border-solid
+              class="flex justify-between border-b border-gray-400 border-solid
               py-4">
               <div class="inline-flex">
                 <div

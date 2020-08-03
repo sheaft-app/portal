@@ -232,7 +232,7 @@
               {/if}
               <div
                 class="px-2 md:px-6 py-6 block md:flex mb-3 bg-white border
-                border-gray-300 border-solid">
+                border-gray-400 border-solid">
                 <div class="md:w-6/12 px-3">
                   <div class="text-lg leading-5 font-medium">
                     <p>{item.name}</p>
@@ -248,7 +248,7 @@
                 </div>
                 <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
                     <div
-                    class="flex m-auto border border-gray-300 border-solid rounded-full product-quantity">
+                    class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
                     <button
                       disabled={item.quantity === 0}
                       style="height: 36px;"

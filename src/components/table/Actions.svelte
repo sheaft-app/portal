@@ -13,7 +13,7 @@
 
 {#if show}
 	<div
-		class="p-4 py-3 bg-white shadow fixed -mx-4 actions-bar hidden md:block" style="z-index: 1; max-width: fit-content;">
+		class="p-4 py-3 bg-white shadow-lg fixed -mx-4 md:mx-0 actions-bar rounded hidden md:block" style="z-index: 1; max-width: fit-content;">
 		<div class="flex justify-between">
 			{#each actions as act}
 				<Action
@@ -54,12 +54,13 @@
 			{/if}
 		</button>
 		{#if $toggleMoreActions}
-			<div class="absolute bg-white shadow-md" style="right: 0; bottom:80px;">
+			<div class="absolute bg-white shadow-md" style="right: 0; bottom: 80px; width: max-content;">
 				{#each actions as act}
 					<Action
 						{selectedItemsNumber}
 						displaySelectedItemsNumber={act.displaySelectedItemsNumber}
 						click={act.click}
+						hideIfDisabled={act.hideIfDisabled}
 						disabled={act.disabled}
 						text={act.text}
 						icon={act.icon}
@@ -72,9 +73,9 @@
 
 <style lang="scss">
 .actions-bar {
-	top: 64px;
+	top: 90px;
 
 	@media (max-width: 1024px) {
-		top: 45px;
+		top: 71px;
 	}
 }</style>
