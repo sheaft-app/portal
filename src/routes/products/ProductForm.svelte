@@ -8,7 +8,7 @@
   import Select from "./../../components/controls/select/Select.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import PackagingSelectItem from "./PackagingSelectItem.svelte";
-  import CreatePackaging from "./../Packagings/CreatePackaging.svelte";
+  import CreatePackaging from "./../packagings/CreatePackaging.svelte";
   import TagKind from "./../../enums/TagKind.js";
   import { GET_PACKAGINGS, GET_TAGS } from "./queries.js";
   import ChangeImage from "./ChangeImage.svelte";
