@@ -10,7 +10,7 @@ trigger:
       - refs/tags/publish
 
 pool:
-  vmImage: "windows-latest"
+  vmImage: "ubuntu-latest"
 
 steps:
   - script: |
@@ -24,4 +24,4 @@ steps:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip'
-      artifactName: 'sheaft-app'
+      artifactName: 'sheaft-portal'
