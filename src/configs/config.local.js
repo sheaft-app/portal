@@ -4,14 +4,14 @@ export const config = {
 	api: "https://localhost:5003",
 	signalr: "https://localhost:5010",
 	auth: {
-		url: "https://localhost:5001",
+		url: "https://auth.sheaft.com",
 		settings: {
 			client_id: "990966C64E554C6298970F5D6FBEEDEA",
 			redirect_uri: "http://localhost:4200/#/callback",
 			post_logout_redirect_uri: "http://localhost:4200",
 			response_type: "code",
 			scope: "openid profile email role offline_access",
-			authority: "https://localhost:5001",
+			authority: "https://auth.sheaft.com",
 			silent_redirect_uri: "http://localhost:4200/#/callback-silent",
 			automaticSilentRenew: true,
 			loadUserInfo: true,
