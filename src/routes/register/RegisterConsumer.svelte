@@ -6,17 +6,20 @@
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
+  import SheaftErrors from "./../../services/SheaftErrors";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import GetNotificationsInstance from "./../../services/SheaftNotifications";
   import { onMount } from "svelte";
   import { authRegistered } from "./../../stores/auth.js";
   import { departments } from "./../../stores/app.js";
   import Select from "./../../components/controls/select/Select.js";
+import ErrorCard from "../../components/ErrorCard.svelte";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
   const graphQLInstance = GetGraphQLInstance();
   const notificationsInstance = GetNotificationsInstance();
+  const errorsHandler = new SheaftErrors();
 
   let isRegistering = false;
   let sponsorShow = false;
@@ -40,13 +43,10 @@
     user.departmentId = selectedDepartment.id;
     isRegistering = true;
 
-    var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user);
+    var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
 
     if (!res.success) {
-      isRegistering = false;
-      notificationsInstance.error(
-        "Une erreur est survenue lors de l'enregistrement."
-      );
+      isRegistering = false;      
       //TODO
       return;
     }
@@ -97,6 +97,7 @@
 </svelte:head>
 
 <TransitionWrapper>
+  <ErrorCard {errorsHandler}/>
   <div class="-my-2 m-auto py-2 overflow-x-auto md:w-3/5 mt-2 mb-8 h-full">
     <div class="text-center">
       <img src="img/form.svg" alt="bandeau formulaire" />
