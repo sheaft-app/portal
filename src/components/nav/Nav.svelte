@@ -17,7 +17,7 @@
   import { fly } from "svelte/transition";
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { navExpended, userMenuExpended } from "./store.js";
-  import { authAuthenticated, authUserAccount } from "./../../stores/auth.js";
+  import { authAuthenticated, authUserAccount, authRegistered } from "./../../stores/auth.js";
   import GetAuthInstance from "./../../services/SheaftAuth";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import { openHelpModal } from "./../../services/SheaftFreshdesk";
@@ -371,7 +371,7 @@
         ])}
         <NavLink route={LeaderboardRoutes.Country} />
       {/if}
-      {#if $authAuthenticated}
+      {#if $authAuthenticated && $authRegistered}
         <NavLink route={SponsorshipRoutes.Share} />
       {/if}
     </ul>
