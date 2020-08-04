@@ -102,7 +102,7 @@
     if (!dirty) dirty = true;
   };
 
-  async function handleSubmit(products) {
+  const handleSubmit = async (products) => {
     isCreatingOrder = true;
     const productsFiltered = normalizedProducts.filter(p => p.quantity > 0);
 

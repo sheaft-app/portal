@@ -19,7 +19,7 @@
   export let displayLocation = true;
   export let storeDelivery = false;
 
-  const oneOptionOnly = data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
+  $: oneOptionOnly = data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
 
   const showDeliveryPickModal = () => {
     if (selected && selectedDeliveryHour && oneOptionOnly) {
