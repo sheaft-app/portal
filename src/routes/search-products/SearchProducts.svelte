@@ -294,8 +294,7 @@
 
 <TransitionWrapper hasRightPanel style="margin:0;">
   <div
-    class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products"
-    style="margin-bottom: 65px;">
+    class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products">
     <ErrorCard {errorsHandler} />
     <div
       class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3"
@@ -377,15 +376,13 @@
         </div>
       {:else}
         <div class="flex flex-wrap mb-3">
-          {#if $filters.tags && $filters.tags.length > 0}
-            {#each $filters.tags as tag}
-              <span
-                style="font-size: .6rem"
-                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-                items-center bg-gray-200">
-                {tag}
-              </span>
-            {/each}
+          {#if $filters.sort}
+            <span
+              style="font-size: .6rem"
+              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+              items-center bg-gray-200">
+              tri : {renderSort($filters.sort)}
+            </span>
           {/if}
           {#if $filters.text}
             <span
@@ -395,13 +392,15 @@
               termes: '{$filters.text}'
             </span>
           {/if}
-          {#if $filters.sort}
-            <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              tri: {renderSort($filters.sort)}
-            </span>
+          {#if $filters.tags && $filters.tags.length > 0}
+            {#each $filters.tags as tag}
+              <span
+                style="font-size: .6rem"
+                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                items-center bg-gray-200">
+                {tag}
+              </span>
+            {/each}
           {/if}
         </div>
         <div
@@ -464,6 +463,16 @@
     top: 64px;
   }
 
+  .search-products {
+    @media (min-width: 768px) {
+      margin-bottom: 65px;
+    }
+
+    @media (max-width: 768px) {
+      margin-top: -16px;
+    }
+  }
+
   .cart-panel {
     top: 64px;
     z-index: 3;
@@ -499,12 +508,6 @@
           width: 100%;
         }
       }
-    }
-  }
-
-  @media (max-width: 768px) {
-    .search-products {
-      margin-top: -16px;
     }
   }
 

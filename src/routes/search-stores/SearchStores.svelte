@@ -158,7 +158,7 @@
 </svelte:head>
 
 <TransitionWrapper style="margin:0;">
-  <div class="search-products" style="margin-bottom: 65px;">
+  <div class="search-stores">
     <div class="pb-6">
       <h1>Trouver des magasins</h1>
     </div>
@@ -242,6 +242,12 @@
 <style lang="scss">
   .filter-btn {
     min-height: 44px;
+  }
+
+  .search-stores {
+    @media (min-width: 768px) {
+      margin-bottom: 65px;
+    }
   }
 
   $store-details-panel-size: 600px;

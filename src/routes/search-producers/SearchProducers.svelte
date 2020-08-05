@@ -158,7 +158,7 @@
 </svelte:head>
 
 <TransitionWrapper style="margin:0;">
-  <div class="search-products" style="margin-bottom: 65px;">
+  <div class="search-producers">
     <div class="pb-6">
       <h1>Trouver des producteurs</h1>
     </div>
@@ -313,6 +313,12 @@
     min-height: 44px;
   }
 
+  .search-producers {
+    @media (min-width: 768px) {
+      margin-bottom: 65px;
+    }
+  }
+  
   $producer-details-panel-size: 600px;
 
   .filter-bar {

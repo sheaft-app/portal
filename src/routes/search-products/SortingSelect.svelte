@@ -4,8 +4,10 @@
   import GetRouterInstance from "../../services/SheaftRouter.js";
 
   const routerInstance = GetRouterInstance();
-let sort = undefined;
+  
   export let filters, inline = false, callback = () => {};
+
+  let sort = undefined;
 
   onMount(() => {
     let values = routerInstance.getQueryParams();
