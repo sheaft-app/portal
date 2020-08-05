@@ -72,7 +72,7 @@
             <span class="bg-white px-3 py-2 uppercase">déjà partenaire</span>
           {/if}
           {#if producer.hasPendingAgreement}
-            <span class="bg-orange-400 text-white px-3 py-2 uppercase">en attente</span>
+            <span class="bg-blue-400 text-white px-3 py-2 uppercase">en attente</span>
           {/if}
         </div>
       {/if}

@@ -33,6 +33,7 @@
 
 	let selectedItems = [];
 	let items = [];
+	let noResults = false;
 	$: isLoading = true;
 
 	const headers = [
@@ -184,8 +185,6 @@
 			color: "gray",
 		},
   ];
-  
-  $: displayNoResults = !isLoading && items.length < 1;
 </script>
 
 <svelte:head>
@@ -194,13 +193,14 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
-	{#if !displayNoResults}
+	{#if !noResults}
 		<Actions {actions} />
 	{/if}
 	<Table
 		graphQuery={GET_JOBS}
 		{errorsHandler}
 		bind:items
+		bind:noResults
 		bind:selectedItems
 		{isLoading}
 		{headers}
@@ -250,7 +250,7 @@
 			</div>
 		</td>
 	</Table>
-	{#if displayNoResults}
+	{#if noResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
 				<p class="mb-10">Aucune tâche en cours.</p>

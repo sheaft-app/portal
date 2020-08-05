@@ -43,10 +43,10 @@
   closeText="Fermer"
   {isLoading}
   close={() => handleClose({ success: false, data: null })}>
-  <p class="leading-5 text-gray-500">
+  <p class="leading-5">
     Vous vous apprêtez à accepter {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}.
   </p>
-  <p class="leading-5 text-gray-500">
+  <p class="leading-5">
     Le client sera automatiquement notifié de cette validation et débité du
     montant correspondant.
   </p>

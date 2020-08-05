@@ -24,7 +24,7 @@
 </script>
 
 <div class="pb-2">
-  <div class="flex justify-between bg-primary -mx-6 px-6 py-2 -my-2 mb-5 items-center">
+  <div class="flex justify-between bg-primary -mx-6 px-6 py-2 -my-2 mb-5 items-center md:rounded-t-l">
     <h3 class="text-lg font-semibold delivery-title text-white mb-0">
       {#if storeDelivery}
         Livraison pour {data.name}
