@@ -144,12 +144,23 @@
     }
   }
 
+  var popStateListener = (event) => {
+    if ($selectedItem) {
+      return selectedItem.set(null);
+    }
+  }
+
   onMount(() => {
     items.set([]);
+
+    window.addEventListener("popstate", popStateListener, false);
   });
 
-  onDestroy(() => {});
+  onDestroy(() => {
+    window.removeEventListener("popstate", popStateListener, false);
+  });
 
+  $: history.pushState({ selected: $selectedItem}, "Trouver des producteurs");
   $: refetch($querystring);
 </script>
 

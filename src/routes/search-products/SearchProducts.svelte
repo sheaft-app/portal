@@ -1,6 +1,6 @@
 <script>
   import { querystring } from "svelte-spa-router";
-  import { onMount, getContext } from "svelte";
+  import { onMount, onDestroy, getContext } from "svelte";
   import { fly } from "svelte/transition";
   import { SEARCH_PRODUCTS } from "./queries.js";
   import { isLoading, isFetchingMore, filters } from "./store";
@@ -225,6 +225,12 @@
   $: refetch($querystring);
   $: handleLocation(selectedLocation);
 
+  var popStateListener = (event) => {
+    if ($selectedItem) {
+      return selectedItem.set(null);
+    }
+  }
+
   onMount(() => {
     var newPosition = retrieveUserLocationInQueryString();
     if (newPosition) {
@@ -238,8 +244,14 @@
       }
     }
 
+    window.addEventListener("popstate", popStateListener, false);
+
     searchResults.set([]);
   });
+
+  onDestroy(() => {
+    window.removeEventListener("popstate", popStateListener, false);
+  })
 
   $: productsCount = $cartItems.reduce((sum, product) => {
     return sum + (product.quantity || 0);
@@ -247,7 +259,13 @@
   $: total = $cartItems.reduce((sum, product) => {
     return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
   }, 0);
+
+  $: history.pushState({ selected: $selectedItem}, "Explorer");
 </script>
+
+<svelte:head>
+  <title>Explorer</title>
+</svelte:head>
 
 <div
   class:active={productsCount > 0}
@@ -287,10 +305,6 @@
     </div>
   </div>
 </div>
-
-<svelte:head>
-  <title>Explorer</title>
-</svelte:head>
 
 <TransitionWrapper hasRightPanel style="margin:0;">
   <div
