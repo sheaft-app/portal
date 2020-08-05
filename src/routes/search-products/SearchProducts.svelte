@@ -294,6 +294,7 @@
 
 <TransitionWrapper hasRightPanel style="margin:0;">
   <div
+    class:has-bottom-mobile-cta={$cartItems.length >= 1}
     class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products md:-my-4">
     <ErrorCard {errorsHandler} />
     <div
@@ -524,6 +525,12 @@
     @media (max-width: 1024px) {
       top: 45px;
       padding-bottom: 115px !important;
+    }
+  }
+
+  .has-bottom-mobile-cta {
+    @media (max-width: 767px) {
+      margin-bottom: 65px;
     }
   }
 
