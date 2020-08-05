@@ -294,11 +294,10 @@
 
 <TransitionWrapper hasRightPanel style="margin:0;">
   <div
-    class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products">
+    class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products md:-my-4">
     <ErrorCard {errorsHandler} />
     <div
-      class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3"
-      style="margin-top: -.7em">
+      class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
       <CitySearch
         withGeolocationButton={true}
         initAddress={initLocation}
@@ -462,7 +461,7 @@
   .filter-bar {
     top: 64px;
   }
-
+  
   .search-products {
     @media (min-width: 768px) {
       margin-bottom: 65px;
@@ -484,6 +483,10 @@
   }
 
   @media (max-width: 1024px) {
+    .filters {
+      margin-top: 9px;
+    }
+
     .filter-btn {
       max-width: 55px;
     }
