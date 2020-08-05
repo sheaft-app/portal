@@ -132,7 +132,7 @@
     isDisabled={isLoading}
     isWaiting={isLoading}
     icon={faMapMarkerAlt}
-    iconClasses="mr-3"
+    iconClasses="mr-3 text-accent"
     {getSelectionLabel}
     on:select={handleSelect}
     isClearable={false}
@@ -157,8 +157,10 @@
     --borderFocusColor: #a0aec0;
     --borderHoverColor: #a0aec0;
     --border: 1px solid #cbd5e0;
-    --placeholderColor: #205164;
+    --placeholderColor: #ff4081;
     --inputPadding: 45px;
     --inputColor: #205164;
+    --indicatorTop: 16px;
+    --indicatorColor: #ff4081;
   }
 </style>

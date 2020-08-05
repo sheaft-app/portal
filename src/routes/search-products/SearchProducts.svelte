@@ -304,8 +304,8 @@
         withGeolocationButton={true}
         initAddress={initLocation}
         bind:selectedAddress={selectedLocation}
-        containerStyles="background-color: #B2DFDB; border: none; border-radius:
-        0px; color: #205164;" />
+        containerStyles="background-color: #ffffff; border: none; border-radius:
+        0px; color: #205164; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-bottom: 10px;" />
     </div>
     {#if authManager.isInRole([Roles.Store.Value, Roles.Producer.Value])}
       <div
@@ -423,15 +423,11 @@
         </div>
       {/if}
     {:else}
-      <div class="text-lg text-gray-600">
-        <p>
-          On ne peut pas vous afficher les bons produits autour de vous sans
-          savoir où chercher.
+      <div class="text-lg text-gray-600 text-center">
+        <p class="mt-5 mb-5 px-8">
+         Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
         </p>
-        <p>
-          Pour commencer, essayez de rentrer un code postal ou une adresse en
-          haut.
-        </p>
+        <img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
       </div>
     {/if}
   </div>
