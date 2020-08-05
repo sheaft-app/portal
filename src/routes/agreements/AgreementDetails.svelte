@@ -17,6 +17,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import AgreementRoutes from "./routes";
+  import { timeSpanToFrenchHour } from "./../../helpers/app";
 
   export let params = {};
 
@@ -125,101 +126,83 @@
     <div class="w-full xl:w-8/12">
       {#if agreement.status == 'ACCEPTED'}
         <div
-          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-          rounded-lg mb-2">
-          <div class="flex">
-            <Icon data={faCheck} scale="1.5" class="mr-5" />
-            <div>
-              <p class="uppercase font-bold leading-none">Accord actif</p>
-              <div class="mt-2">
-                Cet accord est actif. Vous pouvez le révoquer à tout moment en
-                cliquant sur le bouton ci-dessous.
-              </div>
-              <div class="mt-2">
-                <button
-                  on:click={showCancelAgreementModal}
-                  class="btn btn-lg bg-white shadow text-accent">
-                  Révoquer l'accord
-                </button>
-              </div>
+          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+          md:rounded md:mb-2">
+          <div>
+            <p class="uppercase font-bold leading-none">Accord actif</p>
+            <div class="mt-2">
+              Cet accord est actif. Vous pouvez le révoquer à tout moment en
+              cliquant sur le bouton ci-dessous.
+            </div>
+            <div class="mt-2">
+              <a
+                href="javascript:void(0)"
+                on:click={showCancelAgreementModal}>
+                Révoquer l'accord
+              </a>
             </div>
           </div>
         </div>
       {/if}
       {#if agreement.status == 'CANCELLED'}
         <div
-          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-orange-400
-          shadow rounded-lg mb-2 text-white">
-          <div class="flex">
-            <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-            <div>
-              <p class="uppercase font-bold leading-none">Accord annulé</p>
-              <div class="mt-2">
-                {#if agreement.reason}
-                  <p>Cet accord a été annulé pour la raison suivante :</p>
-                  <p class="mt-2 font-semibold">{agreement.reason}</p>
-                {:else}
-                  <p>
-                    Cet accord a été annulé, vous ne pouvez plus interagir avec.
-                  </p>
-                {/if}
-              </div>
-            </div>
+          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
+          shadow md:rounded md:mb-2">
+          <p class="uppercase font-bold leading-none">Accord annulé</p>
+          <div class="mt-2">
+            {#if agreement.reason}
+              <p>Cet accord a été annulé pour la raison suivante :</p>
+              <p class="mt-2 font-semibold">{agreement.reason}</p>
+            {:else}
+              <p>
+                Cet accord a été annulé, vous ne pouvez plus interagir avec.
+              </p>
+            {/if}
           </div>
         </div>
       {/if}
       {#if agreement.status == 'REFUSED'}
         <div
-          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-400
-          text-white shadow rounded-lg mb-2">
-          <div class="flex">
-            <Icon data={faTimesCircle} scale="1.5" class="mr-5" />
-            <div>
-              <p class="uppercase font-bold leading-none">Accord refusé</p>
-              <div class="mt-2">
-                {#if agreement.reason}
-                  <p>Cet accord a été refusé pour la raison suivante :</p>
-                  <p>{agreement.reason}</p>
-                {:else}
-                  <p>Cet accord a été refusé.</p>
-                {/if}
-              </div>
-            </div>
+          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100
+          shadow md:rounded md:mb-2">
+          <p class="uppercase font-bold leading-none">Accord refusé</p>
+          <div class="mt-2">
+            {#if agreement.reason}
+              <p>Cet accord a été refusé pour la raison suivante :</p>
+              <p>{agreement.reason}</p>
+            {:else}
+              <p>Cet accord a été refusé.</p>
+            {/if}
           </div>
         </div>
       {/if}
       {#if agreement.status.indexOf('WAITING') > -1}
         <div
-          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-          rounded-lg mb-2">
-          <div class="flex">
-            <Icon data={faHourglass} scale="1.3" class="mr-5 text-orange-400" />
-            <div>
-              <p class="uppercase font-bold leading-none">
-                Cet accord est en attente de traitement.
-              </p>
-              {#if !isSender(agreement)}
-                <div class="mt-3 flex">
-                  <button
-                    on:click={showAcceptAgreementModal}
-                    class="btn btn-accent btn-lg shadow mr-2">
-                    Accepter
-                  </button>
-                  <button
-                    on:click={showRefuseAgreementModal}
-                    class="btn bg-red-500 text-white btn-lg shadow">
-                    Refuser
-                  </button>
-                </div>
-              {/if}
+          class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
+          md:rounded md:mb-2">
+          <p class="uppercase font-bold leading-none">
+            Cet accord est en attente de traitement.
+          </p>
+          {#if !isSender(agreement)}
+            <div class="mt-3 flex">
+              <button
+                on:click={showAcceptAgreementModal}
+                class="btn btn-accent btn-lg shadow mr-2">
+                Accepter
+              </button>
+              <button
+                on:click={showRefuseAgreementModal}
+                class="btn bg-red-500 text-white btn-lg shadow">
+                Refuser
+              </button>
             </div>
-          </div>
+          {/if}
         </div>
       {/if}
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap -mx-4 md:mx-0">
         <div class="w-full lg:w-1/2 lg:pr-1">
           <div class="relative">
-            <div class="bg-white p-6 rounded-lg shadow">
+            <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
               <div class="flex items-baseline">
                 <div
                   class="text-gray-600 text-xs uppercase font-semibold
@@ -273,9 +256,9 @@
             </div>
           </div>
         </div>
-        <div class="w-full lg:w-1/2 mt-2 lg:mt-0">
+        <div class="w-full lg:w-1/2">
           <div class="relative">
-            <div class="bg-white p-6 rounded-lg shadow">
+            <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
               <div class="flex items-baseline">
                 <div
                   class="text-gray-600 text-xs uppercase font-semibold
@@ -329,7 +312,7 @@
         </div>
         {#if agreement.selectedHours.length > 0}
           <div
-            class="p-6 overflow-x-auto bg-white shadow rounded-lg w-full mt-2">
+            class="p-6 overflow-x-auto bg-white md:shadow md:rounded w-full md:mt-2 border-t border-b border-gray-400 md:border-none">
             <div class="flex">
               <Icon data={faTruck} scale="1.3" class="mr-5" />
               <div>
@@ -341,7 +324,7 @@
                     <p style="min-width: 100px;">
                       Le {DayOfWeekKind.label(selectedHour.day).toLowerCase()}
                       <span>
-                        {`entre ${selectedHour.from} à ${selectedHour.to}`}
+                        {`entre ${timeSpanToFrenchHour(selectedHour.from)} et ${timeSpanToFrenchHour(selectedHour.to)}`}
                       </span>
                     </p>
                   </div>
@@ -365,7 +348,7 @@
                     <div class="h-full bg-white border-gray-400 border-b">
                       <div class="relative p-4 w-full">
                         <div
-                          class="bg-white rounded-lg p-0 w-full flex
+                          class="bg-white rounded p-0 w-full flex
                           justify-between">
                           <div class="pr-8">
                             <h4

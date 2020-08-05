@@ -70,6 +70,7 @@
 	let items = [];
 	let isLoading = true;
 	let hasPendingJobs = false;
+	let noResults = false;
 
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
@@ -201,8 +202,6 @@
 			hideIfDisabled: true
 		},
 	];
-
-	$: displayNoResults = !isLoading && items.length < 1;
 </script>
 
 <svelte:head>
@@ -239,12 +238,13 @@
 			</div>
 		</div>
 	{/if}
-	{#if !displayNoResults}
+	{#if !noResults}
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 	{/if}
 	<Table
 		let:rowItem={order}
 		bind:items
+		bind:noResults
 		{headers}
 		{isLoading}
 		graphQuery={GET_ORDERS}
@@ -316,11 +316,11 @@
 		</td>
 	</Table>
 
-	{#if displayNoResults}
+	{#if noResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
 				<p>Aucune commande pour le moment.</p>
-				<p class="mb-5">Ne vous en faites pas, ça ne devrait pas tarder !</p>
+				<p class="mb-5">Ne vous en faites pas, ça ne va pas tarder !</p>
 				<img
 					src="/img/no_orders.svg"
 					class="m-auto"

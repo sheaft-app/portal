@@ -3,11 +3,12 @@ import {
 	faHourglass,
 	faThumbsUp,
 	faCircleNotch,
+	faThumbsDown,
 	faCheck,
 	faTimes,
+	faSpinner,
 	faTruck,
-	faTruckLoading,
-	faBackspace,
+	faTruckLoading
 } from "@fortawesome/free-solid-svg-icons";
 import GetEnumObjectFor from './helpers.js';
 
@@ -15,20 +16,20 @@ let enums = {
 	Waiting: {
 		Value: "WAITING",
 		Label: "En attente",
-		Icon: faHourglass,
-		Color: "orange-400",		
+		Icon: faSpinner,
+		Color: "blue-400",		
 	},
 	Accepted: {
 		Value: "ACCEPTED",
 		Label: "Acceptée",
 		Icon: faThumbsUp,
-		Color: "blue-400",
+		Color: "green-400",
 	},
 	Processing: {
 		Value: "PROCESSING",
 		Label: "En préparation",
 		Icon: faCircleNotch,
-		Color: "teal-400",
+		Color: "green-400",
 	},
 	Completed: {
 		Value: "COMPLETED",
@@ -40,7 +41,7 @@ let enums = {
 		Value: "SHIPPING",
 		Label: "En livraison",
 		Icon: faTruck,
-		Color: "blue-400",
+		Color: "green-400",
 	},
 	Delivered: {
 		Value: "DELIVERED",
@@ -51,13 +52,13 @@ let enums = {
 	Refused: {
 		Value: "REFUSED",
 		Label: "Refusée",
-		Icon: faTimes,
+		Icon: faThumbsDown,
 		Color: "red-400",
 	},
 	Cancelled: {
 		Value: "CANCELLED",
 		Label: "Annulée",
-		Icon: faBackspace,
+		Icon: faTimes,
 		Color: "gray-600",
 	},
 	None: {

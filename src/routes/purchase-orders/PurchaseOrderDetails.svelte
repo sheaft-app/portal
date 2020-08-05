@@ -158,7 +158,7 @@ faFileExport
     {/if}
     {#if order.status == OrderStatusKind.Cancelled.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-orange-100 shadow
+        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3">
         <p class="font-semibold leading-none">
           Commande annulée.

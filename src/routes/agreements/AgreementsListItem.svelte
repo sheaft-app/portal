@@ -1,21 +1,40 @@
 <script>
-    import AgreementRoutes from './routes';
-    import { format } from "date-fns";
-    import GetRouterInstance from "../../services/SheaftRouter.js";
-    import { fr } from "date-fns/locale";
+	import DisplayStatusIcon from "./../../components/status/DisplayStatusIcon.svelte";
+	import AgreementStatusKind from "./../../enums/AgreementStatusKind";
+	import AgreementRoutes from './routes';
+	import { format } from "date-fns";
+	import GetRouterInstance from "../../services/SheaftRouter.js";
+	import GetAuthInstance from "../../services/SheaftAuth.js";
+	import { fr } from "date-fns/locale";
+	import Roles from "./../../enums/Roles";
 
-    export let agreement;
+	export let agreement;
 
-    const routerInstance = GetRouterInstance();
+	const routerInstance = GetRouterInstance();
+	const authManager = GetAuthInstance();
 </script>
+
 <div
-    on:click={() => routerInstance.goTo(AgreementRoutes.Details, { id: agreement.id })}
-    class="px-2 md:px-6 py-6 mb-3 bg-white shadow hover:bg-gray-100 transition duration-200 ease-in-out cursor-pointer">
-    <div class="text-base leading-5">
-        <p>Producteur : {agreement.delivery.producer.name}</p>
-        <p>Magasin : {agreement.store.name}</p>
-    </div>
-    <div class="text-base leading-5 mt-3">
-        <p class="text-gray-600">demandé le {format(new Date(agreement.createdOn), 'PP', { locale: fr })}</p>
-    </div>
+	class="px-6 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">
+	<div class="flex flex-row items-center">
+		<DisplayStatusIcon status={agreement.status} type="agreement" />
+		<div class="ml-3 leading-tight">
+			<p class="font-semibold text-{AgreementStatusKind.color(agreement.status)}">{AgreementStatusKind.label(agreement.status)}</p>
+			{#if authManager.isInRole([Roles.Producer.Value])}
+				<span class="text-lg font-medium">{agreement.store.name}</span>
+			{:else}
+				<span class="text-lg font-medium">{agreement.delivery.producer.name}</span>
+			{/if}
+		</div>
+	</div>
+	<div class="text-base flex mt-5 flex-row mb-1">
+		<p class="text-gray-600 w-full">Demandé le</p>
+		<p class="text-normal font-semibold w-full">{format(new Date(agreement.createdOn), 'PP', { locale: fr })}</p>
+	</div>
+	<div class="mt-3">
+		<a href="javascript:void(0)"
+			on:click="{() => routerInstance.goTo(AgreementRoutes.Details, { id: agreement.id })}">
+			Détails de l'accord
+		</a>
+	</div>
 </div>

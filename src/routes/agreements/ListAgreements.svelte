@@ -25,6 +25,8 @@
 
   let agreements = [];
   let isLoading = false;
+  let selected = "active";
+  let displayedAgreements = [];
 
   const getAgreements = async () => {
     isLoading = true;
@@ -39,23 +41,42 @@
     agreements = res.data;
   };
 
-  $: activeAgreements = agreements.filter(
-    a =>
-      a.status === AgreementStatusKind.Accepted.Value ||
-      a.status === AgreementStatusKind.WaitingForProducerApproval.Value ||
-      a.status === AgreementStatusKind.WaitingForStoreApproval.Value
-  );
+  const changeAgreementsDisplay = () => {
+    switch (selected) {
+      case "active":
+        displayedAgreements = agreements.filter(a =>
+          a.status === AgreementStatusKind.Accepted.Value ||
+          a.status === AgreementStatusKind.WaitingForProducerApproval.Value ||
+          a.status === AgreementStatusKind.WaitingForStoreApproval.Value
+        );
+        break;
+      case "passed":
+        displayedAgreements = agreements.filter(a =>
+          a.status !== AgreementStatusKind.Accepted.Value &&
+          a.status !== AgreementStatusKind.WaitingForProducerApproval.Value &&
+          a.status !== AgreementStatusKind.WaitingForStoreApproval.Value
+        );
+        break;
+      default:
+        console.error("Type not supported");
+    }
+  }
 
-  $: passedAgreements = agreements.filter(
-    a =>
-      a.status !== AgreementStatusKind.Accepted.Value &&
-      a.status !== AgreementStatusKind.WaitingForProducerApproval.Value &&
-      a.status !== AgreementStatusKind.WaitingForStoreApproval.Value
-  );
+  const selectAgreementsDisplay = (type) => {
+    selected = type;
+    changeAgreementsDisplay(type);
+  }
 
   onMount(async () => {
     await getAgreements();
+    selectAgreementsDisplay(selected);
   });
+
+  $: disabledHistory = agreements.filter(a =>
+    a.status !== AgreementStatusKind.Accepted.Value &&
+    a.status !== AgreementStatusKind.WaitingForProducerApproval.Value &&
+    a.status !== AgreementStatusKind.WaitingForStoreApproval.Value
+  ).length < 1;
 </script>
 
 <svelte:head>
@@ -64,26 +85,36 @@
 
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
+  <h1 class="mb-6 hidden md:block">Accords</h1>
   {#if isLoading}
     <Loader />
   {:else if agreements.length > 0}
-    <div class="mx-0 overflow-x-auto w-full xl:w-9/12">
+    <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+      <button
+        on:click={() => selectAgreementsDisplay("active")}
+        type="button"
+        class:selected={selected === "active"}
+        class:disabled={isLoading}>
+        Actifs
+      </button>
+      <button
+        on:click={() => { if (!disabledHistory) return selectAgreementsDisplay("passed") }}
+        type="button"
+        class:selected={selected === "passed"}
+        class:disabled={isLoading || disabledHistory}>
+        Historique
+      </button>
+    </div>
+    <div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
       <div
-        class="align-middle inline-block min-w-full overflow-hidden items px-2">
-        <div class="mb-10">
-          {#each activeAgreements as agreement, index}
-            {#if index === 0}
-              <p class="uppercase pb-2 text-lg">Accords actifs</p>
-            {/if}
+        class="align-middle inline-block min-w-full overflow-hidden items px-1">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3
+          md:gap-3 -mx-4 md:mx-0 mb-10">
+          {#each displayedAgreements as agreement, index}
             <AgreementsListItem {agreement} />
           {/each}
         </div>
-        {#each passedAgreements as agreement, index}
-          {#if index === 0}
-            <p class="uppercase pb-2 text-lg">Accords passés</p>
-          {/if}
-          <AgreementsListItem {agreement} />
-        {/each}
       </div>
     </div>
   {:else}

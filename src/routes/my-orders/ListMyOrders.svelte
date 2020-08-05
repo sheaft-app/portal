@@ -21,6 +21,9 @@
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
 
+  let selected = "active";
+  let orders = [];
+
   const getMyOrders = async () => {
     isLoading.set(true);
     var res = await graphQLInstance.query(MY_ORDERS, {
@@ -54,9 +57,30 @@
     routerInstance.goTo(SearchProductRoutes.Search);
   }
 
+  const changeOrdersDisplay = () => {
+    switch (selected) {
+      case "active":
+        orders = $items.filter(o => o.active);
+        break;
+      case "passed":
+        orders = $items.filter(o => !o.active);
+        break;
+      default:
+        console.error("Type not supported");
+    }
+  }
+
+  const selectOrdersDisplay = (type) => {
+    selected = type;
+    changeOrdersDisplay(type);
+  }
+
   onMount(async () => {
     await getMyOrders();
+    selectOrdersDisplay(selected);
   });
+
+  $: disabledHistory = $items.filter(o => !o.active).length < 1;
 </script>
 
 <svelte:head>
@@ -65,25 +89,36 @@
 
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
+  <h1 class="mb-6 hidden md:block">Mes commandes</h1>
   {#if $isLoading}
     <Loader />
   {:else if $items.length > 0}
-    <div class="mx-0 overflow-x-auto w-full xl:w-9/12">
+    <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+      <button
+        on:click={() => selectOrdersDisplay("active")}
+        type="button"
+        class:selected={selected === "active"}
+        class:disabled={$isLoading}>
+        Actives
+      </button>
+      <button
+        on:click={() => { if (!disabledHistory) { return selectOrdersDisplay("passed")} }}
+        type="button"
+        class:selected={selected === "passed"}
+        class:disabled={$isLoading || disabledHistory}>
+        Historique
+      </button>
+    </div>
+    <div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
       <div
-        class="align-middle inline-block min-w-full overflow-hidden items px-2">
-        {#each $items.filter(o => o.active) as order, index}
-          {#if index === 0}
-            <p class="uppercase pb-2 text-lg">Commandes actives</p>
-          {/if}
-          <MyOrderListItem {order} />
-        {/each}
-        <div class="mb-10" />
-        {#each $items.filter(o => !o.active) as order, index}
-          {#if index === 0}
-            <p class="uppercase pb-2 text-lg">Commandes passées</p>
-          {/if}
-          <MyOrderListItem {order} />
-        {/each}
+        class="align-middle inline-block min-w-full overflow-hidden items px-1">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3
+          md:gap-3 -mx-4 md:mx-0 mb-10">
+          {#each orders as order, index}
+            <MyOrderListItem {order} />
+          {/each}
+        </div>
       </div>
     </div>
   {:else}

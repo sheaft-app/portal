@@ -1,6 +1,5 @@
 <script>
   import Loader from "./../../components/Loader.svelte";
-  import DisplayStatusIcon from "./DisplayStatusIcon.svelte";
   import CancelMyOrders from "./CancelMyOrders.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
@@ -113,40 +112,40 @@
       </div>
       <div class="flex flex-wrap items-center">
         <div>
-          <h1 class="text-3xl mb-0">Détails de la commande</h1>
+          <h1 class="text-2xl md:text-3xl mb-0">Détails de la commande</h1>
           <h4 class="text-gray-600">#{order.reference}</h4>
         </div>
       </div>
     </section>
     {#if order.status == OrderStatusKind.Cancelled.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-orange-100
+        class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3">
         <p class="uppercase font-bold leading-none">Commande annulée</p>
         <div class="mt-2">
+        <p>Votre commande a été annulée, vous ne pouvez plus interagir avec.</p>
           {#if order.reason}
-            <p>Cette commande a été annulée pour la raison suivante :</p>
-            <p class="mt-2 font-semibold">{order.reason}</p>
+            <p class="mt-2 font-semibold">Raison : {order.reason}</p>
           {/if}
         </div>
       </div>
     {/if}
     {#if order.status == OrderStatusKind.Refused.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-red-100
-        text-white shadow rounded mb-3">
+        class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-red-100
+        shadow rounded mb-3">
         <p class="uppercase font-bold leading-none">Commande refusée</p>
         <div class="mt-2">
+        <p>Votre commande a été refusée, vous ne pouvez plus interagir avec.</p>
           {#if order.reason}
-            <p>Cette commande a été refusée pour la raison suivante :</p>
-            <p>{order.reason}</p>
+            <p class="mt-2 font-semibold">Raison : {order.reason}</p>
           {/if}
         </div>
       </div>
     {/if}
     {#if order.status === OrderStatusKind.Waiting.Value}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-blue-100 shadow
+        class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
         rounded mb-3">
         <p class="uppercase font-bold leading-none">
           Votre commande est en cours de traitement
@@ -166,7 +165,7 @@
     {/if}
     {#if order.status == OrderStatusKind.Shipping.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+        class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3">
         <p class="uppercase font-bold leading-none">
           Commande en livraison
@@ -178,7 +177,7 @@
     {/if}
     {#if order.status == OrderStatusKind.Delivered.Value}
       <div
-        class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
+        class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3">
         <p class="uppercase font-bold leading-none">Commande livrée</p>
         <div class="mt-2">
@@ -188,8 +187,8 @@
     {/if}
     {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
       <div
-        class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white shadow
-        rounded md:mb-3">
+        class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
+        md:rounded md:mb-3 border-t md:border-none border-gray-400">
         <div class="flex">
           {#if authInstance.isInRole([Roles.Store.Value])}
             <Icon data={faTruck} scale="1" class="mr-5" />
@@ -219,14 +218,21 @@
               </div>
             </div>
           {:else}
-            <Icon data={faMapMarkerAlt} scale="1.5" class="mr-5" />
+            <div class="mr-5 hidden md:block">
+              <Icon data={faMapMarkerAlt} scale="1.5" />
+            </div>
             <div>
               <p class="uppercase font-bold leading-none">
                 Où et quand récupérer ma commande ?
               </p>
               <div class="mt-2">
+                <p>
+                  <b>
+                    {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+                    {order.expectedDelivery.address.city}
+                  </b>
+                </p>
                 <p class="mb-1">
-                  Votre commande est à récupérer le
                   <b>
                     {format(
                       new Date(order.expectedDelivery.expectedDeliveryDate),
@@ -241,14 +247,6 @@
                   et
                   <b>{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
                 </p>
-                <p>
-                  Adresse de récupération :
-                  <b>
-                    {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
-                    {order.expectedDelivery.address.city}
-                  </b>
-                </p>
-
                 <a
                   target="_blank"
                   class="btn btn-lg bg-accent text-white shadow font-semibold mt-2
@@ -265,8 +263,8 @@
     {/if}
     {#if order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Refused.Value}
       <div
-        class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
-        border-t border-l border-r border-gray-400">
+        class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
+        border-t md:border-l md:border-r border-gray-400">
         <div class="md-stepper-horizontal green mb-5">
           <div
             class="md-step p-0 md:p-6"
@@ -330,11 +328,11 @@
         </div>
       </div>
     {/if}
-    <div class="px-0 md:px-5 overflow-x-auto -mx-5">
+    <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
       <div
-        class="flex flex-wrap bg-white w-full items-center border border-gray-400">
+        class="flex flex-wrap bg-white w-full items-center">
         <div
-          class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
+          class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">La commande</p>
           <div class="mt-3">
@@ -365,7 +363,7 @@
           </div>
         </div>
         <div
-          class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
+          class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400">
           <p class="uppercase font-bold pb-2">Le panier</p>
           <div class="mt-3">
@@ -385,7 +383,7 @@
         </div>
         <div
           class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-          border-gray-400 px-4 lg:px-8 py-5">
+          border-gray-400 px-4 py-5">
           <p class="uppercase font-bold pb-2">Le producteur</p>
           <div class="mt-3">
             <div>
@@ -407,7 +405,7 @@
         </div>
       </div>
     </div>
-    <div class="px-0 md:px-5 overflow-x-auto -mx-5 md:mb-3">
+    <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-3">
       <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
         <div class="w-full">
           <section>
@@ -416,7 +414,7 @@
                 <thead>
                   <tr>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-l border-gray-400
+                      class="px-4 md:px-8 py-3 border-b md:border-l border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Produit
@@ -434,14 +432,14 @@
                       Qté
                     </th>
                     <th
-                      class="px-4 md:px-8 py-3 border-b border-r border-gray-400
+                      class="px-4 md:px-8 py-3 border-b md:border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
                       Prix total
                     </th>
                   </tr>
                 </thead>
-                <tbody class="border border-gray-400">
+                <tbody class="border-b md:border border-gray-400">
                   {#each order.products as line, index}
                     <tr>
                       <td
@@ -508,7 +506,7 @@
     </div>
     <div
       class:hidden={!canCancelOrder}
-      class="bg-white shadow md:rounded md:rounded-t-lg overflow-hidden mb-3 -mx-5 md:mx-0">
+      class="bg-white shadow md:rounded overflow-hidden md:mb-3 -mx-4 md:mx-0">
       <div class="px-4 md:px-8 py-5">
         <p class="uppercase font-bold">Annuler la commande</p>
         <div class="mt-5">

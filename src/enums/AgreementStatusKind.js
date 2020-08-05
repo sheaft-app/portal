@@ -1,11 +1,42 @@
+import {
+	faThumbsDown,
+	faCheck,
+	faTimes,
+	faSpinner
+} from "@fortawesome/free-solid-svg-icons";
 import GetEnumObjectFor from './helpers.js';
 
 let enums = {
-	WaitingForProducerApproval: { Value: "WAITING_FOR_PRODUCER_APPROVAL", Label: "En attente d'acceptation du producteur"},
-	WaitingForStoreApproval: { Value: "WAITING_FOR_STORE_APPROVAL", Label: "En attente d'acceptation du magasin"},
-	Refused: { Value: "REFUSED", Label: "Refusé"},
-	Cancelled: { Value: "CANCELLED", Label: "Annulé"},
-	Accepted: { Value: "ACCEPTED", Label: "Accepté"},
+	WaitingForProducerApproval: { 
+		Value: "WAITING_FOR_PRODUCER_APPROVAL", 
+		Label: "En attente d'acceptation du producteur", 
+		Icon: faSpinner,
+		Color: "blue-400"
+	},
+	WaitingForStoreApproval: { 
+		Value: "WAITING_FOR_STORE_APPROVAL", 
+		Label: "En attente d'acceptation du magasin",
+		Icon: faSpinner,
+		Color: "blue-400"
+	},
+	Refused: { 
+		Value: "REFUSED",
+		Label: "Refusé",
+		Icon: faThumbsDown,
+		Color: "red-400",
+	},
+	Cancelled: { 
+		Value: "CANCELLED",
+		Label: "Annulé",
+		Icon: faTimes,
+		Color: "gray-600",
+	},
+	Accepted: { 
+		Value: "ACCEPTED", 
+		Label: "Accepté",
+		Icon: faCheck,
+		Color: "green-400",
+	},
 };
 
 let AgreementStatusKind = {	
