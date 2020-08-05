@@ -169,7 +169,7 @@
         </p>
         {#if firstTimeOnCart}
           <div class="py-5 px-3 md:px-8 overflow-x-auto bg-green-100 shadow
-          rounded mb-5 w-full">
+          rounded w-full">
             <p class="uppercase font-bold leading-none">
               Ok, et maintenant ?
             </p>

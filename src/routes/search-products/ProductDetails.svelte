@@ -8,18 +8,22 @@
   import { fr } from "date-fns/locale";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
-  import { GET_PRODUCT_DETAILS } from "./queries.js";
+  import { GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import { RATE_PRODUCT } from "./mutations.js";
   import Rating from "./../../components/rating/Rating.svelte";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { cartItems, selectedItem } from "./../../stores/app.js";
+  import { timeSpanToFrenchHour } from "./../../helpers/app.js";
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
+  import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import Roles from "./../../enums/Roles";
   import SheaftErrors from "../../services/SheaftErrors";
+  import DeliveryKind from "../../enums/DeliveryKind";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import { groupBy } from "./../../helpers/app";
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -36,16 +40,52 @@
   let isInCart = false;
   let values = routerInstance.getQueryParams();
   let distanceInfos = null;
+  let deliveries = [];
 
   const getProductDetails = async id => {
     isLoading = true;
     var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, { id: id }, errorsHandler.Uuid);
+
     if (!res.success) {
       isLoading = false;
       selectedItem.set(null);
       //TODO
       return;
     }
+
+    var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
+      input: {
+        ids: [res.data.producer.id],
+        kinds: [
+          DeliveryKind.Farm.Value,
+          DeliveryKind.Market.Value,
+          DeliveryKind.Collective.Value
+        ] 
+      }
+    }, errorsHandler.Uuid);
+
+    if (!res.success) {
+      isLoading = false;
+      selectedItem.set(null);
+      //TODO
+    }
+
+    deliveries = deliveriesResult.data[0].deliveries.map((d) => {
+      return {
+        ...d,
+        distance: GetDistanceInfos(
+          values["latitude"],
+          values["longitude"],
+          d.address.latitude,
+          d.address.longitude
+        ),
+        deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+          index === self.findIndex((d) => (
+            d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+          ))
+        ))
+      }
+    });
 
     product = res.data;
     ratings = product.ratings.nodes.map(r => r);
@@ -188,10 +228,7 @@
           ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
         </span>
       </p>
-      <p class="text-base text-gray-600 pb-2 lg:pb-5">
-        {product.onSalePrice}€ / {product.unit == UnitKind.KG.Value || product.unit == UnitKind.G.Value ? UnitKind.KG.Label : UnitKind.L.Label}
-      </p>
-      <p class="text-sm lg:text-base text-justify lg:text-center">
+      <p class="pb-2 lg:pb-5 text-sm lg:text-base text-justify lg:text-center">
         {product.description}
       </p>
     </div>
@@ -272,6 +309,43 @@
         <div id="producer-description" class="w-12/12 text-gray-600 py-5">
           {product.producer.description ? product.producer.description : ''}
         </div>
+        <p class="mt-3 font-semibold">Lieux et horaires de récupération</p>
+        {#each deliveries as delivery}
+          <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
+            <div class="flex flex-row justify-between items-start">
+              <div class="w-full">
+                <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
+                <p>{delivery.address.line1}</p>
+                {#if product.producer.address.line2}
+                  <p>
+                    {product.producer.address.line2}
+                  </p>
+                {/if}
+                <p>{delivery.address.zipcode} {delivery.address.city}</p>
+              </div>
+             <div
+              class="text-xs lg:text-base text-{delivery.distance.color}
+              flex justify-center items-center">
+                <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
+                <p class="font-bold">{delivery.distance.label}</p>
+              </div>
+            </div>
+            <div class="mt-2">
+              {#each delivery.deliveryHours as deliveryHour}
+                <div class="flex mb-2">
+                  <p style="min-width: 100px;">
+                    {DayOfWeekKind.label(deliveryHour[0].day)}
+                  </p>
+                  <div>
+                    {#each deliveryHour as hours}
+                      <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+                    {/each}
+                  </div>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/each}
       </div>
     </div>
     <div class="mt-5">

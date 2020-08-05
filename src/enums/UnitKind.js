@@ -2,7 +2,7 @@ import GetEnumObjectFor from './helpers.js';
 
 let enums = {
     ML : { Value: "ML", Label: "ml"},
-    L: { Value: "L", Label: "l"},
+    L: { Value: "L", Label: "L"},
     G : { Value: "G", Label: "g"},
     KG : { Value: "KG", Label: "kg"},
     Unit : { Value: "UNIT", Label: "unité"}

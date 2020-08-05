@@ -63,6 +63,7 @@ export const GET_PRODUCT_DETAILS = gql`
 				}
 			}
 			producer {
+				id
 				name
 				description
 				picture
@@ -73,6 +74,33 @@ export const GET_PRODUCT_DETAILS = gql`
 					zipcode
 					latitude
 					longitude
+				}
+			}
+		}
+	}
+`;
+
+export const GET_PRODUCER_DELIVERIES = gql`
+	query GetProducerDeliveries($input: SearchProducersDeliveriesInput) {
+		getDeliveriesForProducers(input: $input) {
+			id
+			name
+			deliveries {
+				id
+				kind
+				address {
+					city
+					line1
+					line2
+					zipcode
+					latitude
+					longitude
+				}
+				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+					day
+					from
+					to
+					expectedDeliveryDate
 				}
 			}
 		}
