@@ -228,7 +228,17 @@
       </svg>
     </a>
   </div>
-  {#if !$selectedItem}
+  {#if $selectedItem || $navExpended}
+    <button
+      on:click={() => {
+        navExpended.set(false);
+        selectedItem.set(null);
+      }}
+      aria-label="Retour"
+      class="inline-block lg:hidden py-2 px-4">
+      <Icon data={faChevronLeft} class="inline" scale="1.2" />
+    </button>
+  {:else}
     <button
       on:click={() => {
         userMenuExpended.set(false);
@@ -238,15 +248,6 @@
       aria-label="Activer la navigation"
       class="inline-block lg:hidden py-2 px-4">
       <Icon data={faBars} class="inline" scale="1.2" />
-    </button>
-  {:else}
-    <button
-      on:click={() => {
-        selectedItem.set(null);
-      }}
-      aria-label="Retour"
-      class="inline-block lg:hidden py-2 px-4">
-      <Icon data={faChevronLeft} class="inline" scale="1.2" />
     </button>
   {/if}
   <div class="justify-end inline-flex lg:items-center">

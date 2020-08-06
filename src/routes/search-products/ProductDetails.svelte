@@ -291,7 +291,7 @@
                 <a 
                   class="mt-1"
                   target="_blank"
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(product.producer.address)}`}>
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
                   Voir sur Google Maps
                 </a>
               </div>
