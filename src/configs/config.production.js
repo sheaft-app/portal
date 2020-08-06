@@ -10,7 +10,7 @@ export const config = {
 			redirect_uri: "https://app.sheaft.com/#/callback",
 			post_logout_redirect_uri: "https://app.sheaft.com",
 			response_type: "code",
-			scope: "openid profile email role offline_access",
+			scope: "openid profile email crud role offline_access",
 			authority: "https://auth.sheaft.com",
 			silent_redirect_uri: "https://app.sheaft.com/#/callback-silent",
 			automaticSilentRenew: true,
