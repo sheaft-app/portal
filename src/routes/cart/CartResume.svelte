@@ -82,10 +82,6 @@
   }, 0);
   // calculer deposit
   $: deposit = 0;
-  $: totalVAT = $cartItems.reduce((sum, product) => {
-    return roundMoney(sum + product.vatPricePerUnit * (product.quantity || 0));
-  }, 0);
-
   $: if ($cartItems.length > 0) {
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
   }
@@ -271,7 +267,7 @@
               </ErrorCard>
             {/if}
             <div>
-              <div class="flex justify-between w-full lg:px-3">
+              <div class="flex justify-between w-full lg:px-3 pb-2">
                 <div class="text-left">
                   <p>Consignes</p>
                 </div>
@@ -279,17 +275,9 @@
                   <p class="font-medium">{deposit}€</p>
                 </div>
               </div>
-              <div class="flex justify-between w-full lg:px-3">
+              <div class="flex justify-between w-full lg:px-3 border-t border-gray-300 pt-2">
                 <div class="text-left">
-                  <p>Taxes</p>
-                </div>
-                <div>
-                  <p class="font-medium">{totalVAT || 0}€</p>
-                </div>
-              </div>
-              <div class="flex justify-between w-full lg:px-3">
-                <div class="text-left">
-                  <p>Montant du panier</p>
+                  <p>Total</p>
                   <p class="text-sm text-gray-600">
                     {#if productsCount > 0}
                       {productsCount} article{productsCount > 1 ? 's' : ''}

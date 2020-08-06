@@ -366,11 +366,11 @@
         <NavLink route={AgreementRoutes.List} />
         <NavLink route={JobRoutes.List} />
       {/if}
-      {#if !$authAuthenticated || $authRegistered && isInRole($authUserAccount, [
+      <!-- {#if !$authAuthenticated || $authRegistered && isInRole($authUserAccount, [
           Roles.Consumer.Value
         ])}
         <NavLink route={LeaderboardRoutes.Country} />
-      {/if}
+      {/if} -->
       {#if $authAuthenticated && $authRegistered}
         <NavLink route={SponsorshipRoutes.Share} />
       {/if}

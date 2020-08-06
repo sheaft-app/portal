@@ -89,10 +89,10 @@
 
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
-  <h1 class="mb-6 hidden md:block">Mes commandes</h1>
   {#if $isLoading}
     <Loader />
   {:else if $items.length > 0}
+    <h1 class="mb-6 hidden md:block">Mes commandes</h1>
     <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
       <button
         on:click={() => selectOrdersDisplay("active")}
