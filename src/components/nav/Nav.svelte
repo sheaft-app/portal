@@ -341,22 +341,22 @@
   class:active={$navExpended}>
   <div class="w-full">
     <ul class="nav__menu">
-      {#if !$authAuthenticated || isInRole($authUserAccount, [
+      {#if !$authAuthenticated || $authRegistered && isInRole($authUserAccount, [
           Roles.Consumer.Value
         ])}
         <NavLink route={SearchProductRoutes.Search} />
       {/if}
-      {#if isInRole($authUserAccount, [Roles.Consumer.Value])}
+      {#if $authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value])}
         <NavLink route={MyOrderRoutes.List} />
       {/if}
-      {#if isInRole($authUserAccount, [Roles.Store.Value])}
+      {#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value])}
         <NavLink route={QuickOrderRoutes.Purchase} />
         <NavLink route={MyOrderRoutes.List} />
         <NavLink route={SearchProducerRoutes.Search} />
         <NavLink route={AgreementRoutes.List} />
         <NavLink route={JobRoutes.List} />
       {/if}
-      {#if isInRole($authUserAccount, [Roles.Producer.Value])}
+      {#if $authRegistered && isInRole($authUserAccount, [Roles.Producer.Value])}
         <NavLink route={ProductRoutes.List} />
         <NavLink route={PurchaseOrderRoutes.List} />
         <NavLink route={PackagingRoutes.List} />
@@ -366,7 +366,7 @@
         <NavLink route={AgreementRoutes.List} />
         <NavLink route={JobRoutes.List} />
       {/if}
-      {#if !$authAuthenticated || isInRole($authUserAccount, [
+      {#if !$authAuthenticated || $authRegistered && isInRole($authUserAccount, [
           Roles.Consumer.Value
         ])}
         <NavLink route={LeaderboardRoutes.Country} />

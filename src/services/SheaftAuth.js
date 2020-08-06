@@ -129,11 +129,7 @@ class SheaftAuth {
 	}
 
 	userHasAccess(roles) {
-		return this.userIsLoggedIn() && this.authorize(roles);
-	}
-
-	authorize(roles) {
-		return this.isInRole(roles);
+		return this.userIsLoggedIn() && this.isInRole(roles);
 	}
 
 	isInRole(roles) {
