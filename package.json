@@ -18,7 +18,7 @@
     "functions:build": "dotnet build ./../Sheaft.Functions/Sheaft.Functions.csproj -c Debug",
     "functions:run": "cd ./../Sheaft.Functions && func start",
     "signalr:build": "dotnet build ./../Sheaft.Signalr/Sheaft.Signalr.csproj -c Debug",
-    "signalr:run": "dotnet run --c Debug --launch-profile 'api' --project ./../Sheaft.Signalr/Sheaft.Signalr.csproj"
+    "signalr:run": "dotnet run --c Debug --launch-profile 'api' --project ./../api/Sheaft.Signalr/Sheaft.Signalr.csproj"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.11.0",
