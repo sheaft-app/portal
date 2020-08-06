@@ -5,6 +5,7 @@ import {
 	authUserAccount,
 	authInitialized,
 	authRegistered,
+	authAuthorized,
 } from "./../stores/auth.js";
 
 class SheaftAuth {
@@ -14,105 +15,94 @@ class SheaftAuth {
 		authAuthenticated.set(false);
 		authInitialized.set(false);
 		authRegistered.set(false);
+		authAuthorized.set(false);
 		authUserAccount.set({ profile: { role: "ANONYMOUS" } });
 
 		this.userSub = authUserAccount.subscribe((value) => {
 			this.user = value;
 		});
-		this.initSub = authInitialized.subscribe((value) => {
+		this.initializedSub = authInitialized.subscribe((value) => {
 			this.initialized = value;
 		});
-		this.authSub = authAuthenticated.subscribe((value) => {
+		this.authenticatedSub = authAuthenticated.subscribe((value) => {
 			this.authenticated = value;
 		});
-		this.regSub = authRegistered.subscribe((value) => {
+		this.registeredSub = authRegistered.subscribe((value) => {
 			this.registered = value;
 		});
+		this.authorizedSub = authAuthorized.subscribe((value) => {
+			this.authorized = value;
+		});
 
-		this.userManager.getUser().then((user) => {
+		this.userManager.getUser().then(async (user) => {
 			if (user) {
 				authUserAccount.set(user);
 				authAuthenticated.set(true);
-				authRegistered.set(
-					userIsInRole(user, ["CONSUMER", "PRODUCER", "STORE"])
-				);
 
-				var postSettings = {
-					method: "POST",
-					body:
-						'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id}}"}',
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: "Bearer " + user.access_token,
-					},
-				};
+				try {					
+					var result = await fetch(
+						config.api + "/graphql",
+						getUserInfoSettings(user)
+					);
+					
+					var content = await result.json();
+					if (content.data.me && content.data.me.id) {
+						authRegistered.set(true);
+						localStorage.removeItem("user_choosen_role");
+						localStorage.removeItem("sponsoring");
+					} else if (content.errors && content.errors.length > 0) {
+						authInstance.logoutFromApp();
+						return;
+					} else { 
+						authRegistered.set(false);
+					}
 
-				try {
-					fetch(config.api + "/graphql", postSettings).then((res) => {
-						res.json().then((content) => {
-							if (content.data.me && content.data.me.id) {
-								authRegistered.set(true);
-								localStorage.removeItem("user_choosen_role");
-								localStorage.removeItem("sponsoring");
-							} else if (content.errors && content.errors.length > 0) {
-								authInstance.logoutFromApp();
-								return;
-							} else {
-								authRegistered.set(false);
-							}
-							authInitialized.set(true);
-						});
-					});
-				} catch (err) {
-					authRegistered.set(false);
+					authAuthorized.set(true);
 					authInitialized.set(true);
+
+				} catch (err) {
+					console.error(err.toString());
+					authAuthorized.set(false);
+					authInitialized.set(false);
 				}
 			} else {
 				authRegistered.set(false);
 				authAuthenticated.set(false);
+				authAuthorized.set(false);
 				authInitialized.set(true);
 			}
 		});
 
-		this.userManager.events.addUserLoaded(function (user) {
+		this.userManager.events.addUserLoaded(async (user) => {
 			authUserAccount.set(user);
 			authAuthenticated.set(true);
-			authRegistered.set(userIsInRole(user, ["CONSUMER", "PRODUCER", "STORE"]));
-
-			var postSettings = {
-				method: "POST",
-				body:
-					'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id}}"}',
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: "Bearer " + user.access_token,
-				},
-			};
 
 			try {
-				fetch(config.api + "/graphql", postSettings).then((res) => {
-					res.json().then((content) => {
-						if (content.data.me && content.data.me.id) {
-							authRegistered.set(true);
-							localStorage.removeItem("user_choosen_role");
-							localStorage.removeItem("sponsoring");
-						} else if (content.errors && content.errors.length > 0) {
-							authInstance.logoutFromApp();
-							return;
-						} else {
-							authRegistered.set(false);
-						}
+				var result = await fetch(
+					config.api + "/graphql",
+					getUserInfoSettings(user)
+				);
 
-						authInitialized.set(true);
-					});
-				});
+				var content = await result.json();
+				if (content.data.me && content.data.me.id) {
+					authRegistered.set(true);
+					localStorage.removeItem("user_choosen_role");
+					localStorage.removeItem("sponsoring");
+				} else if (content.errors && content.errors.length > 0) {
+					authInstance.logoutFromApp();
+					return;
+				} else {
+					authRegistered.set(false);
+				}
+
+				authAuthorized.set(true);
 			} catch (err) {
-				authRegistered.set(false);
-				authInitialized.set(true);
+				console.error(err.toString());
+				authAuthorized.set(false);
 			}
 		});
 
-		this.userManager.events.addUserUnloaded(function (e) {});
+		this.userManager.events.addUserUnloaded((e) => {});
 
 		this.userManager.events.addAccessTokenExpiring(async () => {
 			await this.loginSilent();
@@ -123,19 +113,35 @@ class SheaftAuth {
 		});
 	}
 
+	userIsAnonymous() {
+		return this.initialized && !this.authenticated;
+	}
+
+	userIsLoggedIn() {
+		var result = !this.userIsAnonymous() && this.initialized && this.authenticated;
+		if (!result) this.login();
+
+		return result;
+	}
+
+	userIsRegistered() {
+		return this.userIsLoggedIn() && this.initialized && this.registered;
+	}
+
+	userHasAccess(roles) {
+		return this.userIsLoggedIn() && this.authorize(roles);
+	}
+
 	authorize(roles) {
 		return this.isInRole(roles);
 	}
 
 	isInRole(roles) {
-		if(!roles || !this.authenticated)
-			return false;
+		if (!roles || !this.authenticated) return false;
 
 		var rolesToTest = [];
-		if (!Array.isArray(roles)) 
-			rolesToTest = [roles];
-		else 
-			rolesToTest = roles;
+		if (!Array.isArray(roles)) rolesToTest = [roles];
+		else rolesToTest = roles;
 
 		return userIsInRole(this.user, rolesToTest);
 	}
@@ -206,10 +212,12 @@ class SheaftAuth {
 	}
 
 	unregister() {
-		this.authSub.unsubscribe();
-		this.regSub.unsubscribe();
-		this.initSub.unsubscribe();
+		this.authorizedSub.unsubscribe();
+		this.authenticatedSub.unsubscribe();
+		this.registeredSub.unsubscribe();
+		this.initializedSub.unsubscribe();
 		this.userSub.unsubscribe();
+
 		this.userManager.events.removeAccessTokenExpiring();
 		this.userManager.events.removeAccessTokenExpired();
 		this.userManager.events.removeSilentRenewError();
@@ -218,20 +226,28 @@ class SheaftAuth {
 	}
 }
 
-function userIsInRole(user, roles) {
-	if (!roles || roles.length == 0) 
-		return false;
+function getUserInfoSettings(user) {
+	return {
+		method: "POST",
+		body:
+			'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id}}"}',
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: "Bearer " + user.access_token,
+		},
+	};
+}
 
-	if (!user.profile.role)
-	{
+function userIsInRole(user, roles) {
+	if (!roles || roles.length == 0) return false;
+
+	if (!user.profile.role) {
 		return false;
 	}
 
 	var userRoles = [];
-	if(!Array.isArray(user.profile.role))
-		userRoles = [user.profile.role];
-	else
-		userRoles = user.profile.role;
+	if (!Array.isArray(user.profile.role)) userRoles = [user.profile.role];
+	else userRoles = user.profile.role;
 
 	let roleFound = false;
 	for (var i = 0; i < roles.length; i++) {

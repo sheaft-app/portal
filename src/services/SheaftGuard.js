@@ -44,6 +44,7 @@ import QuickOrderRoutes from "./../routes/quick-orders/routes.js";
 import OidcRoutes from "./../routes/oidc/routes.js";
 import HomeRoutes from "./../routes/home/routes.js";
 import Roles from "./../enums/Roles";
+import { authAuthenticated, authRegistered, authAuthorized } from "../stores/auth";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -52,25 +53,25 @@ class SheaftGuard {
 
 		this.routes = {};
 
-		this.routes[`${RegisterRoutes.Prefix}/*`] = wrap(Register, null, () => this.handleRouteNavigation(() => this.userIsLoggedIn() && !this.userIsRegistered(), true));	
-		this.routes[`${CartRoutes.Prefix}/*`] = wrap(Cart, null, () => this.handleRouteNavigation(() => this.userHasAccess(CartRoutes.Roles)));
-		this.routes[`${ProductRoutes.Prefix}/*`] = wrap(Products, null, () => this.handleRouteNavigation(() => this.userHasAccess(ProductRoutes.Roles)));
-		this.routes[`${JobRoutes.Prefix}/*`] = wrap(Jobs, null, () => this.handleRouteNavigation(() => this.userHasAccess(JobRoutes.Roles)));
-		this.routes[`${AgreementRoutes.Prefix}/*`] = wrap(Agreements, null, () => this.handleRouteNavigation(() => this.userHasAccess(AgreementRoutes.Roles)));
-		this.routes[`${PackagingRoutes.Prefix}/*`] = wrap(Packagings, null, () => this.handleRouteNavigation(() => this.userHasAccess(PackagingRoutes.Roles)));
-		this.routes[`${SponsorshipRoutes.Prefix}/*`] = wrap(Sponsorship, null, () => this.handleRouteNavigation(() => this.userHasAccess(SponsorshipRoutes.Roles)));
-		this.routes[`${AccountRoutes.Prefix}/*`] = wrap(Account, null, () => this.handleRouteNavigation(() => this.userHasAccess(AccountRoutes.Roles)));
-		this.routes[`${SellingPointRoutes.Prefix}/*`] = wrap(SellingPoints, null, () => this.handleRouteNavigation(() => this.userHasAccess(SellingPointRoutes.Roles)));
-		this.routes[`${DeliveryRoutes.Prefix}/*`] = wrap(Deliveries, null, () => this.handleRouteNavigation(() => this.userHasAccess(DeliveryRoutes.Roles)));
-		this.routes[`${PurchaseOrderRoutes.Prefix}/*`] = wrap(PurchaseOrders, null, () => this.handleRouteNavigation(() => this.userHasAccess(PurchaseOrderRoutes.Roles)));
-		this.routes[`${MyOrderRoutes.Prefix}/*`] = wrap(MyOrders, null, () => this.handleRouteNavigation(() => this.userHasAccess(MyOrderRoutes.Roles)));
-		this.routes[`${QuickOrderRoutes.Prefix}/*`] = wrap(QuickOrders, null, () => this.handleRouteNavigation(() => this.userHasAccess(QuickOrderRoutes.Roles)));
+		this.routes[`${RegisterRoutes.Prefix}/*`] = wrap(Register, null, () => this.handleRouteNavigation(() => this.authInstance.userIsLoggedIn() && !this.authInstance.userIsRegistered(), true));	
+		this.routes[`${CartRoutes.Prefix}/*`] = wrap(Cart, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(CartRoutes.Roles)));
+		this.routes[`${ProductRoutes.Prefix}/*`] = wrap(Products, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ProductRoutes.Roles)));
+		this.routes[`${JobRoutes.Prefix}/*`] = wrap(Jobs, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(JobRoutes.Roles)));
+		this.routes[`${AgreementRoutes.Prefix}/*`] = wrap(Agreements, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(AgreementRoutes.Roles)));
+		this.routes[`${PackagingRoutes.Prefix}/*`] = wrap(Packagings, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(PackagingRoutes.Roles)));
+		this.routes[`${SponsorshipRoutes.Prefix}/*`] = wrap(Sponsorship, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SponsorshipRoutes.Roles)));
+		this.routes[`${AccountRoutes.Prefix}/*`] = wrap(Account, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(AccountRoutes.Roles)));
+		this.routes[`${SellingPointRoutes.Prefix}/*`] = wrap(SellingPoints, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SellingPointRoutes.Roles)));
+		this.routes[`${DeliveryRoutes.Prefix}/*`] = wrap(Deliveries, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(DeliveryRoutes.Roles)));
+		this.routes[`${PurchaseOrderRoutes.Prefix}/*`] = wrap(PurchaseOrders, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(PurchaseOrderRoutes.Roles)));
+		this.routes[`${MyOrderRoutes.Prefix}/*`] = wrap(MyOrders, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(MyOrderRoutes.Roles)));
+		this.routes[`${QuickOrderRoutes.Prefix}/*`] = wrap(QuickOrders, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles)));
 
-		this.routes[`${LeaderboardRoutes.Prefix}`] = wrap(Leaderboard, null, () => this.handleRouteNavigation(() => this.userIsAnonymous() || this.userIsRegistered()));
-		this.routes[`${SearchProductRoutes.Prefix}`] = wrap(SearchProducts, null, () => this.handleRouteNavigation(() => this.userIsAnonymous() || this.userHasAccess(SearchProductRoutes.Roles), true));
+		this.routes[`${LeaderboardRoutes.Prefix}`] = wrap(Leaderboard, null, () => this.handleRouteNavigation(() => this.authInstance.userIsAnonymous() || this.authInstance.userIsRegistered()));
+		this.routes[`${SearchProductRoutes.Prefix}`] = wrap(SearchProducts, null, () => this.handleRouteNavigation(() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(SearchProductRoutes.Roles), true));
 			
-		this.routes[`${SearchStoreRoutes.Prefix}`] = wrap(SearchStores, null, () => this.handleRouteNavigation(() => this.userHasAccess(SearchStoreRoutes.Roles)));
-		this.routes[`${SearchProducerRoutes.Prefix}`] = wrap(SearchProducers, null, () => this.handleRouteNavigation(() => this.userHasAccess(SearchProducerRoutes.Roles)));
+		this.routes[`${SearchStoreRoutes.Prefix}`] = wrap(SearchStores, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SearchStoreRoutes.Roles)));
+		this.routes[`${SearchProducerRoutes.Prefix}`] = wrap(SearchProducers, null, () => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SearchProducerRoutes.Roles)));
 
 		this.routes[`${OidcRoutes.Callback.Path}`] = Callback;
 		this.routes[`${OidcRoutes.CallbackSilent.Path}`] = CallbackSilent;
@@ -79,43 +80,22 @@ class SheaftGuard {
 		this.routes[`${HomeRoutes.NotFound.Path}`] = NotFound;
 		
 		this.routes['*'] = wrap(Home, null, () => { 
+			if(this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) > -1)
+				return false;
+
 			var url = this.getRedirectUrl();
 			this.routerInstance.refresh(url);
 			return false;
 		});
-	}
 
-	userIsAnonymous() {
-		return this.authInstance.initialized && !this.authInstance.authenticated;
-	}
-
-	userIsLoggedIn() {
-		var result = !this.userIsAnonymous() && this.authInstance.authenticated;
-		if(!result)
-			this.authInstance.login();
-		
-		return result;
-	}
-
-	userIsRegistered() {
-		return this.userIsLoggedIn() && this.authInstance.registered;
-	}
-
-	userHasAccess(roles) {
-		return this.userIsLoggedIn() && this.authInstance.authorize(roles);
-	}
-
-	requireRegistration = () => {
-		return !this.userIsAnonymous() && this.authInstance.authenticated && !this.userIsRegistered() && this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0;
+		this.authorizedSub = authAuthorized.subscribe((authorized)=> {
+			if(authorized && !this.authInstance.registered)
+				this.routerInstance.goTo(RegisterRoutes.Choose);
+		});
 	}
 
 	getRedirectUrl() {
-		if (this.requireRegistration())
-		{
-			return RegisterRoutes.Choose;
-		}
-
-		if (this.routerInstance.currentUrl != HomeRoutes.Prefix && this.routerInstance.currentUrl != OidcRoutes.Callback) {
+		if (this.routerInstance.currentUrl != HomeRoutes.Prefix && this.routerInstance.currentUrl != OidcRoutes.Callback && this.routerInstance.currentUrl != OidcRoutes.CallbackSilent) {
 			return window.location.hash.slice(1);
 		}
 
@@ -133,7 +113,7 @@ class SheaftGuard {
 	}
 
 	handleRouteNavigation = (exec, autoRedirect) => {
-		if(this.requireRegistration()){
+		if(this.authInstance.authorized && !this.authInstance.registered && this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0){
 			this.routerInstance.refresh(RegisterRoutes.Choose);
 			return false;
 		}
@@ -147,6 +127,7 @@ class SheaftGuard {
 	}
 
 	unregister() {
+		this.authorizedSub.unsubscribe();
 	}
 }
 

@@ -4,3 +4,4 @@ export const authUserAccount = writable({ profile: { role: "ANONYMOUS", picture:
 export const authInitialized = writable(false);
 export const authRegistered = writable(false);
 export const authAuthenticated = writable(false);
+export const authAuthorized = writable(false);

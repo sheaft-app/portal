@@ -52,6 +52,7 @@ import ErrorCard from "../../components/ErrorCard.svelte";
     }
 
     await authInstance.loginSilent();
+    authRegistered.set(true);
     localStorage.removeItem("user_choosen_role");
     localStorage.removeItem("sponsoring");
     routerInstance.goTo("/");

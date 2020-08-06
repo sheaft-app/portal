@@ -18,6 +18,7 @@
   import Roles from "./../../enums/Roles";
   import Guid from "./../../helpers/Guid";
 import ErrorCard from "../../components/ErrorCard.svelte";
+import { authRegistered } from "../../stores/auth";
 
   export let params = {};
 
@@ -78,6 +79,7 @@ import ErrorCard from "../../components/ErrorCard.svelte";
     }
 
     await authInstance.loginSilent();
+    authRegistered.set(true);
     localStorage.removeItem("user_choosen_role");
     localStorage.removeItem("sponsoring");
     routerInstance.goTo("/");
@@ -127,12 +129,12 @@ import ErrorCard from "../../components/ErrorCard.svelte";
     address.city &&
     address.city.length > 0;
 
-  function cancel() {
+  const cancel = () => {
     localStorage.removeItem("user_choosen_role");
     routerInstance.goBack();
   }
 
-  function resetAddress() {
+  const resetAddress = () => {
     company.address = null;
   }
 
