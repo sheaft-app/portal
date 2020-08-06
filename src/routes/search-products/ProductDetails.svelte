@@ -23,7 +23,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import DeliveryKind from "../../enums/DeliveryKind";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import { groupBy } from "./../../helpers/app";
+  import { groupBy, encodeQuerySearchUrl } from "./../../helpers/app";
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -148,21 +148,6 @@
     }
   };
 
-  const toggleProducerInfo = () => {
-    const producerCardOriginalHeight = "190px";
-    const producerCard = document.getElementById("producer-card");
-
-    if (producerCard.style.height !== producerCardOriginalHeight) {
-      producerDescriptionExpanded = false;
-      return (producerCard.style.height = producerCardOriginalHeight);
-    }
-
-    const description = document.getElementById("producer-description");
-
-    producerDescriptionExpanded = true;
-    return (producerCard.style.height = `calc(${producerCardOriginalHeight} + ${description.offsetHeight}px)`);
-  };
-
   $: isInCart = $cartItems.find(c => c.id === $selectedItem) || false;
 </script>
 
@@ -228,7 +213,7 @@
           ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
         </span>
       </p>
-      <p class="pb-2 lg:pb-5 text-sm lg:text-base text-justify lg:text-center">
+      <p class="pb-2 pt-2 lg:pb-5 lg:pt-5 text-sm lg:text-base text-justify lg:text-center">
         {product.description}
       </p>
     </div>
@@ -259,25 +244,9 @@
     <div class="mt-5">
       <div
         id="producer-card"
-        class:pb-16={product.producer.description}
         class="bg-white overflow-hidden rounded-lg p-3 lg:p-6 shadow flex
         relative flex-wrap justify-between lg:mt-10"
-        style="{product.producer.description ? 'height: 190px;' : ''}
-        transition: all .4s ease-in-out;">
-        <div
-          on:click={() => toggleProducerInfo()}
-          class:hidden={!product.producer.description}
-          class="absolute bottom-0 rounded-b-lg w-full py-3 -mx-6 bg-white
-          text-center font-semibold border-t border-gray-400 border-solid flex
-          justify-center items-center cursor-pointer">
-          {#if !producerDescriptionExpanded}
-            <Icon data={faChevronDown} class="mr-2" />
-            <span>Déplier pour en savoir plus</span>
-          {:else}
-            <Icon data={faChevronUp} class="mr-2" />
-            <span>Replier le bandeau</span>
-          {/if}
-        </div>
+        style="transition: all .4s ease-in-out;">
         <img
           class="h-10 w-10 md:h-24 md:w-24 rounded-full p-1 md:mx-0 border
           border-gray-800 border-solid"
@@ -306,13 +275,10 @@
             <p class="font-bold">{distanceInfos.label}</p>
           </div>
         {/if}
-        <div id="producer-description" class="w-12/12 text-gray-600 py-5">
-          {product.producer.description ? product.producer.description : ''}
-        </div>
-        <p class="mt-3 font-semibold">Lieux et horaires de récupération</p>
+        <p class="mt-3 font-semibold pt-5">Lieux et horaires de récupération</p>
         {#each deliveries as delivery}
           <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
-            <div class="flex flex-row justify-between items-start">
+            <div class="flex flex-row justify-between items-start mb-3">
               <div class="w-full">
                 <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
                 <p>{delivery.address.line1}</p>
@@ -322,22 +288,30 @@
                   </p>
                 {/if}
                 <p>{delivery.address.zipcode} {delivery.address.city}</p>
+                <a 
+                  class="mt-1"
+                  target="_blank"
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(product.producer.address)}`}>
+                  Voir sur Google Maps
+                </a>
               </div>
-             <div
-              class="text-xs lg:text-base text-{delivery.distance.color}
-              flex justify-center items-center">
+              <div
+                class="text-xs lg:text-base text-{delivery.distance.color}
+                flex justify-center items-center">
                 <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
                 <p class="font-bold">{delivery.distance.label}</p>
               </div>
             </div>
             <div class="mt-2">
-              {#each delivery.deliveryHours as deliveryHour}
-                <div class="flex mb-2">
+              {#each delivery.deliveryHours as deliveryHour, index}
+                <div class="flex mb-2 border-gray-300" 
+                  class:pb-2={index !== delivery.deliveryHours.length - 1}
+                  class:border-b={index !== delivery.deliveryHours.length - 1}>
                   <p style="min-width: 100px;">
                     {DayOfWeekKind.label(deliveryHour[0].day)}
                   </p>
                   <div>
-                    {#each deliveryHour as hours}
+                    {#each deliveryHour as hours} 
                       <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
                     {/each}
                   </div>
@@ -346,6 +320,25 @@
             </div>
           </div>
         {/each}
+        <div
+          on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
+          class:hidden={!product.producer.description}
+          class="rounded-b-lg w-full py-3 bg-white
+          text-center font-semibold flex
+          justify-center items-center cursor-pointer mt-2">
+          {#if !producerDescriptionExpanded}
+            <Icon data={faChevronDown} class="mr-2" />
+            <span>En savoir plus sur le producteur</span>
+          {:else}
+            <Icon data={faChevronUp} class="mr-2" />
+            <span>Replier le bandeau</span>
+          {/if}
+        </div>
+        {#if producerDescriptionExpanded && product.producer.description}
+          <div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5" >
+            {product.producer.description}
+          </div>
+        {/if}
       </div>
     </div>
     <div class="mt-5">

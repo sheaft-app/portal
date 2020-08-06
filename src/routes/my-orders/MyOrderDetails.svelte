@@ -16,7 +16,7 @@
   import { GET_MY_ORDER_DETAILS } from "./queries.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import { timeSpanToFrenchHour } from "./../../helpers/app";
+  import { timeSpanToFrenchHour, encodeQuerySearchUrl } from "./../../helpers/app";
 
   export let params = {};
 
@@ -73,10 +73,6 @@
       }
     });
   }
-
-  const encodeQuerySearchUrl = address => {
-    return encodeURI(`${address.line1} ${address.line2 ? address.line2 : ""} ${address.zipcode}`);
-  };
 
   onMount(async () => {
     await getMyOrder(params.id);

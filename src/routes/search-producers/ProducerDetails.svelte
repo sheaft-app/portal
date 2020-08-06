@@ -215,12 +215,6 @@
           </div>
         {/if}
       </div>
-      <!-- <p class="text-lg lg:text-2xl font-bold">
-        {product.onSalePricePerUnit}€ <span class="font-normal">({`${product.quantityPerUnit}${product.unit}`})</span>
-      </p> -->
-      <!-- <p class="text-base text-gray-600 pb-2 lg:pb-5">
-        {product.onSalePrice}€ / {product.unit == "KG" || product.unit == "G" ? "kilo" : "litre"}
-      </p>  -->
       {#if producer.description}
         <p
           class="text-sm lg:text-base text-justify lg:text-center">

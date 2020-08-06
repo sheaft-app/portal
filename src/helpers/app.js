@@ -89,3 +89,7 @@ export const removeKeys = (obj, keys) => {
 		}
 	}
 }
+
+export const encodeQuerySearchUrl = address => {
+	return encodeURI(`${address.line1} ${address.line2 ? address.line2 : ""} ${address.zipcode}`);
+};
