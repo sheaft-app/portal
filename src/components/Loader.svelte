@@ -12,7 +12,7 @@
   style="color:{color}"
   class="h-full flex text-xl text-center items-center justify-center">
   <div>
-    <Icon data={icon} scale="4" spin class="inline" />
+    <Icon data={icon} scale="4" spin class="inline text-primary opacity-75" />
     {#if text}
       <p class="py-2">{text}</p>
     {/if}
