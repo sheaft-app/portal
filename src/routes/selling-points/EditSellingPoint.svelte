@@ -96,7 +96,7 @@
           class="text-gray-600 items-center flex uppercase"
           on:click={() => routerInstance.goBack()}>
           <Icon data={faChevronLeft} class="mr-2 inline" />
-          Retour
+          Points de vente
         </button>
       </div>
       <div class="flex justify-between items-center">

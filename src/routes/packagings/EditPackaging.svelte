@@ -83,7 +83,7 @@
         <div class="mb-3">
             <button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goBack()}>
             <Icon data={faChevronLeft} class="mr-2 inline" />
-            Retour
+            Consignes
             </button>
         </div>
         <div class="flex justify-between items-center">

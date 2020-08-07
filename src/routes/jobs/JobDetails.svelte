@@ -144,7 +144,7 @@
           class="text-gray-500 items-center flex uppercase"
           on:click={() => routerInstance.goBack()}>
           <Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-          Retour
+          Tâches
         </button>
       </div>
       <div class="flex flex-wrap items-center">

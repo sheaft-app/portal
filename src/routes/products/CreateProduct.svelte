@@ -74,7 +74,7 @@
         class="text-gray-600 items-center flex uppercase"
         on:click={routerInstance.goBack}>
         <Icon data={faChevronLeft} class="mr-2 inline" />
-        Retour
+        Produits
       </button>
     </div>
     <h1 class="text-2xl mb-0 text-gray-700">Créer un nouveau produit</h1>

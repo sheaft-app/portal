@@ -138,7 +138,7 @@ faFileExport
           class="text-gray-600 items-center flex uppercase"
           on:click={() => routerInstance.goBack()}>
           <Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-          Retour
+          Commandes
         </button>
       </div>
       <div class="flex flex-wrap items-center">

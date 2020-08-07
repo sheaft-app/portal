@@ -103,7 +103,7 @@
           class="text-gray-600 items-center flex uppercase"
           on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
           <Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-          Retour
+          Mes commandes
         </button>
       </div>
       <div class="flex flex-wrap items-center">

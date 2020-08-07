@@ -58,7 +58,7 @@
         <div class="mb-3">
           <button class="btn-link items-center flex uppercase" on:click={() => routerInstance.goBack()}>
             <Icon data={faChevronLeft} scale=".9" class="mr-2 inline" />
-            Retour
+            Détails
           </button>
         </div>
         <h1 class="text-2xl mb-0">
