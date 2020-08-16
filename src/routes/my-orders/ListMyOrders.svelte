@@ -21,7 +21,7 @@
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
 
-  let selected = "active";
+  let selected = null;
   let orders = [];
 
   const getMyOrders = async () => {
@@ -77,10 +77,19 @@
 
   onMount(async () => {
     await getMyOrders();
+
+    if ($items.length === 0) {
+      return;
+    } else if ($items.filter(o => o.active).length >= 1) {
+      selected = "active"
+    } else {
+      selected = "passed";
+    }
+
     selectOrdersDisplay(selected);
   });
 
-  $: disabledHistory = $items.filter(o => !o.active).length < 1;
+  $: hiddenNavigation = $items.filter(o => !o.active).length < 1 || $items.filter(o => o.active).length < 1;
 </script>
 
 <svelte:head>
@@ -92,23 +101,25 @@
   {#if $isLoading}
     <Loader />
   {:else if $items.length > 0}
-    <h1 class="mb-6 hidden md:block">Mes commandes</h1>
-    <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
-      <button
-        on:click={() => selectOrdersDisplay("active")}
-        type="button"
-        class:selected={selected === "active"}
-        class:disabled={$isLoading}>
-        Actives
-      </button>
-      <button
-        on:click={() => { if (!disabledHistory) { return selectOrdersDisplay("passed")} }}
-        type="button"
-        class:selected={selected === "passed"}
-        class:disabled={$isLoading || disabledHistory}>
-        Historique
-      </button>
-    </div>
+    <h1 class="mb-6">Mes commandes</h1>
+    {#if !hiddenNavigation}
+      <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+        <button
+          on:click={() => selectOrdersDisplay("active")}
+          type="button"
+          class:selected={selected === "active"}
+          class:disabled={$isLoading}>
+          Actives
+        </button>
+        <button
+          on:click={() => selectOrdersDisplay("passed")}
+          type="button"
+          class:selected={selected === "passed"}
+          class:disabled={$isLoading}>
+          Historique
+        </button>
+      </div>
+    {/if}
     <div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
       <div
         class="align-middle inline-block min-w-full overflow-hidden items px-1">
