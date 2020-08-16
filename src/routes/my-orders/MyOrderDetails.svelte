@@ -65,10 +65,9 @@
     open(CancelMyOrders, {
       orders: [order],
       onClose: async res => {
-        if(res.success){
-          order.status = res.data.status;
-          order.reason = res.data.reason;
-          order = order;
+        if(res.success) {
+          order.status = res.data[0].status;
+          order.reason = res.data[0].reason;
         }
       }
     });
