@@ -19,6 +19,8 @@
   };
 
   const handleMore = () => {
+    if (quantity >= 999) return;
+
     quantity = (quantity || 0) + 1;
 
     updateProductQuantity(quantity);
@@ -66,14 +68,14 @@
 
 <div class="m-auto {!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
   <div
-    class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
+    class="flex m-auto border-gray-100 shadow border-solid rounded-full product-quantity">
     <button
       disabled={quantity === 0}
       style="height: 36px;"
       type="button"
       aria-label="Retirer 1"
-      class="minusButton font-bold
-      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none"
+      class="font-bold
+      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white"
       on:click|stopPropagation={() => handleLess()}>
       -
     </button>
@@ -86,13 +88,12 @@
       maxLength="3"
       bind:value={quantity}
       class:font-bold={quantity > 0}
-      class:bg-light-primary={quantity > 0}
       class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base" />
     <button
       type="button"
       style="height: 36px;"
       class="font-bold
-      transition duration-300 ease-in-out text-sm w-full plusButton rounded-r-full focus:outline-none"
+      transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
       aria-label="Ajouter 1"
       class:active={plusButtonActive}
       on:click|stopPropagation={() => handleMore()}>
