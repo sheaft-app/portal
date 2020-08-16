@@ -111,6 +111,9 @@
 
 <style lang="scss">
 
+  button:active {
+    transform: scale(0.9);
+  }
   .product-quantity {
     max-width: 200px;
 
