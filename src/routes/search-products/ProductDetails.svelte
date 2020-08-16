@@ -100,6 +100,7 @@
   };
 
   const openAndLoad = async () => {
+    history.pushState({ selected: $selectedItem}, "Explorer");
     const productDetails = document.getElementById("product-details");
 
     if (productDetails) {

@@ -10,8 +10,15 @@
   let props = null;
   let introEnded = false;
 
+  var popStateListener = (event) => {
+    if (Component) {
+      return close();
+    }
+  }
+  
   const open = (NewComponent, newProps = {}) => {
-
+    window.addEventListener("popstate", popStateListener, false);
+    history.pushState({ Component }, "Modal");
     Component = NewComponent;
     props = newProps;
 
@@ -19,6 +26,7 @@
   };
 
   const close = () => {
+    window.removeEventListener("popstate", popStateListener, false);
     Component = null;
     props = null;
 

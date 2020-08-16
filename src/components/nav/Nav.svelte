@@ -1,4 +1,5 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
   import NotificationsPanel from "./../notifications/NotificationsPanel.svelte";
   import {
     notifications,
@@ -50,6 +51,24 @@
   $: isInRole = (user, roles) => {
     return authInstance.isInRole(roles);
   };
+
+  var popStateListener = (event) => {
+    if ($navExpended) {
+      return navExpended.set(false);
+    }
+  }
+
+  $: if ($navExpended) { 
+    history.pushState({ expanded: { nav: $navExpended }}, "Menu"); 
+  }
+
+  onMount(() => {
+    window.addEventListener("popstate", popStateListener, false);
+  })
+
+  onDestroy(() => {
+    window.removeEventListener("popstate", popStateListener, false);
+  })
 </script>
 
 <div

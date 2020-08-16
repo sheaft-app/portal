@@ -273,8 +273,6 @@
   $: total = $cartItems.reduce((sum, product) => {
     return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
   }, 0);
-
-  $: history.pushState({ selected: $selectedItem}, "Explorer");
 </script>
 
 <svelte:head>
