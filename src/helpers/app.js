@@ -104,6 +104,11 @@ export const freezeBody = () => {
 
 export const unfreezeBody = () => {
 	const mainContent = document.getElementById('main-content');
+
+	if (!mainContent.classList.contains('mobile-overflow-hidden')) {
+		return;
+	}
+
 	const scrollY = parseInt(mainContent.style.top.substring(0, mainContent.style.top.length - 2)) - 64 + 'px';
 
 	mainContent.style.position = '';

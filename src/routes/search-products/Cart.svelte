@@ -2,9 +2,11 @@
   import { flip } from 'svelte/animate';
   import { slide, fly } from "svelte/transition";
   import GetRouterInstance from "../../services/SheaftRouter";
-  import { cartItems } from "./../../stores/app.js";
+  import { cartItems, cartExpanded } from "./../../stores/app.js";
   import { roundMoney } from "./../../helpers/app.js";
   import CartRoutes from "../cart/routes";
+  import { unfreezeBody } from "./../../helpers/app.js";
+
 
   const routerInstance = GetRouterInstance();
 
@@ -20,6 +22,13 @@
   $: total = $cartItems.reduce((sum, product) => {
     return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
   }, 0);
+
+  const hideCart = () => {
+    if ($cartItems.length <= 1) {
+      unfreezeBody();
+      cartExpanded.set(false);
+    }
+  }
 </script>
 
 <section
@@ -39,7 +48,7 @@
       <div class="w-9/12">
         <p class="font-semibold mb-0 leading-none">{line.name}</p>
         <p class="text-sm">{line.producer.name}</p>
-        <button class="btn-link text-xs uppercase" on:click={() => (line.quantity = 0)} aria-label="Retirer cet article">
+        <button class="btn-link text-xs uppercase" on:click={() => { line.quantity = 0; hideCart(); }} aria-label="Retirer cet article">
           Retirer
         </button>
       </div>
