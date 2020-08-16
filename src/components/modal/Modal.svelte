@@ -1,5 +1,6 @@
 <script>
   import { setContext as baseSetContext } from "svelte";
+  import { freezeBody, unfreezeBody } from "./../../helpers/app";
   import { fly } from "svelte/transition";
 
   export let key = "modal";
@@ -14,25 +15,14 @@
     Component = NewComponent;
     props = newProps;
 
-    // When the modal is shown, we want a fixed body
-    const scroll = window.scrollY;
-    const mainContent = document.getElementById('main-content');
-    mainContent.style.position = 'fixed';
-    mainContent.classList.add('mobile-overflow-hidden');
-    mainContent.style.top = `-${scroll - 64}px`;
+    freezeBody();
   };
 
   const close = () => {
     Component = null;
     props = null;
 
-    const mainContent = document.getElementById('main-content');
-    const scrollY = parseInt(mainContent.style.top.substring(0, mainContent.style.top.length - 2)) - 64 + 'px';
-
-    mainContent.style.position = '';
-    mainContent.classList.remove('mobile-overflow-hidden');
-    mainContent.style.top = '';
-    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    unfreezeBody();
   };
 
   const handleKeyup = ({ key }) => {

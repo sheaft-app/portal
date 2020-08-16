@@ -24,7 +24,7 @@
   import Icon from "svelte-awesome";
   import { faFilter } from "@fortawesome/free-solid-svg-icons";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-  import { roundMoney } from "./../../helpers/app.js";
+  import { roundMoney, freezeBody, unfreezeBody } from "./../../helpers/app.js";
   import Loader from "./../../components/Loader.svelte";
   import SkeletonCard from "./SkeletonCard.svelte";
   import Roles from "./../../enums/Roles";
@@ -171,6 +171,20 @@
     searchResults.set(prevFeed);
   };
 
+  const expendCart = () => {
+    if ($cartExpanded) {
+      return hideCart();
+    }
+
+    cartExpanded.set(!$cartExpanded);
+    freezeBody();
+  }
+
+  const hideCart = () => {
+    unfreezeBody();
+    cartExpanded.set(false);
+  }
+
   const retrieveUserLocationInStorage = () => {
     var position = localStorage.getItem("user_location");
     if (position) {
@@ -283,7 +297,7 @@
     <div class="inline-flex items-center w-2/4 justify-end">
       <button
         type="button"
-        on:click={() => cartExpanded.set(!$cartExpanded)}
+        on:click={() => expendCart()}
         class="text-xs bg-white shadow font-semibold uppercase h-10 rounded-full
         px-4 py-2 leading-none mr-2 w-3/4"
         class:invisible={$selectedItem}
@@ -293,7 +307,7 @@
       </button>
       <button
         on:click={() => {
-          cartExpanded.set(false);
+          hideCart();
           routerInstance.goTo(CartRoutes.Resume);
         }}
         type="button"
@@ -309,7 +323,7 @@
 <TransitionWrapper hasRightPanel style="margin:0;">
   <div
     class:has-bottom-mobile-cta={$cartItems.length >= 1}
-    class="{$cartExpanded ? 'fixed md:static' : 'static'} search-products md:-my-4">
+    class="search-products md:-my-4">
     <ErrorCard {errorsHandler} />
     <div
       class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">

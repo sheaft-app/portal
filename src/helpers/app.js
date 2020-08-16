@@ -93,3 +93,21 @@ export const removeKeys = (obj, keys) => {
 export const encodeQuerySearchUrl = address => {
 	return encodeURI(`${address.line1} ${address.line2 ? address.line2 : ""} ${address.zipcode}`);
 };
+
+export const freezeBody = () => {
+	const scroll = window.scrollY;
+	const mainContent = document.getElementById('main-content');
+	mainContent.style.position = 'fixed';
+	mainContent.classList.add('mobile-overflow-hidden');
+	mainContent.style.top = `-${scroll - 64}px`;
+}
+
+export const unfreezeBody = () => {
+	const mainContent = document.getElementById('main-content');
+	const scrollY = parseInt(mainContent.style.top.substring(0, mainContent.style.top.length - 2)) - 64 + 'px';
+
+	mainContent.style.position = '';
+	mainContent.classList.remove('mobile-overflow-hidden');
+	mainContent.style.top = '';
+	window.scrollTo(0, parseInt(scrollY || '0') * -1);
+}
