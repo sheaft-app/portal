@@ -267,17 +267,19 @@
               </ErrorCard>
             {/if}
             <div>
-              <div class="flex justify-between w-full lg:px-3 pb-2">
-                <div class="text-left">
-                  <p>Consignes</p>
+              {#if deposit > 0}
+                <div class="flex justify-between w-full lg:px-3 pb-2">
+                  <div class="text-left">
+                    <p>Consignes</p>
+                  </div>
+                  <div>
+                    <p class="font-medium">{deposit}€</p>
+                  </div>
                 </div>
-                <div>
-                  <p class="font-medium">{deposit}€</p>
-                </div>
-              </div>
-              <div class="flex justify-between w-full lg:px-3 border-t border-gray-300 pt-2">
+              {/if}
+              <div class:border-t={deposit > 0} class:pt-2={deposit > 0} class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
                 <div class="text-left">
-                  <p>Total</p>
+                  <p>Sous-total</p>
                   <p class="text-sm text-gray-600">
                     {#if productsCount > 0}
                       {productsCount} article{productsCount > 1 ? 's' : ''}
@@ -285,7 +287,7 @@
                   </p>
                 </div>
                 <div>
-                  <p class="font-bold text-lg lg:text-xl">{total}€</p>
+                  <p class="font-bold text-lg">{total}€</p>
                 </div>
               </div>
             </div>
