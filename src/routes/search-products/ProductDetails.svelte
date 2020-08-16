@@ -213,20 +213,14 @@
           ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
         </span>
       </p>
-      <p class="pb-2 pt-2 lg:pb-5 lg:pt-5 text-sm lg:text-base text-justify lg:text-center">
+      <p class="pt-2 lg:pt-5 text-sm lg:text-base text-justify lg:text-center">
         {product.description}
       </p>
     </div>
-    {#if !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
-      <ProductCartQuantity
-        productId={$selectedItem}
-        plusButtonActive
-        userFeedback />
-    {/if}
     {#if product.packaging}
-      <div class="mt-5">
+      <div class="mb-5 md:mb-0">
         <div class="flex justify-center">
-          {#if product.packaging && product.packaging.onSalePrice}
+          {#if product.packaging.onSalePrice}
             <div class="text-center">
               <img
                 src="./img/packaging.svg"
@@ -237,9 +231,14 @@
               <p class="text-gray-600">{product.packaging.onSalePrice}€</p>
             </div>
           {/if}
-
         </div>
       </div>
+    {/if}
+    {#if !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+      <ProductCartQuantity
+        productId={$selectedItem}
+        plusButtonActive
+        userFeedback />
     {/if}
     <div class="mt-5">
       <div

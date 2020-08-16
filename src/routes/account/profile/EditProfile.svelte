@@ -39,7 +39,10 @@
 
   const handleUpdate = async () => {
     isLoading = true;
-    var res = await graphQLInstance.mutate(UPDATE_ME, user, errorsHandler.Uuid);
+    const userSanitized = user;
+    delete userSanitized['anonymous'];
+
+    var res = await graphQLInstance.mutate(UPDATE_ME, { ...userSanitized }, errorsHandler.Uuid);
     isLoading = false;
 
     if (!res.success) {

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const UPDATE_ME = gql`
-	mutation UpdateUser($input: UpdateUserInput!) {
+	mutation UpdateUser($input: UpdateUserInput) {
 		updateUser(input: $input) {
 			id
 			lastName
@@ -32,7 +32,7 @@ export const DELETE_ACCOUNT = gql`
 `;
 
 export const EXPORT_DATA = gql`
-	mutation ExportRGPD($input: QueueExportAccountDataInput!) {
+	mutation ExportRGPD($input: IdInput) {
 		exportRGPD(input: $input) {
 			id
 		}

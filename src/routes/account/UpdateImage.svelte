@@ -75,12 +75,8 @@
         name="avatar"
         accept="image/png, image/jpeg" />
       <div class="mt-5 mb-5 m-auto text-center">
-        <p class="leading-5 text-gray-500 py-3 hidden lg:block">
-          Faites glisser l'image dans le cercle pour la recadrer
-        </p>
         <label
-          class="bg-white px-8 py-3 shadow rounded-full text-lg justify-center
-          cursor-pointer"
+          class="btn px-3 py-2 btn-accent cursor-pointer justify-center"
           for="avatar">
           Choisir une nouvelle photo
         </label>

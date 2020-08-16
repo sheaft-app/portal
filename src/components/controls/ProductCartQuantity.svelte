@@ -64,7 +64,7 @@
   }
 </script>
 
-<div class="m-auto ${!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
+<div class="m-auto {!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
   <div
     class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
     <button
