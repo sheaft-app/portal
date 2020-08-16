@@ -1,4 +1,10 @@
 <script>
+  import GetAuthInstance from "./../../services/SheaftAuth";
+  import GetRouterInstance from "./../../services/SheaftRouter";
+  import { goToHome } from "./../../helpers/navigation";
+
+  const authInstance = GetAuthInstance();
+  const routerInstance = GetRouterInstance();
 </script>
 
 <svelte:head>
@@ -22,7 +28,10 @@
       <p class="text-gray-600">
         Vérifiez votre connexion et rafraichissez la page.
       </p>
-      <a class="btn btn-accent" href="/">Rafraîchir</a>
+      <a class="btn btn-accent" 
+        href="javascript:void(0)"
+        on:click={() => goToHome(authInstance, routerInstance)}>
+        Rafraîchir</a>
       <p class="text-sm text-gray-500 mt-5">Aucune connexion internet</p>
     </div>
   </div>

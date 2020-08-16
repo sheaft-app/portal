@@ -1,4 +1,10 @@
 <script>
+  import GetAuthInstance from "./../../services/SheaftAuth";
+  import GetRouterInstance from "./../../services/SheaftRouter";
+  import { goToHome } from "./../../helpers/navigation";
+
+  const authInstance = GetAuthInstance();
+  const routerInstance = GetRouterInstance();
 </script>
 
 <svelte:head>
@@ -21,7 +27,10 @@
     <p class="text-gray-600">
       Vous pouvez rester si vous voulez voir l'herbe pousser. Sinon oust !
     </p>
-    <a class="btn-link" href="/">Retourner à l'accueil</a>
+    <a class="btn-link" 
+      href="javascript:void(0)"
+      on:click={() => goToHome(authInstance, routerInstance)}>
+      Retourner à l'accueil</a>
     <p class="text-sm text-gray-500 mt-5">Erreur 404 - Ressource introuvable</p>
   </div>
 </div>

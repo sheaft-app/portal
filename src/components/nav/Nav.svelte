@@ -7,6 +7,7 @@
   } from "./../notifications/store.js";
   import Icon from "svelte-awesome";
   import { clickOutside } from "./../../helpers/events";
+  import { goToHome } from "./../../helpers/navigation";
   import {
     faQuestionCircle,
     faBars,
@@ -134,7 +135,8 @@
   <div
     class="hidden lg:flex items-center justify-center -ml-8"
     style="min-width: 200px;">
-    <a href="/">
+    <a href="javascript:void(0)"
+    on:click={() => goToHome(authInstance, routerInstance)}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         style="width:150px;height:auto;"
