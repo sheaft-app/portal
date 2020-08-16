@@ -309,7 +309,7 @@
           routerInstance.goTo(CartRoutes.Resume);
         }}
         type="button"
-        class="bg-primary shadow text-white font-semibold uppercase h-10
+        class="bg-accent shadow text-white font-semibold uppercase h-10
         rounded-full leading-none flex items-center justify-center"
         style="width: 4em;">
         <Icon data={faShoppingCart} />

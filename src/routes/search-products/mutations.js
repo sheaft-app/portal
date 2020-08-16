@@ -8,16 +8,20 @@ export const RATE_PRODUCT = gql`
 			description
 			rating
 			ratingsCount
-			currentUserHasRatedProduct
 			onSalePricePerUnit
+			onSalePrice
 			quantityPerUnit
 			unit
-			onSalePrice
 			tags {
+				name
+			}
+			packaging {
 				id
 				name
-				kind
+				onSalePrice
 			}
+			currentUserHasRatedProduct
+			picture
 			ratings(first: 10, order_by: { createdOn: DESC }) {
 				nodes {
 					user {
@@ -30,7 +34,10 @@ export const RATE_PRODUCT = gql`
 				}
 			}
 			producer {
+				id
 				name
+				description
+				picture
 				address {
 					city
 					line1
