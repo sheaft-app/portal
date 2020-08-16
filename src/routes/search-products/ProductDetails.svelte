@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import Icon from "svelte-awesome";
   import { faMapMarkerAlt, faCircleNotch, faTimesCircle, faChevronUp, faChevronDown, faHeart } from "@fortawesome/free-solid-svg-icons";
@@ -100,10 +99,15 @@
     isLoading = false;
   };
 
-  onMount(async () => {
-    document.getElementById("product-details").scrollTop = 0;
+  const openAndLoad = async () => {
+    const productDetails = document.getElementById("product-details");
+
+    if (productDetails) {
+      productDetails.scrollTop = 0;
+    }
+
     await getProductDetails($selectedItem);
-  });
+  }
 
   let username = authInstance.user.profile.given_name
     ? authInstance.user.profile.given_name
@@ -148,6 +152,7 @@
     }
   };
 
+  $: if ($selectedItem) openAndLoad($selectedItem);
   $: isInCart = $cartItems.find(c => c.id === $selectedItem) || false;
 </script>
 
@@ -165,7 +170,7 @@
     <span>Fermer</span>
   </button>
 </div>
-{#if !product}
+{#if !product || isLoading}
   <div class="px-4 sm:px-6">
     <div class="-mx-10">
       <div class="skeleton-box w-full rounded-t-md shadow-md h-40 lg:h-64" />
