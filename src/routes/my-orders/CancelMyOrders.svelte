@@ -39,11 +39,11 @@
   level="danger"
   icon={faTimes}
   submit={handleSubmit}
-  submitText="Annuler"
+  submitText="Confirmer"
   closeText="Fermer"
   {isLoading}
   close={() => handleClose({ success: false, data: null })}>
-  <p class="leading-5 text-gray-500">
+  <p class="leading-5">
     Annuler {orders.length > 1 ? 'ces commandes' : 'cette commande'} alertera automatiquement le producteur.
   </p>
   <form class="mt-2">

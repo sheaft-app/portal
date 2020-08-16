@@ -75,7 +75,7 @@
       type="button"
       aria-label="Retirer 1"
       class="font-bold
-      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white"
+      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
       on:click|stopPropagation={() => handleLess()}>
       -
     </button>

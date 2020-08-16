@@ -202,7 +202,7 @@
     <div class="title-margin lg:text-center" style="margin-bottom: 20px;">
       <RatingStars rating={product.rating || 0} />
       <div class="flex justify-between lg:justify-center">
-        <p class="text-xl lg:text-3xl font-semibold">{product.name}</p>
+        <p class="text-2xl lg:text-3xl font-semibold">{product.name}</p>
         {#if product.tags && product.tags.length > 0 && product.tags.find(t => t.name.toLowerCase() === 'bio' && t.kind == TagKind.Label.Value)}
           <div class="text-center ml-3">
             <img
@@ -213,13 +213,13 @@
           </div>
         {/if}
       </div>
-      <p class="text-lg lg:text-2xl font-bold">
+      <p class="text-xl lg:text-2xl font-bold">
         {product.onSalePricePerUnit}€
         <span class="font-normal">
           ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
         </span>
       </p>
-      <p class="pt-2 lg:pt-5 text-sm lg:text-base text-justify lg:text-center">
+      <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
         {product.description}
       </p>
     </div>
