@@ -12,20 +12,26 @@
   const toggleBio = () => {
     let values = routerInstance.getQueryParams();
 
-    if (!values["labels"])
-      return routerInstance.replaceQueryParams({
+    if (!values["labels"]) {
+      routerInstance.replaceQueryParams({
         labels: ["bio"]
       });
+      return close();
+    }
+     
 
     if (values["labels"].includes("bio")) {
-      return routerInstance.replaceQueryParams({
+      routerInstance.replaceQueryParams({
         labels: values["labels"].split(",").filter(t => t !== "bio")
       });
+      return close();
     }
 
-    return routerInstance.replaceQueryParams({
+    routerInstance.replaceQueryParams({
       labels: [values["labels"], "bio"]
     });
+
+    return close();
   };
 
   $: activeLabels = routerInstance.getQueryParams()["labels"]
