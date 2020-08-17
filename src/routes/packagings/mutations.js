@@ -4,6 +4,10 @@ export const CREATE_PACKAGING = gql`
 	mutation CreatePackaging($input: CreatePackagingInput!) {
 		createPackaging(input: $input) {
 			id
+			name
+			vat
+			wholeSalePrice
+			onSalePrice
 		}
 	}
 `;
