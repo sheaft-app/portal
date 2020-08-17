@@ -199,10 +199,8 @@
           <div class="border border-gray-400 cursor-pointer text-center h-full">
             {#if product.picture}
               <div
-                class="h-full"
-                style="background: url('{product.picture}'); background-size: cover;
-                background-position: center;
-                margin:auto;" />
+                class="h-full product-picture"
+                style="background: url('{product.picture}'); margin:auto;" />
             {:else}
               <Icon
                 data={faImage}
@@ -307,6 +305,11 @@
 </form>
 
 <style>
+  .product-picture {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
   .themed {
     display: contents;
     --cursor: text;
