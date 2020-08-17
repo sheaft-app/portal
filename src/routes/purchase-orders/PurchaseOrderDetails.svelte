@@ -264,61 +264,61 @@ faFileExport
       <div
         class="bg-white md:mt-3 px-0
         md:px-5 py-5 overflow-x-auto -mx-4 md:mx-0 border border-gray-400" style="border-bottom: 0;">
-        <div class="flex">
+        <div class="flex flex-wrap">
           <button
             on:click={createPickingOrder}
             class:hidden={!canCreatePickingOrder(order)}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-indigo-500">
-            <Icon data={faFileExport} class="mr-2 hidden lg:inline" />
-            <span>Créer un bon de préparation</span>
+            ease-in-out text-indigo-500 w-full lg:w-auto">
+            <Icon data={faFileExport} class="mr-2 hidden lg:inline w-4 h-4" />
+            <span>Accepter et faire un bon de préparation</span>
           </button>
           <button
             on:click={acceptOrder}
             class:hidden={!canAcceptOrder(order)}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-green-500">
-            <Icon data={faCheck} class="mr-2 hidden lg:inline" />
+            ease-in-out text-green-500 w-full lg:w-auto">
+            <Icon data={faCheck} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Accepter</span>
           </button>
           <button
             on:click={refuseOrder}
             class:hidden={!canRefuseOrder(order)}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-red-500">
-            <Icon data={faTimes} class="mr-2 hidden lg:inline" />
+            ease-in-out text-red-500 w-full lg:w-auto">
+            <Icon data={faTimes} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Refuser</span>
           </button>
           <button
             class:hidden={!canCancelOrder(order)}
             on:click={cancelOrder}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-orange-500">
-            <Icon data={faBackspace} class="mr-2 hidden lg:inline" />
+            ease-in-out text-orange-500 w-full lg:w-auto">
+            <Icon data={faBackspace} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Annuler la commande</span>
           </button>
           <button
             class:hidden={!canProcessOrder(order)}
             on:click={processOrder}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-green-500">
-            <Icon data={faPlay} class="mr-2 hidden lg:inline" />
+            ease-in-out text-green-500 w-full lg:w-auto">
+            <Icon data={faPlay} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Démarrer la préparation</span>
           </button>
           <button
             class:hidden={!canCompleteOrder(order)}
             on:click={completeOrder}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-green-500">
-            <Icon data={faClipboardCheck} class="mr-2 hidden lg:inline" />
+            ease-in-out text-green-500 w-full lg:w-auto">
+            <Icon data={faClipboardCheck} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Terminer la préparation</span>
           </button>
           <button
             class:hidden={!canDeliverOrder(order)}
             on:click={deliverOrder}
             class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-green-500">
-            <Icon data={faTruckLoading} class="mr-2 hidden lg:inline" />
+            ease-in-out text-green-500 w-full lg:w-auto">
+            <Icon data={faTruckLoading} class="mr-2 hidden lg:inline w-4 h-4" />
             <span>Marquer comme livrée</span>
           </button>
         </div>

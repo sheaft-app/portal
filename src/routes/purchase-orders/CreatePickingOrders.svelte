@@ -94,7 +94,9 @@
 
   async function closeModal(obj) {
     close();
-    await onClose(obj);
+    
+    if (obj)
+      await onClose(obj);
   }
 </script>
 
@@ -103,7 +105,7 @@
   title="Créer un bon de préparation"
   {submit}
   {isLoading}
-  close={() => handleClose({ success: false, data: null })}
+  close={closeModal}
   level="success"
   submitText="Préparer"
   icon={faCheck}

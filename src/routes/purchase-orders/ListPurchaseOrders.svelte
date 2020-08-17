@@ -189,7 +189,7 @@
 			click: () => createPickingOrder(),
 			disabled: !canCreatePickingOrders(selectedItems),
 			icon: faFileExport,
-			text: "Créer un bon de préparation",
+			text: "Accepter et faire un bon de préparation",
 			color: "indigo",
 			hideIfDisabled: true
 		},
