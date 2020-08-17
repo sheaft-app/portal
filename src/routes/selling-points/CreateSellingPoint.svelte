@@ -19,13 +19,7 @@
   let sellingPoint = { 
     name: "",
     kind: "",
-    address: {
-      line1: null,
-      zipcode: null,
-      city: null,
-      latitude: null,
-      longitude: null
-    },
+    address: null,
     openingHours: [
       {
         id: 0,
