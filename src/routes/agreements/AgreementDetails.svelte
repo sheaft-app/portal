@@ -112,7 +112,7 @@
       <div class="mb-3">
         <button
           class="text-gray-600 items-center flex uppercase"
-          on:click={() => routerInstance.goBack()}>
+          on:click={() => routerInstance.goTo(AgreementRoutes.List)}>
           <Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
           Accords
         </button>

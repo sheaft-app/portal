@@ -94,7 +94,7 @@
       <div class="mb-3">
         <button
           class="text-gray-600 items-center flex uppercase"
-          on:click={() => routerInstance.goBack()}>
+          on:click={() => routerInstance.goTo(SellingPointRoutes.List)}>
           <Icon data={faChevronLeft} class="mr-2 inline" />
           Points de vente
         </button>
