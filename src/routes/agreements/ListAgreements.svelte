@@ -44,18 +44,10 @@
   const changeAgreementsDisplay = () => {
     switch (selected) {
       case "active":
-        displayedAgreements = agreements.filter(a =>
-          a.status === AgreementStatusKind.Accepted.Value ||
-          a.status === AgreementStatusKind.WaitingForProducerApproval.Value ||
-          a.status === AgreementStatusKind.WaitingForStoreApproval.Value
-        );
+        displayedAgreements = activeAgreements;
         break;
       case "passed":
-        displayedAgreements = agreements.filter(a =>
-          a.status !== AgreementStatusKind.Accepted.Value &&
-          a.status !== AgreementStatusKind.WaitingForProducerApproval.Value &&
-          a.status !== AgreementStatusKind.WaitingForStoreApproval.Value
-        );
+        displayedAgreements = passedAgreements;
         break;
       default:
         console.error("Type not supported");
@@ -69,14 +61,31 @@
 
   onMount(async () => {
     await getAgreements();
+
+    if (agreements.length === 0) {
+      return;
+    } else if (activeAgreements.length >= 1) {
+      selected = "active"
+    } else {
+      selected = "passed";
+    }
+
     selectAgreementsDisplay(selected);
   });
 
-  $: disabledHistory = agreements.filter(a =>
+  $: activeAgreements = agreements.filter(a =>
+    a.status === AgreementStatusKind.Accepted.Value ||
+    a.status === AgreementStatusKind.WaitingForProducerApproval.Value ||
+    a.status === AgreementStatusKind.WaitingForStoreApproval.Value
+  );
+
+  $: passedAgreements = agreements.filter(a => 
     a.status !== AgreementStatusKind.Accepted.Value &&
     a.status !== AgreementStatusKind.WaitingForProducerApproval.Value &&
     a.status !== AgreementStatusKind.WaitingForStoreApproval.Value
-  ).length < 1;
+  );
+  
+  $: hiddenNavigation = activeAgreements.length < 1 || passedAgreements.length < 1;
 </script>
 
 <svelte:head>
@@ -89,22 +98,24 @@
   {#if isLoading}
     <Loader />
   {:else if agreements.length > 0}
-    <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
-      <button
-        on:click={() => selectAgreementsDisplay("active")}
-        type="button"
-        class:selected={selected === "active"}
-        class:disabled={isLoading}>
-        Actifs
-      </button>
-      <button
-        on:click={() => { if (!disabledHistory) return selectAgreementsDisplay("passed") }}
-        type="button"
-        class:selected={selected === "passed"}
-        class:disabled={isLoading || disabledHistory}>
-        Historique
-      </button>
-    </div>
+    {#if !hiddenNavigation}
+      <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+        <button
+          on:click={() => selectAgreementsDisplay("active")}
+          type="button"
+          class:selected={selected === "active"}
+          class:disabled={isLoading}>
+          Actifs
+        </button>
+        <button
+          on:click={() => selectAgreementsDisplay("passed")}
+          type="button"
+          class:selected={selected === "passed"}
+          class:disabled={isLoading}>
+          Historique
+        </button>
+      </div>
+    {/if}
     <div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
       <div
         class="align-middle inline-block min-w-full overflow-hidden items px-1">
