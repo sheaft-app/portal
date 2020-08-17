@@ -29,10 +29,17 @@
   let isLoading = true;
   let distanceInfos = null;
 
-  onMount(async () => {
+  const openAndLoad = async () => {
+    history.pushState({ selected: $selectedItem}, "Détails du producteur");
+
     const values = routerInstance.getQueryParams();
     isLoading = true;
-    document.getElementById("producer-details").scrollTop = 0;
+
+    const producerDetails = document.getElementById("producer-details");
+
+    if (producerDetails) {
+      producerDetails.scrollTop = 0;
+    }
 
     var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
       id: $selectedItem.id
@@ -62,7 +69,7 @@
       delivery: delivery.deliveries[0],
       agreement: agreements.length > 0 ? agreements[0] : null
     };
-  });
+  }
 
   const loadProducts = async (id) => {
     var res = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
@@ -142,6 +149,8 @@
       selectedItem.set(null);
     }
   };
+
+  $: if ($selectedItem) openAndLoad($selectedItem);
 </script>
 
 <svelte:window on:keyup={handleKeyup} />

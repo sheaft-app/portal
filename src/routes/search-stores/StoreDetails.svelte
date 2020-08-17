@@ -21,10 +21,35 @@
   let isLoading = false;
   let openings = [];
 
-  onMount(async () => {
+  async function loadAgreements(id) {
+    var res = await graphQLInstance.query(GET_STORE_AGREEMENTS, { id });
+
+    if (!res.success) {
+      //todo
+      return [];
+    }
+
+    return res.data;
+  }
+
+  const handleKeyup = ({ key }) => {
+    if ($selectedItem && key === "Escape") {
+      event.preventDefault();
+      selectedItem.set(null);
+    }
+  };
+
+  const openAndLoad = async () => {
+    history.pushState({ selected: $selectedItem}, "Détails du magasin");
+
     const values = routerInstance.getQueryParams();
     isLoading = true;
-    document.getElementById("store-details").scrollTop = 0;
+
+    const storeDetails = document.getElementById("store-details");
+
+    if (storeDetails) {
+      storeDetails.scrollTop = 0;
+    }
 
     var res = await graphQLInstance.query(GET_STORE_DETAILS, {
       id: $selectedItem.id
@@ -51,25 +76,7 @@
       ...res.data,
       agreement: agreements.length > 0 ? agreements[0] : null
     };
-  });
-
-  async function loadAgreements(id) {
-    var res = await graphQLInstance.query(GET_STORE_AGREEMENTS, { id });
-
-    if (!res.success) {
-      //todo
-      return [];
-    }
-
-    return res.data;
   }
-
-  const handleKeyup = ({ key }) => {
-    if ($selectedItem && key === "Escape") {
-      event.preventDefault();
-      selectedItem.set(null);
-    }
-  };
 
   const openAgreement = () => {
     selectedItem.set(null);
@@ -89,6 +96,8 @@
   };
   
   onDestroy(() => openings = []);
+
+  $: if ($selectedItem) openAndLoad($selectedItem);
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
