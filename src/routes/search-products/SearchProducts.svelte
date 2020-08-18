@@ -367,7 +367,7 @@
         style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
         width: -webkit-fill-available; width: fill-available;">
         {#if $isLoading}
-          <div class="mb-1 h-6 w-24 skeleton-box" />
+          <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />
         {:else if $searchResults.length > 0}
           <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
             {$searchResults.length} résultat{$searchResults.length > 1 ? 's' : ''}
@@ -446,6 +446,12 @@
             {/each}
           {/if}
         </div>
+        {#if $searchResults.length < 1}
+          <div class="m-auto text-center">
+            <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
+            <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">
+          </div>
+        {/if}
       {/if}
     {:else}
       <div class="text-lg text-gray-600 text-center">
