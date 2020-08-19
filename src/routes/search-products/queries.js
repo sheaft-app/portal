@@ -3,28 +3,31 @@ import gql from "graphql-tag";
 export const SEARCH_PRODUCTS = gql`
 	query SearchProducts($input: SearchTermsInput!) {
 		searchProducts(input: $input) {
-			id
-			name
-			picture
-			rating
-			onSalePricePerUnit
-			onSalePrice
-			unit
-			quantityPerUnit
-			tags {
-				name
-			}
-			producer {
+			count
+			products {
 				id
 				name
-				address {
-					city
-					latitude
-					longitude
-					zipcode
+				picture
+				rating
+				onSalePricePerUnit
+				onSalePrice
+				unit
+				quantityPerUnit
+				tags {
+					name
 				}
+				producer {
+					id
+					name
+					address {
+						city
+						latitude
+						longitude
+						zipcode
+					}
+				}
+				packaged
 			}
-			packaged
 		}
 	}
 `;

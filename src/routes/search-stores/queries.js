@@ -3,16 +3,19 @@ import gql from "graphql-tag";
 export const SEARCH_STORES = gql`
 	query SearchStores($input: SearchTermsInput!) {
 		searchStores(input: $input) {
-			id
-			name
-			address {
-				city
-				latitude
-				longitude
-				zipcode
-			}
-			tags {
+			count
+			stores {
+				id
 				name
+				address {
+					city
+					latitude
+					longitude
+					zipcode
+				}
+				tags {
+					name
+				}
 			}
 		}
 	}
@@ -66,11 +69,17 @@ export const GET_AGREEMENTS = gql`
 `;
 
 export const GET_STORE_AGREEMENTS = gql`
-	query GetStoreAgreements($id:ID!) {
+	query GetStoreAgreements($id: ID!) {
 		storeAgreements(
-			input:$id
+			input: $id
 			first: 50
-			where: {status_in: [ACCEPTED, WAITING_FOR_PRODUCER_APPROVAL, WAITING_FOR_STORE_APPROVAL] }
+			where: {
+				status_in: [
+					ACCEPTED
+					WAITING_FOR_PRODUCER_APPROVAL
+					WAITING_FOR_STORE_APPROVAL
+				]
+			}
 		) {
 			nodes {
 				id
@@ -82,10 +91,7 @@ export const GET_STORE_AGREEMENTS = gql`
 
 export const GET_DELIVERIES = gql`
 	query GetDelivery {
-		deliveries(
-			first: 50
-			where: {kind_in: [PRODUCER_TO_STORE] }
-		) {
+		deliveries(first: 50, where: { kind_in: [PRODUCER_TO_STORE] }) {
 			nodes {
 				id
 				kind

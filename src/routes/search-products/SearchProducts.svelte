@@ -42,7 +42,8 @@
   let prevFeed = [];
   let currentPage = 0;
   let lastFetchLength = 0;
-  const QUERY_SIZE = 20;
+  let totalProducts = 0;
+  const QUERY_SIZE = 10;
 
   let defaultSearchValues = {
     text: null,
@@ -166,7 +167,8 @@
       return;
     }
 
-    prevFeed = response.data;
+    totalProducts = response.data.count;
+    prevFeed = response.data.products;
     lastFetchLength = prevFeed.length;
     searchResults.set(prevFeed);
   };
@@ -260,6 +262,7 @@
 
     window.addEventListener("popstate", popStateListener, false);
 
+    totalProducts = 0;
     searchResults.set([]);
   });
 
@@ -367,14 +370,10 @@
         style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
         width: -webkit-fill-available; width: fill-available;">
         {#if $isLoading}
-          <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />
-        {:else if $searchResults.length > 0}
-          <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
-            {$searchResults.length} résultat{$searchResults.length > 1 ? 's' : ''}
-          </p>
+          <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />        
         {:else}
           <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
-            0 résultat
+            {totalProducts} résultat{totalProducts > 1 ? 's' : ''}
           </p>
         {/if}
         <SearchInput containerClasses="ml-2" />
@@ -434,7 +433,7 @@
           md:gap-3 -mx-4 md:mx-0">
           {#each $searchResults as product, index}
             <ProductCard {product} bind:hoveredProduct />
-            {#if index === $searchResults.length - 1 && lastFetchLength >= 20}
+            {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
               <div use:fetchMoreOnIntersect>
                 <SkeletonCard />
               </div>
@@ -446,7 +445,7 @@
             {/each}
           {/if}
         </div>
-        {#if $searchResults.length < 1}
+        {#if totalProducts.length < 1}
           <div class="m-auto text-center">
             <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
             <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">

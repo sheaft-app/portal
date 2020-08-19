@@ -33,6 +33,7 @@
     maxDistance: null
   };
 
+  let totalStores = 0;
   let hoveredStore = null;
   let prevFeed = [];
   let currentPage = 0;
@@ -136,12 +137,17 @@
     currentPage = ++page;
     var variables = createVariables(currentPage);
 
-    var response = await graphQLInstance.query(SEARCH_STORES, variables, errorsHandler.Uuid);
-    if (response.success) {
-      prevFeed = response.data;
+    var response = await graphQLInstance.query(SEARCH_STORES, variables, errorsHandler.Uuid);   
+		if (!response.success) {
+      //TODO 
+      return;
+    }
+    
+    totalStores = response.data.count;
+      prevFeed = response.data.stores;
       lastFetchLength = prevFeed.length;
       items.set(prevFeed);
-    }
+    
   }
 
   var popStateListener = (event) => {
@@ -224,7 +230,7 @@
         md:gap-3 -mx-4 md:mx-0">
         {#each $items as store, index}
           <StoreCard {store} bind:hoveredStore />
-          {#if index === $items.length - 1 && lastFetchLength >= 20}
+          {#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
             <div use:fetchMoreOnIntersect>
               <SkeletonStoreCard />
             </div>

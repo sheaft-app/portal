@@ -3,16 +3,19 @@ import gql from "graphql-tag";
 export const SEARCH_PRODUCERS = gql`
 	query SearchProducers($input: SearchTermsInput!) {
 		searchProducers(input: $input) {
-			id
-			name
-			address {
-				city
-				latitude
-				longitude
-				zipcode
-			}
-			tags {
+			count
+			producers {
+				id
 				name
+				address {
+					city
+					latitude
+					longitude
+					zipcode
+				}
+				tags {
+					name
+				}
 			}
 		}
 	}
