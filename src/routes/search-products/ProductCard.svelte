@@ -5,7 +5,7 @@
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import GetAuthInstance from "../../services/SheaftAuth.js";
   import Icon from "svelte-awesome";
-  import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+  import { faMapMarkerAlt, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
 
@@ -79,17 +79,27 @@
       <div class="block lg:hidden w-1/4 text-xs">
         <div
           style="background-image: url({src}); background-size: cover;
-          background-position: top; max-width: 60px;"
+          background-position: top;"
           class:skeleton-box={!src}
-          class="h-10 mt-1 rounded-lg block mb-2" />
-          <div class="distance-badge inline-block text-xs font-bold text-white px-2 py-1 rounded-full bg-{distanceInfos.color}">
-            <div class="inline distance-badge-content">
-              <Icon
-                data={faMapMarkerAlt}
-                scale=".8"
-                class="ml-1 mr-1 distance-icon"
-                style="margin-top:-4px;" />
-              {distanceInfos.label}
+          class="h-20 mt-1 rounded-lg flex items-center justify-center mb-2">
+            {#if isInCart(product)}
+              <div class="rounded-full p-1 w-6 h-6 text-center bg-white text-normal" style="
+                line-height: 0;
+                box-shadow: rgba(0, 0, 0, .6) 0px 0px 5px 3px;">
+                <Icon data={faShoppingCart} style="width: 14px;" />
+              </div>
+            {/if}
+          </div>
+          <div class="text-center">
+            <div class="w-full distance-badge inline-block text-xs font-bold text-white px-2 py-1 rounded-full bg-{distanceInfos.color}">
+              <div class="inline distance-badge-content">
+                <Icon
+                  data={faMapMarkerAlt}
+                  scale=".8"
+                  class="ml-1 mr-1 distance-icon"
+                  style="margin-top:-4px;" />
+                {distanceInfos.label}
+              </div>
             </div>
           </div>
       </div>
