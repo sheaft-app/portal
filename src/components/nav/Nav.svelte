@@ -16,7 +16,7 @@
     faSignOutAlt
   } from "@fortawesome/free-solid-svg-icons";
   import NavLink from "./NavLink.svelte";
-  import { fly } from "svelte/transition";
+  import { slide } from "svelte/transition";
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { navExpended, userMenuExpended } from "./store.js";
   import { authAuthenticated, authUserAccount, authRegistered } from "./../../stores/auth.js";
@@ -81,7 +81,7 @@
   {/if}
   {#if $userMenuExpended}
     <div
-      transition:fly={{ x: 300 }}
+      transition:slide
       use:clickOutside={document.getElementById('user-badge')}
       on:click_outside={() => {
         userMenuExpended.set(false);
