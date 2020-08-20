@@ -158,14 +158,21 @@
     if (!variables) return;
 
     var response = await graphQLInstance.query(SEARCH_PRODUCTS, variables, errorsHandler.Uuid);
+
     if (!response.success) {
       //TODO
       return;
     }
 
+    // on reset le feed pour les nouvelles query
+    if (page === 1) {
+      prevFeed = [];
+    }
+
     totalProducts = response.data.count;
     prevFeed = [...prevFeed, ...response.data.products];
     lastFetchLength = response.data.products.length;
+
     searchResults.set(prevFeed);
   };
 
@@ -442,7 +449,7 @@
               {/each}
             {/if}
           </div>
-          {#if totalProducts.length < 1}
+          {#if totalProducts < 1}
             <div class="m-auto text-center">
               <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
               <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">

@@ -106,10 +106,10 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 30px; right: 15px;" class="absolute">
           {#if product.tags.map(t => t.name).includes('bio')}
-            <img src="./img/labels/bio.jpg" alt="Bio" class="mb-3" />
+            <img src="./img/labels/bio.jpg" alt="Bio" class="mb-1" />
           {/if}
           {#if product.packaged}
-            <img src="./img/packaging.svg" alt="Consigné" class="mb-3" style="transform: scale(0.7);" />
+            <img src="./img/packaging.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
           {/if}
         </div>
         <div class="pr-8">
