@@ -44,7 +44,7 @@
   let currentPage = 0;
   let lastFetchLength = 0;
   let totalProducts = 0;
-  const QUERY_SIZE = 10;
+  const QUERY_SIZE = 25;
 
   let defaultSearchValues = {
     text: null,
@@ -438,7 +438,7 @@
             {#each $searchResults as product, index}
               <ProductCard {product} bind:hoveredProduct />
               {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
-                <div class="fetchMore" use:fetchMoreOnIntersect>
+                <div class="h-full" use:fetchMoreOnIntersect>
                   <SkeletonCard />
                 </div>
               {/if}

@@ -1,4 +1,4 @@
-<div>
+<div class="h-full">
     <div class="shadow-md h-full bg-white lg:rounded-t-md lg:block flex">
         <div class="relative pb-5/6 overflow-hidden rounded-t-md hidden lg:block">
             <div style="height: 150px;" class="skeleton-box w-full rounded-t-md" />
