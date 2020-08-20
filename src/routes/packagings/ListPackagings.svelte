@@ -18,7 +18,7 @@
 	let selectedItems = [];
 
 	const headers = [
-		{ name: "Nom" },
+		{ name: "Nom", sortLabel: "name" },
 		{ name: "Prix HT" },
 		{ name: "TVA" },
 		{ name: "Prix TTC" },

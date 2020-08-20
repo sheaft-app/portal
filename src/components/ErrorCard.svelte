@@ -4,9 +4,7 @@
 	import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 	import { errors } from "../stores/errors";
 
-	export let errorsHandler = null, displayIcon = true, classes = null;
-
-	let componentErrors = [];
+	export let errorsHandler = null, displayIcon = true, classes = null, componentErrors = [];
 
 	const getErrors = () => {
 		if (!errorsHandler) {
@@ -16,19 +14,27 @@
 		componentErrors = errorsHandler.getErrors();
 	}
 
+	const refresh = () => {
+		location.reload();
+	};
+
 	$: getErrors($errors);
 </script>
 
 {#if componentErrors.length >= 1}
-	<div class="mb-3 p-4 bg-red-500 text-white shadow lg:flex flex-row {classes}" in:slide>
+	<div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row {classes}" in:slide>
 		{#if displayIcon}
-				<Icon data={faExclamationTriangle} class="hidden lg:block lg:mr-2 lg:mt-2 lg:mb-0 mb-2" />
+			<div class="hidden lg:block">
+				<Icon data={faExclamationTriangle} class="lg:mr-2 lg:mt-2 lg:mb-0 mb-2" />
+			</div>
 		{/if}
-		<div>
+		<div class="text-center lg:text-left">
 				<slot />
 				{#each componentErrors as error}
 					<p>{error.message}</p>
 				{/each}
+				<p class="mt-2">Si le problème persiste, contactez le service technique.</p>
+				<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={refresh}>Réessayer</button>
 		</div>
 	</div>
 {/if}

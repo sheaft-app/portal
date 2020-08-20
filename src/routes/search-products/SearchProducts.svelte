@@ -39,6 +39,7 @@
   const routerInstance = GetRouterInstance();
 
   let hoveredProduct = null;
+  let errors = [];
   let prevFeed = [];
   let currentPage = 0;
   let lastFetchLength = 0;
@@ -55,15 +56,10 @@
   };
 
   const observer = new IntersectionObserver(async entries => {
-    if (
-      !$isLoading &&
-      lastFetchLength >= QUERY_SIZE &&
-      !$isFetchingMore &&
-      entries[0].isIntersecting
-    ) {
-      isFetchingMore.set(false);
-      await searchProducts(currentPage);
+    if (!$isLoading && lastFetchLength >= QUERY_SIZE && !$isFetchingMore && entries[0].isIntersecting) {
       isFetchingMore.set(true);
+      await searchProducts(currentPage);
+      isFetchingMore.set(false);
     }
   });
 
@@ -168,8 +164,8 @@
     }
 
     totalProducts = response.data.count;
-    prevFeed = response.data.products;
-    lastFetchLength = prevFeed.length;
+    prevFeed = [...prevFeed, ...response.data.products];
+    lastFetchLength = response.data.products.length;
     searchResults.set(prevFeed);
   };
 
@@ -322,145 +318,147 @@
 </div>
 
 <TransitionWrapper hasRightPanel style="margin:0;">
-  <div
-    class:has-bottom-mobile-cta={$cartItems.length >= 1}
-    class="search-products md:-my-4">
-    <ErrorCard {errorsHandler} />
+  <ErrorCard {errorsHandler} bind:componentErrors={errors} />
+  {#if errors.length < 1}
     <div
-      class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
-      <CitySearch
-        withGeolocationButton={true}
-        initAddress={initLocation}
-        bind:selectedAddress={selectedLocation}
-        containerStyles="background-color: #ffffff; border: none; border-radius:
-        0px; color: #205164; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-bottom: 10px;" />
-    </div>
-    {#if authManager.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+      class:has-bottom-mobile-cta={$cartItems.length >= 1}
+      class="search-products md:-my-4">
       <div
-        class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-orange-200
-        shadow rounded mb-5 lg:mt-3">
-        <div class="flex">
-          <div>
-            <p class="uppercase font-bold leading-none">Module consommateur</p>
-            <div class="mt-2 text-sm">
-              <p>
-                Cette page est réservée aux consommateurs. Vous ne pouvez
-                l'utiliser qu'à des fins de consultation.
-              </p>
-              <div class="mt-1 flex flex-wrap">
-                {#if authManager.isInRole([Roles.Store.Value])}
-                  <button class="btn btn-accent btn-lg">
-                    Passer une commande
+        class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
+        <CitySearch
+          withGeolocationButton={true}
+          initAddress={initLocation}
+          bind:selectedAddress={selectedLocation}
+          containerStyles="background-color: #ffffff; border: none; border-radius:
+          0px; color: #205164; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-bottom: 10px;" />
+      </div>
+      {#if authManager.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+        <div
+          class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-orange-200
+          shadow rounded mb-5 lg:mt-3">
+          <div class="flex">
+            <div>
+              <p class="uppercase font-bold leading-none">Module consommateur</p>
+              <div class="mt-2 text-sm">
+                <p>
+                  Cette page est réservée aux consommateurs. Vous ne pouvez
+                  l'utiliser qu'à des fins de consultation.
+                </p>
+                <div class="mt-1 flex flex-wrap">
+                  {#if authManager.isInRole([Roles.Store.Value])}
+                    <button class="btn btn-accent btn-lg">
+                      Passer une commande
+                    </button>
+                  {/if}
+                  <button
+                    class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow">
+                    Changer de compte
                   </button>
-                {/if}
-                <button
-                  class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow">
-                  Changer de compte
-                </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    {/if}
-    {#if $filters.latitude && $filters.longitude}
-      <div
-        class="inline-flex items-center mb-3 themed text-center sticky py-1
-        lg:py-2 -mx-4 px-4 filter-bar"
-        style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
-        width: -webkit-fill-available; width: fill-available;">
-        {#if $isLoading}
-          <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />        
-        {:else}
-          <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
-            {totalProducts} résultat{totalProducts > 1 ? 's' : ''}
-          </p>
-        {/if}
-        <SearchInput containerClasses="ml-2" />
-        <button
-          class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
-          flex-nowrap items-center ml-2"
-          class:text-white={$filters.tags && $filters.tags.length > 0}
-          class:bg-accent={$filters.tags && $filters.tags.length > 0}
-          on:click={showFiltersModal}>
-          <Icon
-            class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
-            data={faFilter} />
-          {#if $filters.tags && $filters.tags.length > 0}
-            <span class="text-white">{$filters.tags.length}</span>
-          {/if}
-        </button>
-      </div>
-      {#if $isLoading}
+      {/if}
+      {#if $filters.latitude && $filters.longitude}
         <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
-          md:gap-3 -mx-4 md:mx-0">
-          {#each Array(9) as _i}
-            <SkeletonCard />
-          {/each}
+          class="inline-flex items-center mb-3 themed text-center sticky py-1
+          lg:py-2 -mx-4 px-4 filter-bar"
+          style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
+          width: -webkit-fill-available; width: fill-available;">
+          {#if $isLoading}
+            <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />        
+          {:else}
+            <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
+              {totalProducts} résultat{totalProducts > 1 ? 's' : ''}
+            </p>
+          {/if}
+          <SearchInput containerClasses="ml-2" />
+          <button
+            class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
+            flex-nowrap items-center ml-2"
+            class:text-white={$filters.tags && $filters.tags.length > 0}
+            class:bg-accent={$filters.tags && $filters.tags.length > 0}
+            on:click={showFiltersModal}>
+            <Icon
+              class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+              data={faFilter} />
+            {#if $filters.tags && $filters.tags.length > 0}
+              <span class="text-white">{$filters.tags.length}</span>
+            {/if}
+          </button>
         </div>
-      {:else}
-        <div class="flex flex-wrap mb-3">
-          {#if $filters.sort}
-            <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              tri : {renderSort($filters.sort)}
-            </span>
-          {/if}
-          {#if $filters.text}
-            <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              termes: '{$filters.text}'
-            </span>
-          {/if}
-          {#if $filters.tags && $filters.tags.length > 0}
-            {#each $filters.tags as tag}
+        {#if $isLoading}
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+            md:gap-3 -mx-4 md:mx-0">
+            {#each Array(9) as _i}
+              <SkeletonCard />
+            {/each}
+          </div>
+        {:else}
+          <div class="flex flex-wrap mb-3">
+            {#if $filters.sort}
               <span
                 style="font-size: .6rem"
                 class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
                 items-center bg-gray-200">
-                {tag}
+                tri : {renderSort($filters.sort)}
               </span>
-            {/each}
-          {/if}
-        </div>
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
-          md:gap-3 -mx-4 md:mx-0">
-          {#each $searchResults as product, index}
-            <ProductCard {product} bind:hoveredProduct />
-            {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
-              <div use:fetchMoreOnIntersect>
-                <SkeletonCard />
-              </div>
             {/if}
-          {/each}
-          {#if $isFetchingMore}
-            {#each Array(3) as _i}
-              <SkeletonCard />
-            {/each}
-          {/if}
-        </div>
-        {#if totalProducts.length < 1}
-          <div class="m-auto text-center">
-            <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
-            <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">
+            {#if $filters.text}
+              <span
+                style="font-size: .6rem"
+                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                items-center bg-gray-200">
+                termes: '{$filters.text}'
+              </span>
+            {/if}
+            {#if $filters.tags && $filters.tags.length > 0}
+              {#each $filters.tags as tag}
+                <span
+                  style="font-size: .6rem"
+                  class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                  items-center bg-gray-200">
+                  {tag}
+                </span>
+              {/each}
+            {/if}
           </div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+            md:gap-3 -mx-4 md:mx-0">
+            {#each $searchResults as product, index}
+              <ProductCard {product} bind:hoveredProduct />
+              {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
+                <div class="fetchMore" use:fetchMoreOnIntersect>
+                  <SkeletonCard />
+                </div>
+              {/if}
+            {/each}
+            {#if $isFetchingMore}
+              {#each Array(3) as _i}
+                <SkeletonCard />
+              {/each}
+            {/if}
+          </div>
+          {#if totalProducts.length < 1}
+            <div class="m-auto text-center">
+              <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
+              <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">
+            </div>
+          {/if}
         {/if}
+      {:else}
+        <div class="text-lg text-gray-600 text-center">
+          <p class="mt-5 mb-5 px-8">
+          Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
+          </p>
+          <img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
+        </div>
       {/if}
-    {:else}
-      <div class="text-lg text-gray-600 text-center">
-        <p class="mt-5 mb-5 px-8">
-         Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
-        </p>
-        <img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
-      </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </TransitionWrapper>
 
 <div

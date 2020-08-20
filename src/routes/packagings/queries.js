@@ -1,14 +1,23 @@
 import gql from "graphql-tag";
 
 export const GET_PACKAGINGS = gql`
-	query Packagings {
-		packagings {
-			nodes {
-				id
-				name
-				vat
-				wholeSalePrice
-				onSalePrice
+	query Packagings(
+		$first: PaginationAmount
+		$after: String		
+		$last: PaginationAmount
+		$before: String
+		$orderBy: PackagingDtoSort
+	) {
+		packagings(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
+			edges {
+				cursor
+				node {
+					id
+					name
+					vat
+					wholeSalePrice
+					onSalePrice
+				}
 			}
 			pageInfo{
 				hasPreviousPage

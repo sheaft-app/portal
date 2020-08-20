@@ -8,6 +8,7 @@ export const CREATE_PACKAGING = gql`
 			vat
 			wholeSalePrice
 			onSalePrice
+			__typename
 		}
 	}
 `;
@@ -18,6 +19,7 @@ export const UPDATE_PACKAGING = gql`
 			id
 			name
 			vat
+			onSalePrice
 			wholeSalePrice
 			description
 		}
