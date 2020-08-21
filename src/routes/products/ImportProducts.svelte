@@ -97,10 +97,7 @@
     <ul class="list-decimal">
       <li>
         Téléchargez le modèle de catalogue
-        <a
-          href="https://sheaftapp.blob.core.windows.net/resources/excel/sheaft_catalogue_produits.xlsx?st=2020-04-19T16%3A22%3A13Z&se=2030-04-20T16%3A22%3A00Z&sp=rl&sv=2018-03-28&sr=b&sig=805Bz2NDkPCKsaZ7Nq1w8kfVdLVo3H7uNEGmICqeSTc%3D">
-          en cliquant ici
-        </a>.
+        <a href="https://sheaftapp.blob.core.windows.net/resources/excel/sheaft_catalogue_produits.xlsx"> en cliquant ici</a>.
       </li>
       <li>
         Complétez le fichier Excel téléchargé en veillant à bien respecter les
