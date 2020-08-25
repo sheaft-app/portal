@@ -43,6 +43,8 @@
   let prevFeed = [];
   let currentPage = 0;
   let lastFetchLength = 0;
+  let departmentData = null;
+  let allDepartmentsProgress = [];
   let totalProducts = 0;
   const QUERY_SIZE = 25;
 
@@ -231,6 +233,22 @@
     return true;
   };
 
+  const getDepartmentProgressData = async (address) => {
+    if (!address) {
+      return;
+    }
+    
+    const departmentCode = address.insee.substring(0, 2);
+
+    let department = allDepartmentsProgress.find((d) => d.Code == departmentCode);
+
+    if (department) {
+      return departmentData = department;
+    }
+
+    return departmentData = null;
+  }
+
   const handleLocation = location => {
     if (!location) return;
     updateUserLocation({
@@ -243,6 +261,7 @@
   let selectedLocation = null;
   $: refetch($querystring);
   $: handleLocation(selectedLocation);
+  $: getDepartmentProgressData(selectedLocation);
 
   var popStateListener = (event) => {
     if ($selectedItem) {
@@ -250,7 +269,7 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     var newPosition = retrieveUserLocationInQueryString();
     if (newPosition) {
       updateUserLocationInStorage(newPosition);
@@ -267,6 +286,10 @@
 
     totalProducts = 0;
     searchResults.set([]);
+    
+    allDepartmentsProgress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
+      .then(response => response.json())
+      .then(data => data);
   });
 
   onDestroy(() => {
@@ -367,102 +390,133 @@
           </div>
         </div>
       {/if}
-      {#if $filters.latitude && $filters.longitude}
-        <div
-          class="inline-flex items-center mb-3 themed text-center sticky py-1
-          lg:py-2 -mx-4 px-4 filter-bar"
-          style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
-          width: -webkit-fill-available; width: fill-available;">
-          {#if $isLoading}
-            <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />        
+       <!-- si on ne trouve pas de produits alors qu'il n'y a pas de filtre, on affiche un écran "Nous ne sommes pas encore arrivés !" -->
+      {#if !$isLoading && totalProducts < 1 && (!$filters.tag || $filters.tags && $filters.tags.length === 0) && !$filters.text}
+        <div class="text-lg">
+          {#if departmentData}
+            <h2 class="mt-5 mb-5 font-semibold">{departmentData.Name}, on arrive bientôt !</h2>
           {:else}
-            <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
-              {totalProducts} résultat{totalProducts > 1 ? 's' : ''}
-            </p>
+            <h2 class="mt-5 mb-5 font-semibold">On arrive bientôt !</h2>
           {/if}
-          <SearchInput containerClasses="ml-2" />
-          <button
-            class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
-            flex-nowrap items-center ml-2"
-            class:text-white={$filters.tags && $filters.tags.length > 0}
-            class:bg-accent={$filters.tags && $filters.tags.length > 0}
-            on:click={showFiltersModal}>
-            <Icon
-              class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
-              data={faFilter} />
-            {#if $filters.tags && $filters.tags.length > 0}
-              <span class="text-white">{$filters.tags.length}</span>
-            {/if}
-          </button>
+          <span class="bg-primary h-1 w-20 block mt-2 mb-4"></span>
+          <p class="mt-5 mb-5">Nous n'avons pas encore de producteur enregistré autour de vous 😔.</p>
+          <p class="mb-5">Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme auprès des producteurs de votre département !</p>
+          <img src="./img/maps.svg" width="230" class="m-auto" alt="Nous ne sommes pas encore dans ce département" />
         </div>
-        <div class="flex flex-wrap mb-3">
-          {#if $filters.sort}
-            <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              tri : {renderSort($filters.sort)}
-            </span>
+      {:else}
+        {#if $filters.latitude && $filters.longitude}
+          {#if departmentData && departmentData.ProducersCount > 0 && departmentData.ProducersCount < departmentData.ProducersRequired}
+            <div
+              class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-white shadow lg:rounded mb-5 lg:mt-3">
+              <div class="flex">
+                <div>
+                  <p class="uppercase font-bold leading-none">{departmentData.Name}</p>
+                  <div class="mt-2 text-sm">
+                    <p>
+                      {departmentData.ProducersCount} producteurs sont enregistrés dans ce département. 
+                      Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme et amener plus de producteurs !
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           {/if}
-          {#if $filters.text}
-            <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              termes: '{$filters.text}'
-            </span>
-          {/if}
-          {#if $filters.tags && $filters.tags.length > 0}
-            {#each $filters.tags as tag}
+          <div
+            class="inline-flex items-center mb-3 themed text-center sticky py-1
+            lg:py-2 -mx-4 px-4 filter-bar"
+            style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
+            width: -webkit-fill-available; width: fill-available;">
+            {#if $isLoading}
+              <div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />        
+            {:else}
+              <p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
+                {totalProducts} résultat{totalProducts > 1 ? 's' : ''}
+              </p>
+            {/if}
+            <SearchInput containerClasses="ml-2" />
+            <button
+              class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
+              flex-nowrap items-center ml-2"
+              class:text-white={$filters.tags && $filters.tags.length > 0}
+              class:bg-accent={$filters.tags && $filters.tags.length > 0}
+              on:click={showFiltersModal}>
+              <Icon
+                class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+                data={faFilter} />
+              {#if $filters.tags && $filters.tags.length > 0}
+                <span class="text-white">{$filters.tags.length}</span>
+              {/if}
+            </button>
+          </div>
+          <div class="flex flex-wrap mb-3">
+            {#if $filters.sort}
               <span
                 style="font-size: .6rem"
                 class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
                 items-center bg-gray-200">
-                {tag}
+                tri : {renderSort($filters.sort)}
               </span>
-            {/each}
-          {/if}
-        </div>
-        {#if $isLoading}
-          <div
-            class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
-            md:gap-3 -mx-4 md:mx-0">
-            {#each Array(9) as _i}
-              <SkeletonCard />
-            {/each}
-          </div>
-        {:else}
-          <div
-            class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
-            md:gap-3 -mx-4 md:mx-0">
-            {#each $searchResults as product, index}
-              <ProductCard {product} bind:hoveredProduct />
-              {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
-                <div class="h-full" use:fetchMoreOnIntersect>
-                  <SkeletonCard />
-                </div>
-              {/if}
-            {/each}
-            {#if $isFetchingMore}
-              {#each Array(3) as _i}
-                <SkeletonCard />
+            {/if}
+            {#if $filters.text}
+              <span
+                style="font-size: .6rem"
+                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                items-center bg-gray-200">
+                termes: '{$filters.text}'
+              </span>
+            {/if}
+            {#if $filters.tags && $filters.tags.length > 0}
+              {#each $filters.tags as tag}
+                <span
+                  style="font-size: .6rem"
+                  class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                  items-center bg-gray-200">
+                  {tag}
+                </span>
               {/each}
             {/if}
           </div>
-          {#if totalProducts < 1}
-            <div class="m-auto text-center">
-              <p class="mb-5 text-gray-600">Zut, on a pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
-              <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">
+          {#if $isLoading}
+            <div
+              class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+              md:gap-3 -mx-4 md:mx-0">
+              {#each Array(9) as _i}
+                <SkeletonCard />
+              {/each}
             </div>
+          {:else}
+            <div
+              class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+              md:gap-3 -mx-4 md:mx-0">
+              {#each $searchResults as product, index}
+                <ProductCard {product} bind:hoveredProduct />
+                {#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
+                  <div class="h-full" use:fetchMoreOnIntersect>
+                    <SkeletonCard />
+                  </div>
+                {/if}
+              {/each}
+              {#if $isFetchingMore}
+                {#each Array(3) as _i}
+                  <SkeletonCard />
+                {/each}
+              {/if}
+            </div>
+            {#if totalProducts < 1}
+              <div class="m-auto text-center">
+                <p class="mb-5 text-gray-600">Zut, nous n'avons pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.</p>
+                <img src="./img/empty_results.svg"  alt="Pas de résultat" style="width: 200px;" class="m-auto">
+              </div>
+            {/if}
           {/if}
+        {:else}
+          <div class="text-lg text-gray-600 text-center">
+            <p class="mt-5 mb-5 px-8">
+            Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
+            </p>
+            <img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
+          </div>
         {/if}
-      {:else}
-        <div class="text-lg text-gray-600 text-center">
-          <p class="mt-5 mb-5 px-8">
-          Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
-          </p>
-          <img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
-        </div>
       {/if}
     </div>
   {/if}

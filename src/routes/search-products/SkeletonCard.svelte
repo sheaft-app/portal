@@ -1,11 +1,11 @@
 <div class="h-full">
-    <div class="shadow-md h-full bg-white lg:rounded-t-md lg:block flex">
+    <div class="shadow-md h-full bg-white lg:rounded-t-md lg:block flex border-b border-gray-300 lg:border-none">
         <div class="relative pb-5/6 overflow-hidden rounded-t-md hidden lg:block">
             <div style="height: 150px;" class="skeleton-box w-full rounded-t-md" />
         </div>
         <div class="relative flex lg:block w-full lg:w-auto">
             <div class="relative pt-3 pl-3 w-1/4 pb-5/6 overflow-hidden rounded-t-md block lg:hidden bg-white">
-                <div class="h-10 skeleton-box rounded-lg mb-3" />
+                <div class="h-20 skeleton-box rounded-lg mb-3" />
                 <div class="h-6 skeleton-box rounded-full" />
             </div>
             <div class="bg-white p-3 lg:p-6 lg:rounded-b-lg w-full lg:w-auto">

@@ -31,6 +31,7 @@ export default class CityService {
 					city: address.properties.city,
 					latitude: address.geometry.coordinates[1],
 					longitude: address.geometry.coordinates[0],
+					insee: address.properties.id
 				};
 			});
 
@@ -73,6 +74,7 @@ export default class CityService {
 				city: address.properties.city,
 				latitude: address.geometry.coordinates[1],
 				longitude: address.geometry.coordinates[0],
+				insee: address.properties.id
 			};
 
 			return res;
