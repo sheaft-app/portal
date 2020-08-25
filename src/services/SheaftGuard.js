@@ -84,7 +84,7 @@ class SheaftGuard {
 				return false;
 
 			var url = this.getRedirectUrl();
-			this.routerInstance.refresh(url);
+			this.routerInstance.goTo(url, null, true);
 			return false;
 		});
 
@@ -114,13 +114,13 @@ class SheaftGuard {
 
 	handleRouteNavigation = (exec, autoRedirect) => {
 		if(this.authInstance.authorized && !this.authInstance.registered && this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0){
-			this.routerInstance.refresh(RegisterRoutes.Choose);
+			this.routerInstance.goTo(RegisterRoutes.Choose, null, true);
 			return false;
 		}
 
 		var result = exec();
 		if(!result && autoRedirect){	
-			this.routerInstance.refresh(HomeRoutes.Prefix);
+			this.routerInstance.goTo(HomeRoutes.Prefix, null, true);
 		}
 		
 		return result;

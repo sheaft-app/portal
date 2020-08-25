@@ -1,5 +1,6 @@
 import { querystring, push, pop, replace, location } from "svelte-spa-router";
 import qs from "qs";
+import Guid from "../helpers/Guid";
 
 class SheaftRouter {
 	constructor() {
@@ -12,18 +13,22 @@ class SheaftRouter {
 		});
 	}
 
-	goTo(route, routeParams) {
+	goTo(route, routeParams, refresh) {
 		let url = handleUrl(route, routeParams);
-		push(url);
+		if(refresh == null || !refresh)
+			push(url);
+		else
+			replace(url);
 	}
 
 	goBack() {
 		pop();
 	}
 
-	refresh(route, routeParams) {
-		let url = handleUrl(route, routeParams);
-		replace(url);
+	refresh() {
+		var params = this.getQueryParams();	
+		params["refresh"] = Guid.NewGuid();	
+		this.replaceQueryParams(params);
 	}
 
 	replaceQueryParams(params) {

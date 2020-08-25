@@ -70,7 +70,7 @@
       user.state.redirectTo &&
       user.state.redirectTo.slice(1) != "/"
     ) {
-      routerInstance.refresh(user.state.redirectTo.slice(1));
+      routerInstance.goTo(user.state.redirectTo.slice(1), null, true);
     }
     
     if (config.production) {
