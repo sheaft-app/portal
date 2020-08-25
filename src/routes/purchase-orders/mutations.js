@@ -5,9 +5,24 @@ export const ACCEPT_PURCHASE_ORDERS = gql`
 		acceptPurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -19,9 +34,24 @@ export const REFUSE_PURCHASE_ORDERS = gql`
 		refusePurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -33,9 +63,24 @@ export const CANCEL_PURCHASE_ORDERS = gql`
 		cancelPurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -47,9 +92,24 @@ export const PROCESS_PURCHASE_ORDERS = gql`
 		processPurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -61,9 +121,24 @@ export const COMPLETE_PURCHASE_ORDERS = gql`
 		completePurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -75,9 +150,24 @@ export const DELIVER_PURCHASE_ORDERS = gql`
 		deliverPurchaseOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}
@@ -100,9 +190,24 @@ export const EXPORT_PICKING_FROM_ORDERS = gql`
 		exportPickingFromOrders(input: $input) {
 			nodes {
 				id
-				status
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
 				expectedDelivery {
+					kind
 					expectedDeliveryDate
+				}
+				createdOn
+				status
+				vendor {
+					name
+				}
+				sender {
+					name
+					email
+					phone
 				}
 			}
 		}

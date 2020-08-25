@@ -123,6 +123,7 @@
 			purchaseOrders: selectedItems,
 			onClose: async (res) => {
 				if (res.success) {
+					routerInstance.refresh();
 					selectedItems = [];
 				}
 			},

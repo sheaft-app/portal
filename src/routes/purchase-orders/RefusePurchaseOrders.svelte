@@ -4,6 +4,7 @@
   import { REFUSE_PURCHASE_ORDERS } from "./mutations.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { GET_ORDERS } from "./queries";
 
   export let onClose, close, purchaseOrders;
 
@@ -15,10 +16,16 @@
 
   const handleSubmit = async () => {
     isLoading = true;
-    var res = await graphQLInstance.mutate(REFUSE_PURCHASE_ORDERS, {
+    var res = await graphQLInstance.mutate(
+      REFUSE_PURCHASE_ORDERS, 
+      {
       ids: purchaseOrders.map(o => o.id),
       reason: reason
-    });
+    },
+			errorsHandler.Uuid,
+			GET_ORDERS
+		);
+
     isLoading = false;
 
     if (!res.success) {

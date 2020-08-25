@@ -64,6 +64,7 @@ faFileExport
       { id },
       errorsHandler.Uuid
     );
+
     isLoading = false;
 
     if (!res.success) {
@@ -80,43 +81,39 @@ faFileExport
   });
 
   function createPickingOrder() {
-    handleOrdersModal(CreatePickingOrders, [order]);
+    handleOrdersModal(CreatePickingOrders, order);
   }
 
   const cancelOrder = () => {
-    handleOrdersModal(CancelPurchaseOrders, [order]);
+    handleOrdersModal(CancelPurchaseOrders, order);
   };
 
   const refuseOrder = () => {
-    handleOrdersModal(RefusePurchaseOrders, [order]);
+    handleOrdersModal(RefusePurchaseOrders, order);
   };
 
   const acceptOrder = () => {
-    handleOrdersModal(AcceptPurchaseOrders, [order]);
+    handleOrdersModal(AcceptPurchaseOrders, order);
   };
 
   const processOrder = () => {
-    handleOrdersModal(ProcessPurchaseOrders, [order]);
+    handleOrdersModal(ProcessPurchaseOrders, order);
   };
 
   const completeOrder = () => {
-    handleOrdersModal(CompletePurchaseOrders, [order]);
+    handleOrdersModal(CompletePurchaseOrders, order);
   };
 
   const deliverOrder = () => {
-    handleOrdersModal(DeliverPurchaseOrders, [order]);
+    handleOrdersModal(DeliverPurchaseOrders, order);
   };
 
-  const handleOrdersModal = (modal, items) => {
+  const handleOrdersModal = (modal, item) => {
     open(modal, {
-      purchaseOrders: items,
+      purchaseOrders: [item],
       onClose: async res => {
         if (res.success) {
-          var s = res.data[0];
-          order.status = s.status;
-          order.reason = s.reason;
-          order.expectedDelivery.expectedDeliveryDate =
-            s.expectedDelivery.expectedDeliveryDate;
+          await getPurchaseOrder(item.id);
         }
       }
     });
