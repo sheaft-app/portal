@@ -7,15 +7,15 @@ export const CREATE_SELLING_POINT = gql`
 			name
 			kind
 			lockOrderHoursBeforeDelivery
-			address {
-				line1
-				city
-				zipcode
-			}
 			openingHours {
 				day
 				from
 				to
+			}
+			address {
+				line1
+				city
+				zipcode
 			}
 		}
 	}
@@ -28,15 +28,15 @@ export const UPDATE_SELLING_POINT = gql`
 			name
 			kind
 			lockOrderHoursBeforeDelivery
-			address {
-				line1
-				city
-				zipcode
-			}
 			openingHours {
 				day
 				from
 				to
+			}
+			address {
+				line1
+				city
+				zipcode
 			}
 		}
 	}

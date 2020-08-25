@@ -16,6 +16,7 @@ export const GET_SELLING_POINTS = gql`
 				id
 				name
 				kind
+				lockOrderHoursBeforeDelivery
 				openingHours {
 					day
 					from
