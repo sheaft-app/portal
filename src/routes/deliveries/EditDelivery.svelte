@@ -6,7 +6,7 @@
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import Loader from "./../../components/Loader.svelte";
   import { UPDATE_DELIVERY } from "./mutations";
-  import { GET_DELIVERY_DETAILS } from "./queries";
+  import { GET_DELIVERIES, GET_DELIVERY_DETAILS } from "./queries";
   import DeliveryForm from "./DeliveryForm.svelte";
   import { denormalizeOpeningHours } from "./../../helpers/app";
   import DeleteDelivery from "./DeleteDelivery.svelte";
@@ -49,7 +49,8 @@
     var res = await graphQLInstance.mutate(
       UPDATE_DELIVERY,
       delivery,
-      errorsHandler.Uuid
+      errorsHandler.Uuid,
+      GET_DELIVERIES
     );
 
     if (!res.success) {
@@ -57,7 +58,8 @@
       return;
     }
 
-    isUpdatingDelivery = false;
+    isUpdatingDelivery = false;    
+    await fetchDelivery(delivery.id);
   };
 
   const showDeleteModal = () => {

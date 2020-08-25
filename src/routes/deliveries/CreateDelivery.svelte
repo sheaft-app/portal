@@ -4,6 +4,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import { CREATE_DELIVERY } from "./mutations";
+  import { GET_DELIVERIES } from "./queries";
   import DeliveryForm from "./DeliveryForm.svelte";
   import DeliveryRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
@@ -39,7 +40,9 @@
       name: "",
       kind: DeliveryKind.ProducerToStore.Value,
       ...delivery
-    }, errorsHandler.Uuid);
+    }, 
+    errorsHandler.Uuid,
+    GET_DELIVERIES);
 
     if (!res.success) {
       // todo
