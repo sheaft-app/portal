@@ -4,6 +4,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { GET_SELLING_POINTS } from "./queries";
 
   const errorsHandler = new SheaftErrors();
 
@@ -18,9 +19,13 @@
   }
 
   const handleSubmit = async () => {
-    var res = await graphQLInstance.mutate(DELETE_SELLING_POINT, {
+    var res = await graphQLInstance.mutate(
+      DELETE_SELLING_POINT, 
+      {
       id: sellingPoint.id
-    }, errorsHandler.Uuid);
+    }, 
+    errorsHandler.Uuid,
+    GET_SELLING_POINTS);
 
     if (!res.success) {
       // todo

@@ -5,7 +5,7 @@
   import Icon from "svelte-awesome";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { UPDATE_SELLING_POINT } from "./mutations";
-  import { GET_SELLING_POINT_DETAILS } from "./queries";
+  import { GET_SELLING_POINTS, GET_SELLING_POINT_DETAILS } from "./queries";
   import SellingPointForm from "./SellingPointForm.svelte";
   import DeleteSellingPoint from "./DeleteSellingPoint.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
@@ -53,7 +53,8 @@
     var res = await graphQLInstance.mutate(
       UPDATE_SELLING_POINT,
       sellingPoint,
-      errorsHandler.Uuid
+      errorsHandler.Uuid,
+      GET_SELLING_POINTS
     );
 
     if (!res.success) {

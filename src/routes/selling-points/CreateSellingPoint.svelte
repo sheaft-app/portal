@@ -9,6 +9,7 @@
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+import { GET_SELLING_POINTS } from "./queries";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
@@ -34,7 +35,11 @@
   const handleSubmit = async () => {
     isCreatingSellingPoint = true;
 
-    var res = await graphQLInstance.mutate(CREATE_SELLING_POINT, sellingPoint, errorsHandler.Uuid);
+    var res = await graphQLInstance.mutate(
+      CREATE_SELLING_POINT, 
+      sellingPoint, 
+      errorsHandler.Uuid,
+      GET_SELLING_POINTS);
 
     if (!res.success) {
       // todo
