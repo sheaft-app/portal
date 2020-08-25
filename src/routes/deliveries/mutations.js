@@ -3,15 +3,16 @@ import gql from "graphql-tag";
 export const CREATE_DELIVERY = gql`
 	mutation CreateSellingPoint($input: CreateDeliveryModeInput!) {
 		createDeliveryMode(input: $input) {
+			id
 			name
 			kind
-            lockOrderHoursBeforeDelivery
-            address {
+			lockOrderHoursBeforeDelivery
+			address {
 				line1
 				city
 				zipcode
 			}
-            openingHours {
+			openingHours {
 				day
 				from
 				to
@@ -26,13 +27,13 @@ export const UPDATE_DELIVERY = gql`
 			id
 			name
 			kind
-            lockOrderHoursBeforeDelivery
-            address {
+			lockOrderHoursBeforeDelivery
+			address {
 				line1
 				city
 				zipcode
 			}
-            openingHours {
+			openingHours {
 				day
 				from
 				to

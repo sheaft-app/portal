@@ -7,6 +7,7 @@ export const GET_DELIVERIES = gql`
 				id
 				name
 				kind
+				lockOrderHoursBeforeDelivery
 				openingHours {
 					day
 					from
@@ -28,6 +29,11 @@ export const GET_DELIVERY_DETAILS = gql`
 				day
 				from
 				to
+			}
+			address {
+				line1
+				city
+				zipcode
 			}
 		}
 	}
