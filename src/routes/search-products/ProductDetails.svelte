@@ -193,7 +193,7 @@
   <div class="px-4 sm:px-6">
     <div class="-mx-10 relative">
       <div
-        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=953&q=80'}); background-size: cover;"
+        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://sheaftapp.blob.core.windows.net/pictures/products/categories/default.jpg'}); background-size: cover;"
         class="w-full rounded-t-md shadow-md h-40 lg:h-64" />
       <!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
           <Icon data={faHeart} scale="1.3" />

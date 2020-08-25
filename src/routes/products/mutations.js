@@ -27,6 +27,7 @@ export const UPDATE_PRODUCT = gql`
 			rating
 			ratingsCount
 			description
+			picture
 			weight
 			vat
 			vatPricePerUnit
