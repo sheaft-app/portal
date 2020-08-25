@@ -21,19 +21,16 @@ export const UPDATE_PRODUCT = gql`
 		updateProduct(input: $input) {
 			id
 			reference
+			onSalePricePerUnit
+			wholeSalePricePerUnit
 			name
+			rating
+			ratingsCount
 			description
+			weight
 			vat
 			vatPricePerUnit
-			wholeSalePricePerUnit
-			picture
-			unit
-			quantityPerUnit
-			tags {
-				id
-				name
-				kind
-			}
+			createdOn
 			available
 		}
 	}
