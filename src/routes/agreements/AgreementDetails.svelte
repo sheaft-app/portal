@@ -45,34 +45,23 @@
   };
 
   const showCancelAgreementModal = () => {
-    open(CancelAgreementModal, {
-      agreement,
-      onClose: res => {
-        if (res.success) {
-          agreement.status = res.data[0].status;
-        }
-      }
-    });
+    handleAgreementModal(CancelAgreementModal, agreement);
   };
 
   const showAcceptAgreementModal = () => {
-    open(AcceptAgreementModal, {
-      agreement,
-      onClose: res => {
-        if (res.success) {
-          agreement.status = res.data.status;
-          agreement.selectedHours = res.data.selectedHours;
-        }
-      }
-    });
+    handleAgreementModal(AcceptAgreementModal, agreement);
   };
 
   const showRefuseAgreementModal = () => {
-    open(RefuseAgreementModal, {
-      agreement,
-      onClose: res => {
+    handleAgreementModal(RefuseAgreementModal, agreement);
+  };
+
+  const handleAgreementModal = (Modal, obj) => {
+    open(Modal, {
+      agreement : obj,
+      onClose: async res => {
         if (res.success) {
-          agreement.status = res.data[0].status;
+          await getAgreement(agreement.id);
         }
       }
     });

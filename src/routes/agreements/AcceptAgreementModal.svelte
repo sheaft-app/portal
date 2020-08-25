@@ -5,6 +5,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { ACCEPT_AGREEMENT } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { GET_AGREEMENTS } from "./queries.js";
 
   const errorsHandler = new SheaftErrors();
 
@@ -28,7 +29,7 @@
           to: selectedHour.to
         }
       })
-    });
+    }, GET_AGREEMENTS);
 
     isLoading = false;
 

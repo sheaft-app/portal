@@ -4,6 +4,7 @@
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import { REFUSE_AGREEMENTS } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { GET_AGREEMENTS } from "./queries.js";
 
   const errorsHandler = new SheaftErrors();
 
@@ -19,7 +20,7 @@
     var res = await graphQLInstance.mutate(REFUSE_AGREEMENTS, {
       ids: [agreement.id],
       reason
-    });
+    }, GET_AGREEMENTS);
 
     isLoading = false;
 
