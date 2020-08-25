@@ -29,7 +29,9 @@ import { GET_AGREEMENTS } from "./queries.js";
           to: selectedHour.to
         }
       })
-    }, GET_AGREEMENTS);
+    }, 
+    errorsHandler.Uuid, 
+    GET_AGREEMENTS);
 
     isLoading = false;
 
