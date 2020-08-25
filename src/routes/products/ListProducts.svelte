@@ -65,8 +65,7 @@
 			selectedItems: selectedItems,
 			onClose: async (res) => {
 				if (res.success) {
-					let ids = selectedItems.map((item) => item.id);
-					items = items.filter((i) => !ids.includes(i.id));
+					routerInstance.refresh();
 					selectedItems = [];
 				}
 			},
@@ -79,12 +78,7 @@
 			status: status,
 			onClose: async (res) => {
 				if (res.success) {
-					let ids = res.data.map((item) => item.id);
-					ids.map((id) => {
-						let item = items.find((o) => o.id === id);
-						item.available = status;
-					});
-
+					routerInstance.refresh();
 					selectedItems = [];
 				}
 			},
