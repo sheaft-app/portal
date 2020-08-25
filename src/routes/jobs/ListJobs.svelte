@@ -65,10 +65,12 @@
 
 	const pauseJobs = async () => {
 		await handleJobsCommand(PAUSE_JOBS);
+		routerInstance.refresh();
 	};
 
 	const resumeJobs = async () => {
 		await handleJobsCommand(RESUME_JOBS);
+		routerInstance.refresh();
 	};
 
 	const openModal = (modal, selectedJobs) => {
@@ -76,6 +78,7 @@
 			jobs: selectedJobs,
 			onClose: async (res) => {
 				if (res.success) {
+					routerInstance.refresh();
 					selectedItems = [];
 				}
 			},
@@ -90,7 +93,8 @@
 			{
 				ids: selectedItems.map((s) => s.id),
 			},
-			errorsHandler.Uuid
+			errorsHandler.Uuid,
+			GET_JOBS
 		);
 
 		isLoading = false;

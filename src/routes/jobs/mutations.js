@@ -6,7 +6,13 @@ export const CANCEL_JOBS = gql`
 			nodes {
 				id
 				name
+				createdOn
+				updatedOn
 				status
+				kind
+				startedOn
+				completedOn
+				file
 			}
 		}
 	}
@@ -18,7 +24,13 @@ export const RETRY_JOBS = gql`
 			nodes {
 				id
 				name
+				createdOn
+				updatedOn
 				status
+				kind
+				startedOn
+				completedOn
+				file
 			}
 		}
 	}
@@ -30,7 +42,13 @@ export const PAUSE_JOBS = gql`
 			nodes {
 				id
 				name
+				createdOn
+				updatedOn
 				status
+				kind
+				startedOn
+				completedOn
+				file
 			}
 		}
 	}
@@ -42,7 +60,13 @@ export const RESUME_JOBS = gql`
 			nodes {
 				id
 				name
+				createdOn
+				updatedOn
 				status
+				kind
+				startedOn
+				completedOn
+				file
 			}
 		}
 	}
@@ -53,7 +77,13 @@ export const ARCHIVE_JOBS = gql`
 			nodes {
 				id
 				name
+				createdOn
+				updatedOn
 				status
+				kind
+				startedOn
+				completedOn
+				file
 			}
 		}
 	}
