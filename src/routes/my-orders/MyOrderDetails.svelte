@@ -66,8 +66,7 @@
       orders: [order],
       onClose: async res => {
         if(res.success) {
-          order.status = res.data[0].status;
-          order.reason = res.data[0].reason;
+          await getMyOrder(order.id);
         }
       }
     });

@@ -5,8 +5,33 @@ export const CANCEL_MY_ORDERS = gql`
 		cancelPurchaseOrders(input: $input) {
 			nodes {
 				id
+				totalOnSalePrice
+				totalWholeSalePrice
+				totalVatPrice
+				reference
+				productsCount
+				expectedDelivery {
+					expectedDeliveryDate
+					day
+					from
+					to
+					kind
+					address {
+						line1
+						zipcode
+						city
+					}
+				}
+				createdOn
 				status
-				reason
+				vendor {
+					name
+					email
+					phone
+				}
+				sender {
+					name
+				}
 			}
 		}
 	}

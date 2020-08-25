@@ -4,6 +4,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import { CANCEL_MY_ORDERS } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { MY_ORDERS } from "./queries";
 
   const errorsHandler = new SheaftErrors();
 
@@ -16,7 +17,15 @@
 
   const handleSubmit = async () => {
     isLoading = true;
-    var res = await graphQLInstance.mutate(CANCEL_MY_ORDERS, {ids: orders.map(o => o.id), reason: reason});
+    var res = await graphQLInstance.mutate(
+      CANCEL_MY_ORDERS, 
+      {
+        ids: orders.map(o => o.id), 
+        reason: reason
+      },
+      errorsHandler.Uuid,
+      MY_ORDERS);
+      
     isLoading = false;
 
     if(!res.success){
