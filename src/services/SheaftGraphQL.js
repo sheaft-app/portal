@@ -40,7 +40,7 @@ class SheaftGraphQL {
 		}
 	}
 
-	async mutate(request, input, trackerUuid) {
+	async mutate(request, input, trackerUuid, typename) {
 		try {
 			if (trackerUuid) errorsHandler.clearErrors(trackerUuid);
 			// let typename = input["__typename"];
@@ -50,7 +50,7 @@ class SheaftGraphQL {
 				mutation: request,
 				variables: {
 					input,
-				}
+				},
 			});
 
 			var dataType = findDataType(request);
@@ -59,7 +59,7 @@ class SheaftGraphQL {
 			if (!res.success) {
 				errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			} else {
-				updateApolloCache(res, dataType, input);
+				updateApolloCache(res, dataType, input, typename);
 			}
 
 			return res;
@@ -83,34 +83,58 @@ function findIdInDataType(dataType) {
 	return idFound;
 }
 
-function updateApolloCache(res, dataType, input) {
+function updateApolloCache(res, dataType, input, typename) {
 	if (!res || !res.data) return;
 
 	if (dataType.length > 1 && !findIdInDataType(dataType)) {
 		throw "ID is mandatory to update the cache.";
 	}
 
+	var hasInputIds = input.id || input.ids;
 	if (Array.isArray(res.data)) {
 		for (var i = 0; i < res.data.length; i++) {
-			handleApolloCache(res.data[i], input.id || input.ids);
+			handleApolloCache(res.data[i], hasInputIds, typename);
 		}
 	} else if (dataType.length > 1) {
-		handleApolloCache(res.data, input.id || input.ids);
+		handleApolloCache(res.data, hasInputIds, typename);
 	} else if (typeof res.data == "boolean" && input.id) {
-		deleteItemInApolloCache(input.id);
+		deleteItemInApolloCache(input.id, typename);
 	} else if (typeof res.data == "boolean" && input.ids) {
 		input.ids.forEach((id) => {
-			deleteItemInApolloCache(id);
+			deleteItemInApolloCache(id, typename);
 		});
 	}
 }
 
-function handleApolloCache(item, hasInputIds) {
-	if (item.id && !hasInputIds) {
-		return addItemInApolloCache(item);
-	} else if (item.id && hasInputIds) {
+function handleApolloCache(item, hasInputIds, typename) {
+	if (item.id && hasInputIds) {
 		return updateItemInApolloCache(item);
 	}
+
+	clearApolloCache(typename);
+}
+
+function clearApolloCache(typename) {
+	if (!typename) return;
+
+	var type = findDataType(typename)[0];
+	if (!type) return;
+
+	var cacheUpdated = false;
+	var props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
+	for (var i = 0; i < props.length; i++) {
+		if (props[i] == type || props[i].indexOf(type + "(") > -1) {
+			var queries = Object.getOwnPropertyNames(client.cache.data.data);
+			for (var j = 0; j < queries.length; j++) {
+				if (queries[j].indexOf("$ROOT_QUERY." + props[i]) > -1) {
+					client.cache.data.delete(queries[j]);
+					cacheUpdated = true;
+				}
+			}
+		}
+	}
+
+	if (cacheUpdated) client.resetStore();
 }
 
 function updateItemInApolloCache(item) {
@@ -134,8 +158,9 @@ function addItemInApolloCache(item) {
 	client.cache.customAdd(item);
 }
 
-function deleteItemInApolloCache(id) {
+function deleteItemInApolloCache(id, typename) {
 	client.cache.data.delete(id);
+	clearApolloCache(typename);
 }
 
 function findDataType(data) {
@@ -159,14 +184,16 @@ function findRecursiveSelection(selections) {
 
 function handleResults(data, dataTypes) {
 	var resultData = data[dataTypes[0]];
-	if(!resultData && dataTypes.length > 1){
-		var selection = dataTypes[1].filter(dt => dt == "nodes" || dt == "edges");
-		if(selection.length == 0)
-			return {			
+	if (!resultData && dataTypes.length > 1) {
+		var selection = dataTypes[1].filter((dt) => dt == "nodes" || dt == "edges");
+		if (selection.length == 0)
+			return {
 				data: null,
-				errors: [{code:"NOT_FOUND", message: "La ressource est introuvable"}],
+				errors: [
+					{ code: "NOT_FOUND", message: "La ressource est introuvable" },
+				],
 				success: false,
-			}
+			};
 	}
 
 	var errors = null;
@@ -221,13 +248,15 @@ function handleResults(data, dataTypes) {
 
 function formatServerError(error) {
 	var errors = [];
-	if(error.toString() == "Error: Network error: Failed to fetch"){
-		errors = [{
-			code:'OFFLINE',
-			message: 'La connexion au serveur a été perdue, veuillez réitérer votre demande dès que la connexion sera rétablie',
-		}]
-	}
-	else{
+	if (error.toString() == "Error: Network error: Failed to fetch") {
+		errors = [
+			{
+				code: "OFFLINE",
+				message:
+					"La connexion au serveur a été perdue, veuillez réitérer votre demande dès que la connexion sera rétablie",
+			},
+		];
+	} else {
 		errors = getErrors(error);
 	}
 
@@ -256,17 +285,21 @@ function getErrors(error) {
 			}
 
 			if (!code) code = "Unexpected";
-			
+
 			var message = null;
-			
-			if (graphQlError.extensions && graphQlError.extensions.hasOwnProperty(code)) {
+
+			if (
+				graphQlError.extensions &&
+				graphQlError.extensions.hasOwnProperty(code)
+			) {
 				message = graphQlError.extensions[code];
 			}
-			
+
 			if (!message) {
-				message = graphQlError.extensions && graphQlError.extensions.message
-					? graphQlError.extensions.message
-					: graphQlError.message;
+				message =
+					graphQlError.extensions && graphQlError.extensions.message
+						? graphQlError.extensions.message
+						: graphQlError.message;
 			}
 
 			errors.push({
@@ -286,10 +319,10 @@ function getErrors(error) {
 	];
 }
 
-InMemoryCache.prototype.customAdd = function (entry) {
+InMemoryCache.prototype.customAdd = (entry) => {
 	this.data.data = {
-		[entry.id]: entry
-	}
+		[entry.id]: entry,
+	};
 };
 
 let graphQLInstance = null;
