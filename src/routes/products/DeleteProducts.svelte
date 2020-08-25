@@ -2,6 +2,7 @@
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { DELETE_PRODUCTS } from "./mutations.js";
+  import { GET_PRODUCTS } from "./queries.js";
   import SheaftErrors from "./../../services/SheaftErrors";
 
   const errorsHandler = new SheaftErrors();
@@ -17,7 +18,7 @@
 
     var res = await graphQLInstance.mutate(DELETE_PRODUCTS, {
       ids: selectedItems.map(s => s.id)
-    }, errorsHandler.Uuid);
+    }, errorsHandler.Uuid, GET_PRODUCTS);
 
     isLoading = false;
     if (!res.success) {

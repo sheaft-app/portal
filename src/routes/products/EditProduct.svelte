@@ -9,7 +9,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import ProductForm from "./ProductForm.svelte";
-  import { GET_PRODUCT_DETAILS } from "./queries.js";
+  import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "./queries.js";
   import { UPDATE_PRODUCT } from "./mutations.js";
   import ProductRoutes from "./routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
@@ -60,7 +60,7 @@
       tags: product.tags.map(i => i.id),
       vat: product.vat,
       available: product.available
-    }, errorsHandler.Uuid);
+    }, errorsHandler.Uuid, GET_PRODUCTS);
     isLoading = false;
 
     if (!res.success) {

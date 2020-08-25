@@ -8,6 +8,7 @@
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import ProductForm from "./ProductForm.svelte";
   import { CREATE_PRODUCT } from "./mutations.js";
+  import { GET_PRODUCTS } from "./queries.js";
   import ChangeImage from "./ChangeImage.svelte";
   import ProductRoutes from "./routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
@@ -48,7 +49,7 @@
       tags: product.tags.map(i => i.id),
       vat: product.vat,
       available: product.available
-    }, errorsHandler.Uuid);
+    }, errorsHandler.Uuid, GET_PRODUCTS);
 
     isLoading = false;
 
