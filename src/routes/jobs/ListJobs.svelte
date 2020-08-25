@@ -26,10 +26,12 @@
 	import JobRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
+	const routerInstance = GetRouterInstance();
 
 	let selectedItems = [];
 	let items = [];
