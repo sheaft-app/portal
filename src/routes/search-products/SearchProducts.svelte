@@ -395,45 +395,45 @@
             {/if}
           </button>
         </div>
+        <div class="flex flex-wrap mb-3">
+          {#if $filters.sort}
+            <span
+              style="font-size: .6rem"
+              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+              items-center bg-gray-200">
+              tri : {renderSort($filters.sort)}
+            </span>
+          {/if}
+          {#if $filters.text}
+            <span
+              style="font-size: .6rem"
+              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+              items-center bg-gray-200">
+              termes: '{$filters.text}'
+            </span>
+          {/if}
+          {#if $filters.tags && $filters.tags.length > 0}
+            {#each $filters.tags as tag}
+              <span
+                style="font-size: .6rem"
+                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+                items-center bg-gray-200">
+                {tag}
+              </span>
+            {/each}
+          {/if}
+        </div>
         {#if $isLoading}
           <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+            class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
             md:gap-3 -mx-4 md:mx-0">
             {#each Array(9) as _i}
               <SkeletonCard />
             {/each}
           </div>
         {:else}
-          <div class="flex flex-wrap mb-3">
-            {#if $filters.sort}
-              <span
-                style="font-size: .6rem"
-                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-                items-center bg-gray-200">
-                tri : {renderSort($filters.sort)}
-              </span>
-            {/if}
-            {#if $filters.text}
-              <span
-                style="font-size: .6rem"
-                class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-                items-center bg-gray-200">
-                termes: '{$filters.text}'
-              </span>
-            {/if}
-            {#if $filters.tags && $filters.tags.length > 0}
-              {#each $filters.tags as tag}
-                <span
-                  style="font-size: .6rem"
-                  class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-                  items-center bg-gray-200">
-                  {tag}
-                </span>
-              {/each}
-            {/if}
-          </div>
           <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
+            class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3
             md:gap-3 -mx-4 md:mx-0">
             {#each $searchResults as product, index}
               <ProductCard {product} bind:hoveredProduct />
@@ -490,6 +490,12 @@
 <style lang="scss">
   .filter-btn {
     min-height: 44px;
+  }
+
+  .products-grid {
+    @media (min-width: 1650px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
 
   $cart-panel-size: 350px;

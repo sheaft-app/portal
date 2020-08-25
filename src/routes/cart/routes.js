@@ -5,6 +5,7 @@ const prefix = "/cart";
 
 const resume = "/resume";
 const success = "/success";
+const checkout = "/checkout";
 
 const CartRoutes = {
 	Prefix: `${prefix}`,
@@ -18,6 +19,7 @@ const CartRoutes = {
 	},
 	Success: {
 		Name: "Succès",
+		Roles: [Roles.Consumer.Value, Roles.Store.Value],
 		Icon: faShoppingCart,
 		Path: `${prefix}${success}`,
 		SubPart: `${success}`,
@@ -25,6 +27,14 @@ const CartRoutes = {
 			Query: { id: null },
 		},
 	},
+	Checkout: {
+		Name: "Paiement",
+		Roles: [Roles.Consumer.Value, Roles.Store.Value],
+		Icon: faShoppingCart,
+		Path: `${prefix}${checkout}`,
+		SubPart: `${checkout}`,
+		Params: null,
+	}
 };
 
 export default CartRoutes;

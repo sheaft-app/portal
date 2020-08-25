@@ -639,7 +639,7 @@
     height: calc(100% - 45px);
   }
 
-  @media (min-width: 1025px) {
+  @media (min-width: 1024px) {
     main {
       top: 64px;
       margin-left: 200px; // la taille de la nav de gauche
@@ -702,7 +702,7 @@
   }
 
   .mobile-overflow-hidden {
-    @media (min-width: 1042px) {
+    @media (min-width: 1023px) {
       width: calc(100% - 200px);
     }
 

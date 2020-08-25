@@ -87,9 +87,12 @@
   .modal {
     background: white;
     margin-top:-64px;
-    margin-left:-200px;
     max-height: calc(100vh - 200px);
     transition: all .2s ease-in-out;
+
+    @media (min-width: 1024px) {
+      margin-left: -200px;
+    }
   }
 
   @media(min-width: 769px) {
@@ -98,7 +101,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1023px) {
     .visibleNav {
       margin-top: 45px;
     }

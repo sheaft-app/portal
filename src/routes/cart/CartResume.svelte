@@ -73,7 +73,7 @@
     }
   });
 
-  $: isValid = acceptCgv && !$cartItems.find(c => !c.producer.deliveryHour);
+  $: isValid = !$cartItems.find(c => !c.producer.deliveryHour);
   $: productsCount = $cartItems.reduce((sum, product) => {
     return sum + (product.quantity || 0);
   }, 0);
@@ -155,7 +155,7 @@
 </svelte:head>
 
 <TransitionWrapper>
-  <form on:submit|preventDefault={handleSubmit}>
+  <form on:submit|preventDefault={() => {}}>
     <div class="pb-6">
       <h1>Votre Panier</h1>
       {#if $cartItems.length > 0}
@@ -292,7 +292,7 @@
               </div>
             </div>
             <div class="pt-2 lg:pt-3">
-              <div class="pt-4 pb-8 lg:px-2">
+              <!-- <div class="pt-4 pb-8 lg:px-2">
                 <label class="cursor-pointer">
                   <InputCheckbox
                     checked={acceptCgv}
@@ -303,17 +303,18 @@
                   </a>
                   et je les accepte
                 </label>
-              </div>
+              </div> -->
               <button
-                type="submit"
+                type="button"
+                on:click={() => routerInstance.goTo(CartRoutes.Checkout)}
                 class:disabled={productsCount === 0 || isCreatingOrder || !isValid}
                 disabled={productsCount === 0 || isCreatingOrder || !isValid}
-                class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+                class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
                 justify-center m-auto"
                 style="padding-left: 50px; padding-right: 50px;">
                 {#if isCreatingOrder}
                   <Icon data={faCircleNotch} spin />
-                {:else}Valider{/if}
+                {:else}Suivant{/if}
               </button>
             </div>
           </div>

@@ -3,6 +3,7 @@
   import Router from "svelte-spa-router";
   import CartResume from "./CartResume.svelte";
   import CartSuccess from "./CartSuccess.svelte";
+  import CartCheckout from "./CartCheckout.svelte";
 
   export let params = {};
 
@@ -11,6 +12,7 @@
   const routes = {};
   routes[CartRoutes.Resume.SubPart] = CartResume;
   routes[CartRoutes.Success.SubPart] = CartSuccess;
+  routes[CartRoutes.Checkout.SubPart] = CartCheckout;
 </script>
 
 <Router {routes} {prefix} />
