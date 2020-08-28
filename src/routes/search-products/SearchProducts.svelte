@@ -43,7 +43,7 @@
   let prevFeed = [];
   let currentPage = 0;
   let lastFetchLength = 0;
-  let departmentData = null;
+  let departmentProgress = null;
   let allDepartmentsProgress = [];
   let totalProducts = 0;
   const QUERY_SIZE = 25;
@@ -235,7 +235,7 @@
 
   const getDepartmentProgressData = async (address) => {
     if (!address) {
-      return;
+      return departmentProgress = null;
     }
     
     const departmentCode = address.insee.substring(0, 2);
@@ -243,10 +243,10 @@
     let department = allDepartmentsProgress.find((d) => d.Code == departmentCode);
 
     if (department) {
-      return departmentData = department;
+      return departmentProgress = department;
     }
 
-    return departmentData = null;
+    return departmentProgress = null;
   }
 
   const handleLocation = location => {
@@ -270,6 +270,10 @@
   }
 
   onMount(async () => {
+    allDepartmentsProgress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
+      .then(response => response.json())
+      .then(data => data);
+
     var newPosition = retrieveUserLocationInQueryString();
     if (newPosition) {
       updateUserLocationInStorage(newPosition);
@@ -286,10 +290,6 @@
 
     totalProducts = 0;
     searchResults.set([]);
-    
-    allDepartmentsProgress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
-      .then(response => response.json())
-      .then(data => data);
   });
 
   onDestroy(() => {
@@ -393,8 +393,8 @@
        <!-- si on ne trouve pas de produits alors qu'il n'y a pas de filtre, on affiche un écran "Nous ne sommes pas encore arrivés !" -->
       {#if !$isLoading && totalProducts < 1 && (!$filters.tag || $filters.tags && $filters.tags.length === 0) && !$filters.text}
         <div class="text-lg">
-          {#if departmentData}
-            <h2 class="mt-5 mb-5 font-semibold">{departmentData.Name}, on arrive bientôt !</h2>
+          {#if departmentProgress}
+            <h2 class="mt-5 mb-5 font-semibold">{departmentProgress.Name}, on arrive bientôt !</h2>
           {:else}
             <h2 class="mt-5 mb-5 font-semibold">On arrive bientôt !</h2>
           {/if}
@@ -405,17 +405,19 @@
         </div>
       {:else}
         {#if $filters.latitude && $filters.longitude}
-          {#if departmentData && departmentData.ProducersCount > 0 && departmentData.ProducersCount < departmentData.ProducersRequired}
+          {#if departmentProgress && departmentProgress.ProducersCount > 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
             <div
               class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-white shadow lg:rounded mb-5 lg:mt-3">
               <div class="flex">
                 <div>
-                  <p class="uppercase font-bold leading-none">{departmentData.Name}</p>
+                  <p class="uppercase font-bold leading-none">{departmentProgress.Name}</p>
                   <div class="mt-2 text-sm">
-                    <p>
-                      {departmentData.ProducersCount} producteurs sont enregistrés dans ce département. 
-                      Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme et amener plus de producteurs !
-                    </p>
+                    {#if departmentProgress.ProducersCount == 1}
+                      <p>{departmentProgress.ProducersCount} producteur est enregistré dans ce département.</p>
+                    {:else}
+                      <p>{departmentProgress.ProducersCount} producteurs sont enregistrés dans ce département.</p>
+                    {/if}
+                    <p>Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme et amener plus de producteurs !</p>
                   </div>
                 </div>
               </div>
@@ -533,8 +535,8 @@
 {#if $selectedItem}
   <div
     id="product-details"
-    transition:fly={{ x: 600, duration: 300 }}
-    class="fixed active overflow-y-scroll overflow-x-hidden shadow right-0 top-0
+    transition:fly={{ x: -600, duration: 300 }}
+    class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
     h-screen product-details bg-white"
     style="z-index: 10; padding-bottom: 70px;">
     <ProductDetails />

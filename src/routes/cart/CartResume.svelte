@@ -27,9 +27,10 @@
   let producersDeliveries = [];
   let acceptCgv = false;
   let producerNumber = 0;
-  let isLoadingDeliveries = true;
+  let isLoadingDeliveries = false;
   let hasSubmitError = false;
   let isCreatingOrder = false;
+  let orderedCartItems = [];
   let firstTimeOnCart = false;
   $: orderedCartItems = $cartItems.sort((a, b) => a.producer.name >= b.producer.name ? 1 : -1);
 
@@ -45,7 +46,8 @@
   })
 
   beforeUpdate(async () => {
-    if (producersDeliveries.length === 0) {
+    if ($cartItems.length > 0 && producersDeliveries.length === 0) {
+      isLoadingDeliveries = true;
       var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
         input: {
           ids: $cartItems
