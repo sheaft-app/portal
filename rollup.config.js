@@ -141,7 +141,7 @@ export default {
 				{
 					handler: "CacheFirst",
 					urlPattern: new RegExp(
-						"^https://sheaftapp.blob.core.windows.net/.*",
+						"^https://sheaftapp.blob.core.windows.net/pictures/.*",
 						"iyg"
 					),
 					options: {
