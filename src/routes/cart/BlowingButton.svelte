@@ -64,7 +64,7 @@
   cursor: pointer;
   position: relative;
   transition: transform ease-in 0.1s;
-  box-shadow: 0 2px 25px rgba(255, 0, 130, 0.5);
+  box-shadow: 0 2px 15px rgba(255, 0, 130, 0.5);
 }
 .bubbly-button.blowed {
   cursor: default;
