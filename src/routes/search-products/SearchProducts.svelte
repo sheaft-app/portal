@@ -10,7 +10,8 @@
     cartItems,
     cartExpanded,
     selectedItem,
-    searchResults
+    searchResults,
+    allDepartmentsProgress
   } from "./../../stores/app.js";
   import Cart from "./Cart.svelte";
   import ProductCard from "./ProductCard.svelte";
@@ -44,7 +45,6 @@
   let currentPage = 0;
   let lastFetchLength = 0;
   let departmentProgress = null;
-  let allDepartmentsProgress = [];
   let totalProducts = 0;
   const QUERY_SIZE = 25;
 
@@ -234,13 +234,13 @@
   };
 
   const getDepartmentProgressData = async (address) => {
-    if (!address) {
-      return departmentProgress = null;
+    if (!address || $allDepartmentsProgress.length < 1) {
+      return;
     }
     
     const departmentCode = address.insee.substring(0, 2);
 
-    let department = allDepartmentsProgress.find((d) => d.Code == departmentCode);
+    let department = $allDepartmentsProgress.find((d) => d.Code == departmentCode);
 
     if (department) {
       return departmentProgress = department;
@@ -270,10 +270,6 @@
   }
 
   onMount(async () => {
-    allDepartmentsProgress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
-      .then(response => response.json())
-      .then(data => data);
-
     var newPosition = retrieveUserLocationInQueryString();
     if (newPosition) {
       updateUserLocationInStorage(newPosition);
@@ -287,9 +283,6 @@
     }
 
     window.addEventListener("popstate", popStateListener, false);
-
-    totalProducts = 0;
-    searchResults.set([]);
   });
 
   onDestroy(() => {
@@ -411,11 +404,12 @@
               <div class="flex">
                 <div>
                   <p class="uppercase font-bold leading-none">{departmentProgress.Name}</p>
+                  <span class="bg-primary h-1 w-20 block mt-2 mb-4"></span>
                   <div class="mt-2 text-sm">
                     {#if departmentProgress.ProducersCount == 1}
-                      <p>{departmentProgress.ProducersCount} producteur est enregistré dans ce département.</p>
+                      <p class="mb-2"><span class="font-semibold">{departmentProgress.ProducersCount} producteur</span> est enregistré dans ce département.</p>
                     {:else}
-                      <p>{departmentProgress.ProducersCount} producteurs sont enregistrés dans ce département.</p>
+                      <p class="mb-2"><span class="font-semibold">{departmentProgress.ProducersCount} producteurs</span> sont enregistrés dans ce département.</p>
                     {/if}
                     <p>Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme et amener plus de producteurs !</p>
                   </div>

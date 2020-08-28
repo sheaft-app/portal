@@ -8,3 +8,4 @@ export const toggleMoreActions = writable(false);
 export const selectedItem = writable(null);
 export const regions = writable([]);
 export const departments = writable([]);
+export const allDepartmentsProgress = writable([]);

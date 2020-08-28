@@ -9,7 +9,7 @@
   import SheaftErrors from "./services/SheaftErrors.js";
   import Loader from "./components/Loader.svelte";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
-  import { cartItems } from "./stores/app.js";
+  import { cartItems, allDepartmentsProgress } from "./stores/app.js";
   import { onMount, onDestroy } from "svelte";
   import "notyf/notyf.min.css";
   import Icon from "svelte-awesome";
@@ -128,6 +128,12 @@
     }
 
     isLoading = false;
+
+    const progress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
+      .then(response => response.json())
+      .then(data => data);
+      
+    allDepartmentsProgress.set(progress);
   });
 
   onDestroy(async () => {
