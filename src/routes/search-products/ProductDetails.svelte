@@ -191,10 +191,19 @@
   </div>
 {:else}
   <div class="px-4 sm:px-6">
-    <div class="-mx-10 relative">
+    <div class="-mx-6 relative" style="background-color: black">
+      <!-- si on utilise l'image par défaut -->
+      {#if product.picture.includes("pictures/products/categories/")}
+        <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
+          <div class="font-semibold text-white text-lg">
+            Aucune image disponible
+          </div>
+        </div>
+      {/if}
       <div
         style="background-position: center; background-image: url({product.picture ? product.picture : 'https://sheaftapp.blob.core.windows.net/pictures/products/categories/default.jpg'}); background-size: cover;"
-        class="w-full rounded-t-md shadow-md h-40 lg:h-64" />
+        class:opacity-50={product.picture.includes("pictures/products/categories/")}
+        class="w-full shadow-md h-40 lg:h-64" />
       <!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
           <Icon data={faHeart} scale="1.3" />
         </button> -->
@@ -257,7 +266,7 @@
           border-gray-800 border-solid"
           src={product.producer.picture ? product.producer.picture : 'img/icons/farmer.svg'}
           alt="Producteur" />
-        <div class="w-6/12">
+        <div class="w-7/12 md:w-6/12">
           <p class="text-base lg:text-lg">{product.producer.name}</p>
           <div class="text-gray-600 text-sm lg:text-base">
             {product.producer.address.line1}

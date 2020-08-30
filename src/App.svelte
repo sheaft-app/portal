@@ -225,7 +225,7 @@
     <div
       on:click={() => selectedItem.set(null)}
       class="cursor-pointer w-full h-full opacity-50 bg-black fixed hidden
-      md:block"
+      lg:block"
       style="z-index: 7;" />
   {/if}
   <Nav />

@@ -400,7 +400,7 @@
         {#if $filters.latitude && $filters.longitude}
           {#if departmentProgress && departmentProgress.ProducersCount > 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
             <div
-              class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-white shadow lg:rounded mb-5 lg:mt-3">
+              class="py-5 px-5 md:px-4 overflow-x-auto -mx-4 md:mx-0 bg-white shadow lg:rounded mb-5 lg:mt-3">
               <div class="flex">
                 <div>
                   <p class="uppercase font-bold leading-none">{departmentProgress.Name}</p>

@@ -215,7 +215,6 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-red-400 text-white">
 				<div class="flex">
-					<Icon data={timesCircle} scale="1.5" class="mr-5 " />
 					<div>
 						<p class="uppercase font-bold leading-none">Erreur</p>
 						<div class="mt-2">
@@ -231,7 +230,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={circleONotch} scale="1.5" class="mr-5 text-teal-400" />
+					<Icon data={faCircleNotch} scale="1.5" class="mr-5 text-teal-400" />
 					<div>
 						<p class="uppercase font-bold leading-none">En cours</p>
 						<div class="mt-2">

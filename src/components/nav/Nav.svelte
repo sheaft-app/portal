@@ -283,7 +283,7 @@
           routerInstance.goTo(CartRoutes.Resume);
         }}
         aria-label={CartRoutes.Resume.Name}
-        class="flex uppercase text-white mr-6 md:mx-6">
+        class="flex uppercase text-white mr-6 md:mx-6 items-center">
         <Icon data={CartRoutes.Resume.Icon} scale="1.2" />
         <span
           class="absolute rounded-full bg-accent text-white"
@@ -302,7 +302,7 @@
         openHelpModal();
       }}
       aria-label="Afficher l'aide"
-      class="uppercase text-white mr-4 md:mr-4">
+      class="uppercase text-white mr-4 md:mr-4 flex items-center">
       <Icon data={faQuestionCircle} class="mr-3 inline" scale="1.2" />
     </button>
     {#if $authAuthenticated}
@@ -313,7 +313,7 @@
           displayNotificationCenter.set(!$displayNotificationCenter);
         }}
         aria-label="Afficher les notifications"
-        class="flex uppercase text-white mr-6 md:mr-6">
+        class="flex uppercase text-white mr-4 md:mr-4 items-center">
         <Icon data={faBell} class="mr-3 inline" scale="1.2" />
         {#if $notifications.filter(n => n.unread).length > 0}
           <span
