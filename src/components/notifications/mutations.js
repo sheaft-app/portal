@@ -7,7 +7,10 @@ export const MARK_USER_NOTIFICATIONS_AS_READ = gql`
 `;
 
 export const MARK_USER_NOTIFICATION_AS_READ = gql`
-	mutation MarkUserNotificationAsRead($input: ID!){
+	mutation MarkUserNotificationAsRead($input: IdInput!){
 		markUserNotificationAsRead(input: $input)
+		{
+			id
+		}
 	}
 `;
