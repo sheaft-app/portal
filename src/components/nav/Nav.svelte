@@ -283,16 +283,17 @@
           routerInstance.goTo(CartRoutes.Resume);
         }}
         aria-label={CartRoutes.Resume.Name}
-        class="uppercase text-white mr-4 md:mx-4">
-        <Icon data={CartRoutes.Resume.Icon} class="mr-3 inline" scale="1.2" />
-        <span
-          class="rounded-full bg-accent text-white"
-          style=" padding: 0px 5px; position: absolute; margin-top: -27px;
-          margin-left: -5px; font-size: 11px;">
-          {$cartItems.reduce((sum, product) => {
-            return sum + (product.quantity || 0);
-          }, 0)}
-        </span>
+        class="uppercase text-white mr-6 md:mx-6">
+        <div class="relative flex">
+          <Icon data={CartRoutes.Resume.Icon} scale="1.2" />
+          <span
+            class="absolute rounded-full bg-accent text-white"
+            style="padding: 0px 5px; font-size: 11px; margin-top: -7px; margin-left: 10px;">
+            {$cartItems.reduce((sum, product) => {
+              return sum + (product.quantity || 0);
+            }, 0)}
+          </span>
+        </div>
       </button>
     {/if}
     <button
