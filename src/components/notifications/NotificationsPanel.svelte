@@ -55,13 +55,16 @@
 		parseNotifications(res.data);
 	};
 
-	const markAllAsRead = async () => {
+	const markAllAsRead = async (date) => {
 		isLoading = true;
 		var res = await graphQLInstance.mutate(MARK_USER_NOTIFICATIONS_AS_READ);
 		isLoading = false;
 
+		if (res.success) {
+			date = res.data;
+		}
 		var array = $notifications.map((e) => {
-			if (e.createdOn < res.data) e.unread = false;
+			if (e.createdOn < date) e.unread = false;
 			return e;
 		});
 
@@ -73,8 +76,8 @@
 
 		var res = await graphQLInstance.mutate(MARK_USER_NOTIFICATION_AS_READ, {
 			id: notification.id,
-    });
-    
+		});
+
 		var array = $notifications.map((e) => {
 			if (e.id == notification.id) e.unread = false;
 			return e;
@@ -97,6 +100,9 @@
 	$: hasMoreNotifications = pageInfo.hasNextPage;
 
 	onMount(async () => {
+		await markAllAsRead(new Date());
+		notificationsHidden = false;
+
 		if ($notifications && $notifications.length > 0) return;
 
 		await getNextResults();
