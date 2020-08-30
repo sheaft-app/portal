@@ -95,10 +95,6 @@ class SheaftGuard {
 	}
 
 	getRedirectUrl() {
-		if (this.routerInstance.currentUrl != HomeRoutes.Prefix && this.routerInstance.currentUrl != OidcRoutes.Callback && this.routerInstance.currentUrl != OidcRoutes.CallbackSilent) {
-			return window.location.hash.slice(1);
-		}
-
 		if (this.authInstance.isInRole([Roles.Producer.Value]))
 		{
 			return ProductRoutes.List.Path;
