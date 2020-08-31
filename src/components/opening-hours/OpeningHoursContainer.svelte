@@ -47,7 +47,7 @@
         <div class="flex justify-end">
             <button type="button" 
             on:click={() => openings = openings.filter((o) => o.id !== opening.id)}
-            class="text-accent text-sm">Retirer cet horaire</button>
+            class="text-accent">Retirer cet horaire</button>
         </div>
     {/each}
     <div>

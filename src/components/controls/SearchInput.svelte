@@ -44,7 +44,7 @@
     type="text"
     {placeholder}
     class="appearance-none border-none block w-full py-3 px-10 truncate leading-tight focus:outline-none rounded font-medium"
-    style="padding-left: 40px;"
+    style="padding-left: 40px; height: 48px;"
     name="search-products"
     on:input={handleInput}
     bind:value={searchQuery} />

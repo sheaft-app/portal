@@ -514,7 +514,7 @@
           </p>
           <button
             on:click={cancelOrder}
-            class="btn btn-lg bg-white shadow mt-3 font-semibold
+            class="btn btn-lg btn-accent shadow mt-3 font-semibold
             hover:bg-gray-100">
             Annuler ma commande
           </button>

@@ -431,16 +431,19 @@
             {/if}
             <SearchInput containerClasses="ml-2" />
             <button
-              class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
-              flex-nowrap items-center ml-2"
+              class="filter-btn bg-white py-2 px-2 rounded shadow-md flex
+              items-center ml-2 {$filters.tags && $filters.tags.length > 0 ? 'flex-nowrap': 'flex-wrap'}"
               class:text-white={$filters.tags && $filters.tags.length > 0}
               class:bg-accent={$filters.tags && $filters.tags.length > 0}
               on:click={showFiltersModal}>
               <Icon
-                class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+                style="width: .8em;"
+                class="lg:mr-1 m-auto lg:m-0 {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
                 data={faFilter} />
               {#if $filters.tags && $filters.tags.length > 0}
                 <span class="text-white">{$filters.tags.length}</span>
+              {:else}
+                <p style="font-size: .8em;" class="text-center text-accent">Filtres</p>
               {/if}
             </button>
           </div>
@@ -539,7 +542,7 @@
 
 <style lang="scss">
   .filter-btn {
-    min-height: 44px;
+    height: 48px;
   }
 
   .products-grid {
