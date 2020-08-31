@@ -1,11 +1,23 @@
 <script>
+  import { onMount } from "svelte";
+
   export let value, disabled = false;
-	const max = 14;
+  const max = 14;
+
+  let ref;
+  
+  onMount(() => {
+    if (ref) {
+      ref.focus();
+    }
+  })
 </script>
 
 <input 
   id="siret" 
   bind:value 
+  bind:this={ref}
+  type="number"
   placeholder="00000000000000" 
   on:input={e => {
     if (e.target.value.length > e.target.maxLength) {

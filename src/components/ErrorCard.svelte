@@ -4,7 +4,7 @@
 	import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 	import { errors } from "../stores/errors";
 
-	export let errorsHandler = null, displayIcon = true, classes = null, componentErrors = [];
+	export let errorsHandler = null, displayIcon = true, classes = null, componentErrors = [], retry = false;
 
 	const getErrors = () => {
 		if (!errorsHandler) {
@@ -34,7 +34,9 @@
 					<p>{error.message}</p>
 				{/each}
 				<p class="mt-2">Si le problème persiste, contactez le service technique.</p>
-				<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={refresh}>Réessayer</button>
+				{#if retry}
+					<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={refresh}>Réessayer</button>
+				{/if}
 		</div>
 	</div>
 {/if}

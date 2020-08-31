@@ -70,6 +70,9 @@
       delete company["openingHours"];
     }
 
+
+    delete company.address['insee'];
+
     isRegistering = true;
     var res = await graphQLInstance.mutate(REGISTER_COMPANY, company, errorsHandler.Uuid);
 
@@ -171,8 +174,8 @@
 </svelte:head>
 
 <TransitionWrapper>
-  <ErrorCard {errorsHandler}/>
   <div class="-my-2 mx-0 py-2 overflow-x-auto mt-2 mb-8 h-full">
+    <ErrorCard {errorsHandler}/>
     <div class="text-center mb-2">
       <img src="img/form-stepper.svg" alt="Bandeau formulaire" />
     </div>
@@ -201,7 +204,7 @@
               on:click={() => cancel()}
               aria-label="Retour"
               class="form-button uppercase text-sm cursor-pointer rounded-full
-              px-6 py-2 flex items-center justify-center m-auto">
+              px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
               Retour
             </button>
           </div>
@@ -228,6 +231,7 @@
     {#if stepper == 1}
       <div class="md:w-3/5 m-auto">
         <div class="text-center pt-6 pb-8">
+          Étape 1/4
           <p class="font-bold">Qui est le propriétaire ?</p>
         </div>
         <form>
@@ -285,7 +289,7 @@
               on:click={() => stepper--}
               aria-label="Retour"
               class="form-button uppercase text-sm cursor-pointer text-gray-600
-              rounded-full px-6 py-2 flex items-center justify-center m-auto">
+              rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
               Précédent
             </button>
           </div>
@@ -307,6 +311,7 @@
     {#if stepper == 2}
       <div class="md:w-3/5 m-auto">
         <div class="text-center pt-6 pb-8">
+          Étape 2/4 
           <p class="font-bold">
             Aidez-nous à mieux identifier votre {isStore ? 'magasin' : 'ferme'}
           </p>
@@ -374,7 +379,7 @@
               on:click={() => stepper--}
               aria-label="Retour"
               class="form-button uppercase text-sm cursor-pointer text-gray-600
-              rounded-full px-6 py-2 flex items-center justify-center m-auto">
+              rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
               Précédent
             </button>
           </div>
@@ -396,6 +401,7 @@
     {#if stepper === 3}
       <div class="md:w-3/5 m-auto">
         <div class="text-center pt-6 pb-8">
+          Étape 3/4
           <p class="font-bold">
             Visibilité de votre {isStore ? 'magasin' : 'ferme'}
           </p>
@@ -409,7 +415,7 @@
                   isChecked={company.appearInBusinessSearchResults}
                   on:change={() => (company.appearInBusinessSearchResults = !company.appearInBusinessSearchResults)}>
                   <span class="ml-1">
-                    Je veux être visible des {isStore ? 'magasins' : 'producteurs'}
+                    Je veux être visible des {isStore ? 'producteurs' : 'magasins'}
                     afin qu'ils me contactent pour commercer avec eux.
                   </span>
                 </Toggle>
@@ -439,7 +445,7 @@
               on:click={() => stepper--}
               aria-label="Retour"
               class="form-button uppercase text-sm cursor-pointer text-gray-600
-              rounded-full px-6 py-2 flex items-center justify-center m-auto">
+              rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
               Précédent
             </button>
           </div>
@@ -447,8 +453,8 @@
             <button
               on:click={() => stepper++}
               aria-label="Suivant"
-              disabled={!openings || openings.length == 0}
-              class:disabled={!openings || openings.length == 0}
+              disabled={(isStore && company.appearInBusinessSearchResults && (!openings || openings.length == 0))}
+              class:disabled={(isStore && company.appearInBusinessSearchResults && (!openings || openings.length == 0))}
               class="form-button uppercase text-sm cursor-pointer text-white
               shadow rounded-full px-6 py-2 flex items-center justify-center
               m-auto bg-primary">
@@ -461,6 +467,7 @@
     {#if stepper > 3 && !isRegistering}
       <div class="md:w-3/5 m-auto">
         <div class="text-center pt-6 pb-8">
+          Étape finale
           <p class="font-bold">
             Terminons par l'adresse de votre {isStore ? 'magasin' : 'ferme'}
           </p>
@@ -478,7 +485,8 @@
                   id="line1"
                   type="text"
                   required="required"
-                  disabled="disabled"
+                  class="disabled"
+                  disabled={true}
                   bind:value={company.address.line1} />
               </div>
               <div class="form-control">
@@ -496,7 +504,8 @@
                     type="text"
                     required="required"
                     maxlength="5"
-                    disabled="disabled"
+                    class="disabled"
+                    disabled={true}
                     bind:value={company.address.zipcode} />
                 </div>
                 <div class="w-full md:w-1/2 form-control">
@@ -505,7 +514,8 @@
                     id="city"
                     type="text"
                     required="required"
-                    disabled="disabled"
+                    class="disabled"
+                    disabled={true}
                     bind:value={company.address.city} />
                 </div>
               </div>
@@ -529,7 +539,7 @@
               on:click={() => stepper--}
               aria-label="Retour"
               class="form-button uppercase text-sm cursor-pointer text-gray-600
-              rounded-full px-6 py-2 flex items-center justify-center m-auto">
+              rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
               Précédent
             </button>
           </div>

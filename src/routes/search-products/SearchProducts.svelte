@@ -341,7 +341,7 @@
 </div>
 
 <TransitionWrapper hasRightPanel style="margin:0;">
-  <ErrorCard {errorsHandler} bind:componentErrors={errors} />
+  <ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />
   {#if errors.length < 1}
     <div
       class:has-bottom-mobile-cta={$cartItems.length >= 1}
