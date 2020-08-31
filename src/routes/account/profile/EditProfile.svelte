@@ -156,12 +156,13 @@
             placeholder="XX XX XX XX XX" />
         </div>
       </div>
-      <div class="justify-end form-control mt-5">
+      <p class="text-sm mt-5">* champs requis</p>   
+      <div class="form-control mt-5">
         <button
           type="submit"
           class:disabled={isLoading || !isValid}
           disabled={isLoading || !isValid}
-          class="btn btn-lg btn-primary w-full md:w-auto justify-center">
+          class="btn btn-xl btn-primary w-full md:w-auto justify-center">
           <Icon
             data={isLoading ? faCircleNotch : faCheck}
             class="mr-1 inline"

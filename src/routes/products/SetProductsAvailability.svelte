@@ -35,7 +35,7 @@
 
 <ActionConfirm
   title={status ? 'Activation' : 'Désactivation'}
-  level="success"
+  level={status ? 'success' : "warning"}
   isLoading={isLoading}
   {errorsHandler}
   submit={handleSubmit}

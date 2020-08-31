@@ -26,7 +26,7 @@
       case "danger":
         return "red";
       default:
-        return "orange";
+        return "primary";
     }
   };
 
@@ -48,7 +48,7 @@
 
 <div>  
   <div class="mt-3 text-center sm:mt-0 sm:text-left">
-    <h3 class="text-lg leading-6 font-medium bg-primary py-3 px-6 -mx-6 -mt-5 md:-mt-2 md:rounded-t-lg">{title}</h3>
+    <h3 class="text-lg leading-6 font-medium {level ? `bg-${renderColorWithLevel(level)}-500` : 'bg-primary'} py-3 px-6 -mx-6 -mt-5 md:-mt-2 md:rounded-t-lg text-white">{title}</h3>
     <div class="mt-4">
       <ErrorCard {errorsHandler} />
       <slot />

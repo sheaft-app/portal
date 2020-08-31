@@ -534,7 +534,7 @@
     }
 
     &-xl {
-      @apply px-12;
+      @apply px-10;
       @apply py-3;
       @apply text-lg;
       @apply font-semibold;

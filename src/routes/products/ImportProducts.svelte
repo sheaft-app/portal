@@ -83,7 +83,6 @@
   title="Importer des produits"
   submit={handleSubmit}
   close={() => handleClose({success:false, data: null})}
-  level="success"
   submitText="Importer"
   {isLoading}
   icon={faCheck}
