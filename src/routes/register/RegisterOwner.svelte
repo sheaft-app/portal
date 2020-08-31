@@ -17,8 +17,9 @@
   import RegisterRoutes from "./routes";
   import Roles from "./../../enums/Roles";
   import Guid from "./../../helpers/Guid";
-import ErrorCard from "../../components/ErrorCard.svelte";
-import { authRegistered } from "../../stores/auth";
+  import ErrorCard from "../../components/ErrorCard.svelte";
+  import { authRegistered } from "../../stores/auth";
+  import InputSiret from "./InputSiret.svelte";
 
   export let params = {};
 
@@ -186,22 +187,9 @@ import { authRegistered } from "../../stores/auth";
           <fieldset>
             <div class="flex">
               <div class="form-control w-full">
-                <input
-                  id="siret"
-                  type="number"
-                  on:input={e => {
-                    if (e.target.value.length > e.target.maxLength) {
-                      e.target.value = e.target.value
-                        .slice(0, e.target.maxLength)
-                        .toString();
-                    }
-                  }}
-                  maxlength="14"
-                  minlength="14"
+                <InputSiret
                   disabled={isSearchingSiret}
-                  required="required"
                   bind:value={company.siret}
-                  class:disabled={isSearchingSiret}
                   placeholder="SIRET (14 chiffres)" />
               </div>
             </div>
