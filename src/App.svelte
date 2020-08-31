@@ -532,6 +532,18 @@
         @apply px-5;
       }
     }
+
+    &-xl {
+      @apply px-12;
+      @apply py-3;
+      @apply text-lg;
+      @apply font-semibold;
+
+      @media (max-width: 1024px) {
+        @apply px-5;
+        @apply py-2;
+      }
+    }
   }
 
   button {

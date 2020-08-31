@@ -84,8 +84,9 @@
       </div>
     </div>
   </div>
-  <div class="form-control justify-end mt-5">
-    {#if close}
+  <p class="text-sm mt-5">* champs requis</p>   
+  <div class="form-control mt-5">
+    {#if isInModal && close}
       <button
         type="button"
         class:disabled={isLoading}
@@ -99,7 +100,7 @@
       type="submit"
       class:disabled={isLoading || !isValid}
       disabled={isLoading || !isValid}
-      class="btn btn-primary btn-lg justify-center w-full md:w-auto">
+      class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}
         class="mr-2 inline"

@@ -70,7 +70,6 @@
       delete company["openingHours"];
     }
 
-
     delete company.address['insee'];
 
     isRegistering = true;

@@ -41,12 +41,12 @@ import { GET_SELLING_POINTS } from "./queries";
       errorsHandler.Uuid,
       GET_SELLING_POINTS);
 
+    isCreatingSellingPoint = false;
+
     if (!res.success) {
       // todo
       return;
     }
-
-    isCreatingSellingPoint = false;
 
     routerInstance.goTo(SellingPointRoutes.List);
   };
