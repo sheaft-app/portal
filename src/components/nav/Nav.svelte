@@ -73,6 +73,7 @@
 </script>
 
 <div
+  id="navbar"
   class="bg-primary w-full py-2 fixed top-0 flex md:px-6 justify-between lg:px-8
   items-center top-nav"
   style="z-index: 6;">

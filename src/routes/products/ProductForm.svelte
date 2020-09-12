@@ -29,13 +29,13 @@
 
 	const productForm = form(() => ({
     name: { value: product.name, validators: ['required', 'min:3'], enabled: true },
-    wholeSalePricePerUnit: { value: product.wholeSalePricePerUnit, validators: ['required'], enabled: true },
+    wholeSalePricePerUnit: { value: product.wholeSalePricePerUnit, validators: ['required', 'min:0.01'], enabled: true },
     vat: { value: product.vat, validators: ['required'], enabled: true },
     unit: { value: product.unit, validators: ['required'], enabled: true },
-		quantityPerUnit: { value: product.quantityPerUnit, validators: ['required'], enabled: true },
+		quantityPerUnit: { value: product.quantityPerUnit, validators: ['required', 'min:0.01'], enabled: true },
 		selectedCategory: { value: selectedCategory, validators: ['required'], enabled: true },
 	}), {
-    initCheck: true
+    initCheck: false
   });
 
 	const handleSubmit = async () => {

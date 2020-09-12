@@ -58,11 +58,11 @@ function validate(fieldName, value, validator, observable, enabled = true) {
 
 function validateField(data, observable, { stopAtFirstFieldError }) {
   const { name, value, validators = [], enabled = true } = data;
-  console.log(data);
+  const context = get(observable);
 
   let valid = true;
   let pending = false;
-  let dirty = false;
+  let dirty = context.fields[data.name] ?  context.fields[data.name].dirty : false;
   let errors = [];
 
   if (enabled) {
@@ -122,7 +122,7 @@ export function form(fn, config = {}) {
   const initialFieldsData = Object.fromEntries(
     Object.keys(fields).map((key) => [
       key,
-      { name: fields[key].name || key, value: fields[key].value }
+      { name: fields[key].name || key, value: fields[key].value, dirty: false }
     ])
   );
 
@@ -158,13 +158,17 @@ export function form(fn, config = {}) {
     set,
     update,
 
-    validate() {
-      walkThroughFields(fn, storeValue, initialFieldsData, config, true);
+    async validate() {
+      await walkThroughFields(fn, storeValue, initialFieldsData, config, true);
+      
+      const domErrors = document.getElementsByClassName('invalid');
+      if (domErrors.length >= 1)
+        scrollToTargetAdjusted(domErrors[0]);
     }
   };
 }
 
-function walkThroughFields(fn, observable, initialFieldsData, config, forceDirty = false) {
+async function walkThroughFields(fn, observable, initialFieldsData, config, forceDirty = false) {
   const fields = fn.call();
   const context = get(observable);
   const returnedObject = {
@@ -203,13 +207,9 @@ function walkThroughFields(fn, observable, initialFieldsData, config, forceDirty
       }
     }
 
-    if (value !== initialFieldData.value) {
+    if (value !== initialFieldData.value || forceDirty) {
       returnedObject.fields[key].dirty = true;
       returnedObject.dirty = true;
-    }
-    
-    if (forceDirty) {
-      returnedObject.fields[key].dirty = true;
     }
 
     returnedObject.oldFields[key] = Object.assign({}, oldField);
@@ -224,4 +224,15 @@ function walkThroughFields(fn, observable, initialFieldsData, config, forceDirty
   );
 
   observable.set(returnedObject);
+}
+
+const scrollToTargetAdjusted = (element) => {
+	var headerOffset = document.getElementById('navbar').offsetHeight;
+	var elementPosition = element.offsetTop;
+  var offsetPosition = elementPosition - headerOffset;
+  
+	window.scrollTo({
+			top: offsetPosition,
+			behavior: "smooth"
+	});   
 }
