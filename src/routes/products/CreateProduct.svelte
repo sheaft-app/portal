@@ -28,7 +28,7 @@
     quantityPerUnit: null,
     vat: null,
     name: null,
-    packagingId: null,
+    returnableId: null,
     description: null,
     picture: null,
     tags: [],
@@ -40,7 +40,7 @@
     var res = await graphQLInstance.mutate(CREATE_PRODUCT, {
       description: product.description,
       name: product.name,
-      packagingId: product.packaging ? product.packaging.id : null,
+      returnableId: product.returnable ? product.returnable.id : null,
       wholeSalePricePerUnit: product.wholeSalePricePerUnit,
       quantityPerUnit: product.quantityPerUnit,
       unit: product.unit,

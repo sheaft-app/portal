@@ -108,8 +108,8 @@
           {#if product.tags.map(t => t.name).includes('bio')}
             <img src="./img/labels/bio.jpg" alt="Bio" class="mb-1" />
           {/if}
-          {#if product.packaged}
-            <img src="./img/packaging.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
+          {#if product.isReturnable}
+            <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
           {/if}
         </div>
         <div class="pr-8">

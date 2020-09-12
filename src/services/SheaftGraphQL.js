@@ -120,6 +120,8 @@ function clearApolloCache(typename) {
 	var type = findDataType(typename)[0];
 	if (!type) return;
 
+	if (!client.cache.data.data.ROOT_QUERY) return;
+
 	var cacheUpdated = false;
 	var props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
 	for (var i = 0; i < props.length; i++) {

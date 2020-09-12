@@ -2,15 +2,15 @@
   import Icon from "svelte-awesome";
   import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-  export let submit, packaging, isLoading, isInModal = false, close = null;
+  export let submit, returnable, isLoading, isInModal = false, close = null;
 
-  $: isValid = packaging &&
-    packaging.name &&
-    packaging.wholeSalePrice && 
-    packaging.vat != null;
+  $: isValid = returnable &&
+    returnable.name &&
+    returnable.wholeSalePrice && 
+    returnable.vat != null;
 
   const selectVat = (vat) => {
-    return packaging.vat = vat;
+    return returnable.vat = vat;
   }
 </script>
 
@@ -20,7 +20,7 @@
       <div class="w-full">
         <label for="grid-product">Nom de la consigne *</label>
         <input
-          bind:value={packaging.name}
+          bind:value={returnable.name}
           class:disabled={isLoading}
           disabled={isLoading}
           required
@@ -33,7 +33,7 @@
       <div class="w-full">
         <label for="grid-price">Prix hors taxes *</label>
         <input
-          bind:value={packaging.wholeSalePrice}
+          bind:value={returnable.wholeSalePrice}
           class:disabled={isLoading}
           disabled={isLoading}
           required
@@ -50,21 +50,21 @@
           <button
             on:click={() => selectVat(5.5)}
             type="button"
-            class:selected={packaging.vat === 5.5}
+            class:selected={returnable.vat === 5.5}
             class:disabled={isLoading}>
             5,5%
           </button>
           <button
             on:click={() => selectVat(10)}
             type="button"
-            class:selected={packaging.vat === 10}
+            class:selected={returnable.vat === 10}
             class:disabled={isLoading}>
             10%
           </button>
            <button
             on:click={() => selectVat(20)}
             type="button"
-            class:selected={packaging.vat === 20}
+            class:selected={returnable.vat === 20}
             class:disabled={isLoading}>
             20%
           </button>
@@ -75,7 +75,7 @@
       <div class="w-full">
         <label for="grid-description">Description</label>
         <textarea
-          bind:value={packaging.description}
+          bind:value={returnable.description}
           id="grid-description"
           class:disabled={isLoading}
           disabled={isLoading}

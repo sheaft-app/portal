@@ -24,11 +24,9 @@ export const SEARCH_COMPANY_SIRET = gql`
 export const GET_DEPARTMENTS = gql`
 	query GetDepartments {
 		departments {
-			nodes {
-				id
-				code
-				name
-			}
+			id
+			code
+			name
 		}
 	}
 `;

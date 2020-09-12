@@ -4,8 +4,8 @@
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import { GET_PACKAGINGS } from "./queries";
-	import PackagingRoutes from "./routes";
+	import { GET_RETURNABLES } from "./queries";
+	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 
@@ -29,12 +29,12 @@
 	};
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(PackagingRoutes.Details, { id: item.id });
+		routerInstance.goTo(ReturnableRoutes.Details, { id: item.id });
 	};
 
 	$: actions = [
 		{
-			click: () => routerInstance.goTo(PackagingRoutes.Create),
+			click: () => routerInstance.goTo(ReturnableRoutes.Create),
 			text: "Ajouter une consigne",
 			icon: faPlus,
 			color: "green",
@@ -57,26 +57,26 @@
 		bind:noResults
 		{errorsHandler}
 		{headers}
-		let:rowItem={packaging}
-		graphQuery={GET_PACKAGINGS}
-		defaultSearchValues={PackagingRoutes.List.Params.Query}
+		let:rowItem={returnable}
+		graphQuery={GET_RETURNABLES}
+		defaultSearchValues={ReturnableRoutes.List.Params.Query}
 		{getRowBackgroundColor}
 		{onRowClick}>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div
 				class="text-sm leading-5 font-medium truncate"
 				style="max-width: 180px;">
-				{packaging.name}
+				{returnable.name}
 			</div>
 		</td>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5">{packaging.wholeSalePrice}€</div>
+			<div class="text-sm leading-5">{returnable.wholeSalePrice}€</div>
 		</td>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5">{packaging.vat}%</div>
+			<div class="text-sm leading-5">{returnable.vat}%</div>
 		</td>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5">{packaging.onSalePrice}€</div>
+			<div class="text-sm leading-5">{returnable.onSalePrice}€</div>
 		</td>
 	</Table>
 	{#if noResults}
@@ -85,7 +85,7 @@
 				<p class="mb-3">Vous n'avez pas encore de consignes.</p>
 				<a
 					href="javascript:void(0)"
-					on:click={() => routerInstance.goTo(PackagingRoutes.Create)}
+					on:click={() => routerInstance.goTo(ReturnableRoutes.Create)}
 					class="btn btn-lg btn-accent justify-center">
 					Créer une consigne
 				</a>

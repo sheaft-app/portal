@@ -1,14 +1,14 @@
 import gql from "graphql-tag";
 
-export const GET_PACKAGINGS = gql`
-	query Packagings(
+export const GET_RETURNABLES = gql`
+	query Returnables(
 		$first: PaginationAmount
 		$after: String		
 		$last: PaginationAmount
 		$before: String
-		$orderBy: PackagingDtoSort
+		$orderBy: ReturnableDtoSort
 	) {
-		packagings(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
+		returnables(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
 			edges {
 				cursor
 				node {
@@ -30,9 +30,9 @@ export const GET_PACKAGINGS = gql`
 	}
 `;
 
-export const GET_PACKAGING_DETAILS = gql`
-	query Packaging($id: ID!) {
-		packaging(input: $id) {
+export const GET_RETURNABLE_DETAILS = gql`
+	query Returnable($id: ID!) {
+		returnable(input: $id) {
 			id
 			name
 			vat

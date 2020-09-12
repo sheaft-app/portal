@@ -51,7 +51,7 @@
       id: product.id,
       description: product.description,
       name: product.name,
-      packagingId: product.packaging ? product.packaging.id : null,
+      returnableId: product.returnable ? product.returnable.id : null,
       wholeSalePricePerUnit: product.wholeSalePricePerUnit,
       quantityPerUnit: product.quantityPerUnit,
       unit: product.unit,

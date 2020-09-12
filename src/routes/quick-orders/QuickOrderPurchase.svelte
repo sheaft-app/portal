@@ -10,7 +10,7 @@
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { roundMoney } from "./../../helpers/app.js";
-  import { CREATE_ORDER } from "./mutations.js";
+  import { CREATE_BUSINESS_ORDER } from "./mutations.js";
   import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
   import Select from "./../../components/controls/select/Select";
   import MyOrdersRoutes from "../my-orders/routes";
@@ -106,7 +106,7 @@
     isCreatingOrder = true;
     const productsFiltered = normalizedProducts.filter(p => p.quantity > 0);
 
-    var res = await graphQLInstance.mutate(CREATE_ORDER, {
+    var res = await graphQLInstance.mutate(CREATE_BUSINESS_ORDER, {
       products: productsFiltered.map(product => {
         return {
           id: product.id,

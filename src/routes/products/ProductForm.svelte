@@ -7,10 +7,10 @@
   import Toggle from "./../../components/controls/Toggle.svelte";
   import Select from "./../../components/controls/select/Select.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import PackagingSelectItem from "./PackagingSelectItem.svelte";
-  import CreatePackaging from "./../packagings/CreatePackaging.svelte";
+  import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
+  import CreateReturnable from "./../returnables/CreateReturnable.svelte";
   import TagKind from "./../../enums/TagKind.js";
-  import { GET_PACKAGINGS, GET_TAGS } from "./queries.js";
+  import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
   import ChangeImage from "./ChangeImage.svelte";
   
   export let submit, product, isLoading;
@@ -19,10 +19,10 @@
   const graphQLInstance = GetGraphQLInstance();
 
   let isLoadingTags = false;
-  let isLoadingPackagings = false;
+  let isLoadingReturnables = false;
 
   let selectedCategory = null;
-  let packagings = [];
+  let returnables = [];
   let tags = [];
 
   $: isValid = product &&
@@ -64,21 +64,21 @@
   onMount(async () => {
     isLoading = true;
     await getTags();
-    await getPackagings();
+    await getReturnables();
     isLoading = false;
   })
 
-  const getPackagings = async () => {
-    isLoadingPackagings = true;
-    var res = await graphQLInstance.query(GET_PACKAGINGS);
-    isLoadingPackagings = false;
+  const getReturnables = async () => {
+    isLoadingReturnables = true;
+    var res = await graphQLInstance.query(GET_RETURNABLES);
+    isLoadingReturnables = false;
 
     if(!res.success){
         //TODO
         return;
     }
 
-    packagings = res.data;
+    returnables = res.data;
   }
 
   const getTags = async () => {
@@ -95,13 +95,13 @@
     bioTag = tags.find(t => t.name.toLowerCase() === "bio" && TagKind.Label.Value == TagKind.get(t.kind).Value);
   }
 
-  const showCreatePackagingModal = () => {
-    open(CreatePackaging, {
+  const showCreateReturnableModal = () => {
+    open(CreateReturnable, {
       isInModal: true,
       onClose: async res => {
         if(res.success){
-          packagings = [...packagings, res.data];          
-          product.packaging = res.data;
+          returnables = [...returnables, res.data];          
+          product.returnable = res.data;
         }
       }
     });
@@ -256,24 +256,24 @@
     <label>Type de consigne</label>
     <div class="themed">
       <Select
-        items={packagings}
+        items={returnables}
         getOptionLabel={(l) => l.name}
-        Item={PackagingSelectItem}
+        Item={ReturnableSelectItem}
         getSelectionLabel={(l) => l.name}
         showChevron={true}
         hideSelectedOnFocus={true}
         optionIdentifier="id"
         placeholder="Assignez une consigne"
         noOptionsMessage="Aucune consigne trouvée"
-        bind:selectedValue={product.packaging}
+        bind:selectedValue={product.returnable}
         isSearchable={true}
         isClearable={false}
         containerStyles="font-weight: 600; color: #4a5568;" />
     </div>
-    {#if packagings.length > 0 && product.packaging}
-      <button transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm" on:click={() => product.packaging = null}>Retirer la consigne du produit</button>
+    {#if returnables.length > 0 && product.returnable}
+      <button transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm" on:click={() => product.returnable = null}>Retirer la consigne du produit</button>
     {:else}
-      <button on:click={showCreatePackagingModal} transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm">Créer une nouvelle consigne</button>
+      <button on:click={showCreateReturnableModal} transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm">Créer une nouvelle consigne</button>
     {/if}
   </div>
   <div class="form-control">

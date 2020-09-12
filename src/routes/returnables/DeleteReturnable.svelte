@@ -1,13 +1,13 @@
 <script>
-	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-	import { DELETE_PACKAGING } from "./mutations";
-	import SheaftErrors from "./../../services/SheaftErrors";
-	import { GET_PACKAGINGS } from "./queries";
+	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
+	import GetGraphQLInstance from "../../services/SheaftGraphQL";
+	import { DELETE_RETURNABLE } from "./mutations";
+	import SheaftErrors from "../../services/SheaftErrors";
+	import { GET_RETURNABLES } from "./queries";
 
 	const errorsHandler = new SheaftErrors();
 
-	export let packaging, close, onClose;
+	export let returnable, close, onClose;
 
 	let isLoading = false;
 	const graphQLInstance = GetGraphQLInstance();
@@ -15,12 +15,12 @@
 	const handleSubmit = async () => {
 		isLoading = true;
 		var res = await graphQLInstance.mutate(
-			DELETE_PACKAGING,
+			DELETE_RETURNABLE,
 			{
-				id: packaging.id,
+				id: returnable.id,
 			},
-			rrorsHandler.Uuid,
-			GET_PACKAGINGS
+			errorsHandler.Uuid,
+			GET_RETURNABLES
     );
     
 		isLoading = false;
@@ -48,7 +48,7 @@
 	close={() => handleClose({ success: false, data: null })}>
 	<p class="leading-5">
 		Vous vous apprêtez à
-		<span class="text-gray-700">supprimer la consigne {packaging.name}</span>
+		<span class="text-gray-700">supprimer la consigne {returnable.name}</span>
 	</p>
 	<p>
 		Cette opération est

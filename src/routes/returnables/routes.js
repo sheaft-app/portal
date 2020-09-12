@@ -3,13 +3,13 @@ import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
 import { faCube, faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/packagings";
+const prefix = "/returnables";
 
 const list = "/";
 const create = "/create";
 const details = "/:id";
 
-const PackagingRoutes = {
+const ReturnableRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
@@ -45,4 +45,4 @@ const PackagingRoutes = {
 	},
 };
 
-export default PackagingRoutes;
+export default ReturnableRoutes;

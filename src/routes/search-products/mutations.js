@@ -15,7 +15,7 @@ export const RATE_PRODUCT = gql`
 			tags {
 				name
 			}
-			packaging {
+			returnable {
 				id
 				name
 				onSalePrice

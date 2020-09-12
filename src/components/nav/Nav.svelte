@@ -32,7 +32,7 @@
   import SearchStoreRoutes from "./../../routes/search-stores/routes.js";
   import SearchProducerRoutes from "./../../routes/search-producers/routes.js";
   import AgreementRoutes from "./../../routes/agreements/routes.js";
-  import PackagingRoutes from "./../../routes/packagings/routes.js";
+  import ReturnableRoutes from "./../../routes/returnables/routes.js";
   import SponsorshipRoutes from "./../../routes/sponsorship/routes.js";
   import LeaderboardRoutes from "./../../routes/leaderboard/routes.js";
   import SearchProductRoutes from "./../../routes/search-products/routes.js";
@@ -379,7 +379,7 @@
       {#if $authRegistered && isInRole($authUserAccount, [Roles.Producer.Value])}
         <NavLink route={ProductRoutes.List} />
         <NavLink route={PurchaseOrderRoutes.List} />
-        <NavLink route={PackagingRoutes.List} />
+        <NavLink route={ReturnableRoutes.List} />
         <NavLink route={SellingPointRoutes.List} />
         <NavLink route={DeliveryRoutes.List} />
         <NavLink route={SearchStoreRoutes.Search} />

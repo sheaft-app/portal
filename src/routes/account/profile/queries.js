@@ -9,7 +9,9 @@ export const GET_ME_DETAILS = gql`
 			email
 			phone
 			picture
-			anonymous
+			birthdate
+			countryOfResidence
+			nationality
 		}
 	}
 `;

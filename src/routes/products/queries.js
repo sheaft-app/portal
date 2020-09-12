@@ -56,7 +56,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			vat
 			quantityPerUnit
 			unit
-			packaging {
+			returnable {
 				id
 				name
 				vat
@@ -102,9 +102,9 @@ export const HAS_PRODUCTS_IMPORT_INPROGRESS = gql`
 	}
 `;
 
-export const GET_PACKAGINGS = gql`
-	query Packagings {
-		packagings {
+export const GET_RETURNABLES = gql`
+	query Returnables {
+		returnables {
 			nodes {
 				id
 				name

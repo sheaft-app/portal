@@ -232,18 +232,18 @@
         {product.description}
       </p>
     </div>
-    {#if product.packaging}
+    {#if product.isReturnable}
       <div class="mb-5 md:mb-0">
         <div class="flex justify-center">
-          {#if product.packaging.onSalePrice}
+          {#if product.returnable.onSalePrice}
             <div class="text-center">
               <img
-                src="./img/packaging.svg"
+                src="./img/returnable.svg"
                 alt="Consigné"
                 class="m-auto mb-1"
                 style="width: 30px;" />
               <p class="font-semibold">Consigne</p>
-              <p class="text-gray-600">{product.packaging.onSalePrice}€</p>
+              <p class="text-gray-600">{product.returnable.onSalePrice}€</p>
             </div>
           {/if}
         </div>

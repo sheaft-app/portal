@@ -3,11 +3,9 @@ import gql from "graphql-tag";
 export const GET_REGIONS = gql`
 	query GetRegions {
 		regions {
-			nodes {
-				id
-				code
-				name
-			}
+			id
+			code
+			name
 		}
 	}
 `;
@@ -88,7 +86,7 @@ export const USER_POINTS_PER_DEPARTMENT = gql`
 
 export const USER_POSITION_IN_COUNTRY = gql`
 	query UserPositionInCountry {
-	userPositionInCountry {
+		userPositionInCountry {
 			points
 			position
 		}
@@ -97,7 +95,7 @@ export const USER_POSITION_IN_COUNTRY = gql`
 
 export const USER_POSITION_IN_REGION = gql`
 	query UserPositionInRegion {
-	userPositionInRegion {
+		userPositionInRegion {
 			points
 			position
 		}
@@ -106,7 +104,7 @@ export const USER_POSITION_IN_REGION = gql`
 
 export const USER_POSITION_IN_DEPARTMENT = gql`
 	query UserPositionInDepartment {
-	userPositionInDepartment {
+		userPositionInDepartment {
 			points
 			position
 		}

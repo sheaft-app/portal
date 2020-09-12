@@ -1,18 +1,18 @@
 <script>
 	import { onMount, getContext } from "svelte";
-	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import Loader from "./../../components/Loader.svelte";
+	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
+	import Loader from "../../components/Loader.svelte";
 	import Icon from "svelte-awesome";
 	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-	import { UPDATE_PACKAGING } from "./mutations";
-	import { GET_PACKAGINGS, GET_PACKAGING_DETAILS } from "./queries";
-	import PackagingForm from "./PackagingForm.svelte";
-	import DeletePackaging from "./DeletePackaging.svelte";
-	import GetRouterInstance from "./../../services/SheaftRouter";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-	import PackagingRoutes from "./routes";
+	import { UPDATE_RETURNABLE } from "./mutations";
+	import { GET_RETURNABLES, GET_RETURNABLE_DETAILS } from "./queries";
+	import ReturnableForm from "./ReturnableForm.svelte";
+	import DeleteReturnable from "./DeleteReturnable.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
+	import GetGraphQLInstance from "../../services/SheaftGraphQL";
+	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import ErrorCard from "../../components/ErrorCard.svelte";
 
 	export let params;
 
@@ -22,16 +22,16 @@
 	const routerInstance = GetRouterInstance();
 
 	let isLoading = false;
-	let packaging = null;
+	let returnable = null;
 
 	onMount(async () => {
-		await getPackaging(params.id);
+		await getReturnable(params.id);
 	});
 
-	const getPackaging = async (id) => {
+	const getReturnable = async (id) => {
 		isLoading = true;
 		var res = await graphQLInstance.query(
-			GET_PACKAGING_DETAILS,
+			GET_RETURNABLE_DETAILS,
 			{
 				id: id,
 			},
@@ -42,20 +42,20 @@
 
 		if (!res.success) {
 			//TODO
-			routerInstance.goTo(PackagingRoutes.List);
+			routerInstance.goTo(ReturnableRoutes.List);
 			return;
 		}
 
-		packaging = res.data;
+		returnable = res.data;
 	};
 
 	const handleSubmit = async () => {
 		isLoading = true;
 		var res = await graphQLInstance.mutate(
-			UPDATE_PACKAGING,
-			packaging,
+			UPDATE_RETURNABLE,
+			returnable,
 			errorsHandler.Uuid,
-      GET_PACKAGINGS
+      GET_RETURNABLES
     );
     
 		isLoading = false;
@@ -65,15 +65,15 @@
 			return;
 		}
 
-		routerInstance.goTo(PackagingRoutes.List);
+		routerInstance.goTo(ReturnableRoutes.List);
 	};
 
 	const showDeleteModal = () => {
-		open(DeletePackaging, {
-			packaging,
+		open(DeleteReturnable, {
+			returnable,
 			onClose: async (res) => {
 				if (res.success) {
-					routerInstance.goTo(PackagingRoutes.List);
+					routerInstance.goTo(ReturnableRoutes.List);
 				}
 			},
 		});
@@ -86,7 +86,7 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
-	{#if !packaging}
+	{#if !returnable}
 		<Loader />
 	{:else}
 		<section
@@ -94,7 +94,7 @@
 			<div class="mb-3">
 				<button
 					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goTo(PackagingRoutes.List)}>
+					on:click={() => routerInstance.goTo(ReturnableRoutes.List)}>
 					<Icon data={faChevronLeft} class="mr-2 inline" />
 					Consignes
 				</button>
@@ -108,6 +108,6 @@
 				</button>
 			</div>
 		</section>
-		<PackagingForm submit={handleSubmit} {packaging} {isLoading} />
+		<ReturnableForm submit={handleSubmit} {returnable} {isLoading} />
 	{/if}
 </TransitionWrapper>

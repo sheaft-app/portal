@@ -10,7 +10,7 @@
   import { roundMoney } from "./../../helpers/app.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import GetRouterInstance from "../../services/SheaftRouter";
-  import { CREATE_ORDER } from "./../quick-orders/mutations.js";
+  import { CREATE_CONSUMER_ORDER } from "./mutations.js";
   import { GET_PRODUCER_DELIVERIES } from "./queries";
   import DeliveryModePicker from "./DeliveryModePicker.svelte";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -88,7 +88,7 @@
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
   }
 
-  const handleSubmit = async (products) => {
+  const handleSubmit = async () => {
     hasSubmitError = false;
 
     const productsFiltered = $cartItems.filter(p => p.quantity > 0);
@@ -119,7 +119,7 @@
       producersExpectedDeliveries
     };
 
-    var response = await graphQLInstance.mutate(CREATE_ORDER, orderLines, errorsHandler.Uuid);
+    var response = await graphQLInstance.mutate(CREATE_CONSUMER_ORDER, orderLines, errorsHandler.Uuid);
 
     if (!response.success) {
     isCreatingOrder = false;
@@ -128,15 +128,17 @@
       return;
     }
 
+    //TODO HANDLE PAYMENT
+
     resetCart();
 
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
 
-    routerInstance.goTo(CartRoutes.Success, {
-      Query: {
-        id: response.data.map(order => order.id)
-      }
-    });
+    // routerInstance.goTo(CartRoutes.Success, {
+    //   Query: {
+    //     id: response.data.map(order => order.id)
+    //   }
+    // });
     isCreatingOrder = false;
   }
 
@@ -294,7 +296,7 @@
               </div>
             </div>
             <div class="pt-2 lg:pt-3">
-              <!-- <div class="pt-4 pb-8 lg:px-2">
+              <div class="pt-4 pb-8 lg:px-2">
                 <label class="cursor-pointer">
                   <InputCheckbox
                     checked={acceptCgv}
@@ -305,10 +307,10 @@
                   </a>
                   et je les accepte
                 </label>
-              </div> -->
+              </div>
               <button
                 type="button"
-                on:click={() => routerInstance.goTo(CartRoutes.Checkout)}
+                on:click={() => handleSubmit()}
                 class:disabled={productsCount === 0 || isCreatingOrder || !isValid}
                 disabled={productsCount === 0 || isCreatingOrder || !isValid}
                 class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
