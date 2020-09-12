@@ -66,7 +66,7 @@
       orders: [order],
       onClose: async res => {
         if(res.success) {
-          await getMyOrder(order.id);
+          routerInstance.goTo(MyOrderRoutes.List);
         }
       }
     });

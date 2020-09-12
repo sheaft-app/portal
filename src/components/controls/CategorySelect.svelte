@@ -5,6 +5,7 @@
   import { GET_CATEGORIES } from "../queries.js";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
 
   import meat from "../icons/meat.svg";
   import vegetables from "../icons/vegetables.svg";
@@ -23,7 +24,8 @@
     displayOptionAllProducts = true,
     disabled = false,
     selectedCategory = null,
-    grid = null;
+    grid = null,
+    bindClassData = () => {};
 
   let isLoading = false;
   let categories = [];
@@ -112,7 +114,7 @@
     </div>
   {:else}
     <div
-      class={grid ? grid : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3'}>
+      class={grid ? grid : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3'} use:bindClass={bindClassData}>
       {#if displayOptionAllProducts}
         <div
           on:click|preventDefault|stopPropagation={() => handleClickCategory(null)}

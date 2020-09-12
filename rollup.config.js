@@ -9,8 +9,9 @@ import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
 import { generateSW } from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
-import typescript from "@rollup/plugin-typescript";
+import alias from 'rollup-plugin-alias';
 
+const path = require('path');
 const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
 
@@ -38,6 +39,9 @@ export default {
 		}
 	},
 	plugins: [
+		alias({
+			forms: __dirname + 'vendors/svelte-forms',
+		}),
 		del({
 			targets: "public/dist/*",
 			runOnce: true,

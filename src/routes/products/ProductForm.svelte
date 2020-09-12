@@ -1,18 +1,20 @@
 <script>
   import { onMount, getContext } from "svelte";
-  import { fly } from "svelte/transition";
+  import { fly, slide } from "svelte/transition";
   import Icon from "svelte-awesome";
   import { faPaperPlane, faCircleNotch, faImage } from "@fortawesome/free-solid-svg-icons";
   import CategorySelect from "./../../components/controls/CategorySelect.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
   import Select from "./../../components/controls/select/Select.js";
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
   import CreateReturnable from "./../returnables/CreateReturnable.svelte";
   import TagKind from "./../../enums/TagKind.js";
   import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
-  import ChangeImage from "./ChangeImage.svelte";
-  
+	import ChangeImage from "./ChangeImage.svelte";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+
   export let submit, product, isLoading;
 
   const { open } = getContext("modal");
@@ -25,13 +27,22 @@
   let returnables = [];
   let tags = [];
 
-  $: isValid = product &&
-  product.name &&
-  product.wholeSalePricePerUnit && 
-  product.vat &&
-  selectedCategory &&
-  product.quantityPerUnit &&
-  product.unit != null;
+	const productForm = form(() => ({
+    name: { value: product.name, validators: ['required', 'min:3'], enabled: true },
+    wholeSalePricePerUnit: { value: product.wholeSalePricePerUnit, validators: ['required'], enabled: true },
+    vat: { value: product.vat, validators: ['required'], enabled: true },
+    unit: { value: product.unit, validators: ['required'], enabled: true },
+		quantityPerUnit: { value: product.quantityPerUnit, validators: ['required'], enabled: true },
+		selectedCategory: { value: selectedCategory, validators: ['required'], enabled: true },
+	}), {
+    initCheck: true
+  });
+
+	const handleSubmit = async () => {
+    return productForm.validate();
+
+    // return submit();
+	}
 
   let isBio = false;
   let bioTag = null;
@@ -100,7 +111,7 @@
       isInModal: true,
       onClose: async res => {
         if(res.success){
-          returnables = [...returnables, res.data];          
+          returnables = [...returnables, res.data];
           product.returnable = res.data;
         }
       }
@@ -117,10 +128,9 @@
       }
     });
   };
-
 </script>
 
-<form class="w-full" on:submit|preventDefault={submit}>
+<form class="w-full" on:submit|preventDefault={handleSubmit}>
   <div class="flex flex-wrap mb-6 lg:mb-0">
     <div class="w-full lg:w-1/2">
       <div class="form-control">
@@ -128,7 +138,7 @@
           <label for="grid-reference">Référence</label>
           <input
             bind:value={product.reference}
-            class:disabled={isLoading}
+            class:skeleton-box={isLoading}
             disabled={isLoading}
             id="grid-reference"
             type="text"
@@ -140,58 +150,98 @@
           <label for="grid-product">Nom du produit *</label>
           <input
             bind:value={product.name}
-            class:disabled={isLoading}
+						use:bindClass={{ form: productForm, name: "name" }}
+            class:skeleton-box={isLoading}
             disabled={isLoading}
-            required
+						name="name"
             id="grid-product"
             type="text"
-            placeholder="Tomate ancienne" />
+            placeholder="ex : Tomate ancienne" />
+					<ErrorContainer field={$productForm.fields.name}/>
         </div>
       </div>  
       <div class="form-control">
-        <div class="w-full">
-          <label for="grid-price">Prix hors taxes *</label>
-          <input
-            bind:value={product.wholeSalePricePerUnit}
-            class:disabled={isLoading}
-            disabled={isLoading}
-            required
-            id="grid-price"
-            type="number"
-            step=".01"
-            placeholder="2.49" />
-        </div>
+				<div class="flex w-full">
+					<div class="w-full pr-2">
+						<label for="grid-price">Prix HT *</label>
+						<input
+							bind:value={product.wholeSalePricePerUnit}
+							use:bindClass={{ form: productForm, name: "wholeSalePricePerUnit" }}
+							class:skeleton-box={isLoading}
+              disabled={isLoading}
+							id="grid-price"
+							type="number"
+							step=".01"
+							name="wholeSalePricePerUnit"
+							placeholder="ex : 2.49" />
+						<ErrorContainer field={$productForm.fields.wholeSalePricePerUnit} />
+					</div>
+					<div class="w-full">
+						<label for="grid-vat">TVA *</label>
+						<div class="w-full text-lg justify-center button-group" class:skeleton-box={isLoading} use:bindClass={{ form: productForm, name: "vat" }}>
+							<button
+								on:click={() => selectVat(5.5)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 5.5}
+								class:skeleton-box={isLoading}>
+								5,5%
+							</button>
+							<button
+								on:click={() => selectVat(10)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 10}
+								class:skeleton-box={isLoading}>
+								10%
+							</button>
+							<button
+								on:click={() => selectVat(20)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 20}
+								class:skeleton-box={isLoading}>
+								20%
+							</button>
+						</div>
+						<ErrorContainer field={$productForm.fields.vat} />
+					</div>
+				</div>
       </div>
-      <div class="form-control">
-        <div class="w-full">
-          <label for="grid-vat">TVA *</label>
-          <div class="w-full text-lg justify-center button-group">
-            <button
-              on:click={() => selectVat(5.5)}
-              type="button"
-              class:selected={product.vat === 5.5}
-              class:disabled={isLoading}>
-              5,5%
-            </button>
-            <button
-              on:click={() => selectVat(10)}
-              type="button"
-              class:selected={product.vat === 10}
-              class:disabled={isLoading}>
-              10%
-            </button>
-            <button
-              on:click={() => selectVat(20)}
-              type="button"
-              class:selected={product.vat === 20}
-              class:disabled={isLoading}>
-              20%
-            </button>
-          </div>
-        </div>
-      </div>
+			<div class="form-control">
+				<div class="w-full">
+					<label for="grid-unit">Conditionnement *</label>
+					<div class="flex w-full">
+						<div class="mr-2">
+							<input
+								type="number"
+								bind:value={product.quantityPerUnit}
+								use:bindClass={{ form: productForm, name: "quantityPerUnit" }}
+								id="grid-quantityPerUnit"
+								placeholder="250"
+								class:skeleton-box={isLoading}
+								disabled={isLoading} />
+							<ErrorContainer field={$productForm.fields.quantityPerUnit} />
+						</div>
+						<div>
+							<select
+								bind:value={product.unit}
+								id="grid-unit"
+								use:bindClass={{ form: productForm, name: "unit" }}
+								class:skeleton-box={isLoading}
+								disabled={isLoading}>
+								<option selected="true" disabled>unité de mesure</option>
+								<option value="ML">ml</option>
+								<option value="L">L</option>
+								<option value="G">g</option>
+								<option value="KG">kg</option>
+							</select>
+							<ErrorContainer field={$productForm.fields.unit} />
+						</div>
+					</div>
+				</div>
+			</div>
     </div>
-
     <div class="w-full lg:w-1/2 lg:pl-3">
       <div class="form-control" style="height: 300px;">
         <div class="w-full" on:click={() => changeImage()}>
@@ -215,41 +265,20 @@
   </div>
   <div class="form-control" style="display: block;">
     <label>Catégorie *</label>
-    <CategorySelect disabled={isLoading} on:change={(c) => changeCategory(c)} selectedCategory={selectedCategory} displayOptionAllProducts={false} grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3" />
-  </div>
-  <div class="form-control">
-    <div class="w-full">
-     <label for="grid-unit">Conditionnement *</label>
-     <div class="flex">
-     <input 
-        type="number"
-        bind:value={product.quantityPerUnit}
-        id="grid-quantityPerUnit"
-        required="required"
-        placeholder="250"
-        class:disabled={isLoading}
-        class="w-1/2 lg:w-2/12 mr-2"
-        disabled={isLoading} />
-      <select
-        bind:value={product.unit}
-        id="grid-unit"
-        required="required"
-        class:disabled={isLoading}
-        class="w-1/2 lg:w-2/12"
-        disabled={isLoading}>
-        <option selected="true" disabled>unité de mesure</option>
-        <option value="ML">ml</option>
-        <option value="L">L</option>
-        <option value="G">g</option>
-        <option value="KG">kg</option>
-      </select>
-      </div>
-    </div>
-  </div>
+    <CategorySelect
+		disabled={isLoading}
+		on:change={(c) => changeCategory(c)}
+		bindClassData={{ form: productForm, name: "selectedCategory" }}
+		selectedCategory={selectedCategory}
+		displayOptionAllProducts={false}
+		grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"
+		/>
+  	<ErrorContainer field={$productForm.fields.selectedCategory} />
+	</div>
   <div class="form-control" style="display: block;">
     <label>Labels</label>
-    <Toggle disabled={isLoading} classNames="ml-1" isChecked={isBio} on:change={() => toggleBio()}>
-      <span>Produit issu de l'agriculture biologique</span>
+    <Toggle labelPosition="left" disabled={isLoading} classNames="ml-1" isChecked={isBio} on:change={() => toggleBio()}>
+      <img src="./img/labels/bio.png" alt="Produit bio" class="w-8" />
     </Toggle>
   </div>
   <div class="form-control" style="display: block;">
@@ -293,8 +322,7 @@
   <div class="form-control mt-5">
     <button
       type="submit"
-      class:disabled={isLoading || !isValid}
-      disabled={isLoading || !isValid}
+      class:disabled={isLoading || !$productForm.valid}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}

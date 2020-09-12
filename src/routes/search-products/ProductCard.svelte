@@ -106,7 +106,7 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 30px; right: 15px;" class="absolute">
           {#if product.tags.map(t => t.name).includes('bio')}
-            <img src="./img/labels/bio.jpg" alt="Bio" class="mb-1" />
+            <img src="./img/labels/bio.png" alt="Bio" class="mb-1" />
           {/if}
           {#if product.isReturnable}
             <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />

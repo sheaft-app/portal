@@ -36,7 +36,6 @@
   {errorsHandler}
   class="modal"
   title="Modifier l'image du produit"
-  level="success"
   icon={faCheck}
   {valid}
   submit={handleSubmit}
@@ -71,7 +70,7 @@
           </p>
         {/if}
         <label
-          class="bg-white px-8 py-3 shadow rounded-full text-lg justify-center
+          class="bg-accent px-8 py-3 shadow rounded-full text-lg justify-center
           cursor-pointer"
           for="avatar">
           Choisir une nouvelle image

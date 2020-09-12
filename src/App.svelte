@@ -647,6 +647,10 @@
     }
   }
 
+  .invalid {
+    border: 1px solid red !important;
+  }
+
   input[type="radio"] {
     @apply w-auto;
     @apply inline-block;
@@ -691,6 +695,7 @@
 
   .skeleton-box {
     position: relative;
+    border: none !important;
     overflow: hidden;
     background-color: #e2e8f0;
 

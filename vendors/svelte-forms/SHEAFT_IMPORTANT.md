@@ -1,0 +1,2 @@
+Ce package a été modifié pour subvenir à nos propres besoins.
+Le package ayant été modifié, si vous rencontrez un problème dans son utilisation, n'ouvrez pas une issue sur le repo svelte-forms mais sur le repo Sheaft

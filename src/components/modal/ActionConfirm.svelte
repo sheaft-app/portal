@@ -62,7 +62,7 @@
       type="submit"
       disabled={isLoading || !valid}
       aria-label={submitText}
-      class="{isLoading || !valid ? 'disabled' : 'bg-' + renderColorWithLevel(level) + '-500'}
+      class="{isLoading || !valid ? 'disabled' : level ? `bg-${renderColorWithLevel(level)}-500` : 'bg-primary'}
       inline-flex justify-center w-full rounded-md border border-transparent
       px-4 py-2 text-base leading-6 font-medium text-white shadow-sm
       focus:outline-none transition ease-in-out duration-150 sm:text-sm
@@ -94,7 +94,6 @@
 
     &.disabled {
       background-color: #e0e0e0;
-      @apply cursor-not-allowed;
     }
 
     &.warning {

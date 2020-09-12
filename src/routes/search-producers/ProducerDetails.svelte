@@ -220,7 +220,7 @@
         <p class="text-xl lg:text-3xl font-semibold">{producer.name}</p>
         {#if producer.tags && producer.tags && producer.tags.length > 0 && producer.tags.find((t) => t.name === "Bio")}
           <div class="text-center ml-3">
-            <img src="./img/labels/bio.jpg" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
+            <img src="./img/labels/bio.png" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
           </div>
         {/if}
       </div>

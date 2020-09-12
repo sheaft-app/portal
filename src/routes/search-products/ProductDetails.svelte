@@ -215,7 +215,7 @@
         {#if product.tags && product.tags.length > 0 && product.tags.find(t => t.name.toLowerCase() === 'bio' && t.kind == TagKind.Label.Value)}
           <div class="text-center ml-3">
             <img
-              src="./img/labels/bio.jpg"
+              src="./img/labels/bio.png"
               alt="Bio"
               class="m-auto mb-1"
               style="max-width: 30px;" />
