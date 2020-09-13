@@ -128,7 +128,7 @@
     open(CreateAgreementModal, {
       submit: () => {},
       producer,
-      storeId: GetAuthInstance().user.profile.company_id,
+      storeId: GetAuthInstance().user.profile.sub,
       onClosed: (res) => {
         if (res.success) {
           producer.agreement = { id: res.data.id, status: res.data.status };

@@ -27,7 +27,6 @@ export const GET_PRODUCTS = gql`
 					rating
 					ratingsCount
 					description
-					weight
 					vat
 					vatPricePerUnit
 					createdOn
@@ -43,8 +42,6 @@ export const GET_PRODUCT_DETAILS = gql`
 		product(input: $id) {
 			id
 			reference
-			quantityPerUnit
-			unit
 			onSalePricePerUnit
 			wholeSalePricePerUnit
 			name
@@ -55,6 +52,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			picture
 			vat
 			quantityPerUnit
+			conditioning
 			unit
 			returnable {
 				id

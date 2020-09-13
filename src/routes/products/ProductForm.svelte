@@ -1,174 +1,217 @@
 <script>
-  import { onMount, getContext } from "svelte";
-  import { fly, slide } from "svelte/transition";
-  import Icon from "svelte-awesome";
-  import { faPaperPlane, faCircleNotch, faImage } from "@fortawesome/free-solid-svg-icons";
-  import CategorySelect from "./../../components/controls/CategorySelect.svelte";
-  import Toggle from "./../../components/controls/Toggle.svelte";
-  import Select from "./../../components/controls/select/Select.js";
-  import ErrorContainer from "./../../components/ErrorContainer.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
-  import CreateReturnable from "./../returnables/CreateReturnable.svelte";
-  import TagKind from "./../../enums/TagKind.js";
-  import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
+	import { onMount, getContext } from "svelte";
+	import { fly, slide } from "svelte/transition";
+	import Icon from "svelte-awesome";
+	import {
+		faPaperPlane,
+		faCircleNotch,
+		faImage,
+	} from "@fortawesome/free-solid-svg-icons";
+	import CategorySelect from "./../../components/controls/CategorySelect.svelte";
+	import Toggle from "./../../components/controls/Toggle.svelte";
+	import Select from "./../../components/controls/select/Select.js";
+	import ErrorContainer from "./../../components/ErrorContainer.svelte";
+	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+	import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
+	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
+	import TagKind from "./../../enums/TagKind.js";
+	import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
 	import ChangeImage from "./ChangeImage.svelte";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
+	import UnitKind from "../../enums/UnitKind";
+	import ConditioningKind from "../../enums/ConditioningKind";
 
-  export let submit, product, isLoading;
+	export let submit, product, isLoading;
 
-  const { open } = getContext("modal");
-  const graphQLInstance = GetGraphQLInstance();
+	const { open } = getContext("modal");
+	const graphQLInstance = GetGraphQLInstance();
 
-  let isLoadingTags = false;
-  let isLoadingReturnables = false;
+	let isLoadingTags = false;
+	let isLoadingReturnables = false;
 
-  let selectedCategory = null;
-  let returnables = [];
-  let tags = [];
+	let selectedCategory = null;
+	let returnables = [];
+	let tags = [];
 
-	const productForm = form(() => ({
-    name: { value: product.name, validators: ['required', 'min:3'], enabled: true },
-    wholeSalePricePerUnit: { value: product.wholeSalePricePerUnit, validators: ['required', 'min:0.01'], enabled: true },
-    vat: { value: product.vat, validators: ['required'], enabled: true },
-    unit: { value: product.unit, validators: ['required'], enabled: true },
-		quantityPerUnit: { value: product.quantityPerUnit, validators: ['required', 'min:0.01'], enabled: true },
-		selectedCategory: { value: selectedCategory, validators: ['required'], enabled: true },
-	}), {
-    initCheck: false
-  });
+	const productForm = form(
+		() => ({
+			name: {
+				value: product.name,
+				validators: ["required", "min:3"],
+				enabled: true,
+			},
+			wholeSalePricePerUnit: {
+				value: product.wholeSalePricePerUnit,
+				validators: ["required", "min:0.01"],
+				enabled: true,
+			},
+			vat: { value: product.vat, validators: ["required"], enabled: true },
+			unit: { value: product.unit, validators: ["required"], enabled: true },
+			conditioning: {
+				value: product.conditioning,
+				validators: ["required"],
+				enabled: true,
+			},
+			quantityPerUnit: {
+				value: product.quantityPerUnit,
+				validators: ["required", "min:0.01"],
+				enabled: true,
+			},
+			selectedCategory: {
+				value: selectedCategory,
+				validators: ["required"],
+				enabled: true,
+			},
+		}),
+		{
+			initCheck: false,
+		}
+	);
 
 	const handleSubmit = async () => {
-    return productForm.validate();
+		productForm.validate();
+		if (product.conditioning != ConditioningKind.Bulk.Value)
+			product.unit = UnitKind.NotSpecified.Value;
 
-    // return submit();
+		return submit();
+	};
+
+	let isBio = false;
+	let bioTag = null;
+
+	$: if (product && product.tags && product.tags && product.tags.length > 0) {
+		selectedCategory = product.tags.find(
+			(i) => TagKind.get(i.kind).Value == TagKind.Category.Value
+		);
+		isBio = bioTag && product.tags.filter((i) => i.id === bioTag.id).length > 0;
 	}
 
-  let isBio = false;
-  let bioTag = null;
+	const toggleBio = () => {
+		if (!isBio) {
+			product.tags = [...product.tags, bioTag];
+		} else {
+			product.tags = product.tags.filter((i) => i.id !== bioTag.id);
+		}
+	};
 
-  $: if (product && product.tags && product.tags && product.tags.length > 0) {
-    selectedCategory = product.tags.find((i) => TagKind.get(i.kind).Value == TagKind.Category.Value);
-    isBio = bioTag && product.tags.filter((i) => i.id === bioTag.id).length > 0;
-  }
+	const changeCategory = (category) => {
+		if (product.tags && product.tags) {
+			product.tags = [
+				...product.tags.filter(
+					(i) => TagKind.get(i.kind).Value != TagKind.Category.Value
+				),
+				category.detail,
+			];
+		} else {
+			product.tags = [category.detail];
+		}
+	};
 
-  const toggleBio = () => {
-    if (!isBio) {
-      product.tags = [...product.tags, bioTag];
-    } else {
-      product.tags = product.tags.filter((i) => i.id !== bioTag.id);
-    }
-  }
+	const selectVat = (vat) => {
+		return (product.vat = vat);
+	};
 
-  const changeCategory = (category) => {
-    if (product.tags && product.tags) {
-      product.tags = [...product.tags.filter((i) => TagKind.get(i.kind).Value != TagKind.Category.Value), category.detail];
-    } else {
-      product.tags = [category.detail]
-    }
-  }
+	onMount(async () => {
+		isLoading = true;
+		await getTags();
+		await getReturnables();
+		isLoading = false;
+	});
 
-  const selectVat = (vat) => {
-    return product.vat = vat;
-  }
+	const getReturnables = async () => {
+		isLoadingReturnables = true;
+		var res = await graphQLInstance.query(GET_RETURNABLES);
+		isLoadingReturnables = false;
 
-  onMount(async () => {
-    isLoading = true;
-    await getTags();
-    await getReturnables();
-    isLoading = false;
-  })
+		if (!res.success) {
+			//TODO
+			return;
+		}
 
-  const getReturnables = async () => {
-    isLoadingReturnables = true;
-    var res = await graphQLInstance.query(GET_RETURNABLES);
-    isLoadingReturnables = false;
+		returnables = res.data;
+	};
 
-    if(!res.success){
-        //TODO
-        return;
-    }
+	const getTags = async () => {
+		isLoadingTags = true;
+		var res = await graphQLInstance.query(GET_TAGS);
+		isLoadingTags = false;
 
-    returnables = res.data;
-  }
+		if (!res.success) {
+			//TODO
+			return;
+		}
 
-  const getTags = async () => {
-    isLoadingTags = true;
-    var res = await graphQLInstance.query(GET_TAGS);
-    isLoadingTags = false;
+		tags = res.data;
+		bioTag = tags.find(
+			(t) =>
+				t.name.toLowerCase() === "bio" &&
+				TagKind.Label.Value == TagKind.get(t.kind).Value
+		);
+	};
 
-    if(!res.success){
-        //TODO
-        return;
-    }
+	const showCreateReturnableModal = () => {
+		open(CreateReturnable, {
+			isInModal: true,
+			onClose: async (res) => {
+				if (res.success) {
+					returnables = [...returnables, res.data];
+					product.returnable = res.data;
+				}
+			},
+		});
+	};
 
-    tags = res.data;
-    bioTag = tags.find(t => t.name.toLowerCase() === "bio" && TagKind.Label.Value == TagKind.get(t.kind).Value);
-  }
-
-  const showCreateReturnableModal = () => {
-    open(CreateReturnable, {
-      isInModal: true,
-      onClose: async res => {
-        if(res.success){
-          returnables = [...returnables, res.data];
-          product.returnable = res.data;
-        }
-      }
-    });
-  }
-  
-  const changeImage = () => {
-    open(ChangeImage, {
-      product,
-      onClose: res => {
-        if(res.success){
-          product.picture = res.data;
-        }
-      }
-    });
-  };
+	const changeImage = () => {
+		open(ChangeImage, {
+			product,
+			onClose: (res) => {
+				if (res.success) {
+					product.picture = res.data;
+				}
+			},
+		});
+	};
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
-  <div class="flex flex-wrap mb-6 lg:mb-0">
-    <div class="w-full lg:w-1/2">
-      <div class="form-control">
-        <div class="w-full">
-          <label for="grid-reference">Référence</label>
-          <input
-            bind:value={product.reference}
-            class:skeleton-box={isLoading}
-            disabled={isLoading}
-            id="grid-reference"
-            type="text"
-            placeholder="Auto-générée si non renseignée" />
-        </div>
-      </div>
-      <div class="form-control">
-        <div class="w-full">
-          <label for="grid-product">Nom du produit *</label>
-          <input
-            bind:value={product.name}
-						use:bindClass={{ form: productForm, name: "name" }}
-            class:skeleton-box={isLoading}
-            disabled={isLoading}
+	<div class="flex flex-wrap mb-6 lg:mb-0">
+		<div class="w-full lg:w-1/2">
+			<div class="form-control">
+				<div class="w-full">
+					<label for="grid-reference">Référence</label>
+					<input
+						bind:value={product.reference}
+						class:skeleton-box={isLoading}
+						disabled={isLoading}
+						id="grid-reference"
+						type="text"
+						placeholder="Auto-générée si non renseignée" />
+				</div>
+			</div>
+			<div class="form-control">
+				<div class="w-full">
+					<label for="grid-product">Nom du produit *</label>
+					<input
+						bind:value={product.name}
+						use:bindClass={{ form: productForm, name: 'name' }}
+						class:skeleton-box={isLoading}
+						disabled={isLoading}
 						name="name"
-            id="grid-product"
-            type="text"
-            placeholder="ex : Tomate ancienne" />
-					<ErrorContainer field={$productForm.fields.name}/>
-        </div>
-      </div>  
-      <div class="form-control">
+						id="grid-product"
+						type="text"
+						placeholder="ex : Tomate ancienne" />
+					<ErrorContainer field={$productForm.fields.name} />
+				</div>
+			</div>
+			<div class="form-control">
 				<div class="flex w-full">
 					<div class="w-full pr-2">
 						<label for="grid-price">Prix HT *</label>
 						<input
 							bind:value={product.wholeSalePricePerUnit}
-							use:bindClass={{ form: productForm, name: "wholeSalePricePerUnit" }}
+							use:bindClass={{ form: productForm, name: 'wholeSalePricePerUnit' }}
 							class:skeleton-box={isLoading}
-              disabled={isLoading}
+							disabled={isLoading}
 							id="grid-price"
 							type="number"
 							step=".01"
@@ -178,7 +221,10 @@
 					</div>
 					<div class="w-full">
 						<label for="grid-vat">TVA *</label>
-						<div class="w-full text-lg justify-center button-group" class:skeleton-box={isLoading} use:bindClass={{ form: productForm, name: "vat" }}>
+						<div
+							class="w-full text-lg justify-center button-group"
+							class:skeleton-box={isLoading}
+							use:bindClass={{ form: productForm, name: 'vat' }}>
 							<button
 								on:click={() => selectVat(5.5)}
 								type="button"
@@ -207,147 +253,200 @@
 						<ErrorContainer field={$productForm.fields.vat} />
 					</div>
 				</div>
-      </div>
+			</div>
 			<div class="form-control">
 				<div class="w-full">
-					<label for="grid-unit">Conditionnement *</label>
+					<label for="grid-conditioning">Conditionnement *</label>
+					<div class="flex w-full">
+						<div>
+							<select
+								bind:value={product.conditioning}
+								id="grid-conditioning"
+								use:bindClass={{ form: productForm, name: 'conditioning' }}
+								class:skeleton-box={isLoading}
+								disabled={isLoading}>
+								<option selected="true" disabled>
+									type de conditionnement
+								</option>
+								<option value={ConditioningKind.Bulk.Value}>
+									{ConditioningKind.Bulk.Label}
+								</option>
+								<option value={ConditioningKind.Bunch.Value}>
+									{ConditioningKind.Bunch.Label}
+								</option>
+								<option value={ConditioningKind.Box.Value}>
+									{ConditioningKind.Box.Label}
+								</option>
+								<option value={ConditioningKind.Bouquet.Value}>
+									{ConditioningKind.Bouquet.Label}
+								</option>
+								<option value={ConditioningKind.Piece.Value}>
+									{ConditioningKind.Piece.Label}
+								</option>
+							</select>
+							<ErrorContainer field={$productForm.fields.conditioning} />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-control">
+				<div class="w-full">
+					<label for="grid-quantityPerUnit">Quantité *</label>
 					<div class="flex w-full">
 						<div class="mr-2">
 							<input
 								type="number"
 								bind:value={product.quantityPerUnit}
-								use:bindClass={{ form: productForm, name: "quantityPerUnit" }}
+								use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
 								id="grid-quantityPerUnit"
 								placeholder="250"
 								class:skeleton-box={isLoading}
 								disabled={isLoading} />
 							<ErrorContainer field={$productForm.fields.quantityPerUnit} />
 						</div>
-						<div>
-							<select
-								bind:value={product.unit}
-								id="grid-unit"
-								use:bindClass={{ form: productForm, name: "unit" }}
-								class:skeleton-box={isLoading}
-								disabled={isLoading}>
-								<option selected="true" disabled>unité de mesure</option>
-								<option value="ML">ml</option>
-								<option value="L">L</option>
-								<option value="G">g</option>
-								<option value="KG">kg</option>
-							</select>
-							<ErrorContainer field={$productForm.fields.unit} />
-						</div>
+						{#if product.conditioning == ConditioningKind.Bulk.Value}
+							<div>
+								<select
+									bind:value={product.unit}
+									id="grid-unit"
+									use:bindClass={{ form: productForm, name: 'unit' }}
+									class:skeleton-box={isLoading}
+									disabled={isLoading}>
+									<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
+									<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
+									<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
+									<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
+									<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
+								</select>
+								<ErrorContainer field={$productForm.fields.unit} />
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
-    </div>
-    <div class="w-full lg:w-1/2 lg:pl-3">
-      <div class="form-control" style="height: 300px;">
-        <div class="w-full" on:click={() => changeImage()}>
-          <label for="grid-image">Image</label>
-          <div class="border border-gray-400 cursor-pointer text-center h-full">
-            {#if product.picture}
-              <div
-                class="h-full product-picture"
-                style="background: url('{product.picture}'); margin:auto;" />
-            {:else}
-              <Icon
-                data={faImage}
-                class="mr-2 inline"
-                scale={2}
-                style="margin:105px;" />
-            {/if}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="form-control" style="display: block;">
-    <label>Catégorie *</label>
-    <CategorySelect
-		disabled={isLoading}
-		on:change={(c) => changeCategory(c)}
-		bindClassData={{ form: productForm, name: "selectedCategory" }}
-		selectedCategory={selectedCategory}
-		displayOptionAllProducts={false}
-		grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"
-		/>
-  	<ErrorContainer field={$productForm.fields.selectedCategory} />
+		</div>
+		<div class="w-full lg:w-1/2 lg:pl-3">
+			<div class="form-control" style="height: 300px;">
+				<div class="w-full" on:click={() => changeImage()}>
+					<label for="grid-image">Image</label>
+					<div class="border border-gray-400 cursor-pointer text-center h-full">
+						{#if product.picture}
+							<div
+								class="h-full product-picture"
+								style="background: url('{product.picture}'); margin:auto;" />
+						{:else}
+							<Icon
+								data={faImage}
+								class="mr-2 inline"
+								scale={2}
+								style="margin:105px;" />
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-  <div class="form-control" style="display: block;">
-    <label>Labels</label>
-    <Toggle labelPosition="left" disabled={isLoading} classNames="ml-1" isChecked={isBio} on:change={() => toggleBio()}>
-      <img src="./img/labels/bio.png" alt="Produit bio" class="w-8" />
-    </Toggle>
-  </div>
-  <div class="form-control" style="display: block;">
-    <label>Type de consigne</label>
-    <div class="themed">
-      <Select
-        items={returnables}
-        getOptionLabel={(l) => l.name}
-        Item={ReturnableSelectItem}
-        getSelectionLabel={(l) => l.name}
-        showChevron={true}
-        hideSelectedOnFocus={true}
-        optionIdentifier="id"
-        placeholder="Assignez une consigne"
-        noOptionsMessage="Aucune consigne trouvée"
-        bind:selectedValue={product.returnable}
-        isSearchable={true}
-        isClearable={false}
-        containerStyles="font-weight: 600; color: #4a5568;" />
-    </div>
-    {#if returnables.length > 0 && product.returnable}
-      <button transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm" on:click={() => product.returnable = null}>Retirer la consigne du produit</button>
-    {:else}
-      <button on:click={showCreateReturnableModal} transition:fly|local={{ y: -30 }} type="button" class="btn-link text-sm">Créer une nouvelle consigne</button>
-    {/if}
-  </div>
-  <div class="form-control">
-    <div class="w-full md:w-2/2">
-     <label for="grid-description">Description</label>
-      <textarea
-        bind:value={product.description}
-        id="grid-description"
-        class:disabled={isLoading}
-        disabled={isLoading}
-        type="text"
-        style="min-height:150px;"
-        placeholder="Tomate ancienne d'une variété très particulière" />
-    </div>
-  </div>
-  <p class="text-sm mt-5">* champs requis</p>
-  <div class="form-control mt-5">
-    <button
-      type="submit"
-      class:disabled={isLoading || !$productForm.valid}
-      class="btn btn-primary btn-xl justify-center w-full md:w-auto">
-      <Icon
-        data={isLoading ? faCircleNotch : faPaperPlane}
-        class="mr-2 inline"
-        spin={isLoading} />
-      Valider
-    </button>
-  </div>
+	<div class="form-control" style="display: block;">
+		<label>Catégorie *</label>
+		<CategorySelect
+			disabled={isLoading}
+			on:change={(c) => changeCategory(c)}
+			bindClassData={{ form: productForm, name: 'selectedCategory' }}
+			{selectedCategory}
+			displayOptionAllProducts={false}
+			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3" />
+		<ErrorContainer field={$productForm.fields.selectedCategory} />
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Labels</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			isChecked={isBio}
+			on:change={() => toggleBio()}>
+			<img src="./img/labels/bio.png" alt="Produit bio" class="w-8" />
+		</Toggle>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Type de consigne</label>
+		<div class="themed">
+			<Select
+				items={returnables}
+				getOptionLabel={(l) => l.name}
+				Item={ReturnableSelectItem}
+				getSelectionLabel={(l) => l.name}
+				showChevron={true}
+				hideSelectedOnFocus={true}
+				optionIdentifier="id"
+				placeholder="Assignez une consigne"
+				noOptionsMessage="Aucune consigne trouvée"
+				bind:selectedValue={product.returnable}
+				isSearchable={true}
+				isClearable={false}
+				containerStyles="font-weight: 600; color: #4a5568;" />
+		</div>
+		{#if returnables.length > 0 && product.returnable}
+			<button
+				transition:fly|local={{ y: -30 }}
+				type="button"
+				class="btn-link text-sm"
+				on:click={() => (product.returnable = null)}>
+				Retirer la consigne du produit
+			</button>
+		{:else}
+			<button
+				on:click={showCreateReturnableModal}
+				transition:fly|local={{ y: -30 }}
+				type="button"
+				class="btn-link text-sm">
+				Créer une nouvelle consigne
+			</button>
+		{/if}
+	</div>
+	<div class="form-control">
+		<div class="w-full md:w-2/2">
+			<label for="grid-description">Description</label>
+			<textarea
+				bind:value={product.description}
+				id="grid-description"
+				class:disabled={isLoading}
+				disabled={isLoading}
+				type="text"
+				style="min-height:150px;"
+				placeholder="Tomate ancienne d'une variété très particulière" />
+		</div>
+	</div>
+	<p class="text-sm mt-5">* champs requis</p>
+	<div class="form-control mt-5">
+		<button
+			type="submit"
+			class:disabled={isLoading || !$productForm.valid}
+			class="btn btn-primary btn-xl justify-center w-full md:w-auto">
+			<Icon
+				data={isLoading ? faCircleNotch : faPaperPlane}
+				class="mr-2 inline"
+				spin={isLoading} />
+			Valider
+		</button>
+	</div>
 </form>
 
 <style>
-  .product-picture {
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-  }
-  .themed {
-    display: contents;
-    --cursor: text;
-    --padding: 16px 18px;
-    --borderFocusColor: #a0aec0;
-    --borderHoverColor: #a0aec0;
-    --border: 1px solid #cbd5e0;
-    --placeholderColor: #8290a2;
-    --inputPadding: 18px;
-    --inputColor: #205164;
-  }
+	.product-picture {
+		background-size: cover !important;
+		background-position: center !important;
+		background-repeat: no-repeat !important;
+	}
+	.themed {
+		display: contents;
+		--cursor: text;
+		--padding: 16px 18px;
+		--borderFocusColor: #a0aec0;
+		--borderHoverColor: #a0aec0;
+		--border: 1px solid #cbd5e0;
+		--placeholderColor: #8290a2;
+		--inputPadding: 18px;
+		--inputColor: #205164;
+	}
 </style>

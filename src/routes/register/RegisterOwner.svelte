@@ -1,6 +1,6 @@
 <script>
   import Loader from "./../../components/Loader.svelte";
-  import { REGISTER_COMPANY } from "./mutations.js";
+  import { REGISTER_STORE, REGISTER_PRODUCER } from "./mutations.js";
   import { SEARCH_COMPANY_SIRET } from "./queries.js";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth";
@@ -43,37 +43,36 @@
 
   let company = {
     name: authInstance.user.profile.name,
-    email: authInstance.user.profile.email,
-    phone: authInstance.user.profile.phone,
     siret: null,
-    appearInBusinessSearchResults: true,
+    openForNewBusiness: true,
     vatIdentifier: null,
     address: null,
-    owner: {
-      id: authInstance.user.profile.sub,
-      firstName: authInstance.user.profile.given_name,
-      lastName: authInstance.user.profile.family_name,
-      email: authInstance.user.profile.email,
-      phone: authInstance.user.profile.phone,
-      picture: authInstance.user.profile.picture,
-      sponsoringCode: sponsorshipCode,
-      roles: [params.id]
-    }
+    id: authInstance.user.profile.sub,
+    firstName: authInstance.user.profile.given_name,
+    lastName: authInstance.user.profile.family_name,
+    email: authInstance.user.profile.email,
+    phone: authInstance.user.profile.phone,
+    picture: authInstance.user.profile.picture,
+    sponsoringCode: sponsorshipCode,
+    roles: [params.id]
   };
 
   const handleSubmit = async () => {
     company.vatIdentifier = "FR" + vat + company.siret.toString().substring(0, 9);
 
-    if (openings.length > 0 && company.appearInBusinessSearchResults) {
+    var register = null;
+    if (isStore) {
+      register = REGISTER_STORE;
       company.openingHours = normalizeOpeningHours(openings);
     } else {
+      register = REGISTER_PRODUCER;
       delete company["openingHours"];
     }
 
     delete company.address['insee'];
 
     isRegistering = true;
-    var res = await graphQLInstance.mutate(REGISTER_COMPANY, company, errorsHandler.Uuid);
+    var res = await graphQLInstance.mutate(register, company, errorsHandler.Uuid);
 
     if (!res.success) {
     isRegistering = false;
@@ -104,12 +103,12 @@
 
     company.address = res.data.address;
     company.name = res.data.name;
-    company.owner.firstName = company.owner.firstName
-      ? company.owner.firstName
-      : res.data.owner.firstName;
-    company.owner.lastName = company.owner.lastName
-      ? company.owner.lastName
-      : res.data.owner.lastName;
+    company.firstName = company.firstName
+      ? company.firstName
+      : res.data.firstName;
+    company.lastName = company.lastName
+      ? company.lastName
+      : res.data.lastName;
 
     if (addressIsDefined(company.address)) {
       var res = await searchCompanyAddress(
@@ -152,12 +151,12 @@
   $: isValid = company.siret && company.siret.toString().length == 14;
 
   $: isUserValid =
-    company.owner.firstName &&
-    company.owner.firstName.length > 0 &&
-    company.owner.lastName &&
-    company.owner.lastName.length > 0 &&
-    company.owner.email &&
-    company.owner.email.length > 0;
+    company.firstName &&
+    company.firstName.length > 0 &&
+    company.lastName &&
+    company.lastName.length > 0 &&
+    company.email &&
+    company.email.length > 0;
 
   $: companyInfoIsValid =
     company.name &&
@@ -242,7 +241,7 @@
                   id="family_name"
                   type="text"
                   required="required"
-                  bind:value={company.owner.lastName} />
+                  bind:value={company.lastName} />
               </div>
               <div class="w-full md:w-1/2">
                 <label for="given_name">Prénom*</label>
@@ -250,7 +249,7 @@
                   id="given_name"
                   type="text"
                   required="required"
-                  bind:value={company.owner.firstName} />
+                  bind:value={company.firstName} />
               </div>
             </div>
             <div class="mb-2 md:mb-0 hidden">
@@ -260,7 +259,7 @@
                 type="email"
                 disabled="disabled"
                 required="required"
-                bind:value={company.owner.email} />
+                bind:value={company.email} />
             </div>
             <div class="w-full flex flex-wrap justify-center">
               <button
@@ -276,7 +275,7 @@
                   <input
                     id="code"
                     type="code"
-                    bind:value={company.owner.sponsoringCode} />
+                    bind:value={company.sponsoringCode} />
                 </div>
               {/if}
             </div>
@@ -411,8 +410,8 @@
               <div class="mt-2">
                 <Toggle
                   classNames="ml-1"
-                  isChecked={company.appearInBusinessSearchResults}
-                  on:change={() => (company.appearInBusinessSearchResults = !company.appearInBusinessSearchResults)}>
+                  isChecked={company.openForNewBusiness}
+                  on:change={() => (company.openForNewBusiness = !company.openForNewBusiness)}>
                   <span class="ml-1">
                     Je veux être visible des {isStore ? 'producteurs' : 'magasins'}
                     afin qu'ils me contactent pour commercer avec eux.
@@ -420,7 +419,7 @@
                 </Toggle>
               </div>
             </div>
-            {#if company.appearInBusinessSearchResults && isStore}
+            {#if company.openForNewBusiness && isStore}
               <div class="form-control mt-5">
                 <label style="margin: 0 !important;">
                   Horaires d'ouverture *
@@ -452,8 +451,8 @@
             <button
               on:click={() => stepper++}
               aria-label="Suivant"
-              disabled={(isStore && company.appearInBusinessSearchResults && (!openings || openings.length == 0))}
-              class:disabled={(isStore && company.appearInBusinessSearchResults && (!openings || openings.length == 0))}
+              disabled={(isStore && company.openForNewBusiness && (!openings || openings.length == 0))}
+              class:disabled={(isStore && company.openForNewBusiness && (!openings || openings.length == 0))}
               class="form-button uppercase text-sm cursor-pointer text-white
               shadow rounded-full px-6 py-2 flex items-center justify-center
               m-auto bg-primary">

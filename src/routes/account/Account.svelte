@@ -1,8 +1,7 @@
 <script>
   import Router from "svelte-spa-router";
 
-  import EditCompany from "./company/EditCompany.svelte";
-  import EditProfile from "./profile/EditProfile.svelte";
+  import Profile from "./Profile.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import AccountRoutes from "./routes.js";
 
@@ -11,8 +10,7 @@
   export const prefix = AccountRoutes.Prefix;
 
   const routes = {};
-  routes[AccountRoutes.Company.SubPart] = EditCompany;
-  routes[AccountRoutes.Profile.SubPart] = EditProfile;
+  routes[AccountRoutes.Profile.SubPart] = Profile;
 
 </script>
 

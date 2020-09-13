@@ -70,13 +70,13 @@
   const isSender = agreement => {
     if (
       agreement.status == AgreementStatusKind.WaitingForProducerApproval.Value &&
-      agreement.store.id == authManager.user.profile.company_id
+      agreement.store.id == authManager.user.profile.sub
     )
       return true;
 
     if (
       agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value &&
-      agreement.delivery.producer.id == authManager.user.profile.company_id
+      agreement.delivery.producer.id == authManager.user.profile.sub
     )
       return true;
 

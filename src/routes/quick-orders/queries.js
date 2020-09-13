@@ -30,6 +30,8 @@ export const GET_ALL_PRODUCTS = gql`
 				name
 				reference
 				unit
+				conditioning
+				weight
 				quantityPerUnit
 				wholeSalePricePerUnit
 				vat

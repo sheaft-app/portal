@@ -55,7 +55,8 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				wholeSalePrice
 				rating
 				quantityPerUnit
-				unit
+				unit				
+				conditioning
 				producer {
 					id
 				}

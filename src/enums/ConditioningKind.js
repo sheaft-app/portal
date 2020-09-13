@@ -1,14 +1,15 @@
 import GetEnumObjectFor from './helpers.js';
 
 let enums = {
-    ML : { Value: "ML", Label: "ml"},
-    L: { Value: "L", Label: "L"},
-    G : { Value: "G", Label: "g"},
-    KG : { Value: "KG", Label: "kg"},
+    Bulk : { Value: "BULK", Label: "Poids"},
+    Box : { Value: "BOX", Label: "Boite"},
+    Bunch: { Value: "BUNCH", Label: "Botte"},
+    Bouquet : { Value: "BOUQUET", Label: "Bouquet"},
+    Piece : { Value: "PIECE", Label: "Pièce"},
     NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
 }
 
-let UnitKind = {	
+let ConditioningKind = {	
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},
@@ -26,7 +27,7 @@ let UnitKind = {
 	}
 };
 
-Object.keys(enums).map(key => UnitKind[key] = enums[key]);
-Object.freeze(UnitKind);
+Object.keys(enums).map(key => ConditioningKind[key] = enums[key]);
+Object.freeze(ConditioningKind);
 
-export default UnitKind;
+export default ConditioningKind;

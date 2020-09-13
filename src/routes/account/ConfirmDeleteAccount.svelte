@@ -1,9 +1,9 @@
 <script>
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
-  import ActionConfirm from "./../../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../../services/SheaftGraphQL.js";
+  import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
+  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { DELETE_ACCOUNT } from "./mutations.js";
-  import SheaftErrors from "./../../../services/SheaftErrors";
+  import SheaftErrors from "./../../services/SheaftErrors";
 
   const errorsHandler = new SheaftErrors();
 

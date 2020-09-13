@@ -55,6 +55,7 @@
       wholeSalePricePerUnit: product.wholeSalePricePerUnit,
       quantityPerUnit: product.quantityPerUnit,
       unit: product.unit,
+      conditioning: product.conditioning,
       reference: product.reference,
       picture: product.picture ? product.picture : null,
       tags: product.tags.map(i => i.id),

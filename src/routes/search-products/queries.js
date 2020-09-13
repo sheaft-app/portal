@@ -12,6 +12,7 @@ export const SEARCH_PRODUCTS = gql`
 				onSalePricePerUnit
 				onSalePrice
 				unit
+				conditioning
 				quantityPerUnit
 				tags {
 					name
@@ -44,6 +45,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			onSalePrice
 			quantityPerUnit
 			unit
+			conditioning
 			tags {
 				name
 			}

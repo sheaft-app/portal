@@ -32,6 +32,8 @@ export const GET_PRODUCER_PRODUCTS = gql`
 			rating
 			quantityPerUnit
 			unit
+			conditioning
+			weight
 			producer {
 				id
 			}
