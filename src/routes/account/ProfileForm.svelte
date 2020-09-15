@@ -1,0 +1,120 @@
+<script>
+	import { onMount } from "svelte";
+	import Loader from "./../../components/Loader.svelte";
+	import GetAuthInstance from "./../../services/SheaftAuth.js";
+	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+	import Icon from "svelte-awesome";
+	import { faCircleNotch, faCheck } from "@fortawesome/free-solid-svg-icons";
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
+
+  export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
+
+	const graphQLInstance = GetGraphQLInstance();
+	const authInstance = GetAuthInstance();
+
+  const handleGet = async () => {
+		isLoading = true;
+		var res = await graphQLInstance.query(
+			getQuery,
+			{
+				id: userId,
+			},
+			errorsHandler.Uuid
+		);
+		isLoading = false;
+
+		if (!res.success) {
+			//TODO
+			return;
+		}
+
+		user = res.data;
+	};
+
+	const handleUpdate = async () => {
+		form.validate();
+
+		if ($form.valid) {
+			isLoading = true;
+
+			var res = await graphQLInstance.mutate(
+				updateQuery,
+				user,
+				errorsHandler.Uuid
+			);
+			isLoading = false;
+
+			if (!res.success) {
+				//TODO
+				return;
+			}
+
+			await authInstance.loginSilent();
+		}
+  };
+  
+	onMount(async () => {
+		await handleGet();
+	});
+</script>
+
+{#if isLoading}
+	<Loader />
+{:else}
+  <form class="w-full" on:submit|preventDefault={() => handleUpdate()}>
+    <div class="form-control">
+      <div class="w-full md:w-2/4 pr-0 md:pr-2 mb-3 md:mb-0">
+        <label for="grid-first-name">Prénom *</label>
+        <input
+          bind:value={user.firstName}
+          use:bindClass={{ form, name: "firstName" }}
+          id="grid-first-name"
+          type="text"
+          placeholder="ex : Jean" />
+        <ErrorContainer field={$form.fields.firstName} />
+      </div>
+      <div class="w-full md:w-2/4">
+        <label for="grid-last-name">Nom *</label>
+        <input
+          bind:value={user.lastName}
+          use:bindClass={{ form, name: "lastName" }}
+          type="text"
+          placeholder="ex : Dupont" />
+        <ErrorContainer field={$form.fields.lastName} />
+      </div>
+    </div>
+    <div class="form-control">
+      <div class="w-full md:w-3/3">
+        <label for="grid-email">Email *</label>
+        <input
+          bind:value={user.email}
+          use:bindClass={{ form, name: "email" }}
+          id="grid-email"
+          type="email"
+          placeholder="ex : jean.dupont@test.xyz" />
+        <ErrorContainer field={$form.fields.email} />
+      </div>
+    </div>
+    <div class="form-control">
+      <div class="w-full md:w-1/2">
+        <label for="grid-phone">Téléphone</label>
+        <input bind:value={user.phone} id="grid-phone" type="tel" />
+      </div>
+    </div>
+    <slot />
+    <p class="text-sm mt-5">* champs requis</p>
+    <div class="form-control mt-5">
+      <button
+        type="submit"
+        class:disabled={isLoading || !$form.valid}
+        class="btn btn-xl btn-primary w-full md:w-auto justify-center">
+        <Icon
+          data={isLoading ? faCircleNotch : faCheck}
+          class="mr-1 inline"
+          spin={isLoading} />
+        Valider
+      </button>
+    </div>
+  </form>
+{/if}
