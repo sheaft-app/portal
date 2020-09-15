@@ -25,7 +25,7 @@ export const RATE_PRODUCT = gql`
 			ratings(first: 10, order_by: { createdOn: DESC }) {
 				nodes {
 					user {
-						shortName
+						name
 						picture
 					}
 					comment

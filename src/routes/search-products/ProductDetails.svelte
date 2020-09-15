@@ -442,7 +442,7 @@
                   class="absolute top-0 left-0 w-full h-full bg-cover object-fit
                   object-cover"
                   src={getUserPicture(rating.user.picture)}
-                  alt={rating.user.shortName} />
+                  alt={rating.user.name} />
                 <div
                   class="absolute top-0 left-0 w-full h-full rounded-full
                   shadow-inner" />
@@ -458,7 +458,7 @@
             </span>
             <p class="flex items-baseline">
               <span class="text-gray-600 font-bold">
-                {rating.user.shortName}
+                {rating.user.name}
               </span>
               <!-- <span class="ml-2 text-green-600 text-xs">Achat vérifié</span> -->
             </p>

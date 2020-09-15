@@ -59,7 +59,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			ratings(first: 10, order_by: { createdOn: DESC }) {
 				nodes {
 					user {
-						shortName
+						name
 						picture
 					}
 					comment

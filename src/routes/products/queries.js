@@ -85,7 +85,7 @@ export const GET_PRODUCT_RATINGS = gql`
 					comment
 					createdOn
 					user {
-						shortName
+						name
 						picture
 					}
 				}
