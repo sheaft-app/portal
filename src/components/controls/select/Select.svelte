@@ -82,6 +82,7 @@
   export let icon = null;
   export let iconClasses = "";
   export let showChevron = false;
+  export let invalid = false;
 
   let target;
   let activeSelectedValue;
@@ -646,6 +647,7 @@
   class="{containerClasses}
   {hasError ? 'ssp-hasError' : ''}"
   style={containerStyles}
+  class:invalid
   on:click={handleClick}
   bind:this={container}>
 

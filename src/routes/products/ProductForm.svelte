@@ -69,11 +69,13 @@
 	);
 
 	const handleSubmit = async () => {
-		productForm.validate();
-		if (product.conditioning != ConditioningKind.Bulk.Value)
-			product.unit = UnitKind.NotSpecified.Value;
+    productForm.validate();
 
-		return submit();
+    if ($productForm.valid) {
+      if (product.conditioning != ConditioningKind.Bulk.Value)
+          product.unit = UnitKind.NotSpecified.Value;
+      return submit();
+    }
 	};
 
 	let isBio = false;

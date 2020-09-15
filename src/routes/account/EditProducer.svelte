@@ -7,16 +7,19 @@
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import { UPDATE_PRODUCER } from "./mutations.js";
 	import { GET_PRODUCER_DETAILS } from "./queries.js";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
 	export let errorsHandler, userId;
 	const graphQLInstance = GetGraphQLInstance();
 	const authInstance = GetAuthInstance();
 
 	let isLoading = false;
-	let producer = null;
-
-	$: isValid =
-		producer && producer.firstName && producer.lastName && producer.email;
+	let producer = {
+		firstName: null,
+		lastName: null,
+		email: null
+	};
 
 	const handleGet = async () => {
 		var res = await graphQLInstance.query(
@@ -37,22 +40,34 @@
 	};
 
 	const handleUpdate = async () => {
-		isLoading = true;
+		producerForm.validate();
 
-		var res = await graphQLInstance.mutate(
-			UPDATE_PRODUCER,
-			producer,
-			errorsHandler.Uuid
-		);
-		isLoading = false;
+		if ($producerForm.valid) {
+			isLoading = true;
 
-		if (!res.success) {
-			//TODO
-			return;
+			var res = await graphQLInstance.mutate(
+				UPDATE_PRODUCER,
+				producer,
+				errorsHandler.Uuid
+			);
+			isLoading = false;
+
+			if (!res.success) {
+				//TODO
+				return;
+			}
+
+			await authInstance.loginSilent();
 		}
-
-		await authInstance.loginSilent();
 	};
+
+	const producerForm = form(() => ({
+    firstName: { value: producer.firstName, validators: ['required'], enabled: true },
+    lastName: { value: producer.lastName, validators: ['required'], enabled: true },
+    email: { value: producer.email, validators: ['required', 'email'], enabled: true },
+	}), {
+    initCheck: false
+	});
 
 	onMount(async () => {
 		isLoading = true;
@@ -69,18 +84,18 @@
 				<label for="grid-first-name">Prénom *</label>
 				<input
 					bind:value={producer.firstName}
-					required
+					use:bindClass={{ form: producerForm, name: "firstName" }}
 					id="grid-first-name"
 					type="text"
-					placeholder="Jean" />
+					placeholder="ex : Jean" />
 			</div>
 			<div class="w-full md:w-2/4">
 				<label for="grid-last-name">Nom *</label>
 				<input
 					bind:value={producer.lastName}
-					required
+					use:bindClass={{ form: producerForm, name: "lastName" }}
 					type="text"
-					placeholder="Dupont" />
+					placeholder="ex : Dupont" />
 			</div>
 		</div>
 		<div class="form-control">
@@ -88,10 +103,10 @@
 				<label for="grid-email">Email *</label>
 				<input
 					bind:value={producer.email}
-					required
+					use:bindClass={{ form: producerForm, name: "email" }}
 					id="grid-email"
 					type="email"
-					placeholder="jean.dupont@test.xyz" />
+					placeholder="ex : jean.dupont@test.xyz" />
 			</div>
 		</div>
 		<div class="form-control">
@@ -104,8 +119,7 @@
 		<div class="form-control mt-5">
 			<button
 				type="submit"
-				class:disabled={isLoading || !isValid}
-				disabled={isLoading || !isValid}
+				class:disabled={isLoading || !$producerForm.valid}
 				class="btn btn-xl btn-primary w-full md:w-auto justify-center">
 				<Icon
 					data={isLoading ? faCircleNotch : faCheck}

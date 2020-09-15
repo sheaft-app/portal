@@ -3,6 +3,10 @@ export function required(val, args) {
     return false;
   }
 
+  if (Array.isArray(val) && val.length < 1) {
+    return false;
+  }
+
   if (typeof val === 'string') {
     const tmp = val.replace(/\s/g, "");
 

@@ -65,6 +65,10 @@
     class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2">
     <h1 class="text-2xl mb-0 text-gray-700">Renseignez vos horaires de livraison</h1>
   </section>
+  <div class="mb-5">
+    <p>Cette section n'est utile pour vous que si vous souhaitez commercer avec des professionels. Elle sert à leur afficher vos horaires de livraison.</p>
+    <p>Les particuliers ne voient pas ces informations.</p>
+  </div>
   <DeliveryForm
     submit={handleSubmit}
     initialValues={delivery}

@@ -91,13 +91,15 @@ function validateField(data, observable, { stopAtFirstFieldError }) {
   return { data, valid, errors, pending, dirty };
 }
 
-export function bindClass(
-  node,
-  { form, name, valid = 'valid', invalid = 'invalid' }
-) {
-  const key = name || node.getAttribute('name');
+export function bindClass(node, data) {
+  if (!data) return;
 
-  const unsubscribe = form.subscribe((context) => {
+  const key = data.name || node.getAttribute('name');
+  const valid = data.valid || 'valid';
+  const invalid = data.invalid || 'invalid';
+
+  const unsubscribe = data.form.subscribe((context) => {
+    console.log(context);
     if (!context.fields.hasOwnProperty(key)) {
       return;
     }
@@ -220,7 +222,7 @@ async function walkThroughFields(fn, observable, initialFieldsData, config, forc
   });
 
   returnedObject.valid = !Object.keys(returnedObject.fields).find(
-    (f) => !returnedObject.fields[f].valid
+    (f) => returnedObject.fields[f] && !returnedObject.fields[f].valid
   );
 
   observable.set(returnedObject);

@@ -25,7 +25,7 @@
     disabled = false,
     selectedCategory = null,
     grid = null,
-    bindClassData = () => {};
+    bindClassData = null;
 
   let isLoading = false;
   let categories = [];

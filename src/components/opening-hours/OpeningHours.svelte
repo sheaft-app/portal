@@ -4,7 +4,7 @@
   import TimePicker from "../controls/TimePicker.svelte";
   import DayOfWeekKind from "../../enums/DayOfWeekKind";
 
-  export let opening;
+  export let opening, invalid = false;
 
   let days = [DayOfWeekKind.Monday, 
   DayOfWeekKind.Tuesday, 
@@ -31,7 +31,8 @@
     {#each days as day, index}
       <label
         style="display: flex;"
-        class="items-center p-2 cursor-pointer hover:bg-gray-100">
+        class:bg-red-200={invalid}
+        class="day-letter items-center p-2 cursor-pointer hover:bg-gray-100">
         <LetterCheckbox 
         checked={day.checked}
         onClick={() => day.checked = !day.checked}

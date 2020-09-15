@@ -14,7 +14,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import EditConsumer from "./EditConsumer.svelte";
   import EditProducer from "./EditProducer.svelte";
-  import EditStore from "./EditStore.svelte";  
+  import EditStore from "./EditStore.svelte";
 
   const errorsHandler = new SheaftErrors();
   const authInstance = GetAuthInstance();

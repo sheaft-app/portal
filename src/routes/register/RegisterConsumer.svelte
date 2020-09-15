@@ -13,7 +13,9 @@
   import { authRegistered } from "./../../stores/auth.js";
   import { departments } from "./../../stores/app.js";
   import Select from "./../../components/controls/select/Select.js";
-import ErrorCard from "../../components/ErrorCard.svelte";
+  import ErrorCard from "../../components/ErrorCard.svelte";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
@@ -26,37 +28,50 @@ import ErrorCard from "../../components/ErrorCard.svelte";
   let selectedDepartment = null;
 
   let user = {
-    id: authInstance.user.profile.sub,
-    firstName: authInstance.user.profile.given_name,
-    lastName: authInstance.user.profile.family_name,
-    email: authInstance.user.profile.email,
-    phone: authInstance.user.profile.phone,
-    picture: authInstance.user.profile.picture,
+    id: authInstance.user.profile.sub || null,
+    firstName: authInstance.user.profile.given_name || null,
+    lastName: authInstance.user.profile.family_name || null,
+    email: authInstance.user.profile.email || null,
+    phone: authInstance.user.profile.phone || null,
+    picture: authInstance.user.profile.picture || null,
     departmentId: null,
-    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")),
+    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")) || null,
     anonymous: true
   };
+
+  const consumerForm = form(() => ({
+    firstName: { value: user.firstName, validators: ['required'], enabled: true },
+    lastName: { value: user.lastName, validators: ['required'], enabled: true },
+    email: { value: user.email, validators: ['required', 'email'], enabled: true },
+    selectedDepartment: { value: selectedDepartment, validators: ['required'], enabled: true },
+	}), {
+    initCheck: false
+  });
 
   let isLoading = true;
 
   const handleSubmit = async () => {
-    user.departmentId = selectedDepartment.id;
-    isRegistering = true;
+    consumerForm.validate();
 
-    var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
+    if ($consumerForm.valid) {
+      user.departmentId = selectedDepartment.id;
+      isRegistering = true;
 
-    if (!res.success) {
-      isRegistering = false;      
-      //TODO
-      return;
+      var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
+
+      if (!res.success) {
+        isRegistering = false;      
+        //TODO
+        return;
+      }
+
+      await authInstance.loginSilent();
+      authRegistered.set(true);
+      localStorage.removeItem("user_choosen_role");
+      localStorage.removeItem("sponsoring");
+      routerInstance.goTo("/");
+      isRegistering = false;
     }
-
-    await authInstance.loginSilent();
-    authRegistered.set(true);
-    localStorage.removeItem("user_choosen_role");
-    localStorage.removeItem("sponsoring");
-    routerInstance.goTo("/");
-    isRegistering = false;
   };
 
   const handleCancel = () => {
@@ -76,15 +91,6 @@ import ErrorCard from "../../components/ErrorCard.svelte";
     isLoading = false;
     departments.set(res.data);
   };
-
-  $: isValid =
-    selectedDepartment &&
-    user.firstName &&
-    user.firstName.length > 0 &&
-    user.lastName &&
-    user.lastName.length > 0 &&
-    user.email &&
-    user.email.length > 0;
 
   onMount(async () => {
     await getDepartments();
@@ -115,16 +121,18 @@ import ErrorCard from "../../components/ErrorCard.svelte";
               <input
                 id="family_name"
                 type="text"
-                required="required"
+                use:bindClass={{ form: consumerForm, name: "lastName" }}
                 bind:value={user.lastName} />
+              <ErrorContainer field={$consumerForm.fields.lastName} />
             </div>
             <div class="mb-2 mt-2 form-control w-full">
               <label for="given_name">Prénom*</label>
               <input
                 id="given_name"
+                use:bindClass={{ form: consumerForm, name: "firstName" }}
                 type="text"
-                required="required"
                 bind:value={user.firstName} />
+              <ErrorContainer field={$consumerForm.fields.firstName} />
             </div>
           </div>
           <div class="w-full justify-center hidden">
@@ -138,17 +146,18 @@ import ErrorCard from "../../components/ErrorCard.svelte";
                 id="email"
                 type="email"
                 disabled="disabled"
-                required="required"
+                use:bindClass={{ form: consumerForm, name: "email" }}
                 bind:value={user.email}
                 class="disabled appearance-none block w-full border back-bg-clr
                 rounded py-3 px-4 leading-tight focus:outline-none
                 focus:bg-white" />
+                <ErrorContainer field={$consumerForm.fields.email} />
             </div>
           </div>
           <div class="flex flex-wrap justify-center mb-2 mt-2">
             <div class="form-control w-full" style="display: block;">
               <label for="dept">Département*</label>
-              <div class="themed">
+              <div class="themed" use:bindClass={{ form: consumerForm, name: "selectedDepartment" }}>
                 <Select
                   getOptionLabel={getLabel}
                   getSelectionLabel={getLabel}
@@ -157,6 +166,7 @@ import ErrorCard from "../../components/ErrorCard.svelte";
                   )}
                   iconClasses="mr-3"
                   isClearable={false}
+                  invalid={$consumerForm.fields.selectedDepartment.dirty && !$consumerForm.fields.selectedDepartment.valid}
                   showChevron={true}
                   hideSelectedOnFocus={true}
                   optionIdentifier="id"
@@ -164,6 +174,7 @@ import ErrorCard from "../../components/ErrorCard.svelte";
                   bind:selectedValue={selectedDepartment}
                   containerStyles="font-weight: 600;" />
               </div>
+              <ErrorContainer field={$consumerForm.fields.selectedDepartment} />
             </div>
           </div>
           <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
@@ -212,10 +223,9 @@ import ErrorCard from "../../components/ErrorCard.svelte";
         </div>
         <div>
           <button
-            class:disabled={!isValid}
+            class:disabled={!$consumerForm.valid}
             on:click={handleSubmit}
             aria-label="Valider"
-            disabled={!isValid}
             class="form-button uppercase text-sm cursor-pointer text-white
             shadow rounded-full px-6 py-2 flex items-center justify-center
             m-auto bg-primary">

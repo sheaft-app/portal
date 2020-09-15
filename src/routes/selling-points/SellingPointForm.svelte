@@ -6,6 +6,8 @@
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
   import { timeToTimeSpan, normalizeOpeningHours } from "./../../helpers/app";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   export let submit, initialValues, isLoading;
   let sellingPoint = initialValues;
@@ -20,11 +22,22 @@
   }
 
   const handleSubmit = () => {
-    sellingPoint.openingHours = normalizeOpeningHours(openings);
-
-    delete sellingPoint.address['insee'];
-    submit();
+    sellingPointForm.validate();
+    
+    if ($sellingPointForm.valid) {
+      sellingPoint.openingHours = normalizeOpeningHours(openings);
+      delete sellingPoint.address['insee'];
+      submit();
+    }
   }
+
+  const sellingPointForm = form(() => ({
+    kind: { value: sellingPoint.kind, validators: ['required', 'min:3'], enabled: true },
+    address: { value: sellingPoint.address, validators: ['required'], enabled: true },
+    openings: { value: sellingPoint.openingHours, validators: ['required', 'openings'], enabled: true },
+	}), {
+    initCheck: false
+  });
 
   $: isValid = sellingPoint &&
     sellingPoint.kind &&
@@ -54,7 +67,7 @@
       </div>
       <div class="form-control">
         <label>Type de point de vente *</label>
-        <div class="w-full justify-center button-group">
+        <div class="w-full justify-center button-group" use:bindClass={{ form: sellingPointForm, name: "kind" }}>
           <button
             on:click={() => selectKind('MARKET')}
             type="button"
@@ -77,17 +90,26 @@
             Magasin de producteurs
           </button>
         </div>
+        <ErrorContainer field={$sellingPointForm.fields.kind} />
       </div>
       <div class="form-control w-full" style="display: block;">
-          <label for="grid-address">Adresse *</label>
-          <CitySearch bind:selectedAddress={sellingPoint.address} />
+        <label for="grid-address">Adresse *</label>
+        <CitySearch 
+          invalid={$sellingPointForm && $sellingPointForm.fields.address ? !$sellingPointForm.fields.address.valid && $sellingPointForm.fields.address.dirty : false}
+          bind:selectedAddress={sellingPoint.address} 
+          bindClassData={{ form: sellingPointForm, name: "address" }} 
+        />
+        <ErrorContainer field={$sellingPointForm.fields.address} />
       </div>
       <div class="form-control">
-        <div class="w-full">
+        <div class="w-full" use:bindClass={{ form: sellingPointForm, name: "openings" }}>
           <label for="grid-timestamp">Horaires de vente *</label>
-          <OpeningHoursContainer bind:openings={openings} />
+          <OpeningHoursContainer 
+          bind:openings={sellingPoint.openingHours} 
+          invalid={$sellingPointForm.fields.openings ? $sellingPointForm.fields.openings.valid : false} />
+          <ErrorContainer field={$sellingPointForm.fields.openings} />
+        </div>
       </div>
-    </div>
     </div>
   </div>
   <div class="form-control" style="display: block;">
@@ -103,8 +125,7 @@
   <div class="form-control mt-5">
     <button
       type="submit"
-      class:disabled={isLoading || !isValid}
-      disabled={isLoading || !isValid}
+      class:disabled={isLoading || !$sellingPointForm.valid}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}

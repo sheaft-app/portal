@@ -1,20 +1,33 @@
 <script>
   import Icon from "svelte-awesome";
   import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   export let submit, returnable, isLoading, isInModal = false, close = null;
 
-  $: isValid = returnable &&
-    returnable.name &&
-    returnable.wholeSalePrice && 
-    returnable.vat != null;
+  const returnableForm = form(() => ({
+    name: { value: returnable.name, validators: ['required', 'min:3'], enabled: true },
+    wholeSalePrice: { value: returnable.wholeSalePrice, validators: ['required', 'min:0.01'], enabled: true },
+    vat: { value: returnable.vat, validators: ['required'], enabled: true }
+	}), {
+    initCheck: false
+  });
 
   const selectVat = (vat) => {
     return returnable.vat = vat;
   }
+
+  const handleSubmit = () => {
+    returnableForm.validate();
+
+    if ($returnableForm.valid) {
+      submit();
+    }
+  }
 </script>
 
-<form class="w-full" on:submit|preventDefault={submit}>
+<form class="w-full" on:submit|preventDefault={handleSubmit}>
   <div class={`mb-6 lg:mb-0 ${!isInModal && "lg:w-1/2"}`}>
     <div class="form-control">
       <div class="w-full">
@@ -22,12 +35,13 @@
         <input
           bind:value={returnable.name}
           class:disabled={isLoading}
+          use:bindClass={{ form: returnableForm, name: "name" }}
           disabled={isLoading}
-          required
           id="grid-product"
           type="text"
           placeholder="Pot en verre" />
       </div>
+      <ErrorContainer field={$returnableForm.fields.name}/>
     </div>  
     <div class="form-control">
       <div class="w-full">
@@ -35,18 +49,19 @@
         <input
           bind:value={returnable.wholeSalePrice}
           class:disabled={isLoading}
+          use:bindClass={{ form: returnableForm, name: "wholeSalePrice" }}
           disabled={isLoading}
-          required
           id="grid-price"
           type="number"
           step=".01"
           placeholder="0.50" />
       </div>
+      <ErrorContainer field={$returnableForm.fields.wholeSalePrice}/>
     </div>
     <div class="form-control">
       <div class="w-full">
         <label for="grid-vat">TVA *</label>
-        <div class="w-full text-lg justify-center button-group">
+        <div class="w-full text-lg justify-center button-group" use:bindClass={{ form: returnableForm, name: "vat" }}>
           <button
             on:click={() => selectVat(5.5)}
             type="button"
@@ -70,6 +85,7 @@
           </button>
         </div>
       </div>
+      <ErrorContainer field={$returnableForm.fields.vat}/>
     </div>
     <div class="form-control">
       <div class="w-full">
@@ -98,8 +114,7 @@
     {/if}
     <button
       type="submit"
-      class:disabled={isLoading || !isValid}
-      disabled={isLoading || !isValid}
+      class:disabled={isLoading || !$returnableForm.valid}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}

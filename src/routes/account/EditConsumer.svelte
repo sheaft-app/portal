@@ -7,16 +7,19 @@
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import { UPDATE_CONSUMER } from "./mutations.js";
 	import { GET_CONSUMER_DETAILS } from "./queries.js";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
 	export let errorsHandler, userId;
 	const graphQLInstance = GetGraphQLInstance();
 	const authInstance = GetAuthInstance();
 
 	let isLoading = false;
-	let consumer = null;
-
-	$: isValid =
-		consumer && consumer.firstName && consumer.lastName && consumer.email;
+	let consumer = {
+		firstName: null,
+		lastName: null,
+		email: null
+	};
 
 	const handleGet = async () => {
 		isLoading = true;
@@ -38,23 +41,35 @@
 	};
 
 	const handleUpdate = async () => {
-		isLoading = true;
+		consumerForm.validate();
 
-		var res = await graphQLInstance.mutate(
-			UPDATE_CONSUMER,
-			consumer,
-			errorsHandler.Uuid
-		);
-		isLoading = false;
+		if ($consumerForm.valid) {
+			isLoading = true;
 
-		if (!res.success) {
-			//TODO
-			return;
+			var res = await graphQLInstance.mutate(
+				UPDATE_CONSUMER,
+				consumer,
+				errorsHandler.Uuid
+			);
+			isLoading = false;
+
+			if (!res.success) {
+				//TODO
+				return;
+			}
+
+			await authInstance.loginSilent();
 		}
-
-		await authInstance.loginSilent();
 	};
-
+	
+	const consumerForm = form(() => ({
+    firstName: { value: consumer.firstName, validators: ['required'], enabled: true },
+    lastName: { value: consumer.lastName, validators: ['required'], enabled: true },
+    email: { value: consumer.email, validators: ['required', 'email'], enabled: true },
+	}), {
+    initCheck: false
+	});
+	
 	onMount(async () => {
 		await handleGet();
 	});
@@ -69,18 +84,20 @@
 				<label for="grid-first-name">Prénom *</label>
 				<input
 					bind:value={consumer.firstName}
-					required
+					use:bindClass={{ form: consumerForm, name: "firstName" }}
 					id="grid-first-name"
 					type="text"
-					placeholder="Jean" />
+					placeholder="ex : Jean" />
+				<ErrorContainer field={$consumerForm.fields.firstName} />
 			</div>
 			<div class="w-full md:w-2/4">
 				<label for="grid-last-name">Nom *</label>
 				<input
 					bind:value={consumer.lastName}
-					required
+					use:bindClass={{ form: consumerForm, name: "lastName" }}
 					type="text"
-					placeholder="Dupont" />
+					placeholder="ex : Dupont" />
+				<ErrorContainer field={$consumerForm.fields.lastName} />
 			</div>
 		</div>
 		<div class="form-control">
@@ -88,10 +105,11 @@
 				<label for="grid-email">Email *</label>
 				<input
 					bind:value={consumer.email}
-					required
+					use:bindClass={{ form: consumerForm, name: "email" }}
 					id="grid-email"
 					type="email"
-					placeholder="jean.dupont@test.xyz" />
+					placeholder="ex : jean.dupont@test.xyz" />
+				<ErrorContainer field={$consumerForm.fields.email} />
 			</div>
 		</div>
 		<div class="form-control">
@@ -104,8 +122,7 @@
 		<div class="form-control mt-5">
 			<button
 				type="submit"
-				class:disabled={isLoading || !isValid}
-				disabled={isLoading || !isValid}
+				class:disabled={isLoading || !$consumerForm.valid}
 				class="btn btn-xl btn-primary w-full md:w-auto justify-center">
 				<Icon
 					data={isLoading ? faCircleNotch : faCheck}

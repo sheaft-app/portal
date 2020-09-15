@@ -93,6 +93,10 @@
         </h1>
       </div>
     </section>
+    <div class="mb-5">
+      <p>Cette section n'est utile pour vous que si vous souhaitez commercer avec des professionels. Elle sert à leur afficher vos horaires de livraison.</p>
+      <p>Les particuliers ne voient pas ces informations.</p>
+    </div>
     <DeliveryForm
       submit={handleSubmit}
       initialValues={delivery}

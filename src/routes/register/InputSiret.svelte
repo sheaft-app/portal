@@ -1,7 +1,8 @@
 <script>
   import { onMount } from "svelte";
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
 
-  export let value, disabled = false;
+  export let value, disabled = false, bindClassData = null;
   const max = 14;
 
   let ref;
@@ -17,20 +18,22 @@
   id="siret" 
   bind:value 
   bind:this={ref}
+  use:bindClass={bindClassData}
   type="number"
   placeholder="00000000000000" 
   on:input={e => {
     if (e.target.value.length > e.target.maxLength) {
+      e.preventDefault();
       e.target.value = e.target.value
-        .slice(0, e.target.maxLength)
+        .slice(0, e.target.maxLength - 1)
         .toString();
     }
   }}
   class="m-auto"
   class:disabled={disabled}
   {disabled}
-  maxlength="14"
-  minlength="14"/>
+  maxLength="14"
+  minLength="14"/>
 
 <style lang="scss">
 	/* Chrome, Safari, Edge, Opera */

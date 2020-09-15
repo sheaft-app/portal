@@ -7,6 +7,7 @@
   import TopItem from "./TopItem.svelte";
   import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import Guid from "./../../helpers/Guid";
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
 
   const cityService = new CityService();
 
@@ -14,7 +15,9 @@
     withGeolocationButton = false,
     containerStyles = "",
     initAddress = null,
-    selectedAddress = null;
+    selectedAddress = null,
+    invalid = false,
+    bindClassData = null;
 
   let isLoading = false;
 
@@ -125,12 +128,13 @@
   $: initDefaultAddress(initAddress);
 </script>
 
-<div class="themed">
+<div class="themed" use:bindClass={bindClassData}>
   <Select
     loadOptions={text => loadData(text)}
     {getOptionLabel}
     isDisabled={isLoading}
     isWaiting={isLoading}
+    {invalid}
     icon={faMapMarkerAlt}
     iconClasses="mr-3 text-accent"
     {getSelectionLabel}
@@ -149,7 +153,7 @@
     containerStyles="height: 60px; font-weight: 600; color: #4a5568; {containerStyles}" />
 </div>
 
-<style>
+<style lang="scss">
   .themed {
     display: contents;
     --cursor: text;
@@ -162,5 +166,9 @@
     --inputColor: #205164;
     --indicatorTop: 16px;
     --indicatorColor: #ff4081;
+    
+    .ssp-selectContainer {
+      border-color: red !important;
+    }
   }
 </style>

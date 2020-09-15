@@ -20,6 +20,8 @@
   import ErrorCard from "../../components/ErrorCard.svelte";
   import { authRegistered } from "../../stores/auth";
   import InputSiret from "./InputSiret.svelte";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   export let params = {};
 
@@ -29,7 +31,6 @@
   const graphQLInstance = GetGraphQLInstance();
   const notificationsInstance = GetNotificationsInstance();
   const errorsHandler = new SheaftErrors();
-
 
   let isRegistering = false;
   let isSearchingSiret = false;
@@ -42,64 +43,71 @@
   let openings = [];
 
   let company = {
-    name: authInstance.user.profile.name,
+    name: authInstance.user.profile.name || null,
     siret: null,
     openForNewBusiness: true,
     vatIdentifier: null,
     address: null,
-    id: authInstance.user.profile.sub,
-    firstName: authInstance.user.profile.given_name,
-    lastName: authInstance.user.profile.family_name,
-    email: authInstance.user.profile.email,
-    phone: authInstance.user.profile.phone,
-    picture: authInstance.user.profile.picture,
-    sponsoringCode: sponsorshipCode,
+    id: authInstance.user.profile.sub || null,
+    firstName: authInstance.user.profile.given_name || null,
+    lastName: authInstance.user.profile.family_name || null,
+    email: authInstance.user.profile.email || null,
+    phone: authInstance.user.profile.phone || null,
+    picture: authInstance.user.profile.picture || null,
+    sponsoringCode: sponsorshipCode || null,
     roles: [params.id]
   };
 
   const handleSubmit = async () => {
-    company.vatIdentifier = "FR" + vat + company.siret.toString().substring(0, 9);
+    addressForm.validate();
 
-    var register = null;
-    if (isStore) {
-      register = REGISTER_STORE;
-      company.openingHours = normalizeOpeningHours(openings);
-    } else {
-      register = REGISTER_PRODUCER;
-      delete company["openingHours"];
+    if ($addressForm.valid) {
+      company.vatIdentifier = "FR" + vat + company.siret.toString().substring(0, 9);
+
+      var register = null;
+      if (isStore) {
+        register = REGISTER_STORE;
+        company.openingHours = normalizeOpeningHours(openings);
+      } else {
+        register = REGISTER_PRODUCER;
+        delete company["openingHours"];
+      }
+
+      delete company.address['insee'];
+
+      isRegistering = true;
+      var res = await graphQLInstance.mutate(register, company, errorsHandler.Uuid);
+
+      if (!res.success) {
+      isRegistering = false;
+        //TODO
+        return;
+      }
+
+      await authInstance.loginSilent();
+      authRegistered.set(true);
+      localStorage.removeItem("user_choosen_role");
+      localStorage.removeItem("sponsoring");
+      routerInstance.goTo("/");
+      isRegistering = false;
     }
-
-    delete company.address['insee'];
-
-    isRegistering = true;
-    var res = await graphQLInstance.mutate(register, company, errorsHandler.Uuid);
-
-    if (!res.success) {
-    isRegistering = false;
-      //TODO
-      return;
-    }
-
-    await authInstance.loginSilent();
-    authRegistered.set(true);
-    localStorage.removeItem("user_choosen_role");
-    localStorage.removeItem("sponsoring");
-    routerInstance.goTo("/");
-    isRegistering = false;
   };
 
   const validateSiret = async () => {
-    var siret = company.siret.toString();
-    if (siret.length < 14 || siret.length > 14) return;
+    siretForm.validate();
 
-    isSearchingSiret = true;
-    var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, {input:siret});
-    if (!res.success) {
-      isSearchingSiret = false;
-      stepper++;
-      //TODO
-      return;
-    }
+    if ($siretForm.valid) {
+      var siret = company.siret.toString();
+      if (siret.length < 14 || siret.length > 14) return;
+
+      isSearchingSiret = true;
+      var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, {input:siret});
+      if (!res.success) {
+        isSearchingSiret = false;
+        stepper++;
+        //TODO
+        return;
+      }
 
     company.address = res.data.address;
     company.name = res.data.name;
@@ -110,17 +118,18 @@
       ? company.lastName
       : res.data.lastName;
 
-    if (addressIsDefined(company.address)) {
-      var res = await searchCompanyAddress(
-        `${company.address.line1}, ${company.address.zipcode} ${company.address.city}`
-      );
-      if (res.success) {
-        company.address = res.data;
+      if (addressIsDefined(company.address)) {
+        var res = await searchCompanyAddress(
+          `${company.address.line1}, ${company.address.zipcode} ${company.address.city}`
+        );
+        if (res.success) {
+          company.address = res.data;
+        }
       }
-    }
 
-    stepper++;
-    isSearchingSiret = false;
+      stepper++;
+      isSearchingSiret = false;
+    }
   };
 
   const addressIsDefined = address =>
@@ -165,6 +174,33 @@
     company.siret.toString().length == 14 &&
     company.email &&
     company.email.length > 0;
+
+  const siretForm = form(() => ({
+    siret: { value: company.siret, validators: ['required'], enabled: true }
+	}), {
+    initCheck: false
+  });
+
+  const ownerForm = form(() => ({
+    firstName: { value: company.firstName, validators: ['required'], enabled: true },
+    lastName: { value: company.lastName, validators: ['required'], enabled: true }
+	}), {
+    initCheck: false
+  });
+
+  const companyForm = form(() => ({
+    name: { value: company.name, validators: ['required'], enabled: true },
+    siret: { value: company.siret, validators: ['required'], enabled: true },
+    email: { value: company.email, validators: ['required', 'email'], enabled: true },
+	}), {
+    initCheck: false
+  });
+
+  const addressForm = form(() => ({
+    address: { value: company.address, validators: ['required'], enabled: true }
+	}), {
+    initCheck: false
+  });
 </script>
 
 <svelte:head>
@@ -191,6 +227,7 @@
                 <InputSiret
                   disabled={isSearchingSiret}
                   bind:value={company.siret}
+                  bindClassData={{ form: siretForm, name: "siret" }}
                   placeholder="SIRET (14 chiffres)" />
               </div>
             </div>
@@ -240,16 +277,20 @@
                 <input
                   id="family_name"
                   type="text"
+                  use:bindClass={{ form: ownerForm, name: "lastName" }}
                   required="required"
                   bind:value={company.lastName} />
+                <ErrorContainer field={$ownerForm.fields.lastName} />
               </div>
               <div class="w-full md:w-1/2">
                 <label for="given_name">Prénom*</label>
                 <input
                   id="given_name"
+                  use:bindClass={{ form: ownerForm, name: "firstName" }}
                   type="text"
                   required="required"
                   bind:value={company.firstName} />
+                <ErrorContainer field={$ownerForm.fields.firstName} />
               </div>
             </div>
             <div class="mb-2 md:mb-0 hidden">
@@ -257,6 +298,7 @@
               <input
                 id="email"
                 type="email"
+                use:bindClass={{ form: ownerForm, name: "email" }}
                 disabled="disabled"
                 required="required"
                 bind:value={company.email} />
@@ -323,18 +365,30 @@
               <input
                 id="name"
                 type="text"
-                required="required"
+                use:bindClass={{ form: companyForm, name: "name" }}
                 bind:value={company.name} />
+              <ErrorContainer field={$companyForm.fields.name} />
             </div>
             <div class="flex flex-wrap">
               <div class="w-full xl:w-1/2 form-control lg:pr-2">
                 <label for="siret">N° de SIRET*</label>
                 <input
                   id="siret"
-                  type="text"
-                  maxlength="14"
-                  required="required"
+                  type="number"
+                  use:bindClass={{ form: companyForm, name: "siret" }}
+                  on:input={e => {
+                    if (e.target.value.length > e.target.maxLength) {
+                      e.preventDefault();
+                      e.target.value = e.target.value
+                        .slice(0, e.target.maxLength)
+                        .toString();
+                    }
+                  }}
+                  class="m-auto"
+                  maxLength="14"
+                  minLength="14"
                   bind:value={company.siret} />
+                <ErrorContainer field={$companyForm.fields.siret} />
               </div>
               <div class="w-full xl:w-1/2 form-control">
                 <label for="vat">N° de TVA</label>
@@ -356,7 +410,7 @@
                     id="vat-siret"
                     type="text"
                     disabled={true}
-                    value={company.siret.toString().substring(0, 9).toUpperCase()}
+                    value={company.siret ? company.siret.toString().substring(0, 9).toUpperCase() : 0}
                     class="w-6/12 disabled" />
                 </div>
               </div>
@@ -366,8 +420,9 @@
               <input
                 id="company_email"
                 type="email"
-                required="required"
+                use:bindClass={{ form: companyForm, name: "email" }}
                 bind:value={company.email} />
+              <ErrorContainer field={$companyForm.fields.email} />
             </div>
           </fieldset>
         </form>
@@ -480,7 +535,6 @@
               <div class="form-control">
                 <label for="line1">Adresse*</label>
                 <input
-                  id="line1"
                   type="text"
                   required="required"
                   class="disabled"
@@ -528,8 +582,10 @@
           <div class="w-full form-control" style="display: block;">
             <CitySearch
               bind:selectedAddress={company.address}
+              bindClassData={{ form: addressForm, name: "address" }}
               initialValue={company.address} />
           </div>
+          <ErrorContainer field={$addressForm.fields.address} />
         {/if}
         <div class="flex w-full justify-center mt-5">
           <div>
@@ -544,9 +600,8 @@
           <div>
             <button
               on:click={() => handleSubmit()}
-              disabled={!company.address}
               aria-label="Valider"
-              class:disabled={!company.address}
+              class:disabled={!$addressForm.valid}
               class="form-button uppercase text-sm cursor-pointer text-white
               shadow rounded-full px-6 py-2 flex items-center justify-center
               m-auto bg-primary">
@@ -572,5 +627,16 @@
 
   .form-button {
     width: 125px;
+  }
+    /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 </style>
