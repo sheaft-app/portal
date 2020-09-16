@@ -53,12 +53,13 @@
       GET_DELIVERIES
     );
 
+    isUpdatingDelivery = false;  
+    
     if (!res.success) {
       // todo
       return;
     }
-
-    isUpdatingDelivery = false;    
+  
     await fetchDelivery(delivery.id);
   };
 

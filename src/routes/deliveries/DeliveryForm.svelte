@@ -5,6 +5,8 @@
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
   import { timeToTimeSpan, normalizeOpeningHours } from "../../helpers/app";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   export let submit, initialValues, isLoading;
   let delivery = initialValues;
@@ -14,18 +16,29 @@
   let openings = delivery.openingHours;
 
   const handleSubmit = () => {
-    delivery.openingHours = normalizeOpeningHours(openings);
-    submit();
+    deliveryForm.validate();
+
+    if ($deliveryForm.valid) {
+      delivery.openingHours = normalizeOpeningHours(openings);
+      submit();
+    }
   }
+
+  const deliveryForm = form(() => ({
+    openingHours: { value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: true }
+  }), {
+    initCheck: false
+  });
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
   <div class="flex flex-wrap mb-6 lg:mb-0">
     <div class="w-full lg:w-1/2">
       <div class="form-control">
-        <div class="w-full">
+        <div class="w-full" use:bindClass={{ form: deliveryForm, name: "openingHours" }}>
           <label for="grid-timestamp">Horaires de livraison *</label>
           <OpeningHoursContainer bind:openings={openings} />
+          <ErrorContainer field={$deliveryForm.fields.openingHours} />
         </div>
       </div>
     </div>
@@ -43,8 +56,7 @@
   <div class="form-control mt-5">
     <button
       type="submit"
-      class:disabled={isLoading}
-      disabled={isLoading}
+      class:disabled={!$deliveryForm.valid}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}

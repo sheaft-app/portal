@@ -1,4 +1,4 @@
-export function openings(val, args) {
+export function openingsDays(val, args) {
   if (val == null) {
     return false;
   }
@@ -9,13 +9,12 @@ export function openings(val, args) {
 
   const openingsLength = val.length;
 
-  for (var i = 0; i <= openingsLength; i++) {
+  for (var i = 0; i <= openingsLength - 1; i++) {
     if (!val[i].days.find((d) => {
       if (d) return d.checked
     })) {
       return false;
     }
-    return true;
   }
 
   return true;

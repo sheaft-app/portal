@@ -9,6 +9,7 @@
   import DeliveryRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import DeliveryKind from "../../enums/DeliveryKind.js";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
@@ -34,6 +35,7 @@
     lockOrderHoursBeforeDelivery: 0
   };
 
+
   const handleSubmit = async () => {
     isCreatingDelivery = true;
     var res = await graphQLInstance.mutate(CREATE_DELIVERY, {
@@ -44,12 +46,12 @@
     errorsHandler.Uuid,
     GET_DELIVERIES);
 
+    isCreatingDelivery = false;
+
     if (!res.success) {
       // todo
       return;
     }
-
-    isCreatingDelivery = false;
 
     routerInstance.goTo(DeliveryRoutes.List);
   };

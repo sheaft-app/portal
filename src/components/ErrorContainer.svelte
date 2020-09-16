@@ -18,8 +18,10 @@
       {/if}
     {:else if field.errors.includes('max')}
       Le champ ne doit pas dépasser {field.data.validators[field.data.validators.findIndex((n) => n.includes('max'))].split(':')[1]} caractères
-    {:else if field.errors.includes('openings')}
-      Veuillez sélectionner des jours d'ouverture
+    {:else if field.errors.includes('openingsDays')}
+      Veuillez sélectionner des jours d'ouverture pour toutes les horaires
+    {:else if field.errors.includes('openingsDates')}
+      L'heure de début ne peut pas être supérieure ou égale à l'heure de fin
     {/if}
   </p>
 {/if}

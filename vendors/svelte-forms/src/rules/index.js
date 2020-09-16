@@ -5,4 +5,5 @@ export * from './min';
 export * from './required';
 export * from './url';
 export * from './equal';
-export * from './openings';
+export * from './openings-days';
+export * from './openings-dates';

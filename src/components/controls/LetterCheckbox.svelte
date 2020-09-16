@@ -12,7 +12,7 @@
   style="display: none;"
   on:click|stopPropagation={onClick}
   bind:checked />
-<label style="margin: 0;" for="cbx" class="cursor-pointer w-6 h-6 items-center justify-center check shadow rounded-full {classes}" on:click={onClick}>{sign}</label>
+<label style="margin: 0;" for="cbx" class="cursor-pointer w-6 h-6 items-center justify-center check shadow rounded-full hover:bg-gray-100 {classes}" on:click={onClick}>{sign}</label>
 
 <style lang="scss">
   input.cbx + .check {

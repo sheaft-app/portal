@@ -1,16 +1,18 @@
 <script>
 	import Loader from "../Loader.svelte";
+  import { slide } from  "svelte/transition";
 	import { onMount } from "svelte";
 	import OpeningHours from "./OpeningHours.svelte";
 	import Guid from "./../../helpers/Guid";
 	import { denormalizeOpeningHours } from "./../../helpers/app";
 
-	export let openings = [];
-	let isLoading = true,
-	invalid = false;
+	export let openings = [], invalid = false;
+	let isLoading = true;
+
+	openings = denormalizeOpeningHours(openings);
 
 	const addOpeningHour = () => {
-	openings = [
+		openings = [
 			...openings,
 			{
 				id: Guid.NewGuid(),
@@ -32,7 +34,6 @@
 	}
 
 	onMount(async () => {
-		openings = denormalizeOpeningHours(openings);
 		isLoading = false;
 	});
 </script>
@@ -41,15 +42,17 @@
 	<Loader />
 {:else}
 	{#each openings as opening, index (opening.id)}
-		{#if index >= 1}
-			<hr class="my-5" />
-		{/if}
-		<OpeningHours bind:opening={opening} {invalid} />
-		<div class="flex justify-end">
-			<button type="button" 
-			on:click={() => openings = openings.filter((o) => o.id !== opening.id)}
-			class="text-accent">Retirer cet horaire</button>
-		</div>
+		<div transition:slide|local>
+			{#if index >= 1}
+				<hr class="my-5" />
+			{/if}
+			<OpeningHours bind:opening={opening} {invalid} />
+			<div class="flex justify-end">
+				<button type="button" 
+				on:click={() => openings = openings.filter((o) => o.id !== opening.id)}
+				class="text-accent">Retirer cet horaire</button>
+			</div>
+		</div>	
 	{/each}
 	<div>
 		<button type="button" class="btn px-3 py-2 btn-accent my-2" on:click={addOpeningHour}>+ Ajouter un horaire</button>

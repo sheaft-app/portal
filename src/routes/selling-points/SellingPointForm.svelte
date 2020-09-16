@@ -12,7 +12,6 @@
   export let submit, initialValues, isLoading;
   let sellingPoint = initialValues;
   let openings = sellingPoint.openingHours;
-  let isValid = false;
 
   const selectKind = (kind) => {
      if (!isLoading)
@@ -34,20 +33,10 @@
   const sellingPointForm = form(() => ({
     kind: { value: sellingPoint.kind, validators: ['required', 'min:3'], enabled: true },
     address: { value: sellingPoint.address, validators: ['required'], enabled: true },
-    openings: { value: sellingPoint.openingHours, validators: ['required', 'openings'], enabled: true },
+    openings: { value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: true },
 	}), {
     initCheck: false
   });
-
-  $: isValid = sellingPoint &&
-    sellingPoint.kind &&
-    sellingPoint.address &&
-    sellingPoint.address.line1 &&
-    sellingPoint.address.zipcode &&
-    sellingPoint.address.city &&
-    sellingPoint.address.latitude &&
-    sellingPoint.address.longitude &&
-    openings.length > 0;
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
@@ -105,8 +94,8 @@
         <div class="w-full" use:bindClass={{ form: sellingPointForm, name: "openings" }}>
           <label for="grid-timestamp">Horaires de vente *</label>
           <OpeningHoursContainer 
-          bind:openings={sellingPoint.openingHours} 
-          invalid={$sellingPointForm.fields.openings ? $sellingPointForm.fields.openings.valid : false} />
+          bind:openings 
+          invalid={$sellingPointForm.fields.openings ? !$sellingPointForm.fields.openings.valid : false} />
           <ErrorContainer field={$sellingPointForm.fields.openings} />
         </div>
       </div>
