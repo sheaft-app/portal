@@ -94,8 +94,7 @@
         <div class="w-full" use:bindClass={{ form: sellingPointForm, name: "openings" }}>
           <label for="grid-timestamp">Horaires de vente *</label>
           <OpeningHoursContainer 
-          bind:openings 
-          invalid={$sellingPointForm.fields.openings ? !$sellingPointForm.fields.openings.valid : false} />
+          bind:openings />
           <ErrorContainer field={$sellingPointForm.fields.openings} />
         </div>
       </div>

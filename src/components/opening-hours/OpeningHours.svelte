@@ -5,9 +5,7 @@
   import TimePicker from "../controls/TimePicker.svelte";
   import DayOfWeekKind from "../../enums/DayOfWeekKind";
 
-  export let opening, invalid = false;
-
-  let isLoading = true;
+  export let opening;
 
   let days = [DayOfWeekKind.Monday, 
   DayOfWeekKind.Tuesday, 
@@ -26,37 +24,32 @@
 
     days = days;
     opening.days = days;
-    isLoading = false;
   })
 
   $: opening.days = days;
 </script>
 
-{#if isLoading}
-	<Loader />
-{:else}
-  <div class="flex flex-wrap items-center my-2">
-    <form class="inline-flex w-full">
-      {#each days as day, index}
-        <label
-          style="display: flex;"
-          class="day-letter items-center p-2 cursor-pointer">
-          <LetterCheckbox 
-          checked={day.checked}
-          onClick={() => day.checked = !day.checked}
-          sign={day.Label.charAt(0)} />
-        </label>
-      {/each}
-    </form>
-    <div class="inline-flex items-center mb-2 sm:mb-0">
-      <span class="ml-2 mr-2 hidden sm:block">de</span>
-      <span class="ml-2 mr-2 block sm:hidden w-24">Début : </span>
-      <TimePicker bind:time={opening.start} />
-    </div>
-    <div class="inline-flex items-center">
-      <span class="ml-2 mr-2 hidden sm:block">à</span>
-      <span class="ml-2 mr-2 block sm:hidden w-24">Fin : </span>
-      <TimePicker bind:time={opening.end} />
-    </div>
+<div class="flex flex-wrap items-center my-2">
+  <form class="inline-flex w-full">
+    {#each days as day, index}
+      <label
+        style="display: flex;"
+        class="day-letter items-center p-2 cursor-pointer">
+        <LetterCheckbox 
+        checked={day.checked}
+        onClick={() => day.checked = !day.checked}
+        sign={day.Label.charAt(0)} />
+      </label>
+    {/each}
+  </form>
+  <div class="inline-flex items-center mb-2 sm:mb-0">
+    <span class="ml-2 mr-2 hidden sm:block">de</span>
+    <span class="ml-2 mr-2 block sm:hidden w-24">Début : </span>
+    <TimePicker bind:time={opening.start} />
   </div>
-{/if}
+  <div class="inline-flex items-center">
+    <span class="ml-2 mr-2 hidden sm:block">à</span>
+    <span class="ml-2 mr-2 block sm:hidden w-24">Fin : </span>
+    <TimePicker bind:time={opening.end} />
+  </div>
+</div>

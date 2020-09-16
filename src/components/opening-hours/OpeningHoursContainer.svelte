@@ -6,7 +6,7 @@
 	import Guid from "./../../helpers/Guid";
 	import { denormalizeOpeningHours } from "./../../helpers/app";
 
-	export let openings = [], invalid = false;
+	export let openings = [];
 	let isLoading = true;
 
 	openings = denormalizeOpeningHours(openings);
@@ -46,7 +46,7 @@
 			{#if index >= 1}
 				<hr class="my-5" />
 			{/if}
-			<OpeningHours bind:opening={opening} {invalid} />
+			<OpeningHours bind:opening={opening} />
 			<div class="flex justify-end">
 				<button type="button" 
 				on:click={() => openings = openings.filter((o) => o.id !== opening.id)}
