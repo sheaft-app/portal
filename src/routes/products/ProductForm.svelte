@@ -267,10 +267,7 @@
 								use:bindClass={{ form: productForm, name: 'conditioning' }}
 								class:skeleton-box={isLoading}
 								disabled={isLoading}>
-								<option selected="true" disabled>
-									type de conditionnement
-								</option>
-								<option value={ConditioningKind.Bulk.Value}>
+								<option selected="true" value={ConditioningKind.Bulk.Value}>
 									{ConditioningKind.Bulk.Label}
 								</option>
 								<option value={ConditioningKind.Bunch.Value}>
@@ -293,7 +290,7 @@
 			</div>
 			<div class="form-control">
 				<div class="w-full">
-					<label for="grid-quantityPerUnit">Quantité *</label>
+					<label for="grid-quantityPerUnit">{product.conditioning === ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *"}</label>
 					<div class="flex w-full">
 						<div class="mr-2">
 							<input
@@ -301,7 +298,7 @@
 								bind:value={product.quantityPerUnit}
 								use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
 								id="grid-quantityPerUnit"
-								placeholder="250"
+								placeholder="ex : 5"
 								class:skeleton-box={isLoading}
 								disabled={isLoading} />
 							<ErrorContainer field={$productForm.fields.quantityPerUnit} />

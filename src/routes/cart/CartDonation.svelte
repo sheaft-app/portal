@@ -45,28 +45,6 @@
       style="padding: 1em 2em; border-color: #205164;">
       Ne rien donner à Sheaft
     </button>
-    <div class="border flex justify-between mt-5 p-2" style="border-color: #205164;">
-      <div class="text-left leading-6">
-        <p>Montant du panier</p>
-        <p>Don à Sheaft</p>
-        <p>Frais de paiement bancaire</p>
-        <p class="leading-none text-gray-600 text-sm">1.4% + 0.25€ <button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
-      </div>
-      <div class="text-right leading-6">
-        <p>24,37€</p>
-        <p class:text-green-600={choice && choice !== CHOICE_NONE}>
-          {#if choice === CHOICE_EURO}
-            1,00€
-          {:else if choice === CHOICE_ROUNDED}
-            0,63€
-          {:else}
-            0,00€
-          {/if}
-        </p>
-        <p class="mb-3">0,60€</p>
-        <p>Total : <span class="font-semibold">25,60€</span></p>
-      </div>
-    </div>
     {#if choice}
       <div class="mt-5 mb-3 text-xl">
         {#if choice === CHOICE_EURO}

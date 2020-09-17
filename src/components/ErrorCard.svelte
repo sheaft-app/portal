@@ -28,7 +28,7 @@
 				<Icon data={faExclamationTriangle} class="lg:mr-2 lg:mt-2 lg:mb-0 mb-2" />
 			</div>
 		{/if}
-		<div class="text-center lg:text-left">
+		<div class="text-center lg:text-left" style="word-break: break-word;">
 				<slot />
 				{#each componentErrors as error}
 					<p>{error.message}</p>

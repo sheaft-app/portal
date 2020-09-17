@@ -31,6 +31,7 @@
     "apollo-client": "^2.6.8",
     "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
+    "cleave.js": "^1.6.0",
     "date-fns": "^2.16.1",
     "dropzone": "^5.7.2",
     "graphql": "^14.7.0",

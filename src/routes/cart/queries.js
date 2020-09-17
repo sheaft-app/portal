@@ -40,3 +40,25 @@ export const GET_MY_ORDERS = gql`
 		}
 	}
 `;
+
+export const GET_MY_CONSUMER_LEGALS = gql`
+	query GetMyConsumerLegals {
+		getMyConsumerLegals {
+			id
+			owner {
+				firstName
+				lastName
+				email
+				nationality
+				birthDate
+				countryOfResidence
+				address {
+					line1
+					line2
+					city
+					zipcode
+				}
+			}
+		}
+	}
+`;

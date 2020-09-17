@@ -67,7 +67,7 @@ export const normalizeOpeningHours = (openingHours) =>
 ;
 
 export const roundMoney = (num) =>
-	Math.round((num + Number.EPSILON) * 100) / 100;
+	(Math.round((num + Number.EPSILON) * 100) / 100).toFixed(2);;
 
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {

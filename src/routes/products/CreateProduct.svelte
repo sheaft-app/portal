@@ -13,6 +13,7 @@
   import ProductRoutes from "./routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+	import ConditioningKind from "../../enums/ConditioningKind";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
@@ -28,6 +29,7 @@
     quantityPerUnit: null,
     vat: null,
     name: null,
+    conditioning: ConditioningKind.Bulk.Value,
     returnableId: null,
     description: null,
     picture: null,

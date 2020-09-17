@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-  import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
   import { beforeUpdate } from "svelte";
   import Loader from "./../../components/Loader.svelte";
   import Icon from "svelte-awesome";
@@ -43,7 +42,7 @@
       firstTimeOnCart = true;
       localStorage.setItem("user_first_time_on_cart", JSON.stringify(true));
     }
-  })
+  })  
 
   beforeUpdate(async () => {
     if ($cartItems.length > 0 && producersDeliveries.length === 0) {
@@ -80,7 +79,7 @@
     return sum + (product.quantity || 0);
   }, 0);
   $: total = $cartItems.reduce((sum, product) => {
-    return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
+    return roundMoney(parseFloat(sum) + parseFloat(product.onSalePrice) * product.quantity || 0);
   }, 0);
   // calculer deposit
   $: deposit = 0;
@@ -122,24 +121,24 @@
     var response = await graphQLInstance.mutate(CREATE_CONSUMER_ORDER, orderLines, errorsHandler.Uuid);
 
     if (!response.success) {
-    isCreatingOrder = false;
+      isCreatingOrder = false;
       //TODO
       hasSubmitError = true;
       return;
     }
 
+    routerInstance.goTo(CartRoutes.Checkout)
+    localStorage.setItem("user_current_order", JSON.stringify(response.data));
     //TODO HANDLE PAYMENT
-
-    resetCart();
-
+    // resetCart();
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
+    isCreatingOrder = false;
 
     // routerInstance.goTo(CartRoutes.Success, {
     //   Query: {
     //     id: response.data.map(order => order.id)
     //   }
     // });
-    isCreatingOrder = false;
   }
 
   const removeProduct = id => {
@@ -267,7 +266,6 @@
                   Une erreur est survenue pendant l'envoi de la commande,
                   veuillez réessayez.
                 </p>
-                <p>Si le problème persiste, contactez le service technique.</p>
               </ErrorCard>
             {/if}
             <div>
@@ -296,21 +294,9 @@
               </div>
             </div>
             <div class="pt-2 lg:pt-3">
-              <div class="pt-4 pb-8 lg:px-2">
-                <label class="cursor-pointer">
-                  <InputCheckbox
-                    checked={acceptCgv}
-                    onClick={() => (acceptCgv = !acceptCgv)} />
-                  Je reconnais avoir lu et compris
-                  <a href="https://www.sheaft.com/legals" target="_blank">
-                    les CGV
-                  </a>
-                  et je les accepte
-                </label>
-              </div>
               <button
                 type="button"
-                on:click={() => handleSubmit()}
+                on:click={handleSubmit}
                 class:disabled={productsCount === 0 || isCreatingOrder || !isValid}
                 disabled={productsCount === 0 || isCreatingOrder || !isValid}
                 class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
