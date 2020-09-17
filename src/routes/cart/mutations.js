@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const CREATE_CONSUMER_ORDER = gql`
-	mutation createConsumerOrder($input: CreateOrderInput!) {
-		createConsumerOrder(input: $input) {
+	mutation createOrder($input: CreateOrderInput!) {
+		createOrder(input: $input) {
 			id
 		}
 	}
