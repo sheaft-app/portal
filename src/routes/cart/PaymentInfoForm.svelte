@@ -11,7 +11,7 @@
 
   const routerInstance = GetRouterInstance();
 
-  export let step = 2, user, order;
+  export let step = 2, user, order, choosenDonation;
 
   let card = {
     name: null,
@@ -30,6 +30,7 @@
       </div>
       <p>Votre contribution de {order.donation || 0}€ représente beaucoup pour nous.</p>
       <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
+      <button class="btn btn-link mt-2" on:click={() => choosenDonation = null}>Je souhaite modifier mon don</button>
     </div>
   <!-- {/if} -->
   <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">

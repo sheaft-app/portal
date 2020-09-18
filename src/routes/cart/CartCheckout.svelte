@@ -124,7 +124,7 @@
 				{#if step == 1}
 					<FacturationForm bind:user />
 				{:else if step == 2}
-					<PaymentInfoForm {user} {order} bind:step />
+					<PaymentInfoForm {user} {order} bind:choosenDonation bind:step />
 				{/if}
 			</div>
 			<div class="w-full lg:w-4/12">
