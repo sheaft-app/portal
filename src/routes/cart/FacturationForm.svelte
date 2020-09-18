@@ -4,7 +4,22 @@
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import Cleave from "cleave.js";
 
-  export let user = null;
+  export let user = {
+    firstName: null,
+    lastName: null,
+    birthDate: null,
+    nationality: null,
+    email: null,
+    countryOfResidence: null,
+    nationality: null,
+    address: {
+      line1: null,
+      line2: null,
+      zipcode: null,
+      city: null,
+      country: null
+    }
+  };
 
   let cleave = null;
 

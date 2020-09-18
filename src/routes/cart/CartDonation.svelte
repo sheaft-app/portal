@@ -1,13 +1,10 @@
 <script>
   import { onDestroy } from "svelte";
   import { slide } from "svelte/transition";
-  import { getContext } from "svelte";
   import BlowingButton from "./BlowingButton.svelte";
-  import StripeInfo from "./StripeInfo.svelte";
 
   export let choice = null, choosenDonation = null;
 
-  const { open } = getContext("modal");
 
   const CHOICE_EURO = "EURO";
   const CHOICE_ROUNDED = "ROUNDED";
@@ -23,10 +20,6 @@
   onDestroy(() => {
     choice = null;
   })
-  
-  const showTransactionInfo = () => {
-    open(StripeInfo, {});
-  };
 </script>
 
 <div class="flex justify-center m-auto" style="max-width: 450px;">

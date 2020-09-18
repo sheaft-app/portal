@@ -1,9 +1,17 @@
 <script>
   import { onMount } from "svelte";
   import { cartItems } from "./../../stores/app";
+  import GetRouterInstance from "../../services/SheaftRouter";
   import Icon from "svelte-awesome";
-  import { faUser, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-	import { fly } from "svelte/transition";
+  import CartRoutes from "./routes";
+  import { faUser, faMapMarkerAlt, faEdit, faFlag, faHeart } from "@fortawesome/free-solid-svg-icons";
+  import { fly } from "svelte/transition";
+  import { format } from "date-fns";
+  import { fr } from "date-fns/locale";
+
+  const routerInstance = GetRouterInstance();
+
+  export let step = 2, user, order;
 
   let card = {
     name: null,
@@ -14,28 +22,78 @@
 </script>
 
 <div in:fly|local={{ x: 300, duration: 300 }}>
-  <div class="bg-white shadow px-5 py-3 rounded mt-5 ">
-    <div class="flex">
-      <Icon data={faUser} class="mr-2" />
+  <!-- {#if order.donation !== 0} -->
+    <div class="bg-white shadow px-5 py-3 lg:rounded">
+      <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
+        <Icon data={faHeart} class="mr-3" />
+        <span>Vous êtes extraordinaire !</span>
+      </div>
+      <p>Votre contribution de {order.donation || 0}€ représente beaucoup pour nous.</p>
+      <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
+    </div>
+  <!-- {/if} -->
+  <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
+    <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
+      <p>Informations personnelles</p>
+      <button class="btn btn-link items-center" on:click={() => step = 1}>
+        <Icon data={faEdit} class="mr-1" />
+        <span>Modifier</span>
+      </button>
+    </div>
+    <div class="flex leading-none mb-5">
+      <Icon data={faUser} class="mr-4 rounded-full bg-primary py-2 w-8 h-8" />
       <div>
-        <p>Mugnier Geoffrey</p>
-        <p>15/07/1997</p>
-        <p>geoffrey.mugnier@outlook.com</p>
+        <p>{user.firstName} {user.lastName}</p>
+        <p style="line-height: 1.8;">né le 
+        {format(
+          new Date(user.birthDate),
+          'PPP',
+          {
+            locale: fr
+          }
+        )}
+        </p>
+        <p>{user.email}</p>
       </div>
     </div>
-    <div class="flex">
-      <Icon data={faMapMarkerAlt} class="mr-2" />
+    <div class="flex leading-none mb-5">
+      <Icon data={faMapMarkerAlt} class="mr-4 rounded-full bg-primary py-2 w-8 h-8"/>
       <div>
-        <p>285 Route de Braille</p>
-        <p>73410 Entrelacs</p>
+        <p>{user.address.line1}</p>
+        {#if user.address.line2}
+          <p class="line-height: 1.8;">{user.address.line2}</p>
+        {/if}
+        <p style="line-height: 1.8;">{user.address.zipcode} {user.address.city}</p>
+      </div>
+    </div>
+    <div class="flex leading-none">
+      <Icon data={faFlag} class="mr-4 rounded-full bg-primary py-2 w-8 h-8"/>
+      <div>
+        <p>Nationalité : {user.nationality}</p>
+        <p style="line-height: 1.8;">Pays de résidence : {user.countryOfResidence}</p>
       </div>
     </div>
   </div>
 
-  <div class="bg-white shadow px-5 py-3 rounded mt-5">
-    {#each $cartItems as cartItem}
-      <p>{cartItem.name}</p>
-      <p>{cartItem.producer.name}</p>
+  <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
+    <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
+      <p>Panier</p>
+      <button class="btn btn-link items-center" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
+        <Icon data={faEdit} class="mr-1" />
+        <span>Modifier</span>
+      </button>
+    </div>
+    {#each $cartItems as cartItem, index}
+      <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
+        <div>
+          <p class="font-medium">{cartItem.name}</p>
+          <p class="text-sm">{cartItem.producer.name}</p>
+        </div>
+        <div class="text-right">
+          <p class="font-medium">{cartItem.onSalePrice}€</p>
+          <p class="text-sm">qté : {cartItem.quantity}</p>
+        </div>
+      </div>
     {/each}
   </div>
 </div>

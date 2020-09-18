@@ -20,7 +20,7 @@
   }, 0);
   
   $: total = $cartItems.reduce((sum, product) => {
-    return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
+    return roundMoney(parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0);
   }, 0);
 
   const hideCart = () => {

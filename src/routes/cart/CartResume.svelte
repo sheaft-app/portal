@@ -260,14 +260,6 @@
             class="py-2 mb-6 pb-5 px-6 lg:px-6 lg:py-8 static lg:block bg-white
             shadow w-full mt-5 lg:mt-0"
             style="height: fit-content;">
-            {#if hasSubmitError}
-              <ErrorCard displayIcon={false} {errorsHandler}>
-                <p>
-                  Une erreur est survenue pendant l'envoi de la commande,
-                  veuillez réessayez.
-                </p>
-              </ErrorCard>
-            {/if}
             <div>
               {#if deposit > 0}
                 <div class="flex justify-between w-full lg:px-3 pb-2">
@@ -307,6 +299,14 @@
                 {:else}Suivant{/if}
               </button>
             </div>
+            {#if hasSubmitError}
+              <ErrorCard displayIcon={false} {errorsHandler} classes="mt-10">
+                <p>
+                  Une erreur est survenue pendant l'envoi de la commande,
+                  veuillez réessayez.
+                </p>
+              </ErrorCard>
+            {/if}
           </div>
         </div>
       {:else}
