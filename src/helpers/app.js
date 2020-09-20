@@ -116,3 +116,5 @@ export const unfreezeBody = () => {
 	mainContent.style.top = '';
 	window.scrollTo(0, parseInt(scrollY || '0') * -1);
 }
+
+export const formatMoney = (price) => `${price.toFixed(2).replace('.',',')}€`;

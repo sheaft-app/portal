@@ -3,34 +3,39 @@
 	import { fly, slide } from "svelte/transition";
   import { getContext } from "svelte";
   import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
-	import CartDonation from "./CartDonation.svelte";
+  import { cartItems } from "./../../stores/app.js";
+  import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import PaymentInfoForm from "./PaymentInfoForm.svelte";
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
+  import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { GET_MY_CONSUMER_LEGALS } from "./queries";
+	import { GET_MY_CONSUMER_LEGALS, GET_ORDER } from "./queries";
 	import { PAY_ORDER, CREATE_CONSUMER_LEGALS } from "./mutations";
 	import Loader from "../../components/Loader.svelte";
   import { authUserAccount } from "./../../stores/auth.js";
   import MangoPayInfo from "./MangoPayInfo.svelte";
+  import CartRoutes from "./routes";
+	import SearchProductsRoutes from "../search-products/routes";
+	import ErrorCard from "../../components/ErrorCard.svelte";
 
   const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
+  const routerInstance = GetRouterInstance();
   const { open } = getContext("modal");
-	
-	let choosenDonation = null;
 
 	let step = 1, acceptCgv = false;
 
 	let isLoading = true;
 	let userLegalsFound = false;
+	let facturationFormInvalid = false;
 	let isSavingLegals = false;
 
 	let user = {
     firstName: null,
     lastName: null,
     birthDate: null,
-		nationality: "FR",
+		nationality: null,
 		countryOfResidence: null,
     email: null,
     address: {
@@ -42,25 +47,33 @@
 		}
   };
 
-	onDestroy(() => {
-		choosenDonation = null;
-	})
-
 
   const showTransactionInfo = () => {
     open(MangoPayInfo, {});
-  };
-
-	const order = JSON.parse(
+	};
+	
+	let order = JSON.parse(
 		localStorage.getItem("user_current_order")
 	);
 
 	onMount(async () => {
 		if (!order) {
-			// commande expirée
-			// todo envoyer une notification
+			// todo : expirée, envoyer une notif
+			if ($cartItems.length > 0) {
+				return routerInstance.goTo(CartRoutes.Resume);
+			} else {
+				return routerInstance.goTo(SearchProductsRoutes.Search);
+			}
+		}
+
+		var resOrder = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
+
+		if (!resOrder.success) {
+			isLoading = false;
 			return;
 		}
+
+		order = resOrder.data;
 
 		var resLegals = await graphQLInstance.query(GET_MY_CONSUMER_LEGALS, {}, errorsHandler.Uuid);
 
@@ -77,15 +90,14 @@
 	})
 
 	const handleSubmit = async () => {
-		var res = await graphQLInstance.mutate(PAY_ORDER, {
-			orderId,
-			donation: null
-		}, errorsHandler.Uuid);
+		var res = await graphQLInstance.mutate(PAY_ORDER, { id: order.id }, errorsHandler.Uuid);
 
 		if (!res.success) {
 			// todo
 			return;
 		}
+
+		window.location = res.redirectUrl;
 	}
 
 	const handleSubmitLegals = async () => {
@@ -94,6 +106,12 @@
 
 		var res = await graphQLInstance.mutate(CREATE_CONSUMER_LEGALS, {
 			...user,
+			address: {
+				...user.address,
+				country: user.address.country.code
+			},
+			countryOfResidence: user.countryOfResidence.code,
+			nationality: user.nationality.code,
 			userId: $authUserAccount.profile.sub,
 			birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
 		}, errorsHandler.Uuid);
@@ -114,108 +132,103 @@
 {#if isLoading}
 	<Loader />
 {:else}
-	{#if !choosenDonation}
-		<div in:fly|local={{ x: 300, duration: 300 }}>
-			<CartDonation bind:choosenDonation />
+	<ErrorCard {errorsHandler} />
+	<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
+		<div class="w-full lg:w-7/12">
+			{#if step == 1}
+				<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
+			{:else if step == 2}
+				<PaymentInfoForm {user} {order} bind:step {errorsHandler} />
+			{/if}
 		</div>
-	{:else}
-		<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
-			<div class="w-full lg:w-7/12">
-				{#if step == 1}
-					<FacturationForm bind:user />
-				{:else if step == 2}
-					<PaymentInfoForm {user} {order} bind:choosenDonation bind:step />
-				{/if}
-			</div>
-			<div class="w-full lg:w-4/12">
-				<div
-					class="py-2 lg:mb-6 pb-5 px-6 lg:px-6 lg:py-8 static lg:block bg-white
-					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
-					style="height: fit-content;">
-					<div>
-						{#if order.returnablesCount >= 1}
-							<div class="flex justify-between w-full lg:px-3 pb-2">
-								<div class="text-left">
-									<p>Consignes</p>
-									<p class="text-sm text-gray-600">
-										{order.returnablesCount} consignes
-									</p>
-								</div>
-								<div>
-									<p class="font-medium">{order.totalReturnableOnSalePrice}€</p>
-								</div>
-							</div>
-						{/if}
-						{#if order.donation > 0}
-							<div class="flex justify-between w-full lg:px-3 pb-2">
-								<div class="text-left">
-									<p>Don</p>
-								</div>
-								<div>
-									<p class="font-medium">{order.donation}€</p>
-								</div>
-							</div>
-						{/if}
+		<div class="w-full lg:w-4/12">
+			<div
+				class="py-2 lg:mb-6 pb-5 px-6 lg:px-6 lg:py-8 static lg:block bg-white
+				shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
+				style="height: fit-content;">
+				<div>
+					{#if order.returnablesCount >= 1}
 						<div class="flex justify-between w-full lg:px-3 pb-2">
 							<div class="text-left">
-								<p>Frais bancaires</p>
-								<p class="leading-none text-gray-600 text-sm">1.8% + 0.18€ <button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
-							</div>
-							<div>
-								<p class="font-medium">{order.fees}€</p>
-							</div>
-						</div>
-						<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
-							<div class="text-left">
-								<p>Sous-total</p>
+								<p>Consignes</p>
 								<p class="text-sm text-gray-600">
-									{order.productsCount} articles
+									{order.returnablesCount} consignes
 								</p>
 							</div>
 							<div>
-								<p class="font-bold text-lg">{order.totalOnSalePrice}€</p>
+								<p class="font-medium">{formatMoney(order.totalReturnableOnSalePrice)}</p>
 							</div>
 						</div>
+					{/if}
+					{#if order.donation > 0}
+						<div class="flex justify-between w-full lg:px-3 pb-2">
+							<div class="text-left">
+								<p>Don</p>
+							</div>
+							<div>
+								<p class="font-medium">{formatMoney(order.donation)}</p>
+							</div>
+						</div>
+					{/if}
+					<div class="flex justify-between w-full lg:px-3 pb-2">
+						<div class="text-left">
+							<p>Frais bancaires</p>
+							<p class="leading-none text-gray-600 text-sm">1.8% + 0.18€ <button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
+						</div>
+						<div>
+							<p class="font-medium">{formatMoney(order.totalFees)}</p>
+						</div>
+					</div>
+					<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
+						<div class="text-left">
+							<p>Sous-total</p>
+							<p class="text-sm text-gray-600">
+								{order.productsCount} articles
+							</p>
+						</div>
+						<div>
+							<p class="font-bold text-lg">{formatMoney(order.totalPrice)}</p>
+						</div>
+					</div>
+					{#if step == 2}
+						<div class="pt-4 pb-8 lg:px-2" in:slide>
+							<label class="cursor-pointer">
+								<InputCheckbox
+									checked={acceptCgv}
+									onClick={() => (acceptCgv = !acceptCgv)} />
+								Je reconnais avoir lu et compris
+								<a href="https://www.sheaft.com/legals" target="_blank">
+									les CGV
+								</a>
+								et je les accepte
+							</label>
+						</div>
+					{/if}
+					<div class="border-t border-gray-400 mt-3 pt-3">
 						{#if step == 2}
-							<div class="pt-4 pb-8 lg:px-2" in:slide>
-								<label class="cursor-pointer">
-									<InputCheckbox
-										checked={acceptCgv}
-										onClick={() => (acceptCgv = !acceptCgv)} />
-									Je reconnais avoir lu et compris
-									<a href="https://www.sheaft.com/legals" target="_blank">
-										les CGV
-									</a>
-									et je les accepte
-								</label>
-							</div>
+							<button
+								type="button"	
+								on:click={handleSubmit}
+								class:disabled={!acceptCgv}
+								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+								justify-center m-auto"
+								style="padding-left: 50px; padding-right: 50px;">
+								Payer
+							</button>
+						{:else}
+							<button
+								type="button"
+								on:click={handleSubmitLegals}
+								class:disabled={isSavingLegals || facturationFormInvalid}
+								class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
+								justify-center m-auto"
+								style="padding-left: 50px; padding-right: 50px;">
+								Suivant
+							</button>
 						{/if}
-						<div class="border-t border-gray-400 mt-3 pt-3">
-							{#if step == 2}
-								<button
-									type="button"	
-									on:click={handleSubmit}
-									class:disabled={!acceptCgv}
-									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-									style="padding-left: 50px; padding-right: 50px;">
-									Payer
-								</button>
-							{:else}
-								<button
-									type="button"
-									on:click={handleSubmitLegals}
-									class:disabled={isSavingLegals}
-									class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-									style="padding-left: 50px; padding-right: 50px;">
-									Suivant
-								</button>
-							{/if}
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	{/if}
+	</div>
 {/if}

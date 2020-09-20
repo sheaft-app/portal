@@ -42,19 +42,18 @@
   const consumerForm = form(() => ({
     firstName: { value: user.firstName, validators: ['required'], enabled: true },
     lastName: { value: user.lastName, validators: ['required'], enabled: true },
-    email: { value: user.email, validators: ['required', 'email'], enabled: true },
-    selectedDepartment: { value: selectedDepartment, validators: ['required'], enabled: true },
+    email: { value: user.email, validators: ['required', 'email'], enabled: true }
 	}), {
     initCheck: false
   });
 
-  let isLoading = true;
+  let isLoading = false;
 
   const handleSubmit = async () => {
     consumerForm.validate();
 
     if ($consumerForm.valid) {
-      user.departmentId = selectedDepartment.id;
+      // user.departmentId = selectedDepartment.id;
       isRegistering = true;
 
       var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
@@ -79,24 +78,24 @@
     routerInstance.goBack();
   };
 
-  const getDepartments = async () => {
-    isLoading = true;
-    var res = await graphQLInstance.query(GET_DEPARTMENTS);
+  // const getDepartments = async () => {
+  //   isLoading = true;
+  //   var res = await graphQLInstance.query(GET_DEPARTMENTS);
 
-    if (!res.success) {
-      //TODO
-      return;
-    }
+  //   if (!res.success) {
+  //     //TODO
+  //     return;
+  //   }
 
-    isLoading = false;
-    departments.set(res.data);
-  };
+  //   isLoading = false;
+  //   departments.set(res.data);
+  // };
 
   onMount(async () => {
-    await getDepartments();
+    // await getDepartments();
   });
 
-  const getLabel = option => `${option.code} - ${option.name}`;
+  // const getLabel = option => `${option.code} - ${option.name}`;
 </script>
 
 <svelte:head>
@@ -154,7 +153,7 @@
                 <ErrorContainer field={$consumerForm.fields.email} />
             </div>
           </div>
-          <div class="flex flex-wrap justify-center mb-2 mt-2">
+          <!-- <div class="flex flex-wrap justify-center mb-2 mt-2">
             <div class="form-control w-full" style="display: block;">
               <label for="dept">Département*</label>
               <div class="themed" use:bindClass={{ form: consumerForm, name: "selectedDepartment" }}>
@@ -176,7 +175,7 @@
               </div>
               <ErrorContainer field={$consumerForm.fields.selectedDepartment} />
             </div>
-          </div>
+          </div> -->
           <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
             <button
               type="button"
@@ -192,7 +191,7 @@
               </div>
             {/if}
           </div>
-          <div class="flex flex-wrap justify-center">
+          <!-- <div class="flex flex-wrap justify-center">
             <div>
               <label
                 for="anonymous"
@@ -208,7 +207,7 @@
                 </label>
               </label>
             </div>
-          </div>
+          </div> -->
         </fieldset>
       </form>
       <div class="flex w-full justify-center mt-6">

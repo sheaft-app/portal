@@ -41,6 +41,24 @@ export const GET_MY_ORDERS = gql`
 	}
 `;
 
+export const GET_ORDER = gql`
+	query order($input: ID) {
+		order(input: $input) {
+			id
+			totalFees
+			donation
+			productsCount
+			totalPrice
+			totalReturnableOnSalePrice
+			returnablesCount
+			user {
+				id
+			}
+		}
+	}
+`;
+
+
 export const GET_MY_CONSUMER_LEGALS = gql`
 	query GetMyConsumerLegals {
 		getMyConsumerLegals {
@@ -59,6 +77,26 @@ export const GET_MY_CONSUMER_LEGALS = gql`
 					zipcode
 				}
 			}
+		}
+	}
+`;
+
+export const GET_COUNTRIES = gql`
+	query GetCountries {
+		countries {
+			id
+			code
+			name
+		}
+	}
+`;
+
+export const GET_NATIONALITIES = gql`
+	query GetNationalities {
+		nationalities {
+			id
+			code
+			name
 		}
 	}
 `;

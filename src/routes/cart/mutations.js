@@ -4,10 +4,27 @@ export const CREATE_CONSUMER_ORDER = gql`
 	mutation createOrder($input: CreateOrderInput!) {
 		createOrder(input: $input) {
 			id
-			fees
 			donation
 			productsCount
-			totalOnSalePrice
+			totalPrice
+			totalReturnableOnSalePrice
+			totalFees
+			returnablesCount
+			user {
+				id
+			}
+		}
+	}
+`;
+
+export const UPDATE_CONSUMER_ORDER = gql`
+	mutation updateOrder($input: UpdateOrderInput!) {
+		updateOrder(input: $input) {
+			id
+			donation
+			productsCount
+			totalFees
+			totalPrice
 			totalReturnableOnSalePrice
 			returnablesCount
 			user {
@@ -18,9 +35,10 @@ export const CREATE_CONSUMER_ORDER = gql`
 `;
 
 export const PAY_ORDER = gql`
-	mutation payOrder($input: PayOrderInput!) {
+	mutation payOrder($input: IdInput) {
 		payOrder(input: $input) {
 			id
+			redirectUrl
 		}
 	}
 `;

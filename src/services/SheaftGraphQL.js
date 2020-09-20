@@ -34,6 +34,7 @@ class SheaftGraphQL {
 
 			return res;
 		} catch (ex) {
+			console.log(ex);
 			var res = formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
@@ -191,9 +192,6 @@ function handleResults(data, dataTypes) {
 		if (selection.length == 0)
 			return {
 				data: null,
-				errors: [
-					{ code: "NOT_FOUND", message: "La ressource est introuvable" },
-				],
 				success: false,
 			};
 	}

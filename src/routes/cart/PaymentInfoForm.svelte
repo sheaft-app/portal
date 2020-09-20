@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { cartItems } from "./../../stores/app";
+  import { formatMoney } from "./../../helpers/app.js";
   import GetRouterInstance from "../../services/SheaftRouter";
   import Icon from "svelte-awesome";
   import CartRoutes from "./routes";
@@ -11,7 +12,7 @@
 
   const routerInstance = GetRouterInstance();
 
-  export let step = 2, user, order, choosenDonation;
+  export let step = 2, user, order;
 
   let card = {
     name: null,
@@ -22,20 +23,20 @@
 </script>
 
 <div in:fly|local={{ x: 300, duration: 300 }}>
-  <!-- {#if order.donation !== 0} -->
+  {#if order.donation !== 0}
     <div class="bg-white shadow px-5 py-3 lg:rounded">
       <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
         <Icon data={faHeart} class="mr-3" />
         <span>Vous êtes extraordinaire !</span>
       </div>
-      <p>Votre contribution de {order.donation || 0}€ représente beaucoup pour nous.</p>
+      <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous.</p>
       <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
-      <button class="btn btn-link mt-2" on:click={() => choosenDonation = null}>Je souhaite modifier mon don</button>
+      <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>Je souhaite modifier mon don</button>
     </div>
-  <!-- {/if} -->
+  {/if}
   <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
     <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
-      <p>Informations personnelles</p>
+      <p>Informations facturation</p>
       <button class="btn btn-link items-center" on:click={() => step = 1}>
         <Icon data={faEdit} class="mr-1" />
         <span>Modifier</span>

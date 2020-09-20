@@ -2,19 +2,30 @@
   import { onDestroy } from "svelte";
   import { slide } from "svelte/transition";
   import BlowingButton from "./BlowingButton.svelte";
+  import { formatMoney } from "./../../helpers/app.js";
 
-  export let choice = null, choosenDonation = null;
-
+  export let choice = null, submit = () => {}, isLoadingPaymentInfo = false, choosenDonation = CHOICE_NONE;
 
   const CHOICE_EURO = "EURO";
   const CHOICE_ROUNDED = "ROUNDED";
   const CHOICE_NONE = "NONE";
 
+  let order = JSON.parse(
+		localStorage.getItem("user_current_order")
+  );
+
+  const roundedValue = Math.ceil(order.totalPrice) - order.totalPrice;
+  
   const choose = (_choice) => {
     choice = _choice;
     setTimeout(() => {
       window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
     }, 10);
+  }
+
+  const handleSubmit = () => {
+    choosenDonation = choice;
+    submit();
   }
 
   onDestroy(() => {
@@ -28,7 +39,7 @@
     <p class="font-light mb-3">En donnant 1€ à Sheaft, vous économisez plus d'argent qu'en payant la marge d'un intermédiaire.</p>
     <p class="font-light mb-3">En prime, vous devenez une pierre angulaire de ce grand projet social et solidaire.</p>
     <BlowingButton blowed={choice === CHOICE_EURO} on:click={() => choose(CHOICE_EURO)} text="Donner 1€" blowedText="Donner 1€"/>
-    <BlowingButton blowed={choice === CHOICE_ROUNDED} on:click={() => choose(CHOICE_ROUNDED)} text="Donner l'arrondi (0.63€)" blowedText="Donner l'arrondi (0.63€)"/>
+    <BlowingButton blowed={choice === CHOICE_ROUNDED} on:click={() => choose(CHOICE_ROUNDED)} text="Donner l'arrondi ({formatMoney(roundedValue)})" blowedText="Donner l'arrondi ({formatMoney(roundedValue)})"/>
     <button 
       on:click={() => choose(CHOICE_NONE)}
       class="btn m-auto shadow justify-center md:w-full no-give" 
@@ -49,12 +60,12 @@
         {/if}
       </div>
       <div class="mt-5 mb-5 m-auto w-full">
-        <button type="button" on:click={() => choosenDonation = choice} class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
+        <button class:disabled={isLoadingPaymentInfo} type="button" on:click={handleSubmit} class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
           {#if choice === CHOICE_EURO}
             Poursuivre en faisant don de 1€
           {/if}
           {#if choice === CHOICE_ROUNDED}
-             Poursuivre en faisant don de 0.63€
+             Poursuivre en faisant don de {formatMoney(roundedValue)}
           {/if}
           {#if choice === CHOICE_NONE}
              Poursuivre sans donner à Sheaft
