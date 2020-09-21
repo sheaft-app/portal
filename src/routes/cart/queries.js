@@ -47,6 +47,7 @@ export const GET_ORDER = gql`
 			id
 			totalFees
 			donation
+			totalOnSalePrice
 			productsCount
 			totalPrice
 			totalReturnableOnSalePrice

@@ -6,6 +6,7 @@ export const CREATE_CONSUMER_ORDER = gql`
 			id
 			donation
 			productsCount
+			totalOnSalePrice
 			totalPrice
 			totalReturnableOnSalePrice
 			totalFees
@@ -25,6 +26,7 @@ export const UPDATE_CONSUMER_ORDER = gql`
 			productsCount
 			totalFees
 			totalPrice
+			totalOnSalePrice
 			totalReturnableOnSalePrice
 			returnablesCount
 			user {

@@ -147,6 +147,14 @@
 				shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
 				style="height: fit-content;">
 				<div>
+					<div class="flex justify-between w-full lg:px-3 pb-2">
+						<div class="text-left">
+							<p>Panier</p>
+						</div>
+						<div>
+							<p class="font-medium">{formatMoney(order.totalOnSalePrice)}</p>
+						</div>
+					</div>
 					{#if order.returnablesCount >= 1}
 						<div class="flex justify-between w-full lg:px-3 pb-2">
 							<div class="text-left">
@@ -173,7 +181,7 @@
 					<div class="flex justify-between w-full lg:px-3 pb-2">
 						<div class="text-left">
 							<p>Frais bancaires</p>
-							<p class="leading-none text-gray-600 text-sm">1.8% + 0.18€ <button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
+							<p class="leading-none text-gray-600 text-sm"><button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
 						</div>
 						<div>
 							<p class="font-medium">{formatMoney(order.totalFees)}</p>
@@ -181,7 +189,7 @@
 					</div>
 					<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
 						<div class="text-left">
-							<p>Sous-total</p>
+							<p>Total</p>
 							<p class="text-sm text-gray-600">
 								{order.productsCount} articles
 							</p>

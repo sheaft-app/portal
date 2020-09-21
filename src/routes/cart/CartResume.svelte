@@ -40,6 +40,7 @@
     totalFees: 0,
     donation: 0,
     productsCount: 0,
+    totalOnSalePrice: 0,
     totalPrice: 0,
     totalReturnableOnSalePrice: 0,
     returnablesCount: 0
@@ -296,6 +297,14 @@
               shadow w-full mt-5 lg:mt-0"
               style="height: fit-content;">
               <div>
+                <div class="flex justify-between w-full lg:px-3 pb-2">
+                  <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
+                    <p class:invisible={isLoadingPaymentInfo}>Panier</p>
+                  </div>
+                  <div class:skeleton-box={isLoadingPaymentInfo}>
+                    <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalOnSalePrice)}</p>
+                  </div>
+                </div>
                 {#if paymentInfo.returnablesCount >= 1}
                   <div class="flex justify-between w-full lg:px-3 pb-2">
                     <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
@@ -330,7 +339,7 @@
                 </div>
                 <div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
                   <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
-                    <p class:invisible={isLoadingPaymentInfo}>Sous-total</p>
+                    <p class:invisible={isLoadingPaymentInfo}>Total</p>
                     <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
                       {paymentInfo.productsCount} articles
                     </p>

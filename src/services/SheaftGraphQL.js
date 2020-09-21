@@ -157,10 +157,6 @@ function updateItemInApolloCache(item) {
 	});
 }
 
-function addItemInApolloCache(item) {
-	client.cache.customAdd(item);
-}
-
 function deleteItemInApolloCache(id, typename) {
 	client.cache.data.delete(id);
 	clearApolloCache(typename);
@@ -318,12 +314,6 @@ function getErrors(error) {
 		},
 	];
 }
-
-InMemoryCache.prototype.customAdd = (entry) => {
-	this.data.data = {
-		[entry.id]: entry,
-	};
-};
 
 let graphQLInstance = null;
 
