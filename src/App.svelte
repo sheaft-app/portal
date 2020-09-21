@@ -229,12 +229,12 @@
       style="z-index: 7;" />
   {/if}
   <Nav />
+  <AcceptCookiePlaceholder />
   <main class:relative={!$navExpended} class:fixed={$navExpended}>
     <Modal>
       <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content">
         <Router routes={guardInstance.routes} />
       </div>
-      <AcceptCookiePlaceholder />
     </Modal>
   </main>
 {/if}
