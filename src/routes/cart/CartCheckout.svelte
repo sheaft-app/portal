@@ -11,7 +11,7 @@
   import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_MY_CONSUMER_LEGALS, GET_ORDER } from "./queries";
-	import { PAY_ORDER, CREATE_CONSUMER_LEGALS } from "./mutations";
+	import { PAY_ORDER, CREATE_CONSUMER_LEGALS, UPDATE_CONSUMER_LEGALS } from "./mutations";
 	import Loader from "../../components/Loader.svelte";
   import { authUserAccount } from "./../../stores/auth.js";
   import MangoPayInfo from "./MangoPayInfo.svelte";
@@ -30,6 +30,7 @@
 	let userLegalsFound = false;
 	let facturationFormInvalid = false;
 	let isSavingLegals = false;
+	let legalId = null;
 
 	let user = {
     firstName: null,
@@ -84,6 +85,7 @@
 		}
 
 		user = resLegals.data.owner;
+		legalId = resLegals.data.id;
 		userLegalsFound = true;
 		step = 2;
 		isLoading = false;
@@ -102,9 +104,11 @@
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
-		const dateParts = user.birthDate.trim().split("/");
 
-		var res = await graphQLInstance.mutate(CREATE_CONSUMER_LEGALS, {
+		const dateParts = user.birthDate.trim().split("/");
+		let consumerLegalsMutation = UPDATE_CONSUMER_LEGALS;
+
+		let variables = {
 			...user,
 			address: {
 				...user.address,
@@ -112,9 +116,20 @@
 			},
 			countryOfResidence: user.countryOfResidence.code,
 			nationality: user.nationality.code,
-			userId: $authUserAccount.profile.sub,
+			id: legalId,
 			birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-		}, errorsHandler.Uuid);
+		}
+
+		if (!legalId) {
+			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;
+			variables = {
+				...variables,
+				userId: $authUserAccount.profile.sub
+			}
+			delete variables['id'];
+		}
+
+		var res = await graphQLInstance.mutate(consumerLegalsMutation, variables, errorsHandler.Uuid);
 
 		isSavingLegals = false;
 
@@ -150,6 +165,9 @@
 					<div class="flex justify-between w-full lg:px-3 pb-2">
 						<div class="text-left">
 							<p>Panier</p>
+							<p class="text-sm text-gray-600">
+								{order.productsCount} articles
+							</p>
 						</div>
 						<div>
 							<p class="font-medium">{formatMoney(order.totalOnSalePrice)}</p>
@@ -189,10 +207,7 @@
 					</div>
 					<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
 						<div class="text-left">
-							<p>Total</p>
-							<p class="text-sm text-gray-600">
-								{order.productsCount} articles
-							</p>
+							<p class="uppercase font-semibold">Total</p>
 						</div>
 						<div>
 							<p class="font-bold text-lg">{formatMoney(order.totalPrice)}</p>

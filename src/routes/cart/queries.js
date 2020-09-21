@@ -75,6 +75,7 @@ export const GET_MY_CONSUMER_LEGALS = gql`
 					line1
 					line2
 					city
+					country
 					zipcode
 				}
 			}

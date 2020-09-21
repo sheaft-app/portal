@@ -60,6 +60,30 @@ export const CREATE_CONSUMER_LEGALS = gql`
 					line1
 					line2
 					city
+					country
+					zipcode
+				}
+			}
+		}
+	}
+`;
+
+export const UPDATE_CONSUMER_LEGALS = gql`
+	mutation updateConsumerLegals($input: UpdateConsumerLegalInput!) {
+		updateConsumerLegals(input: $input) {
+			id
+			owner {
+				firstName
+				lastName
+				email
+				nationality
+				birthDate
+				countryOfResidence
+				address {
+					line1
+					line2
+					city
+					country
 					zipcode
 				}
 			}
