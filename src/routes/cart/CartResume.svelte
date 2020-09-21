@@ -85,7 +85,7 @@
       );
 
     // si l'utilisateur n'a pas choisi tous les points de retrait, on ne les envoie pas updateOrder
-    if (producersExpectedDeliveries.find((p) => !p.deliveyModeId)) {
+    if (producersExpectedDeliveries.find((p) => !p.deliveryModeId)) {
       producersExpectedDeliveries = null;
     }
 
