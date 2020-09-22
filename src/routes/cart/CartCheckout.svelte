@@ -18,6 +18,8 @@
   import CartRoutes from "./routes";
 	import SearchProductsRoutes from "../search-products/routes";
 	import ErrorCard from "../../components/ErrorCard.svelte";
+  import Icon from "svelte-awesome";
+  import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
   const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
@@ -31,6 +33,7 @@
 	let facturationFormInvalid = false;
 	let isSavingLegals = false;
 	let legalId = null;
+	let isPaying = false;
 
 	let user = {
     firstName: null,
@@ -46,8 +49,7 @@
 			zipcode: null,
 			country: null
 		}
-  };
-
+	};
 
   const showTransactionInfo = () => {
     open(MangoPayInfo, {});
@@ -92,12 +94,17 @@
 	})
 
 	const handleSubmit = async () => {
+		isPaying = true;
 		var res = await graphQLInstance.mutate(PAY_ORDER, { id: order.id }, errorsHandler.Uuid);
+
+		isPaying = false;
 
 		if (!res.success) {
 			// todo
 			return;
 		}
+
+		localStorage.setItem("user_last_transaction", res.data.identifier);
 
 		window.location = res.data.redirectUrl;
 	}
@@ -131,14 +138,14 @@
 
 		var res = await graphQLInstance.mutate(consumerLegalsMutation, variables, errorsHandler.Uuid);
 
-		isSavingLegals = false;
-
 		if (!res.success) {
 			// todo
+			isSavingLegals = false;
 			return;
 		}
 
 		user = res.data.owner;
+		isSavingLegals = false;
 		++step;
 	}
 </script>
@@ -153,7 +160,7 @@
 			{#if step == 1}
 				<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
 			{:else if step == 2}
-				<PaymentInfoForm {user} {order} bind:step {errorsHandler} />
+				<PaymentInfoForm {user} {order} bind:step {isSavingLegals} {errorsHandler} />
 			{/if}
 		</div>
 		<div class="w-full lg:w-4/12">
@@ -232,11 +239,16 @@
 							<button
 								type="button"	
 								on:click={handleSubmit}
-								class:disabled={!acceptCgv}
+								disabled={!acceptCgv || isPaying}
+								class:disabled={!acceptCgv || isPaying}
 								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
 								justify-center m-auto"
 								style="padding-left: 50px; padding-right: 50px;">
-								Payer
+								{#if isPaying}
+									<Icon data={faCircleNotch} spin />
+								{:else}
+									Payer
+								{/if}
 							</button>
 						{:else}
 							<button

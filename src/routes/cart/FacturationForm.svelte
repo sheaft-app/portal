@@ -85,7 +85,6 @@
     if (user.countryOfResidence) user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
     if (user.address.country) user.address.country = countries.find((c) => c.code == user.address.country);
     if (user.nationality) user.nationality = nationalities.find((c) => c.code == user.nationality);
-    console.log(user.birthdate);
     if (user.birthDate) user.birthDate = format(new Date(user.birthDate), 'P', { locale: fr });
 
     isLoadingLists = false;

@@ -4,6 +4,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
+  import { cartItems } from "./../../stores/app.js";
 	import { GET_MY_ORDERS } from "./queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
 	import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -13,10 +14,24 @@
 
 	let orders = [];
 
+  const resetCart = () => {
+    cartItems.set([]);
+		localStorage.setItem("user_cart", JSON.stringify($cartItems));
+		localStorage.removeItem("user_last_transaction");
+	};
+	
 	onMount(async () => {
 		let values = routerInstance.getQueryParams();
+
+		const transactionCartId = localStorage.getItem("user_last_transaction");
+
+		console.log(values.transactionId, transactionCartId);
+		if (values.transactionId && transactionCartId == values.transactionId) {
+			resetCart();
+		}
+
 		if (!values || !values.id) {
-			routerInstance.goTo(MyOrderRoutes.List);
+			return routerInstance.goTo(MyOrderRoutes.List);
 		}
 
 		// quand il n'y a qu'un seul ID, le paramètre est lu comme une string et non un array
@@ -25,7 +40,7 @@
 		if (response.success) {
 			orders = response.data;
 		} else {
-			routerInstance.goTo(MyOrderRoutes.List);
+			return routerInstance.goTo(MyOrderRoutes.List);
 		}
 	});
 </script>

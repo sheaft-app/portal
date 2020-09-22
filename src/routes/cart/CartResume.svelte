@@ -164,8 +164,6 @@
     await saveOrder();
     
     routerInstance.goTo(CartRoutes.Checkout)
-    //TODO HANDLE PAYMENT
-    // resetCart();
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
     isCreatingOrder = false;
 
@@ -179,11 +177,6 @@
   const removeProduct = id => {
     let newCart = $cartItems.filter(c => c.id !== id);
     $cartItems = newCart;
-    localStorage.setItem("user_cart", JSON.stringify($cartItems));
-  };
-
-  const resetCart = () => {
-    cartItems.set([]);
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
   };
 </script>

@@ -366,6 +366,7 @@
           Roles.Consumer.Value
         ])}
         <NavLink route={SearchProductRoutes.Search} />
+        <NavLink route={CartRoutes.Resume} />
       {/if}
       {#if $authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value])}
         <NavLink route={MyOrderRoutes.List} />

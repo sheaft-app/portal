@@ -40,6 +40,7 @@ export const PAY_ORDER = gql`
 	mutation payOrder($input: IdInput) {
 		payOrder(input: $input) {
 			id
+			identifier
 			redirectUrl
 		}
 	}

@@ -3,11 +3,12 @@
 	import Loader from "./../../components/Loader.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
+	import { formatMoney } from "./../../helpers/app";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import GetAuthInstance from "./../../services/SheaftAuth";
 	import { isLoading, items } from "./store";
 	import MyOrderListItem from "./MyOrderListItem.svelte";
-	import { MY_ORDERS } from "./queries.js";
+	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./queries.js";
 	import OrderByDirection from "./../../enums/OrderByDirection";
 	import OrderStatusKind from "./../../enums/OrderStatusKind";
 	import SearchProductRoutes from "./../search-products/routes";
@@ -15,6 +16,8 @@
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+  import Icon from "svelte-awesome";
+  import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
@@ -23,6 +26,7 @@
 
 	let selected = null;
 	let orders = [];
+	let validatingOrders = [];
 
 	const getMyOrders = async () => {
 		isLoading.set(true);
@@ -53,6 +57,17 @@
 		);
 	};
 
+	const getValidatingOrders = async () => {
+		var res = await graphQLInstance.query(MY_VALIDATING_ORDERS, errorsHandler.Uuid);
+
+		if (!res.success) {
+			//TODO
+			return;
+		}
+
+		validatingOrders = res.data;
+	}
+
 	const goToOrderProducts = () => {
 		if (authInstance.isInRole([Roles.Store.Value])) {
 			routerInstance.goTo(QuickOrderRoutes.Purchase);
@@ -82,6 +97,7 @@
 
 	onMount(async () => {
 		await getMyOrders();
+		await getValidatingOrders();
 
 		if ($items.length === 0) {
 			return;
@@ -107,7 +123,7 @@
 	<ErrorCard {errorsHandler} />
 	{#if $isLoading}
 		<Loader />
-	{:else if $items.length > 0}
+	{:else if $items.length > 0 || validatingOrders.length > 0}
 		<h1 class="mb-6">Mes commandes</h1>
 		{#if !hiddenNavigation}
 			<div
@@ -128,6 +144,19 @@
 				</button>
 			</div>
 		{/if}
+		<div class="mb-5">
+			{#each validatingOrders as validatingOrder}
+				<div class="bg-white shadow px-4 py-3 flex mb-2">
+					<div class="mr-4">
+						<Icon data={faCircleNotch} class="text-green-500" spin />
+					</div>
+					<div>
+						<p class="font-semibold mb-2 text-green-500">Validation de paiement en cours</p>
+						<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de validation. Dès que le paiement aura été validé, la commande apparaîtra ici.</p>
+					</div>
+				</div>
+			{/each}
+		</div>
 		<div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
 			<div
 				class="align-middle inline-block min-w-full overflow-hidden items px-1">

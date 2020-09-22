@@ -105,3 +105,14 @@ export const GET_MY_ORDER_DETAILS = gql`
 		}
 	}
 `;
+
+export const MY_VALIDATING_ORDERS = gql`
+	query {
+		orders(where: { status_in: WAITING }) {
+			nodes {
+				id
+				totalPrice
+			}
+		}
+	}
+`
