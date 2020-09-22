@@ -99,7 +99,7 @@
 			return;
 		}
 
-		window.location = res.redirectUrl;
+		window.location = res.data.redirectUrl;
 	}
 
 	const handleSubmitLegals = async () => {

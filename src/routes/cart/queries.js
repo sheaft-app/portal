@@ -42,7 +42,7 @@ export const GET_MY_ORDERS = gql`
 `;
 
 export const GET_ORDER = gql`
-	query order($input: ID) {
+	query order($input: ID!) {
 		order(input: $input) {
 			id
 			totalFees
