@@ -9,3 +9,23 @@ export const GET_CATEGORIES = gql`
 		}
 	}
 `;
+
+export const GET_COUNTRIES = gql`
+query GetCountries {
+  countries {
+    id
+    code
+    name
+  }
+}
+`;
+
+export const GET_NATIONALITIES = gql`
+query GetNationalities {
+  nationalities {
+    id
+    code
+    name
+  }
+}
+`;

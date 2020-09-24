@@ -34,9 +34,7 @@
     email: authInstance.user.profile.email || null,
     phone: authInstance.user.profile.phone || null,
     picture: authInstance.user.profile.picture || null,
-    departmentId: null,
-    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")) || null,
-    anonymous: true
+    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")) || null
   };
 
   const consumerForm = form(() => ({

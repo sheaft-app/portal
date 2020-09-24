@@ -4,12 +4,6 @@ export const GET_CONSUMER_DETAILS = gql`
 	query GetConsumerDetails($id: ID!) {
 		consumer(input: $id) {
 			id
-			address {
-				department{
-					code
-					name
-				}
-			}
 			lastName
 			firstName
 			name

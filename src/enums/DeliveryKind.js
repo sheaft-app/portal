@@ -1,7 +1,7 @@
 import GetEnumObjectFor from './helpers.js';
 
 let enums = {
-	Farm: { Value: "FARM", Label: "A la ferme"},
+	Farm: { Value: "FARM", Label: "Site de production"},
 	Market: { Value: "MARKET", Label: "Au marché"},
 	Collective: { Value: "COLLECTIVE", Label: "Magasin de producteurs"},
 	Withdrawal: { Value: "WITHDRAWAL", Label: "Point retrais"},

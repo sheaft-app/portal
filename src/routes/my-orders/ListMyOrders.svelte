@@ -58,14 +58,17 @@
 	};
 
 	const getValidatingOrders = async () => {
+		isLoading.set(true);
 		var res = await graphQLInstance.query(MY_VALIDATING_ORDERS, errorsHandler.Uuid);
 
 		if (!res.success) {
 			//TODO
+			isLoading.set(false);
 			return;
 		}
 
 		validatingOrders = res.data;
+		isLoading.set(false);
 	}
 
 	const goToOrderProducts = () => {
@@ -146,14 +149,12 @@
 		{/if}
 		<div class="mb-5">
 			{#each validatingOrders as validatingOrder}
-				<div class="bg-white shadow px-4 py-3 flex mb-2">
-					<div class="mr-4">
-						<Icon data={faCircleNotch} class="text-green-500" spin />
+				<div class="bg-white shadow px-4 py-3 mb-3">
+					<div class="flex items-center mb-2">
+						<Icon data={faCircleNotch} class="text-green-500 mr-3" spin />
+						<p class="font-semibold text-green-500">Traitement du paiement en cours</p>
 					</div>
-					<div>
-						<p class="font-semibold mb-2 text-green-500">Validation de paiement en cours</p>
-						<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de validation. Dès que le paiement aura été validé, la commande apparaîtra ici.</p>
-					</div>
+					<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de traitement. Dès que le paiement aura été traité, la commande apparaîtra ici.</p>
 				</div>
 			{/each}
 		</div>

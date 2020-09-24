@@ -83,6 +83,7 @@
   export let iconClasses = "";
   export let showChevron = false;
   export let invalid = false;
+  export let preferredOptions = [];
 
   let target;
   let activeSelectedValue;
@@ -617,6 +618,19 @@
     if (listOpen) loadList();
 
     if (items && items.length > 0) {
+      if (preferredOptions.length > 0) {
+        const organizedOptions = [];
+        preferredOptions.map((preferredOption) => {
+            const optionToRemove = items.find((option) => option[optionIdentifier] === preferredOption);
+            items = items.filter((option) => option[optionIdentifier] !== preferredOption);
+            return organizedOptions.push(optionToRemove);
+        });
+
+        items = [
+            ...organizedOptions,
+            ...items
+        ];
+      }
       originalItemsClone = JSON.stringify(items);
     }
 

@@ -69,7 +69,7 @@
             type="button"
             class:selected={sellingPoint.kind === 'FARM'}  
             class:disabled={isLoading}>
-            À la ferme
+            Site de production
           </button>
           <button
             on:click={() => selectKind('COLLECTIVE')}

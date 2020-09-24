@@ -9,7 +9,8 @@
   import SheaftErrors from "./services/SheaftErrors.js";
   import Loader from "./components/Loader.svelte";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
-  import { cartItems, allDepartmentsProgress } from "./stores/app.js";
+  import { cartItems, allDepartmentsProgress } from "./stores/app";
+  import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy } from "svelte";
   import "notyf/notyf.min.css";
   import Icon from "svelte-awesome";
@@ -21,6 +22,7 @@
   import { navExpended } from "./components/nav/store.js";
   import { config } from "./configs/config.js";
   import Tailwindcss from "./components/Tailwind.svelte";
+  import Roles from "./enums/Roles";
   import {
     loginFreshdesk,
     logoutFreshdesk
@@ -230,7 +232,7 @@
   {/if}
   <Nav />
   <AcceptCookiePlaceholder />
-  <main class:relative={!$navExpended} class:fixed={$navExpended}>
+  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))} >
     <Modal>
       <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content">
         <Router routes={guardInstance.routes} />
@@ -667,6 +669,11 @@
       margin-left: 200px; // la taille de la nav de gauche
       height: calc(100% - 64px);
     }
+  }
+
+  .reset-margin {
+    margin-left: 0 !important;
+    height: auto !important;
   }
 
   @media (max-width: 768px) {

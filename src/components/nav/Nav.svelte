@@ -74,8 +74,10 @@
 
 <div
   id="navbar"
-  class="bg-primary w-full py-2 fixed top-0 flex md:px-6 justify-between lg:px-8
-  items-center top-nav"
+  class="bg-primary w-full py-2 fixed top-0 flex md:px-6 lg:px-8
+  items-center top-nav lg:justify-between"
+  class:justify-between={$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])}
+  class:justify-end={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}
   style="z-index: 6;">
   {#if $displayNotificationCenter}
     <NotificationsPanel />
@@ -117,7 +119,7 @@
             scale="0.9" />
           {isInRole($authUserAccount, [
             Roles.Producer.Value
-          ]) ? 'Ma ferme' : 'Mon commerce'}
+          ]) ? 'Mon entreprise' : 'Mon commerce'}
         </a>
       {/if}
       <hr />
@@ -268,7 +270,8 @@
         navExpended.set(!$navExpended);
       }}
       aria-label="Activer la navigation"
-      class="inline-block lg:hidden py-2 px-4">
+      class="inline-block lg:hidden py-2 px-4"
+      class:hidden={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
       <Icon data={faBars} class="inline" scale="1.2" />
     </button>
   {/if}
@@ -314,7 +317,8 @@
           displayNotificationCenter.set(!$displayNotificationCenter);
         }}
         aria-label="Afficher les notifications"
-        class="flex uppercase text-white mr-4 md:mr-4 items-center">
+        class="flex uppercase text-white mr-4 md:mr-4 items-center"
+        class:hidden={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
         <Icon data={faBell} class="mr-3 inline" scale="1.2" />
         {#if $notifications.filter(n => n.unread).length > 0}
           <span
@@ -359,6 +363,7 @@
 
 <nav
   class="nav fixed content-between overflow-hidden"
+  class:hidden={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}
   class:active={$navExpended}>
   <div class="w-full">
     <ul class="nav__menu">

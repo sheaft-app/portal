@@ -33,10 +33,10 @@
 
 <TransitionWrapper>
   <div
-    class="mx-0 py-2 overflow-x-auto sm:px-4 lg:px-8 text-center lg:text-left">
+    class="mx-0 py-2 overflow-x-auto sm:px-4 lg:px-8 text-center">
     <div class="pb-4 lg:py-8">
       <h2 class="lg:text-3xl">Bienvenue sur notre plateforme ! 🥳</h2>
-      <p class="mb-2 text-base text-justify lg:text-lg pt-2 lg:pt-0">
+      <p class="mb-2 text-base lg:text-lg pt-2 lg:pt-0">
         Avant de commencer, nous avons besoin de savoir ce que vous attendez de
         Sheaft.
       </p>

@@ -1,0 +1,186 @@
+<script>
+  import { onMount } from "svelte";
+	import Loader from "../../components/Loader.svelte";
+	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+  import ErrorContainer from "./../../components/ErrorContainer.svelte";
+  import Cleave from "cleave.js";
+  import Select from "./../../components/controls/select/Select.js";
+  import GetGraphQLInstance from "../../services/SheaftGraphQL";
+  import SheaftErrors from "../../services/SheaftErrors";
+  import { GET_COUNTRIES, GET_NATIONALITIES } from "../queries";
+  import { format } from "date-fns";
+  import { fr } from "date-fns/locale";
+  import CountrySelect from "./../../components/controls/CountrySelect.svelte";
+  import NationalitySelect from "./../../components/controls/NationalitySelect.svelte";
+  
+  export let user = {
+    id: null,
+    firstName: null,
+    lastName: null,
+    birthDate: null,
+    nationality: null,
+    email: null,
+    countryOfResidence: null,
+    address: {
+      line1: null,
+      line2: null,
+      zipcode: null,
+      city: null,
+      country: null
+    }
+  },
+  invalid = false,
+  errorsHandler = null,
+  canFlex = false;
+  
+  const graphQLInstance = GetGraphQLInstance();
+
+  let cleave = null;
+  let countries = [];
+  let nationalities = [];
+  let isLoadingLists = true;
+
+  const facturationForm = form(() => ({
+    firstName: { value: user.firstName, validators: ['required'], enabled: true },
+    lastName: { value: user.lastName, validators: ['required'], enabled: true },
+    birthDate: { value: user.birthDate, validators: ['required'], enabled: true },
+    nationality: { value: user.nationality, validators: ['required'], enabled: true },
+    email: { value: user.email, validators: ['required', 'email'], enabled: true },
+    countryOfResidence: { value: user.countryOfResidence, validators: ['required'], enabled: true },
+    line1: { value: user.address.line1, validators: ['required'], enabled: true },
+    city: { value: user.address.city, validators: ['required'], enabled: true },
+    zipcode: { value: user.address.zipcode, validators: ['required'], enabled: true },
+    country: { value: user.address.country, validators: ['required'], enabled: true }
+	}), {
+    initCheck: false
+  });
+
+  const getLabel = option => option.name;
+
+  onMount(async () => {
+    var resCountries = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
+
+		if (!resCountries.success) {
+      // todo
+      isLoadingLists = false;
+			return;
+    }
+
+    countries = resCountries.data;
+    
+    var resNationalities = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
+
+    if (!resNationalities.success) {
+      // todo
+      isLoadingLists = false;
+			return;
+    }
+
+    nationalities = resNationalities.data;
+
+    // restaurer les valeurs initiales
+    if (user.countryOfResidence) user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
+    if (user.address.country) user.address.country = countries.find((c) => c.code == user.address.country);
+    if (user.nationality) user.nationality = nationalities.find((c) => c.code == user.nationality);
+   
+    if (user.birthDate) {
+      if (user.birthDate.includes("-")) {
+        user.birthDate = format(new Date(user.birthDate), 'P', { locale: fr });
+      } else {
+        const dateParts = user.birthDate.trim().split("/");
+        user.birthDate = format(new Date(dateParts[2], dateParts[1] - 1, dateParts[0]), 'P', { locale: fr });
+      }
+    }
+
+    isLoadingLists = false;
+  })
+
+  const initializeCleave = () => {
+    cleave = new Cleave('.input-birthday', {
+      date: true,
+      delimiter: ' / ',
+      datePattern: ['d', 'm', 'Y']
+    });
+  }
+
+  $: invalid = !$facturationForm.valid;
+</script>
+
+<slot name="header"></slot>
+
+{#if isLoadingLists}
+  <Loader />
+{:else}
+  <div class="flex flex-wrap w-full shadow lg:rounded mb-5">
+    <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full mb-5 lg:mb-0">
+      <div class="form-control">
+        <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
+          <div class="w-full pr-0 lg:pr-2">
+            <label for="firstName">Prénom *</label>
+            <input name="firstName" placeholder="ex : Jean" bind:value={user.firstName} use:bindClass={{ form: facturationForm, name: "firstName" }} autocomplete="given-name" />
+            <ErrorContainer field={$facturationForm.fields.firstName} />
+          </div>
+          <div class="w-full">
+            <label for="lastName">Nom de famille *</label>
+            <input name="lastName" placeholder="ex : Dupont" bind:value={user.lastName} use:bindClass={{ form: facturationForm, name: "lastName" }} autocomplete="family-name"  />
+            <ErrorContainer field={$facturationForm.fields.lastName} />
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full form-control">
+        <label for="email">E-mail *</label>
+        <input name="email" placeholder="ex : jean.dupont@gmail.com" type="email" use:bindClass={{ form: facturationForm, name: "email" }} bind:value={user.email} autocomplete="email" />
+        <ErrorContainer field={$facturationForm.fields.email} />
+      </div>
+
+      <div class="w-full form-control">
+        <label for="birthday">Date de naissance (JJ/MM/AAAA)*</label>
+        <input name="birthday" use:initializeCleave class="input-birthday" placeholder="JJ/MM/AAAA" type="text" use:bindClass={{ form: facturationForm, name: "birthDate" }} bind:value={user.birthDate} autocomplete="birthday"  />
+        <ErrorContainer field={$facturationForm.fields.birthDate} />
+      </div>
+
+      <div class="w-full form-control" style="display: block">
+        <label for="country">Pays de résidence *</label>
+        <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
+      </div>
+
+      <div class="w-full form-control" style="display: block">
+        <label for="nationality">Nationalité *</label>
+        <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} /> 
+      </div>
+    </div>
+
+    <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full">
+      <div class="w-full form-control">
+        <label for="line1">Adresse *</label>
+        <input name="line1" placeholder="ex : 210 Avenue de la Liberté" use:bindClass={{ form: facturationForm, name: "line1" }} bind:value={user.address.line1} autocomplete="address-line1" />
+        <ErrorContainer field={$facturationForm.fields.line1} />
+      </div>
+      <div class="w-full form-control">
+        <label for="line2">Complément d'adresse</label>
+        <input name="line2" placeholder="ex : Appartement 15" bind:value={user.address.line2} autocomplete="address-line2" />
+      </div>
+
+      <div class="form-control">
+        <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
+          <div class="w-full pr-0 lg:pr-2">
+            <label for="postcode">Code postal *</label>
+            <input name="postcode" placeholder="ex : 74000" bind:value={user.address.zipcode} use:bindClass={{ form: facturationForm, name: "zipcode" }} autocomplete="postal-code" />
+            <ErrorContainer field={$facturationForm.fields.zipcode} />
+          </div>
+          <div class="w-full">
+            <label for="city">Ville *</label>
+            <input name="city" placeholder="ex : Annecy" bind:value={user.address.city} use:bindClass={{ form: facturationForm, name: "city" }} autocomplete="address-level2" />
+            <ErrorContainer field={$facturationForm.fields.city} />
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full form-control" style="display: block">
+        <label for="country">Pays *</label>
+        <CountrySelect bind:selectedValue={user.address.country} formName={facturationForm} name="country" {errorsHandler} /> 
+      </div>
+    </div>
+  </div>
+{/if}
