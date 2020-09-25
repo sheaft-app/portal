@@ -9,6 +9,7 @@ export const SEARCH_COMPANY_SIRET = gql`
 				zipcode
 				city
 			}
+			active
 			nic
 			owner {
 				firstName

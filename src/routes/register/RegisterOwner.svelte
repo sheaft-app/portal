@@ -34,6 +34,7 @@
   let vat = null;
   let sponsorshipCode = JSON.parse(localStorage.getItem("sponsoring"));
   let openings = [];
+  let invalidSiret = false;
 
   let company = {
     name: authInstance.user.profile.name || null,
@@ -44,17 +45,19 @@
       city: null,
       zipcode: null
     },
-    id: authInstance.user.profile.sub || null,
     firstName: authInstance.user.profile.given_name || null,
     lastName: authInstance.user.profile.family_name || null,
     email: authInstance.user.profile.email || null,
     phone: authInstance.user.profile.phone || null,
     picture: authInstance.user.profile.picture || null,
+    description: null,
+    tags: [],
     sponsoringCode: sponsorshipCode || null,
     roles: [params.id],
     legals: {
       vatIdentifier: null,
       siret: null,
+      kind: null,
       email: authInstance.user.profile.email || null,
       address: {
         line1: null,
@@ -101,7 +104,7 @@
 
 
       const dateParts = company.legals.owner.birthDate.trim().split("/");
-      
+
       company = {
         ...company,
         address: {
@@ -160,9 +163,9 @@
         <Loader />
       {:else}
         {#if stepper <= 0}
-          <FormSiret bind:company bind:stepper />
+          <FormSiret bind:company bind:stepper bind:invalidSiret />
         {:else if stepper == 1}
-          <FormCompany bind:company {isStore} bind:vat bind:stepper {errorsHandler} />
+          <FormCompany bind:company {isStore} bind:vat bind:stepper {errorsHandler} {invalidSiret} />
         {:else if stepper == 2}
           <FormOwner bind:company {errorsHandler} bind:stepper />
         {:else if stepper == 3}

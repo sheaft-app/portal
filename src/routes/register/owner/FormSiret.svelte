@@ -9,7 +9,7 @@
   import CityService from "./../../../services/CityService.js";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
-  export let company, stepper = 0;
+  export let company, stepper = 0, invalidSiret = false;
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
@@ -34,6 +34,7 @@
   };
 
   const validateSiret = async () => {
+    invalidSiret = false;
     siretForm.validate();
 
     if ($siretForm.valid) {
@@ -42,10 +43,10 @@
 
       isSearchingSiret = true;
       var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, { input: siret});
-      if (!res.success) {
+      if (!res.success || !res.data.active) {
         isSearchingSiret = false;
+        invalidSiret = true;
         stepper++;
-        //TODO
         return;
       }
 

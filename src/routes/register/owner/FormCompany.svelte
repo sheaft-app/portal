@@ -1,13 +1,15 @@
 <script>
   import { form, bindClass } from '../../../../vendors/svelte-forms/src/index';
+  import { slide } from "svelte/transition";
   import ErrorContainer from "./../../../components/ErrorContainer.svelte";
   import CountrySelect from "./../../../components/controls/CountrySelect.svelte";
+  import LegalKind from "./../../../enums/LegalKind";
   
-  export let company, vat, isStore = false, stepper = 1, errorsHandler = null;
+  export let company, vat, isStore = false, stepper = 1, errorsHandler = null, invalidSiret = false;
 
   const companyForm = form(() => ({
     name: { value: company.name, validators: ['required'], enabled: true },
-    siret: { value: company.legals.siret, validators: ['required'], enabled: true },
+    kind: { value: company.legals.kind, validators: ['required'], enabled: true },
     email: { value: company.email, validators: ['required', 'email'], enabled: true },
     line1: { value: company.legals.address.line1, validators: ['required'], enabled: true },
     zipcode: { value: company.legals.address.zipcode, validators: ['required'], enabled: true },
@@ -16,6 +18,8 @@
 	}), {
     initCheck: false
   });
+
+  const selectKind = (kind) => company.legals.kind = kind;
 </script>
 
 <div class="text-center pb-8 px-5">
@@ -24,6 +28,16 @@
     Identifiez votre {isStore ? 'magasin' : 'entreprise'}
   </p>
 </div>
+{#if invalidSiret}
+  <div class="mb-3 p-4 border border-orange-500 text-orange-500 lg:flex flex-row" in:slide>
+    <div class="text-center lg:text-left" style="word-break: break-word;">
+      <p class="font-semibold">SIRET {company.legals.siret} introuvable</p>
+      <p class="mt-2">Nous n'avons pas réussi à récupérer les informations pour ce SIRET.</p>
+      <p>Si vous êtes sûr que votre SIRET est bien valide, vous pouvez ignorer ce message.</p>
+      <button class="btn btn-link mt-2" on:click={() => --stepper}>Modifier le SIRET</button>
+    </div>
+  </div>
+{/if}
 <form>
   <fieldset>
     <div class="flex flex-wrap w-full shadow lg:rounded mb-5">
@@ -42,50 +56,52 @@
             bind:value={company.name} />
           <ErrorContainer field={$companyForm.fields.name} />
         </div>
-        <div class="flex flex-wrap">
-          <div class="w-full xl:w-1/2 form-control lg:pr-2">
-            <label for="siret">N° de SIRET *</label>
-            <input
-              id="siret"
-              type="number"
-              use:bindClass={{ form: companyForm, name: "siret" }}
-              on:input={e => {
-                if (e.target.value.length > e.target.maxLength) {
-                  e.preventDefault();
-                  e.target.value = e.target.value
-                    .slice(0, e.target.maxLength)
-                    .toString();
-                }
-              }}
-              class="m-auto"
-              maxLength="14"
-              minLength="14"
-              bind:value={company.legals.siret} />
-            <ErrorContainer field={$companyForm.fields.siret} />
+        <div class="w-full form-control">
+          <label for="grid-kind">Forme juridique *</label>
+          <div class="w-full text-xs justify-center button-group" use:bindClass={{ form: companyForm, name: "kind" }}>
+            <button
+              on:click={() => selectKind(LegalKind.Organization.Value)}
+              type="button"
+              class:selected={company.legals.kind === LegalKind.Organization.Value}>
+              {LegalKind.Organization.Label}
+            </button>
+            <button
+              on:click={() => selectKind(LegalKind.Business.Value)}
+              type="button"
+              class:selected={company.legals.kind === LegalKind.Business.Value}>
+              {LegalKind.Business.Label}
+            </button>
+            <button
+              on:click={() => selectKind(LegalKind.Individual.Value)}
+              type="button"
+              class:selected={company.legals.kind === LegalKind.Individual.Value}>
+              {LegalKind.Individual.Label}
+            </button>
           </div>
-          <div class="w-full xl:w-1/2 form-control">
-            <label for="vat">N° de TVA</label>
-            <div class="flex flex-wrap">
-              <input
-                id="vat"
-                type="text"
-                disabled={true}
-                value="FR"
-                class="w-3/12 disabled" />
-              <input
-                id="vat"
-                type="text"
-                maxlength="2"
-                minlength="2"
-                bind:value={vat}
-                class="w-3/12" />
-              <input
-                id="vat-siret"
-                type="text"
-                disabled={true}
-                value={company.legals.siret ? company.legals.siret.toString().substring(0, 9).toUpperCase() : 0}
-                class="w-6/12 disabled" />
-            </div>
+        </div>
+        <ErrorContainer field={$companyForm.fields.kind} />
+        <div class="w-full form-control">
+          <label for="vat">N° de TVA</label>
+          <div class="flex flex-wrap">
+            <input
+              id="vat"
+              type="text"
+              disabled={true}
+              value="FR"
+              class="w-3/12 disabled" />
+            <input
+              id="vat"
+              type="text"
+              maxlength="2"
+              minlength="2"
+              bind:value={vat}
+              class="w-3/12" />
+            <input
+              id="vat-siret"
+              type="text"
+              disabled={true}
+              value={company.legals.siret ? company.legals.siret.toString().substring(0, 9).toUpperCase() : 0}
+              class="w-6/12 disabled" />
           </div>
         </div>
         <div class="w-full form-control">
