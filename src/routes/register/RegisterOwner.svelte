@@ -97,16 +97,16 @@
       }
 
       delete company.address['insee'];
-      delete company.legals.address['insee'];
-      delete company.legals.owner.address['insee'];
+      delete company.address['id'];
 
 
       const dateParts = company.legals.owner.birthDate.trim().split("/");
-
+      
       company = {
+        ...company,
         address: {
           ...company.address,
-          country: company.address.country.code
+          country: "FR"
         },
         legals: {
           ...company.legals,
@@ -116,6 +116,10 @@
           },
           owner: {
             ...company.legals.owner,
+            address: {
+              ...company.legals.owner.address,
+              country: company.legals.owner.address.country.code
+            },
             countryOfResidence: company.legals.owner.countryOfResidence.code,
             nationality: company.legals.owner.nationality.code,
             birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])

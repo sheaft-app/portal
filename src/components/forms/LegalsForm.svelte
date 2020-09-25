@@ -84,7 +84,7 @@
     if (user.nationality) user.nationality = nationalities.find((c) => c.code == user.nationality);
    
     if (user.birthDate) {
-      if (user.birthDate.includes("-")) {
+      if (typeof user.birthDate == "object" || user.birthDate.includes("-")) {
         user.birthDate = format(new Date(user.birthDate), 'P', { locale: fr });
       } else {
         const dateParts = user.birthDate.trim().split("/");
