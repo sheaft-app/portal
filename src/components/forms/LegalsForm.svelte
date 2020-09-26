@@ -31,7 +31,9 @@
   },
   invalid = false,
   errorsHandler = null,
-  canFlex = false;
+  canFlex = false,
+  hideResidence = false,
+  facturationForm = null;
   
   const graphQLInstance = GetGraphQLInstance();
 
@@ -40,18 +42,18 @@
   let nationalities = [];
   let isLoadingLists = true;
 
-  const facturationForm = form(() => ({
+  facturationForm = form(() => ({
     firstName: { value: user.firstName, validators: ['required'], enabled: true },
     lastName: { value: user.lastName, validators: ['required'], enabled: true },
     birthDate: { value: user.birthDate, validators: ['required'], enabled: true },
     nationality: { value: user.nationality, validators: ['required'], enabled: true },
     email: { value: user.email, validators: ['required', 'email'], enabled: true },
-    countryOfResidence: { value: user.countryOfResidence, validators: ['required'], enabled: true },
+    countryOfResidence: { value: user.countryOfResidence, validators: ['required'], enabled: !hideResidence },
     line1: { value: user.address.line1, validators: ['required'], enabled: true },
     city: { value: user.address.city, validators: ['required'], enabled: true },
     zipcode: { value: user.address.zipcode, validators: ['required'], enabled: true },
     country: { value: user.address.country, validators: ['required'], enabled: true }
-	}), {
+  }), {
     initCheck: false
   });
 
@@ -78,10 +80,10 @@
 
     nationalities = resNationalities.data;
 
-    // restaurer les valeurs initiales
-    if (user.countryOfResidence) user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
-    if (user.address.country) user.address.country = countries.find((c) => c.code == user.address.country);
-    if (user.nationality) user.nationality = nationalities.find((c) => c.code == user.nationality);
+    // restaurer les valeurs initiales quand elles viennent du serveur sous format ISOCode
+    if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
+    if (user.address.country && typeof user.address.country == "string") user.address.country = countries.find((c) => c.code == user.address.country);
+    if (user.nationality && typeof user.address.country == "string") user.nationality = nationalities.find((c) => c.code == user.nationality);
    
     if (user.birthDate) {
       if (typeof user.birthDate == "object" || user.birthDate.includes("-")) {
@@ -113,6 +115,7 @@
 {:else}
   <div class="flex flex-wrap w-full shadow lg:rounded mb-5">
     <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full mb-5 lg:mb-0">
+      <slot name="basics-header"></slot>
       <div class="form-control">
         <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
           <div class="w-full pr-0 lg:pr-2">
@@ -139,11 +142,13 @@
         <input name="birthday" use:initializeCleave class="input-birthday" placeholder="JJ/MM/AAAA" type="text" use:bindClass={{ form: facturationForm, name: "birthDate" }} bind:value={user.birthDate} autocomplete="birthday"  />
         <ErrorContainer field={$facturationForm.fields.birthDate} />
       </div>
-
-      <div class="w-full form-control" style="display: block">
-        <label for="country">Pays de résidence *</label>
-        <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
-      </div>
+      
+      {#if !hideResidence}
+        <div class="w-full form-control" style="display: block">
+          <label for="country">Pays de résidence *</label>
+          <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
+        </div>
+      {/if}
 
       <div class="w-full form-control" style="display: block">
         <label for="nationality">Nationalité *</label>
@@ -152,6 +157,7 @@
     </div>
 
     <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full">
+      <slot name="address-header"></slot>
       <div class="w-full form-control">
         <label for="line1">Adresse *</label>
         <input name="line1" placeholder="ex : 210 Avenue de la Liberté" use:bindClass={{ form: facturationForm, name: "line1" }} bind:value={user.address.line1} autocomplete="address-line1" />

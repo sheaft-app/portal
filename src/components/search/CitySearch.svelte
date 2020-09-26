@@ -166,9 +166,5 @@
     --inputColor: #205164;
     --indicatorTop: 16px;
     --indicatorColor: #ff4081;
-    
-    .ssp-selectContainer {
-      border-color: red !important;
-    }
   }
 </style>

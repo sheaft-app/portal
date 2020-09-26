@@ -53,7 +53,7 @@
 
 <svelte:window on:keyup={handleKeyup} />
 
-<div class="h-full">
+<div style="height: inherit;">
   {#if Component}
     <div class="modal-background" style="z-index: 8" on:click={(event) => { event.preventDefault(); event.stopPropagation(); close();}}/>
     <form class="absolute w-full h-full flex items-center justify-center">

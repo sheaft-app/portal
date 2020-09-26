@@ -90,6 +90,7 @@
     <div class="w-full form-control" style="display: block;">
       <CitySearch
         bind:selectedAddress={company.address}
+        placeholder="Entrez l'adresse de votre lieu de production"
         bindClassData={{ form: addressForm, name: "address" }}
         initialValue={company.address} />
     </div>

@@ -8,7 +8,6 @@
   export let user, errorsHandler = null;
 
   const routerInstance = GetRouterInstance();
-  $: console.log(user);
 </script>
 
 <LegalsForm bind:user {errorsHandler} canFlex={false}>

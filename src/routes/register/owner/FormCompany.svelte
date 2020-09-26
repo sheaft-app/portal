@@ -20,6 +20,14 @@
   });
 
   const selectKind = (kind) => company.legals.kind = kind;
+
+  const next = () => {
+    companyForm.validate();
+
+    if ($companyForm.valid) {
+      ++stepper;
+    }
+  }
 </script>
 
 <div class="text-center pb-8 px-5">
@@ -52,6 +60,7 @@
           <input
             id="name"
             type="text"
+            placeholder="ex : GAEC Fromages du Cantal"
             use:bindClass={{ form: companyForm, name: "name" }}
             bind:value={company.name} />
           <ErrorContainer field={$companyForm.fields.name} />
@@ -161,9 +170,8 @@
     </div>
     <div>
       <button
-        on:click={() => stepper++}
+        on:click={next}
         aria-label="Suivant"
-        disabled={!$companyForm.valid}
         class:disabled={!$companyForm.valid}
         class="form-button uppercase text-sm cursor-pointer text-white
         shadow rounded-full px-6 py-2 flex items-center justify-center

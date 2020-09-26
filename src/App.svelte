@@ -232,9 +232,9 @@
   {/if}
   <Nav />
   <AcceptCookiePlaceholder />
-  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))} >
+  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
     <Modal>
-      <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content">
+      <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content" class:noNav={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
         <Router routes={guardInstance.routes} />
       </div>
     </Modal>
@@ -673,7 +673,6 @@
 
   .reset-margin {
     margin-left: 0 !important;
-    height: auto !important;
   }
 
   @media (max-width: 768px) {
@@ -739,5 +738,9 @@
     @media (max-width: 1024px) {
       overflow: hidden;
     }
+  }
+
+  .noNav {
+    width: 100% !important;
   }
 </style>

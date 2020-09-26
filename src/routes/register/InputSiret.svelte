@@ -48,29 +48,32 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+$char-w: 1ch;
+$gap: .7*$char-w;
+$n-char: 14;
+$in-w: $n-char*($char-w + $gap);
+
 input {
-  border: none;
-	width: 381px;
-	padding: 0;
-  background: 
-    repeating-linear-gradient(90deg, 
-        dimgrey 0, 
-        dimgrey 1ch, 
-        transparent 0, 
-        transparent 1.5ch) 
-      0 100%/100% 2px no-repeat;
+	display: block;
+	border: none;
+  padding: 0;
+  margin: 0 auto;
+	width: $in-w;
   color: #205164;
-  font: 3ch consolas, monospace;
-  letter-spacing: .5ch;
-
-  @media (max-width: 399px) {
-    font-size: 2.5ch;
-    width: 275px;
+	background: repeating-linear-gradient(90deg, 
+		dimgrey 0, dimgrey $char-w, 
+		transparent 0, transparent $char-w + $gap) 
+		0 100%/ #{$in-w - $gap} 2px no-repeat;
+	font: 3ch droid sans mono, consolas, monospace;
+  letter-spacing: $gap;
+  
+  @media (max-width: 500px) {
+    font-size: 2.35ch;
   }
-}
-
-input:focus {
-  outline: none;
-  color: #009688;
+	
+	&:focus {
+		outline: none;
+		color: #009688;
+	}
 }
 </style>

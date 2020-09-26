@@ -67,7 +67,6 @@
         firstName: null,
         lastName: null,
         email: authInstance.user.profile.email || null,
-        countryOfResidence: null,
         birthDate: null,
         nationality: null,
         address: {
@@ -101,10 +100,10 @@
       delete company.address['insee'];
       delete company.address['id'];
 
-
       const dateParts = company.legals.owner.birthDate.trim().split("/");
 
-      company = {
+      isRegistering = true;
+      var res = await graphQLInstance.mutate(register, {
         ...company,
         address: {
           ...company.address,
@@ -123,15 +122,12 @@
               ...company.legals.owner.address,
               country: company.legals.owner.address.country.code
             },
-            countryOfResidence: company.legals.owner.countryOfResidence.code,
+            countryOfResidence: company.legals.owner.address.country.code,
             nationality: company.legals.owner.nationality.code,
             birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
           }
         }
-      }
-
-      isRegistering = true;
-      var res = await graphQLInstance.mutate(register, company, errorsHandler.Uuid);
+      }, errorsHandler.Uuid);
 
       if (!res.success) {
       isRegistering = false;
