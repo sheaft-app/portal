@@ -50,10 +50,7 @@
     email: authInstance.user.profile.email || null,
     phone: authInstance.user.profile.phone || null,
     picture: authInstance.user.profile.picture || null,
-    description: null,
-    tags: [],
     sponsoringCode: sponsorshipCode || null,
-    roles: [params.id],
     legals: {
       vatIdentifier: null,
       siret: null,
@@ -88,7 +85,9 @@
     addressForm.validate();
 
     if ($addressForm.valid) {
-      company.legals.vatIdentifier = "FR" + vat + company.legals.siret.toString().substring(0, 9);
+      if (vat) {
+        company.legals.vatIdentifier = "FR" + vat + company.legals.siret.toString().substring(0, 9);
+      }
 
       var register = null;
       if (isStore) {
@@ -113,6 +112,7 @@
         },
         legals: {
           ...company.legals,
+          siret: company.legals.siret.toString(),
           address: {
             ...company.legals.address,
             country: company.legals.address.country.code
