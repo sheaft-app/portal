@@ -1,4 +1,4 @@
-<script>
+		<script>
 	import DeleteProducts from "./DeleteProducts.svelte";
 	import ImportProducts from "./ImportProducts.svelte";
 	import SetProductsAvailability from "./SetProductsAvailability.svelte";
@@ -207,7 +207,7 @@
 		let:rowItem={product}
 		bind:items
 		{headers}
-		{isLoading}
+		bind:isLoading
 		graphQuery={GET_PRODUCTS}
 		{errorsHandler}
 		defaultSearchValues={ProductRoutes.List.Params.Query}
@@ -266,7 +266,7 @@
 	{#if displayNoResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-3">Vous n'avez pas de produits dans votre catalogue.</p>
+				<p class="mb-3">Vous n'avez pas encore de produits dans votre catalogue.</p>
 				<div
 					class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse
 					md:flex-row">

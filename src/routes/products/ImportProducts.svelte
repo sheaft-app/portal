@@ -115,8 +115,7 @@
       style="z-index: -1;">
       <Icon data={faUpload} scale="3" class="mb-5 opacity-50 inline" />
       <p>
-        Une fois complété, cliquez ou déposez le fichier dans cette zone pour
-        importer vos produits.
+        Une fois complété, cliquez dans cette zone pour importer le fichier.
       </p>
     </div>
   </div>
