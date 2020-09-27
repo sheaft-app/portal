@@ -75,9 +75,8 @@
 <div
   id="navbar"
   class="bg-primary w-full py-2 fixed top-0 flex md:px-6 lg:px-8
-  items-center top-nav lg:justify-between"
-  class:justify-between={$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])}
-  class:justify-end={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}
+  items-center top-nav lg:justify-between
+  {!$selectedItem && !($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])) ? 'justify-end': 'justify-between'}"
   style="z-index: 6;">
   {#if $displayNotificationCenter}
     <NotificationsPanel />

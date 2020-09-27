@@ -83,8 +83,8 @@
     // restaurer les valeurs initiales quand elles viennent du serveur sous format ISOCode
     if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
     if (user.address.country && typeof user.address.country == "string") user.address.country = countries.find((c) => c.code == user.address.country);
-    if (user.nationality && typeof user.address.country == "string") user.nationality = nationalities.find((c) => c.code == user.nationality);
-   
+    if (user.nationality && typeof user.nationality == "string") user.nationality = nationalities.find((c) => c.code == user.nationality);
+    
     if (user.birthDate) {
       if (typeof user.birthDate == "object" || user.birthDate.includes("-")) {
         user.birthDate = format(new Date(user.birthDate), 'P', { locale: fr });
