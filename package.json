@@ -13,12 +13,12 @@
     "local:functions": "npm run functions:build && npm run functions:run",
     "remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=REMOTE && run-p autobuild start:dev",
     "start:dev": "sirv public --dev --single --port 4200",
-    "api:build": "dotnet build ./../api/Sheaft.Api/Sheaft.Api.csproj -c Debug",
-    "api:run": "dotnet run -c Debug --launch-profile 'api' --project ./../api/Sheaft.Api/Sheaft.Api.csproj",
-    "functions:build": "dotnet build ./../Sheaft.Functions/Sheaft.Functions.csproj -c Debug",
-    "functions:run": "cd ./../Sheaft.Functions && func start",
-    "signalr:build": "dotnet build ./../Sheaft.Signalr/Sheaft.Signalr.csproj -c Debug",
-    "signalr:run": "dotnet run --c Debug --launch-profile 'api' --project ./../api/Sheaft.Signalr/Sheaft.Signalr.csproj"
+    "api:build": "dotnet build ./../api/Sheaft.Web.Api/Sheaft.Web.Api.csproj -c Debug",
+    "api:run": "dotnet run -c Debug --launch-profile 'api' --project ./../api/Sheaft.Web.Api/Sheaft.Web.Api.csproj",
+    "functions:build": "dotnet build ./../Sheaft.Web.Functions/Sheaft.Web.Functions.csproj -c Debug",
+    "functions:run": "cd ./../Sheaft.Web.Functions && func start",
+    "signalr:build": "dotnet build ./../Sheaft.Web.Signalr/Sheaft.Web.Signalr.csproj -c Debug",
+    "signalr:run": "dotnet run --c Debug --launch-profile 'api' --project ./../api/Sheaft.Web.Signalr/Sheaft.Web.Signalr.csproj"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.11.2",
