@@ -3,12 +3,14 @@
   import { flip } from 'svelte/animate';
   import { slide, fly } from "svelte/transition";
   import GetRouterInstance from "../../services/SheaftRouter";
+  import GetAuthInstance from "../../services/SheaftAuth";
   import { cartItems, cartExpanded } from "./../../stores/app.js";
   import { roundMoney } from "./../../helpers/app.js";
   import CartRoutes from "../cart/routes";
   import { unfreezeBody } from "./../../helpers/app.js";
 
   const routerInstance = GetRouterInstance();
+  const authInstance = GetAuthInstance();
 
   $: if ($cartItems.length > 0) {
     $cartItems = $cartItems.filter(cartItem => cartItem.quantity > 0);
@@ -32,6 +34,14 @@
     if ($cartExpanded) {
       return hideCart();
     }
+  }
+
+  const goToCart = () => {
+    if (authInstance.authenticated) {
+      return routerInstance.goTo(CartRoutes.Resume);
+    }
+    
+    return authInstance.login(CartRoutes.Resume.Path);
   }
 
   $: if ($cartExpanded) { history.pushState({ cartExpanded: $cartExpanded }, "Aperçu du panier"); }
@@ -96,7 +106,7 @@
     <button
       type="button"
       aria-label="Suivant"
-      on:click={() => routerInstance.goTo(CartRoutes.Resume)}
+      on:click={goToCart}
       class="btn btn-primary btn-lg leading-none"
       disabled={$cartItems.length === 0}
       class:disabled={$cartItems.length === 0}>

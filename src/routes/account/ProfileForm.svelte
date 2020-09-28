@@ -99,7 +99,7 @@
     <div class="form-control">
       <div class="w-full md:w-1/2">
         <label for="grid-phone">Téléphone</label>
-        <input bind:value={user.phone} id="grid-phone" type="tel" />
+        <input bind:value={user.phone} placeholder="ex : 06 01 02 03 04" id="grid-phone" type="tel" />
       </div>
     </div>
     <slot />

@@ -1,5 +1,5 @@
 import Roles from "../../enums/Roles";
-import { faFighterJet } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/quick-orders";
 
@@ -10,7 +10,7 @@ const QuickOrderRoutes = {
 	Roles:[Roles.Store.Value],
 	Purchase: {
 		Name: "Passer commande",
-		Icon: faFighterJet,
+		Icon: faShoppingCart,
 		Path: `${prefix}${purchase}`,
 		SubPart: `${purchase}`
 	}

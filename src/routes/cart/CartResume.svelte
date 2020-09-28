@@ -235,7 +235,8 @@
                   <DeliveryModePicker
                     selected={item.producer.delivery}
                     selectedDeliveryHour={item.producer.deliveryHour}
-                    data={producersDeliveries.find(p => p.id === item.producer.id)} />
+                    data={producersDeliveries.find(p => p.id === item.producer.id)} 
+                    isLoading={isLoadingDeliveries} />
                 {/if}
                 <div
                   class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r

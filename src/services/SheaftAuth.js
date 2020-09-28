@@ -142,10 +142,10 @@ class SheaftAuth {
 		return userIsInRole(this.user, rolesToTest);
 	}
 
-	async login() {
+	async login(redirectUrl) {
 		try {
 			return await this.userManager.signinRedirect({
-				state: { redirectTo: window.location.hash },
+				state: { redirectTo: `#/${redirectUrl}` },
 			});
 		} catch (exc) {
 			location.hash = "";

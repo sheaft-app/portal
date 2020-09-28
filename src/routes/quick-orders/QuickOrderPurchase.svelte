@@ -9,7 +9,7 @@
   import DeliveryModePicker from "../cart/DeliveryModePicker.svelte";
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import { roundMoney } from "./../../helpers/app.js";
+  import { roundMoney, formatMoney } from "./../../helpers/app.js";
   import { CREATE_BUSINESS_ORDER } from "./mutations.js";
   import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
   import Select from "./../../components/controls/select/Select";
@@ -31,6 +31,7 @@
   let isLoading = false;
   let acceptCgv = false;
   let dirty = false;
+  let isLoadingDeliveries = true;
   let comment = "";
 
   $: isCreatingOrder = false;
@@ -69,6 +70,7 @@
 
     if (!res.success) {
       // todo
+      isLoadingDeliveries = false;
       return;
     }
 
@@ -81,6 +83,8 @@
         selectedDeliveryHour: d.deliveries[0].deliveryHours[0]
       }
     })
+
+    isLoadingDeliveries = false;
   }
 
   const handleLess = productId => {
@@ -143,24 +147,6 @@
     });
   };
 
-  const getSelectedDelivery = (id) => {
-    const delivery = selectedDeliveries.find((d) => d.id === id);
-
-    if (delivery) 
-      return delivery.selectedDelivery;
-
-    return null;
-  }
-
-  const getSelectedDeliveryHour = (id) => {
-    const delivery = selectedDeliveries.find((d) => d.id === id);
-
-    if (delivery) 
-      return delivery.selectedDeliveryHour;
-
-    return null;
-  }
-
   onMount(async () => {
     await getAllAvailableProducts();
   })
@@ -169,15 +155,15 @@
     return sum + (product.quantity || 0);
   }, 0);
   // todo calculer le deposit
-  $: deposit = roundMoney(productsCount * 0);
+  $: deposit = 0;
   $: totalHt = normalizedProducts.reduce((sum, product) => {
-    return roundMoney(sum + product.wholeSalePricePerUnit * (product.quantity || 0));
+    return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
   }, 0);
   $: totalVat = normalizedProducts.reduce((sum, product) => {
-    return roundMoney(sum + product.vatPricePerUnit * (product.quantity || 0));
+    return parseFloat(sum) + product.vatPricePerUnit * (product.quantity || 0);
   }, 0);
   $: totalTtc = deposit + normalizedProducts.reduce((sum, product) => {
-    return roundMoney(sum + ((product.wholeSalePricePerUnit + product.vatPricePerUnit) * (product.quantity || 0)));
+    return parseFloat(sum) + (product.wholeSalePricePerUnit + product.vatPricePerUnit) * (product.quantity || 0);
   }, 0);
 </script>
 
@@ -194,7 +180,8 @@
     {#if isLoading}
       <Loader />
     {:else if normalizedProducts.length > 0}
-      <div class="hidden lg:block">
+      {#if producerDeliveries.length > 1}
+      <div class="hidden lg:block mb-5">
         <div class="themed w-full lg:w-1/2">
           <Select
             items={producerDeliveries}
@@ -212,6 +199,7 @@
             containerStyles="font-weight: 600; color: #4a5568; height: 43px;" />
         </div>
       </div>
+      {/if}
       <!-- <div class="block lg:hidden">
         <button on:click={showFilterProducersModal} type="button" class="btn btn-lg bg-white shadow">Filtrer les producteurs</button>
       </div> -->
@@ -221,31 +209,34 @@
             class="align-middle inline-block min-w-full overflow-hidden items">
             {#each (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts) as item, i (item.id)}
               {#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts)[i - 1].producer.name !== item.producer.name}
+                <p style="border-bottom: 0;" class="text-lg font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
+                  {item.producer.name}
+                </p>
                 <DeliveryModePicker 
-                  selected={getSelectedDelivery(item.producer.id)} 
-                  selectedDeliveryHour={getSelectedDeliveryHour(item.producer.id)} 
+                  selected={item.producer.delivery}
+                  selectedDeliveryHour={item.producer.deliveryHour}
+                  data={producerDeliveries.find(p => p.id === item.producer.id)}
                   storeDelivery={true} 
-                  data={producerDeliveries.find((p) => p.id === item.producer.id)} 
-                  displayLocation={false} 
-                  label="Livraison : {item.producer.name}" 
+                  displayLocation={false}
+                  isLoading={isLoadingDeliveries}
                 />
               {/if}
               <div
-                class="px-2 md:px-6 py-6 block md:flex mb-3 bg-white border
-                border-gray-400 border-solid">
+              class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
+              border-gray-400 border-solid items-center" class:bg-blue-100={item.quantity > 0}>
                 <div class="md:w-6/12 px-3">
                   <div class="text-lg leading-5 font-medium">
                     <p>{item.name}</p>
                   </div>
-                  <div class="text-sm leading-5">{item.wholeSalePricePerUnit}€</div>
+                  <div class="text-sm leading-5">{formatMoney(item.wholeSalePricePerUnit)} / unité</div>
                 </div>
                 <div class="md:w-2/12 px-3 block md:hidden">
-                  <p>
-                    <span class="font-bold text-xl">
-                      {roundMoney(item.wholeSalePricePerUnit * item.quantity || 0)} €
-                    </span>
-                  </p>
-                </div>
+                    <p>
+                      <span class="font-bold text-xl">
+                        {formatMoney(item.wholeSalePricePerUnit * item.quantity || 0)} HT
+                      </span>
+                    </p>
+                  </div>
                 <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
                     <div
                     class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
@@ -254,12 +245,12 @@
                       style="height: 36px;"
                       type="button"
                       aria-label="Retirer 1"
-                      class="minusButton font-bold
-                      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none"
+                      class="font-bold
+                      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
                       on:click|stopPropagation={() => handleLess(item.id)}>
                       -
                     </button>
-                    <input
+                     <input
                       min="0"
                       max="999"
                       type="number"
@@ -274,13 +265,13 @@
                       maxLength="3"
                       bind:value={item.quantity}
                       class:font-bold={item.quantity > 0}
-                      class:bg-light-primary={item.quantity > 0}
-                      class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base" />
+                      class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base"
+                      class:bg-blue-100={item.quantity > 0} />
                     <button
                       type="button"
                       style="height: 36px;"
                       class="font-bold
-                      transition duration-300 ease-in-out text-sm w-full plusButton rounded-r-full focus:outline-none"
+                      transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
                       aria-label="Ajouter 1"
                       on:click|stopPropagation={() => handleMore(item.id)}>
                       +
@@ -288,11 +279,10 @@
                   </div>
                 </div>
                 <div class="md:w-3/12 px-3 text-right hidden md:block">
-                  <p>
-                    <span class="font-bold text-xl">
-                      {roundMoney(item.wholeSalePricePerUnit * item.quantity || 0)} €
-                    </span>
+                  <p class="font-semibold text-lg">
+                    {formatMoney(item.wholeSalePricePerUnit * item.quantity || 0)}
                   </p>
+                  <p class="text-sm">H.T</p>
                 </div>
               </div>
             {/each}
@@ -306,35 +296,35 @@
             <div class="flex justify-between w-full px-3">
               <div class="text-left">
                 <p>Montant HT</p>
-              </div>
-              <div>
-                <p>{totalHt}€</p>
-              </div>
-            </div>
-            <div class="flex justify-between w-full px-3">
-              <div class="text-left">
-                <p>Taxes</p>
-              </div>
-              <div>
-                <p>{totalVat}€</p>
-              </div>
-            </div>
-            <div class="flex justify-between w-full px-3">
-              <div class="text-left">
-                <p>Consignes TTC</p>
-              </div>
-              <p>{deposit}€</p>
-            </div>
-            <div class="flex justify-between w-full px-3">
-              <div class="text-left">
-                <p>Montant TTC</p>
                 <p class="text-sm text-gray-600">
                   {#if productsCount > 0}
                     {productsCount} article{productsCount > 1 ? 's' : ''}
                   {:else}Aucun article{/if}
                 </p>
               </div>
-              <p class="font-bold text-lg">{totalTtc}€</p>
+              <div>
+                <p>{formatMoney(totalHt)}</p>
+              </div>
+            </div>
+            <div class="flex justify-between w-full px-3">
+              <div class="text-left">
+                <p>TVA</p>
+              </div>
+              <div>
+                <p>{formatMoney(totalVat)}</p>
+              </div>
+            </div>
+            <div class="flex justify-between w-full px-3">
+              <div class="text-left">
+                <p>Consignes TTC</p>
+              </div>
+              <p>{formatMoney(deposit)}</p>
+            </div>
+            <div class="flex justify-between w-full px-3">
+              <div class="text-left">
+                <p>Total TTC</p>
+              </div>
+              <p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
             </div>
             <div class="pt-2 lg:pt-3">
               <div class="pt-4 pb-8 px-2">
@@ -388,7 +378,9 @@
 
 
 <style lang="scss">
-
+  button:active {
+    transform: scale(0.9);
+  }
   .product-quantity {
     max-width: 200px;
 

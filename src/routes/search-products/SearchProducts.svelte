@@ -25,7 +25,7 @@
   import Icon from "svelte-awesome";
   import { faFilter } from "@fortawesome/free-solid-svg-icons";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-  import { roundMoney, freezeBody, unfreezeBody } from "./../../helpers/app.js";
+  import { roundMoney, freezeBody, unfreezeBody, formatMoney } from "./../../helpers/app.js";
   import Loader from "./../../components/Loader.svelte";
   import SkeletonCard from "./SkeletonCard.svelte";
   import Roles from "./../../enums/Roles";
@@ -165,7 +165,7 @@
       //TODO
       return;
     }
-
+    
     // on reset le feed pour les nouvelles query
     if (page === 1) {
       prevFeed = [];
@@ -293,7 +293,7 @@
     return sum + (product.quantity || 0);
   }, 0);
   $: total = $cartItems.reduce((sum, product) => {
-    return roundMoney(sum + product.onSalePricePerUnit * product.quantity || 0);
+    return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
   }, 0);
 </script>
 
@@ -311,7 +311,7 @@
       <p class="text-sm text-gray-600">{productsCount} articles</p>
       <p class="truncate">
         Total:
-        <span class="font-bold">{total}€</span>
+        <span class="font-bold">{formatMoney(total)}</span>
       </p>
     </div>
     <div class="inline-flex items-center w-2/4 justify-end">

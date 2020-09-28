@@ -5,7 +5,7 @@ let enums = {
 	Market: { Value: "MARKET", Label: "Au marché"},
 	Collective: { Value: "COLLECTIVE", Label: "Magasin de producteurs"},
 	Withdrawal: { Value: "WITHDRAWAL", Label: "Point retrais"},
-	ProducerToStore: { Value: "PRODUCER_TO_STORE", Label: "Producteur aux Magasins"},
+	ProducerToStore: { Value: "PRODUCER_TO_STORE", Label: "Livraison au magasin"},
 	ExternalToStore: { Value: "EXTERNAL_TO_STORE", Label: "Prestataire aux Magasins"},
 	ProducerToConsumer: { Value: "PRODUCER_TO_CONSUMER", Label: "Producteur aux Consommateurs"},
 	ExternalToConsumer: { Value: "EXTERNAL_TO_CONSUMER", Label: "Prestataire aux Consommateurs"},
