@@ -1,35 +1,41 @@
 <script>
   import { onMount } from "svelte";
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
+  import Cleave from "cleave.js";
 
   export let value, disabled = false, bindClassData = null;
   const max = 14;
 
   let ref;
-  
+  let cleave = null;
+
   onMount(() => {
     if (ref) {
       ref.focus();
     }
   })
+
+  const initializeCleave = () => {
+    cleave = new Cleave('.input-number', {
+      numericOnly: true,
+      numeralIntegerScale: 14,
+      blocks: [14],
+      numeralPositiveOnly: true,
+      stripLeadingZeroes: false
+    }
+  );
+}
 </script>
 
 <input 
   id="siret" 
   bind:value 
+  use:initializeCleave
   bind:this={ref}
   use:bindClass={bindClassData}
   type="number"
   placeholder="00000000000000" 
-  on:input={e => {
-    if (e.target.value.length > e.target.maxLength) {
-      e.preventDefault();
-      e.target.value = e.target.value
-        .slice(0, e.target.maxLength - 1)
-        .toString();
-    }
-  }}
-  class="m-auto"
+  class="m-auto input-number"
   class:disabled={disabled}
   {disabled}
   maxLength="14"

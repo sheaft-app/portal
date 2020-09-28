@@ -72,6 +72,13 @@
     }
   };
 
+  const handleKeydown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      validateSiret();
+    }
+	}
+
   const siretForm = form(() => ({
     siret: { value: company.legals.siret, validators: ['required'], enabled: true }
 	}), {
@@ -86,12 +93,14 @@
   $: isValid = company.legals.siret && company.legals.siret.toString().length == 14;
 </script>
 
+<svelte:window on:keydown={handleKeydown}/>
+
 <div class="text-center pb-8 px-5">
   Étape 1/5
   <p class="font-bold text-xl">Commençons par votre SIRET</p>
   <p class="text-gray-600">Grâce à votre SIRET, nous pourrons charger certaines informations de base.</p>
 </div>
-<form>
+<form on:submit|preventDefault={() => {}}>
   <fieldset>
     <div class="flex">
       <div class="form-control w-full">

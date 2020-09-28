@@ -3,7 +3,16 @@
   import OpeningHoursContainer from "./../../../components/opening-hours/OpeningHoursContainer.svelte";
 
   export let stepper = 3, isStore = false, company, openings = [];
+
+  const handleKeydown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      stepper++;
+    }
+	}
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="text-center pb-8 px-5">
   Étape 4/5

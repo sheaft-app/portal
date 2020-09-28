@@ -2,11 +2,11 @@
   import CitySearch from "./../../../components/search/CitySearch.svelte";
   import ErrorContainer from "./../../../components/ErrorContainer.svelte";
   import Loader from "./../../../components/Loader.svelte";
-	import { form, bindClass } from '../../../../vendors/svelte-forms/src/index';
 
   export let company, addressForm, stepper = 4, isStore, submit = () => {};
 
   let isSearchingAddress = false;
+  let valid = false;
 
   const resetAddress = () => {
     company.address = {
@@ -17,12 +17,17 @@
     };
   }
 
-  addressForm = form(() => ({
-    address: { value: company.address, validators: ['required'], enabled: true }
-	}), {
-    initCheck: false
-  });
+  const handleKeydown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      submit();
+    }
+  }
+  
+  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode;
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="text-center pb-8 px-5">
   Étape finale
@@ -91,10 +96,8 @@
       <CitySearch
         bind:selectedAddress={company.address}
         placeholder="Entrez l'adresse de votre lieu de production"
-        bindClassData={{ form: addressForm, name: "address" }}
         initialValue={company.address} />
     </div>
-    <ErrorContainer field={$addressForm.fields.address} />
   </div>
 {/if}
 
@@ -112,7 +115,8 @@
     <button
       on:click={submit}
       aria-label="Valider"
-      class:disabled={!$addressForm.valid}
+      disabled={!valid}
+      class:disabled={!valid}
       class="form-button uppercase text-sm cursor-pointer text-white
       shadow rounded-full px-6 py-2 flex items-center justify-center
       m-auto bg-primary">

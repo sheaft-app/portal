@@ -28,7 +28,16 @@
       ++stepper;
     }
   }
+
+  const handleKeydown = (event) => {
+    if (event.key == "Enter") {
+      event.preventDefault();
+      next();
+    }
+	}
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="text-center pb-8 px-5">
   Étape 2/5
