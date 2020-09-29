@@ -46,6 +46,7 @@ export const GET_ORDER = gql`
 		order(input: $input) {
 			id
 			totalFees
+			status
 			donation
 			totalOnSalePrice
 			productsCount

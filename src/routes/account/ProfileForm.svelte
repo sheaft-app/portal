@@ -62,59 +62,59 @@
 {#if isLoading}
 	<Loader />
 {:else}
-  <form class="w-full" on:submit|preventDefault={() => handleUpdate()}>
-    <div class="form-control">
-      <div class="w-full md:w-2/4 pr-0 md:pr-2 mb-3 md:mb-0">
-        <label for="grid-first-name">Prénom *</label>
-        <input
-          bind:value={user.firstName}
-          use:bindClass={{ form, name: "firstName" }}
-          id="grid-first-name"
-          type="text"
-          placeholder="ex : Jean" />
-        <ErrorContainer field={$form.fields.firstName} />
+  <div class="bg-white shadow px-5 py-3">
+    <form class="w-full" on:submit|preventDefault={() => handleUpdate()}>
+      <div class="form-control">
+        <div class="w-full md:w-1/2 pr-0 md:pr-2 mb-3 md:mb-0">
+          <label for="grid-first-name">Prénom *</label>
+          <input
+            bind:value={user.firstName}
+            use:bindClass={{ form, name: "firstName" }}
+            id="grid-first-name"
+            type="text"
+            placeholder="ex : Jean" />
+          <ErrorContainer field={$form.fields.firstName} />
+        </div>
+        <div class="w-full md:w-1/2">
+          <label for="grid-last-name">Nom *</label>
+          <input
+            bind:value={user.lastName}
+            use:bindClass={{ form, name: "lastName" }}
+            type="text"
+            placeholder="ex : Dupont" />
+          <ErrorContainer field={$form.fields.lastName} />
+        </div>
       </div>
-      <div class="w-full md:w-2/4">
-        <label for="grid-last-name">Nom *</label>
-        <input
-          bind:value={user.lastName}
-          use:bindClass={{ form, name: "lastName" }}
-          type="text"
-          placeholder="ex : Dupont" />
-        <ErrorContainer field={$form.fields.lastName} />
+      <div class="form-control">
+        <div class="w-full md:w-1/2 pr-0 md:pr-2 mb-3 md:mb-0">
+          <label for="grid-email">Email *</label>
+          <input
+            bind:value={user.email}
+            use:bindClass={{ form, name: "email" }}
+            id="grid-email"
+            type="email"
+            placeholder="ex : jean.dupont@test.xyz" />
+          <ErrorContainer field={$form.fields.email} />
+        </div>
+        <div class="w-full md:w-1/2">
+          <label for="grid-phone">Téléphone</label>
+          <input bind:value={user.phone} placeholder="ex : 06 01 02 03 04" id="grid-phone" type="tel" />
+        </div>
       </div>
-    </div>
-    <div class="form-control">
-      <div class="w-full md:w-3/3">
-        <label for="grid-email">Email *</label>
-        <input
-          bind:value={user.email}
-          use:bindClass={{ form, name: "email" }}
-          id="grid-email"
-          type="email"
-          placeholder="ex : jean.dupont@test.xyz" />
-        <ErrorContainer field={$form.fields.email} />
+      <slot />
+      <p class="text-sm mt-5">* champs requis</p>
+      <div class="form-control mt-5">
+        <button
+          type="submit"
+          class:disabled={isLoading || !$form.valid}
+          class="btn btn-xl btn-primary w-full md:w-auto justify-center">
+          <Icon
+            data={isLoading ? faCircleNotch : faCheck}
+            class="mr-1 inline"
+            spin={isLoading} />
+          Valider
+        </button>
       </div>
-    </div>
-    <div class="form-control">
-      <div class="w-full md:w-1/2">
-        <label for="grid-phone">Téléphone</label>
-        <input bind:value={user.phone} placeholder="ex : 06 01 02 03 04" id="grid-phone" type="tel" />
-      </div>
-    </div>
-    <slot />
-    <p class="text-sm mt-5">* champs requis</p>
-    <div class="form-control mt-5">
-      <button
-        type="submit"
-        class:disabled={isLoading || !$form.valid}
-        class="btn btn-xl btn-primary w-full md:w-auto justify-center">
-        <Icon
-          data={isLoading ? faCircleNotch : faCheck}
-          class="mr-1 inline"
-          spin={isLoading} />
-        Valider
-      </button>
-    </div>
-  </form>
+    </form>
+  </div>
 {/if}

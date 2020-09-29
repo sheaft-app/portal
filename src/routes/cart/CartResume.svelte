@@ -1,6 +1,5 @@
 <script>
-  import { onMount } from "svelte";
-  import { beforeUpdate } from "svelte";
+  import { onMount, beforeUpdate, getContext } from "svelte";
   import Loader from "./../../components/Loader.svelte";
   import Icon from "svelte-awesome";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +9,7 @@
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import GetRouterInstance from "../../services/SheaftRouter";
   import { CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER } from "./mutations.js";
-  import { GET_PRODUCER_DELIVERIES } from "./queries";
+  import { GET_PRODUCER_DELIVERIES, GET_ORDER } from "./queries";
   import DeliveryModePicker from "./DeliveryModePicker.svelte";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import ErrorCard from "./../../components/ErrorCard.svelte";
@@ -20,13 +19,16 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import CartDonation from "./CartDonation.svelte";
   import debounce from "lodash/debounce";
+  import MangoPayInfo from "./MangoPayInfo.svelte";
 	import { fly } from "svelte/transition";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const { open } = getContext("modal");
 
   let producersDeliveries = [];
+  let hasFetchedOrder = false;
   let isLoadingPaymentInfo = true;
   let producerNumber = 0;
   let isLoadingDeliveries = false;
@@ -47,7 +49,11 @@
   };
   $: orderedCartItems = $cartItems.sort((a, b) => a.producer.name >= b.producer.name ? 1 : -1);
 
-  onMount(() => {
+  var order = JSON.parse(
+    localStorage.getItem("user_current_order")
+  );
+
+  onMount(async () => {
     var firstTimeOnCartCookie = JSON.parse(
       localStorage.getItem("user_first_time_on_cart")
     );
@@ -56,15 +62,30 @@
       firstTimeOnCart = true;
       localStorage.setItem("user_first_time_on_cart", JSON.stringify(true));
     }
+
+    var response = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
+
+    if (!response.success) {
+      //TODO
+      hasFetchedOrder = true;
+      return;
+    }
+
+    if (response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
+      localStorage.removeItem("user_current_order");
+      order = null;
+    }
+
+    hasFetchedOrder = true;
   })  
 
   const saveOrder = async () => {
+    if (!hasFetchedOrder) {
+      return;
+    }
+
     isLoadingPaymentInfo = true;
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
-
-    var order = JSON.parse(
-      localStorage.getItem("user_current_order")
-    );
     
     let orderMutation = order && order.id ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
 
@@ -85,7 +106,7 @@
           index === self.findIndex(t => t.producerId === producer.producerId)
       );
 
-    // si l'utilisateur n'a pas choisi tous les points de retrait, on ne les envoie pas updateOrder
+    //   l'utilisateur n'a pas choisi tous les points de retrait, on ne les envoie pas updateOrder
     if (producersExpectedDeliveries.find((p) => !p.deliveryModeId)) {
       producersExpectedDeliveries = null;
     }
@@ -121,6 +142,10 @@
     paymentInfo = response.data;
     isLoadingPaymentInfo = false;
     localStorage.setItem("user_current_order", JSON.stringify(response.data));
+  };
+
+  const showTransactionInfo = () => {
+    open(MangoPayInfo, {});
   };
 
   beforeUpdate(async () => {
@@ -261,7 +286,7 @@
                     </button>
                   </div>
                   <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
-                    <ProductCartQuantity productId={item.id} noMargin={true} />
+                    <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
                   </div>
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
                     <p>
@@ -294,6 +319,9 @@
                 <div class="flex justify-between w-full lg:px-3 pb-2">
                   <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
                     <p class:invisible={isLoadingPaymentInfo}>Panier</p>
+                    <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
+                      {paymentInfo.productsCount} articles
+                    </p>
                   </div>
                   <div class:skeleton-box={isLoadingPaymentInfo}>
                     <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalOnSalePrice)}</p>
@@ -325,7 +353,7 @@
                 <div class="flex justify-between w-full lg:px-3 pb-2">
                   <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
                     <p class:invisible={isLoadingPaymentInfo}>Frais bancaires</p>
-                    <!-- <p class="leading-none text-gray-600 text-sm">1.8% + 0.18€ <button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p> -->
+                    <button class:invisible={isLoadingPaymentInfo} class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button>
                   </div>
                   <div class:skeleton-box={isLoadingPaymentInfo}>
                     <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalFees)}</p>
@@ -334,9 +362,6 @@
                 <div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
                   <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
                     <p class:invisible={isLoadingPaymentInfo}>Total</p>
-                    <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
-                      {paymentInfo.productsCount} articles
-                    </p>
                   </div>
                   <div class:skeleton-box={isLoadingPaymentInfo}>
                     <p class="font-bold text-lg" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalPrice)}</p>
@@ -348,7 +373,7 @@
                   type="button"
                   on:click={() => validatedCart = true}
                   class:disabled={paymentInfo.productsCount === 0 || !isValid || isLoadingPaymentInfo}
-                  disabled={isLoadingPaymentInfo}
+                  disabled={!isValid || isLoadingPaymentInfo}
                   class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
                   justify-center m-auto"
                   style="padding-left: 50px; padding-right: 50px;">

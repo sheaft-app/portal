@@ -2,7 +2,7 @@
   import { cartItems, searchResults } from "./../../stores/app.js";
   import { fly } from "svelte/transition";
 
-  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false;
+  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0;
 
   let product = $cartItems.find(c => c.id === productId);
   let quantity = 0;
@@ -11,7 +11,7 @@
   let timeout = null;
 
   const handleLess = () => {
-    if (quantity !== 0) {
+    if (quantity !== minQuantity) {
       quantity = (quantity || 1) - 1;
     }
 
@@ -29,6 +29,10 @@
   const handleInput = e => {
     if (e.target.value.length > e.target.maxLength) {
       e.target.value = e.target.value.slice(0, e.target.maxLength);
+    }
+
+    if (e.target.value < minQuantity) {
+      e.target.value = minQuantity;
     }
 
     updateProductQuantity(parseInt(e.target.value));
@@ -70,12 +74,12 @@
   <div
     class="flex m-auto border-gray-100 shadow border-solid rounded-full product-quantity">
     <button
-      disabled={quantity === 0}
+      disabled={quantity === minQuantity}
       style="height: 36px;"
       type="button"
       aria-label="Retirer 1"
       class="font-bold
-      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
+      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  {quantity > minQuantity ? 'hover:bg-accent hover:text-white' : ''} text-accent"
       on:click|stopPropagation={() => handleLess()}>
       -
     </button>

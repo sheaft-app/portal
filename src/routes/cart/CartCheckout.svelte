@@ -1,7 +1,6 @@
 <script>
-	import { onMount, onDestroy } from "svelte";
+	import { onMount, onDestroy, getContext } from "svelte";
 	import { fly, slide } from "svelte/transition";
-  import { getContext } from "svelte";
   import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
   import { cartItems } from "./../../stores/app.js";
   import { formatMoney } from "./../../helpers/app.js";
@@ -34,6 +33,7 @@
 	let isSavingLegals = false;
 	let legalId = null;
 	let isPaying = false;
+	let paymentError = null;
 
 	let user = {
     firstName: null,
@@ -61,13 +61,17 @@
 
 	onMount(async () => {
 		if (!order) {
-			// todo : expirée, envoyer une notif
+			// todo : terminée, envoyer une notif
 			if ($cartItems.length > 0) {
 				return routerInstance.goTo(CartRoutes.Resume);
 			} else {
 				return routerInstance.goTo(SearchProductsRoutes.Search);
 			}
 		}
+
+		const values = routerInstance.getQueryParams();
+		
+		paymentError = values["message"] || null;
 
 		var resOrder = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
 
@@ -154,6 +158,13 @@
 {#if isLoading}
 	<Loader />
 {:else}
+	{#if paymentError}
+		<div class="text-center lg:text-left mb-5" style="word-break: break-word;">
+			<p>{paymentError}</p>
+			<p class="mt-2">Si le problème persiste, contactez le service technique.</p>
+			<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={handleSubmit}>Réessayer</button>
+		</div>
+	{/if}
 	<ErrorCard {errorsHandler} />
 	<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
 		<div class="w-full lg:w-7/12">
