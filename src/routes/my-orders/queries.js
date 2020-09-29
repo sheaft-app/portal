@@ -111,6 +111,7 @@ export const MY_VALIDATING_ORDERS = gql`
 		orders(where: { status_in: WAITING }) {
 			nodes {
 				id
+				status
 				totalPrice
 			}
 		}

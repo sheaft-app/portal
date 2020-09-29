@@ -59,7 +59,7 @@
 
 	const getValidatingOrders = async () => {
 		isLoading.set(true);
-		var res = await graphQLInstance.query(MY_VALIDATING_ORDERS, errorsHandler.Uuid);
+		var res = await graphQLInstance.query(MY_VALIDATING_ORDERS, {}, errorsHandler.Uuid);
 
 		if (!res.success) {
 			//TODO
