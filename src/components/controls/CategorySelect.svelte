@@ -109,7 +109,7 @@
       {#each Array(6) as category}
         <div
           style="width: 115px; height: 96px;"
-          class="skeletan-box shadow m-auto block px-4 py-2" />
+          class="skeleton-box shadow m-auto block px-4 py-2" />
       {/each}
     </div>
   {:else}
