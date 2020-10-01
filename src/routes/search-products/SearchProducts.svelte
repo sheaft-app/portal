@@ -295,8 +295,6 @@
   $: total = $cartItems.reduce((sum, product) => {
     return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
   }, 0);
-
-  $: console.log($filters.tags);
 </script>
 
 <svelte:head>
