@@ -68,7 +68,6 @@ function handleUrl(route, routeParams) {
 	var url = isObject ? route.Path : route;
 
 	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
-	console.log(url);
 	if (url == null) url = "/";
 
 	return url;
@@ -88,7 +87,6 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 			if (param == null)
 				throw `Invalid ${paramKey} parameter for route: ${url}`;
 			url = url.replace(`:${paramKey}`, param);``
-			console.log(paramKey, param);
 			return;
 		}
 
