@@ -18,7 +18,7 @@ const SearchProductRoutes = {
 			Query: {
 				cursor: null,
 				sort: "producer_geolocation asc",
-				direction: OrderByDirection.DESC,
+				direction: OrderByDirection.ASC,
 				take: 20,
 				paginate: Paginate.First
 			}

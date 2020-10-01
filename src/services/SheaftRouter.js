@@ -65,9 +65,10 @@ class SheaftRouter {
 
 function handleUrl(route, routeParams) {
 	var isObject = typeof(route) === "object";
-	var url = isObject? route.Path : route;
+	var url = isObject ? route.Path : route;
 
 	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
+	console.log(url);
 	if (url == null) url = "/";
 
 	return url;
@@ -86,8 +87,8 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 			var param = routeParam ? routeParam : defaultRouteParam;
 			if (param == null)
 				throw `Invalid ${paramKey} parameter for route: ${url}`;
-
-			url = url.replace(`:${paramKey}`, param);
+			url = url.replace(`:${paramKey}`, param);``
+			console.log(paramKey, param);
 			return;
 		}
 

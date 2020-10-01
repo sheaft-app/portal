@@ -63,17 +63,19 @@
       localStorage.setItem("user_first_time_on_cart", JSON.stringify(true));
     }
 
-    var response = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
+    if (order) {
+      var response = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
 
-    if (!response.success) {
-      //TODO
-      hasFetchedOrder = true;
-      return;
-    }
+      if (!response.success) {
+        //TODO
+        hasFetchedOrder = true;
+        return;
+      }
 
-    if (response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
-      localStorage.removeItem("user_current_order");
-      order = null;
+      if (response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
+        localStorage.removeItem("user_current_order");
+        order = null;
+      }
     }
 
     hasFetchedOrder = true;

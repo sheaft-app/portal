@@ -83,8 +83,8 @@ class SheaftGuard {
 			if(this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) > -1)
 				return false;
 
-			var url = this.getRedirectUrl();
-			this.routerInstance.goTo(url, null, true);
+			var redirectRoute = this.getRedirectRoute();
+			this.routerInstance.goTo(redirectRoute, null, true);
 			return false;
 		});
 
@@ -94,18 +94,31 @@ class SheaftGuard {
 		});
 	}
 
-	getRedirectUrl() {
+	getRedirectRoute() {
 		if (this.authInstance.isInRole([Roles.Producer.Value]))
 		{
-			return ProductRoutes.List.Path;
+			return {
+				Path: ProductRoutes.List.Path,
+				Params: null
+			}
 		}
 
 		if (this.authInstance.isInRole([Roles.Store.Value]))
 		{
-			return QuickOrderRoutes.Purchase.Path;
+			return {
+				Path: QuickOrderRoutes.Purchase.Path,
+				Params: null
+			}
 		}
 
-		return SearchProductRoutes.Prefix;
+		return {
+			Path: SearchProductRoutes.Prefix,
+			Params: {
+				Query: {
+					sort: SearchProductRoutes.Search.Params.Query.sort
+				}
+			}
+		}
 	}
 
 	handleRouteNavigation = (exec, autoRedirect) => {
