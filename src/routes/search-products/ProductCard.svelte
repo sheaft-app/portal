@@ -91,7 +91,7 @@
             {/if}
           </div>
           <div class="text-center">
-            <div class="w-full distance-badge inline-block text-xs font-bold text-white px-2 py-1 rounded-full bg-{distanceInfos.color}">
+            <div class="w-full distance-badge inline-block text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
               <div class="inline distance-badge-content">
                 <Icon
                   data={faMapMarkerAlt}
@@ -113,7 +113,7 @@
           {/if}
         </div>
         <div class="pr-8">
-          <div class="hidden lg:inline-block mb-2 text-xs font-bold text-white px-2 py-1 rounded-full bg-{distanceInfos.color}">
+          <div class="hidden lg:inline-block mb-2 text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
             <Icon
               data={faMapMarkerAlt}
               scale=".8"

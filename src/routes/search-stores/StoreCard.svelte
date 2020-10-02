@@ -98,8 +98,8 @@
         </div>
         <div class="pr-8">
           <div
-            class={`distance-badge inline-block text-xs font-bold text-white px-2
-            py-1 rounded-full bg-${distanceInfos.color}`}>
+            class="distance-badge inline-block text-xs font-bold text-white px-2
+            py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
             <div class="inline distance-badge-content">
               <Icon
                 data={faMapMarkerAlt}

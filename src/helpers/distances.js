@@ -11,15 +11,15 @@ export const GetDistanceInfos = (lat1, lon1, lat2, lon2) => {
 }
 
 const getColorForDistance = (distance) => {
-	if (isNaN(distance) || distance == null) return "gray-600";
+	if (isNaN(distance) || distance == null) return "#718096";
 
-	if (distance < 50) return "primary";
+	if (distance < 50) return "#009688";
 
-	if (distance >= 50 && distance < 100) return "green-500";
+	if (distance >= 50 && distance < 100) return "#48bb78";
 
-	if (distance >= 100 && distance <= 200) return "orange-500";
+	if (distance >= 100 && distance <= 200) return "#ed8936";
 
-	return "bg-red-500";
+	return "#f56565";
 }
 
 const getDistance = (lat1, lon1, lat2, lon2) => {

@@ -282,9 +282,9 @@
         </div>
         {#if distanceInfos}
           <div
-            class="distance-badge-content text-sm lg:text-base text-{distanceInfos.color}
+            class="distance-badge-content text-sm lg:text-base
             w-2/12 text-center rounded-full h-10 flex justify-center
-            items-center">
+            items-center border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
             <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
             <p class="font-bold">{distanceInfos.label}</p>
           </div>
@@ -310,8 +310,8 @@
                 </a>
               </div>
               <div
-                class="text-xs lg:text-base text-{delivery.distance.color}
-                flex justify-center items-center">
+                class="text-xs lg:text-base
+                flex justify-center items-center" style="color: {delivery.distance.color}; border-color: {delivery.distance.color};">
                 <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
                 <p class="font-bold">{delivery.distance.label}</p>
               </div>
