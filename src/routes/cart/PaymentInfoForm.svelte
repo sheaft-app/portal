@@ -15,12 +15,16 @@
 
   export let step = 2, user, order;
 
-  let card = {
-    name: null,
-    number: null,
-    cvc: null,
-    expiry: null
-  };
+  onMount(() => {
+    // si la date n'est pas un objet date
+    if (user.birthDate && user.birthDate.includes("/")) {
+      const dateParts = user.birthDate.trim().split("/");
+      user.birthDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    }
+
+    if (typeof user.countryOfResidence == 'object') { user.countryOfResidence = user.countryOfResidence.code }
+    if (typeof user.nationality == 'object') { user.nationality = user.nationality.code }
+  })
 </script>
 
 {#if !user || !order}
@@ -59,13 +63,13 @@
         <div>
           <p>{user.firstName} {user.lastName}</p>
           <p style="line-height: 1.8;">né le 
-          {format(
-            new Date(user.birthDate),
-            'PPP',
-            {
-              locale: fr
-            }
-          )}
+            {format(
+              new Date(user.birthDate),
+              'PPP',
+              {
+                locale: fr
+              }
+            )}
           </p>
           <p>{user.email}</p>
         </div>

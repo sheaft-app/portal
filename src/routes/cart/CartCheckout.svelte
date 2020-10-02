@@ -18,7 +18,8 @@
 	import SearchProductsRoutes from "../search-products/routes";
 	import ErrorCard from "../../components/ErrorCard.svelte";
   import Icon from "svelte-awesome";
-  import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import formatISO from "date-fns/formatISO";
 
   const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
@@ -128,7 +129,7 @@
 			countryOfResidence: user.countryOfResidence.code,
 			nationality: user.nationality.code,
 			id: legalId,
-			birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+			birthDate: formatISO(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
 		}
 
 		if (!legalId) {
@@ -169,9 +170,13 @@
 	<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
 		<div class="w-full lg:w-7/12">
 			{#if step == 1}
-				<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
+				<div in:fly|local={{ x: 300, duration: 300 }}>
+					<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
+				</div>
 			{:else if step == 2}
-				<PaymentInfoForm {user} {order} bind:step {isSavingLegals} {errorsHandler} />
+				<div in:fly|local={{ x: 300, duration: 300 }}>
+					<PaymentInfoForm bind:user {order} bind:step {isSavingLegals} {errorsHandler} />
+				</div>
 			{/if}
 		</div>
 		<div class="w-full lg:w-4/12">

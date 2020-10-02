@@ -68,11 +68,13 @@
 
       if (!response.success) {
         //TODO
+        localStorage.removeItem("user_current_order");
+        order = null;
         hasFetchedOrder = true;
         return;
       }
 
-      if (response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
+      if (response.data == null || response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
         localStorage.removeItem("user_current_order");
         order = null;
       }
