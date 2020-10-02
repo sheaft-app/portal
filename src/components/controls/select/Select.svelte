@@ -103,9 +103,10 @@
 
   const getItems = debounce(async () => {
     isWaiting = true;
-
+    
     items = await loadOptions(filterText);
-
+    
+    if (list) list.$set({ isWaiting: false });
     isWaiting = false;
     isFocused = true;
     listOpen = true;
@@ -267,6 +268,7 @@
         listOpen = true;
 
         if (loadOptions) {
+          if (list) list.$set({ isWaiting: true });
           getItems();
         } else {
           loadList();
@@ -537,6 +539,7 @@
       filterText,
       optionIdentifier,
       noOptionsMessage,
+      isWaiting,
       hideEmptyState,
       isVirtualList,
       selectedValue,

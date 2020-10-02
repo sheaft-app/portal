@@ -35,6 +35,7 @@
   export let isMulti = false;
   export let activeItemIndex = 0;
   export let filterText = "";
+  export let isWaiting = false;
 
   let isScrollingTimer = 0;
   let isScrolling = false;
@@ -279,7 +280,7 @@
 {/if}
 
 {#if !isVirtualList}
-  <div class="ssp-listContainer" bind:this={container}>
+  <div class="ssp-listContainer" bind:this={container} class:loading={isWaiting}>
     {#if TopItem}
       <svelte:component this={TopItem} {TopItemHandleClick} class="listItem" />
     {/if}
@@ -290,7 +291,7 @@
         <div
           on:mouseover={() => handleHover(i)}
           on:click={event => handleClick({ item, i, event })}
-          class="listItem">
+          class="listItem" disabled={isWaiting}>
           <svelte:component
             this={Item}
             {item}
@@ -303,19 +304,27 @@
       {/if}
     {:else}
       {#if !hideEmptyState && filterText.length > 0}
-        <div class="ssp-empty">{noOptionsMessage}</div>
+        {#if isWaiting}
+          <div class="ssp-empty">Chargement des options...</div>
+        {:else}
+          <div class="ssp-empty">{noOptionsMessage}</div>
+        {/if}
       {/if}
     {/each}
   </div>
 {/if}
 
-<style>
+<style lang="scss">
   .ssp-listContainer {
     box-shadow: var(--listShadow, 0 2px 3px 0 rgba(44, 62, 80, 0.24));
     border-radius: var(--listBorderRadius, 4px);
     max-height: var(--listMaxHeight, 250px);
     overflow-y: auto;
     background: var(--listBackground, #fff);
+
+    &.loading {
+      background: #dddddd;
+    }
   }
 
   .ssp-virtualList {

@@ -43,6 +43,7 @@
       hideSelectedOnFocus={true}
       optionIdentifier="code"
       placeholder="ex : France"
+      listPlacement="top"
       bind:selectedValue
       preferredOptions={["FR", "BE", "CH"]}
       containerStyles="font-weight: 600;" />

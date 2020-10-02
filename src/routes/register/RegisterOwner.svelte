@@ -152,7 +152,8 @@
 </svelte:head>
 
 <TransitionWrapper>
-  <div class="-my-2 -mx-4 py-2 overflow-x-auto mt-2 mb-8 h-full">
+  <!-- hack avec h-full pour éviter que le citysearch dépasse du cadre -->
+  <div class="-my-2 -mx-4 py-2 overflow-x-auto mt-2 mb-8" class:h-full={stepper == 4}>
     <ErrorCard {errorsHandler}/>
     <div class="w-full md:w-3/5 lg:w-4/5 m-auto">
       {#if isRegistering}

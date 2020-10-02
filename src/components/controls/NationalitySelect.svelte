@@ -42,6 +42,7 @@
       showChevron={true}
       hideSelectedOnFocus={true}
       optionIdentifier="code"
+      listPlacement="top"
       placeholder="ex : Française"
       bind:selectedValue
       preferredOptions={["FR", "BE", "CH"]}
