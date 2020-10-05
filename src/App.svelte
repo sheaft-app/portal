@@ -65,7 +65,7 @@
       return;
     }
 
-    if (authenticated && authInstance.initialized) {
+    if (authenticated) {
       signalrInstance.start();
       await loginFreshdesk();
     }
