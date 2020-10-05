@@ -24,7 +24,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.StoreName} souhaites vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} souhaites vendre vos produits dans leur magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -34,7 +34,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.ProducerName} souhaites vendre ses produits chez vous.`,
+				`${notification.content.Name} souhaites vendre ses produits chez vous.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -44,7 +44,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.StoreName} a accepté votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a accepté votre demande de vendre vos produits dans leur magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -54,7 +54,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.ProducerName} a accepté votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a accepté votre demande de vendre ses produits dans votre magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -64,7 +64,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.StoreName} a annulé votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a annulé votre demande de vendre vos produits dans leur magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -74,7 +74,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.ProducerName} a refusé votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a annulé votre demande de vendre ses produits dans votre magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -84,7 +84,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.StoreName} a refusé votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a décliné votre demande de vendre vos produits dans leur magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -94,7 +94,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.ProducerName} a refusé votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a décliné votre demande de vendre ses produits dans votre magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
