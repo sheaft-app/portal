@@ -11,6 +11,7 @@ import {
 class SheaftAuth {
 	constructor(oidcSettings) {
 		this.userManager = new Oidc.UserManager(oidcSettings);
+		this.userManager.clearStaleState();
 
 		authAuthenticated.set(false);
 		authInitialized.set(false);

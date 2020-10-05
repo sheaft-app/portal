@@ -27,15 +27,19 @@
     loginFreshdesk,
     logoutFreshdesk
   } from "./services/SheaftFreshdesk.js";
-
+  import Oidc from "oidc-client";
+  
   $: isLoading = true;
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js", { scope: "./" });
   }
 
+  var authSettings = config.auth.settings;
+  authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
+
   const analyticsInstance = InitAnalytics(config.analytics.settings);
-  const authInstance = InitAuth(config.auth.settings);
+  const authInstance = InitAuth(authSettings);
   const routerInstance = InitRouter();
   const guardInstance = InitGuard(authInstance, routerInstance);
 
