@@ -54,6 +54,8 @@
   );
 
   onMount(async () => {
+    const values = routerInstance.getQueryParams();
+
     var firstTimeOnCartCookie = JSON.parse(
       localStorage.getItem("user_first_time_on_cart")
     );
@@ -81,6 +83,10 @@
     }
 
     hasFetchedOrder = true;
+
+    if (values["step"] && values["step"] == "donation" && isValid) {
+      validatedCart = true;
+    }
   })  
 
   const saveOrder = async () => {

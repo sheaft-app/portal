@@ -15,7 +15,11 @@ const CartRoutes = {
 		Icon: faShoppingCart,
 		Path: `${prefix}${resume}`,
 		SubPart: `${resume}`,
-		Params: null,
+		Params: {
+			Query: {
+				step: "cart"
+			}
+		},
 	},
 	Success: {
 		Name: "Succès",

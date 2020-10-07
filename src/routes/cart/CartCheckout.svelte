@@ -263,7 +263,7 @@
 								{#if isPaying}
 									<Icon data={faCircleNotch} spin />
 								{:else}
-									Payer
+									Passer la commande
 								{/if}
 							</button>
 						{:else}

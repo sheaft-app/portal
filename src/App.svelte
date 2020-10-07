@@ -98,7 +98,7 @@
       type: "AppInstalled"
     });
     notificationInstance.info(
-      "Vous avez installé l'application avec succès, pour vous remercier, nous allons créditer quelques points sur votre compte."
+      "L'application a été installée sur votre apppareil avec succès !"
     );
     //TODO: register user points
   });

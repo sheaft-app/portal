@@ -35,11 +35,26 @@
         {#if order.donation !== 0}
           <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
             <Icon data={faHeart} class="mr-3" />
-            <span>Vous êtes extraordinaire !</span>
+            {#if order.donation == 1}
+              <span>Vous êtes extraordinaire !</span>
+            {:else}
+              <span>Merci beaucoup !</span>
+            {/if}
           </div>
-          <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous.</p>
+          {#if order.donation == 1}
+            <p>Merci beaucoup, votre contribution de {formatMoney(order.donation || 0)} est un très gros coup de pouce et représente beaucoup pour nous ! 😍</p>
+          {:else}
+            <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous 😊</p>
+          {/if}
           <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
-          <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>Je souhaite modifier mon don</button>
+          <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo({ 
+            Path: CartRoutes.Resume.Path, 
+            Params: {
+              Query: {
+                step: "donation"
+              }
+            }
+          })}>Je souhaite modifier mon don</button>
         {:else}
           <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-white shadow lg:rounded-t font-semibold items-center flex">
             <Icon data={faHeart} class="mr-3 text-red-500" />
@@ -47,7 +62,14 @@
           </div>
           <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui proposons un outil gratuit pour vous permettre de bien manger plus facilement.</p>
           <p>Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit projet de devenir grand.</p>
-          <button class="btn btn-accent btn-lg mt-2" on:click={() => {}}>Faire l'arrondi pour Sheaft ({formatMoney(Math.ceil(order.totalPrice) - order.totalPrice)})</button>
+          <button class="btn btn-accent btn-lg mt-2" on:click={() => routerInstance.goTo({ 
+            Path: CartRoutes.Resume.Path, 
+            Params: {
+              Query: {
+                step: "donation"
+              }
+            }
+          })}>Je veux faire un don</button>
         {/if}
       </div>
     <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
