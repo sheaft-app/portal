@@ -24,8 +24,7 @@
 		let values = routerInstance.getQueryParams();
 
 		const transactionCartId = localStorage.getItem("user_last_transaction");
-
-		console.log(values.transactionId, transactionCartId);
+		
 		if (values.transactionId && transactionCartId == values.transactionId) {
 			resetCart();
 		}

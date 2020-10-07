@@ -4,7 +4,7 @@
   import { format } from "date-fns";
   import Icon from "svelte-awesome";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";
-  import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import { faTimes, faClock, faCalendar } from "@fortawesome/free-solid-svg-icons";
   import { fr } from "date-fns/locale";
   import Slider from "../../components/Slider.svelte";
 
@@ -38,7 +38,7 @@
   </div>
   <form>
     <Slider start={selected ? data.deliveries.findIndex((d) => d.kind == selected.kind) : 0} slides={data.deliveries} let:slide={delivery} let:index>
-      <div>
+      <div class="w-full">
         <div>
           <div class="uppercase font-normal mb-5 lg:mr-5 text-center">
             <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
@@ -59,9 +59,14 @@
               bg-white rounded"
               on:click={() => updateSelectedValue(delivery, deliveryHour)}>
               <p>
+                <Icon data={faCalendar} class="mr-2 w-3 h-3"/>
                 {format(new Date(deliveryHour.expectedDeliveryDate), 'PPPP', {
                   locale: fr
-                })} de {`${timeSpanToFrenchHour(deliveryHour.from)}`}
+                })}
+              </p>
+              <p>
+                <Icon data={faClock} class="mr-2 w-3 h-3" />
+                de {`${timeSpanToFrenchHour(deliveryHour.from)}`}
                 à {`${timeSpanToFrenchHour(deliveryHour.to)}`}
               </p>
             </div>

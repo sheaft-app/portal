@@ -747,4 +747,14 @@
   .noNav {
     width: 100% !important;
   }
+
+  .blink {
+    animation: blinker 1s linear 3;
+  }
+
+  @keyframes blinker {
+    50% {
+      background-color: rgb(255, 169, 169);
+    }
+  }
 </style>

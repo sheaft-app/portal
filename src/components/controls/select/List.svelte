@@ -282,7 +282,7 @@
 {#if !isVirtualList}
   <div class="ssp-listContainer" bind:this={container} class:loading={isWaiting}>
     {#if TopItem}
-      <svelte:component this={TopItem} {TopItemHandleClick} class="listItem" />
+      <svelte:component this={TopItem} {TopItemHandleClick} class="listItem" {isWaiting} />
     {/if}
     {#each items as item, i}
       {#if item.isGroupHeader && !item.isSelectable}
@@ -291,7 +291,7 @@
         <div
           on:mouseover={() => handleHover(i)}
           on:click={event => handleClick({ item, i, event })}
-          class="listItem" disabled={isWaiting}>
+          class="listItem" disabled={isWaiting} class:disabled={isWaiting}>
           <svelte:component
             this={Item}
             {item}
@@ -324,6 +324,7 @@
 
     &.loading {
       background: #dddddd;
+      color: #9d9d9d !important;
     }
   }
 

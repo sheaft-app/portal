@@ -696,6 +696,7 @@
     <input
       {..._inputAttributes}
       bind:this={input}
+      autocomplete="none"
       on:focus={handleFocus}
       bind:value={filterText}
       placeholder={placeholderText}

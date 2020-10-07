@@ -47,7 +47,6 @@
 <ActionConfirm
   {errorsHandler}
   title="Modifier la photo"
-  level="success"
   icon={faCheck}
   {valid}
   isLoading={isLoading}

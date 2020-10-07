@@ -209,6 +209,15 @@
 							</div>
 						</div>
 					{/if}
+					<div class="flex justify-between w-full lg:px-3 pb-2">
+						<div class="text-left">
+							<p>Frais bancaires</p>
+							<p class="leading-none text-gray-600 text-sm"><button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
+						</div>
+						<div>
+							<p class="font-medium">{formatMoney(order.totalFees)}</p>
+						</div>
+					</div>
 					{#if order.donation > 0}
 						<div class="flex justify-between w-full lg:px-3 pb-2">
 							<div class="text-left">
@@ -219,15 +228,6 @@
 							</div>
 						</div>
 					{/if}
-					<div class="flex justify-between w-full lg:px-3 pb-2">
-						<div class="text-left">
-							<p>Frais bancaires</p>
-							<p class="leading-none text-gray-600 text-sm"><button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
-						</div>
-						<div>
-							<p class="font-medium">{formatMoney(order.totalFees)}</p>
-						</div>
-					</div>
 					<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
 						<div class="text-left">
 							<p class="uppercase font-semibold">Total</p>

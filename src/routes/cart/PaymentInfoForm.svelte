@@ -14,14 +14,14 @@
   const routerInstance = GetRouterInstance();
 
   export let step = 2, user, order;
-
+  
+  // si la date n'est pas un objet date
+  if (user.birthDate && user.birthDate.includes("/")) {
+    const dateParts = user.birthDate.trim().split("/");
+    user.birthDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+  }
+  
   onMount(() => {
-    // si la date n'est pas un objet date
-    if (user.birthDate && user.birthDate.includes("/")) {
-      const dateParts = user.birthDate.trim().split("/");
-      user.birthDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-    }
-
     if (typeof user.countryOfResidence == 'object') { user.countryOfResidence = user.countryOfResidence.code }
     if (typeof user.nationality == 'object') { user.nationality = user.nationality.code }
   })

@@ -8,9 +8,11 @@
   export let user, errorsHandler = null, invalid = false;
 
   const routerInstance = GetRouterInstance();
+
+  let selectedAccordeon = "info";
 </script>
 
-<LegalsForm bind:user {errorsHandler} bind:invalid canFlex={false}>
+<LegalsForm bind:user {errorsHandler} accordeon={true} bind:selectedAccordeon bind:invalid canFlex={false}>
   <section slot="header" class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2 px-5 lg:px-0">
     <div class="mb-3">
       <button
@@ -22,4 +24,51 @@
     </div>
     <h1 class="text-2xl mb-0 text-gray-700">Informations de facturation</h1>
   </section>
+  <div slot="basics-header" class:mb-4={selectedAccordeon == "info"} class="-my-3 -mx-5 px-5 py-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-start">
+    <div class="w-full">
+      <p>Infos générales</p>
+      {#if selectedAccordeon == "address"}
+        <div class="flex flex-wrap justify-between w-full text-sm font-normal">
+          <div class="w-full lg:w-1/2">
+            <p>{user.firstName} {user.lastName}</p>
+            <p>{user.email}</p>
+            <p>né le {user.birthDate}</p>
+          </div>
+          <div class="w-full lg:w-1/2">
+            <p>Résidence : {user.countryOfResidence.name ? user.countryOfResidence.name : user.countryOfResidence}</p>
+            <p>Nationalité : {user.nationality.name ? user.nationality.name : user.nationality}</p>
+          </div>
+        </div>
+      {/if}
+    </div>
+    {#if selectedAccordeon == "address"}
+      <button 
+        on:click={() => { selectedAccordeon = "info" }} 
+        class="btn-link">
+        Modifier
+      </button>
+    {/if}
+  </div>
+  <div slot="address-header" class:mb-4={selectedAccordeon == "address"} class="-my-3 -mx-5 px-5 py-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-start">
+    <div class="w-full">
+      <p>Adresse</p>
+      {#if selectedAccordeon == "info"}
+        <div class="text-sm font-normal">
+          <p>{user.address.line1}</p>
+          {#if user.address.line2}
+            <p>{user.address.line2}</p>
+          {/if}
+          <p>{user.address.zipcode} {user.address.city}</p>
+          <p>{user.address.country.name ? user.address.country.name : user.address.country}</p>
+        </div>
+      {/if}
+    </div>
+    {#if selectedAccordeon == "info"}
+      <button 
+        on:click={() => { selectedAccordeon = "address" }}
+        class="btn-link">
+        Modifier
+      </button>
+    {/if}
+  </div>
 </LegalsForm>

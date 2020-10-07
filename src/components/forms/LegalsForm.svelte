@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { slide } from "svelte/transition";
 	import Loader from "../../components/Loader.svelte";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
@@ -33,8 +34,10 @@
   errorsHandler = null,
   canFlex = false,
   hideResidence = false,
-  facturationForm = null;
-  
+  facturationForm = null,
+  accordeon = false,
+  selectedAccordeon = null;
+
   const graphQLInstance = GetGraphQLInstance();
 
   let cleave = null;
@@ -113,80 +116,108 @@
 {#if isLoadingLists}
   <Loader />
 {:else}
-  <div class="flex flex-wrap w-full shadow lg:rounded mb-5">
-    <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full mb-5 lg:mb-0">
+  <div class="flex flex-wrap w-full shadow lg:rounded {accordeon ? '' : 'mb-5'}">
+    <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full {accordeon ? '' : 'mb-5 lg:mb-0'}">
       <slot name="basics-header"></slot>
-      <div class="form-control">
-        <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
-          <div class="w-full pr-0 lg:pr-2">
-            <label for="firstName">Prénom *</label>
-            <input name="firstName" placeholder="ex : Jean" bind:value={user.firstName} use:bindClass={{ form: facturationForm, name: "firstName" }} autocomplete="given-name" />
-            <ErrorContainer field={$facturationForm.fields.firstName} />
+      {#if !accordeon || (accordeon && selectedAccordeon == "info")}
+        <div transition:slide|local>
+          <div class="form-control">
+            <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
+              <div class="w-full pr-0 lg:pr-2 mb-3 md:mb-0">
+                <label for="firstName">Prénom *</label>
+                <input name="firstName" placeholder="ex : Jean" bind:value={user.firstName} use:bindClass={{ form: facturationForm, name: "firstName" }} autocomplete="given-name" />
+                <ErrorContainer field={$facturationForm.fields.firstName} />
+              </div>
+              <div class="w-full">
+                <label for="lastName">Nom de famille *</label>
+                <input name="lastName" placeholder="ex : Dupont" bind:value={user.lastName} use:bindClass={{ form: facturationForm, name: "lastName" }} autocomplete="family-name"  />
+                <ErrorContainer field={$facturationForm.fields.lastName} />
+              </div>
+            </div>
           </div>
-          <div class="w-full">
-            <label for="lastName">Nom de famille *</label>
-            <input name="lastName" placeholder="ex : Dupont" bind:value={user.lastName} use:bindClass={{ form: facturationForm, name: "lastName" }} autocomplete="family-name"  />
-            <ErrorContainer field={$facturationForm.fields.lastName} />
+
+          <div class="w-full form-control">
+            <label for="email">E-mail *</label>
+            <input name="email" placeholder="ex : jean.dupont@gmail.com" type="email" use:bindClass={{ form: facturationForm, name: "email" }} bind:value={user.email} autocomplete="email" />
+            <ErrorContainer field={$facturationForm.fields.email} />
           </div>
-        </div>
-      </div>
 
-      <div class="w-full form-control">
-        <label for="email">E-mail *</label>
-        <input name="email" placeholder="ex : jean.dupont@gmail.com" type="email" use:bindClass={{ form: facturationForm, name: "email" }} bind:value={user.email} autocomplete="email" />
-        <ErrorContainer field={$facturationForm.fields.email} />
-      </div>
+          <div class="w-full form-control">
+            <label for="birthday">Date de naissance (JJ/MM/AAAA)*</label>
+            <input name="birthday" use:initializeCleave class="input-birthday" placeholder="JJ/MM/AAAA" type="text" use:bindClass={{ form: facturationForm, name: "birthDate" }} bind:value={user.birthDate} autocomplete="birthday"  />
+            <ErrorContainer field={$facturationForm.fields.birthDate} />
+          </div>
+          
+          {#if !hideResidence}
+            <div class="w-full form-control" style="display: block">
+              <label for="country">Pays de résidence *</label>
+              <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
+            </div>
+          {/if}
 
-      <div class="w-full form-control">
-        <label for="birthday">Date de naissance (JJ/MM/AAAA)*</label>
-        <input name="birthday" use:initializeCleave class="input-birthday" placeholder="JJ/MM/AAAA" type="text" use:bindClass={{ form: facturationForm, name: "birthDate" }} bind:value={user.birthDate} autocomplete="birthday"  />
-        <ErrorContainer field={$facturationForm.fields.birthDate} />
-      </div>
-      
-      {#if !hideResidence}
-        <div class="w-full form-control" style="display: block">
-          <label for="country">Pays de résidence *</label>
-          <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
+          <div class="w-full form-control" style="display: block">
+            <label for="nationality">Nationalité *</label>
+            <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} /> 
+          </div>
+
+          {#if facturationForm}
+            <button 
+              on:click={() => { selectedAccordeon = "address" }}
+              disabled={
+                !$facturationForm.fields.firstName.valid ||
+                !$facturationForm.fields.lastName.valid ||
+                !$facturationForm.fields.email.valid ||
+                !$facturationForm.fields.birthDate.valid ||
+                !$facturationForm.fields.countryOfResidence.valid ||
+                !$facturationForm.fields.nationality.valid}
+              class:disabled={
+                !$facturationForm.fields.firstName.valid ||
+                !$facturationForm.fields.lastName.valid ||
+                !$facturationForm.fields.email.valid ||
+                !$facturationForm.fields.birthDate.valid ||
+                !$facturationForm.fields.countryOfResidence.valid ||
+                !$facturationForm.fields.nationality.valid}
+              class="btn btn-accent btn-lg">Valider</button>
+          {/if}
         </div>
       {/if}
-
-      <div class="w-full form-control" style="display: block">
-        <label for="nationality">Nationalité *</label>
-        <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} /> 
-      </div>
     </div>
 
     <div class="px-5 py-3 bg-white {canFlex ? 'lg:w-6/12' : ''} w-full">
       <slot name="address-header"></slot>
-      <div class="w-full form-control">
-        <label for="line1">Adresse *</label>
-        <input name="line1" placeholder="ex : 210 Avenue de la Liberté" use:bindClass={{ form: facturationForm, name: "line1" }} bind:value={user.address.line1} autocomplete="address-line1" />
-        <ErrorContainer field={$facturationForm.fields.line1} />
-      </div>
-      <div class="w-full form-control">
-        <label for="line2">Complément d'adresse</label>
-        <input name="line2" placeholder="ex : Appartement 15" bind:value={user.address.line2} autocomplete="address-line2" />
-      </div>
-
-      <div class="form-control">
-        <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
-          <div class="w-full pr-0 lg:pr-2">
-            <label for="postcode">Code postal *</label>
-            <input name="postcode" placeholder="ex : 74000" bind:value={user.address.zipcode} use:bindClass={{ form: facturationForm, name: "zipcode" }} autocomplete="postal-code" />
-            <ErrorContainer field={$facturationForm.fields.zipcode} />
+      {#if !accordeon || (accordeon && selectedAccordeon == "address")}
+        <div transition:slide|local>
+          <div class="w-full form-control">
+            <label for="line1">Adresse *</label>
+            <input name="line1" placeholder="ex : 210 Avenue de la Liberté" use:bindClass={{ form: facturationForm, name: "line1" }} bind:value={user.address.line1} autocomplete="address-line1" />
+            <ErrorContainer field={$facturationForm.fields.line1} />
           </div>
-          <div class="w-full">
-            <label for="city">Ville *</label>
-            <input name="city" placeholder="ex : Annecy" bind:value={user.address.city} use:bindClass={{ form: facturationForm, name: "city" }} autocomplete="address-level2" />
-            <ErrorContainer field={$facturationForm.fields.city} />
+          <div class="w-full form-control">
+            <label for="line2">Complément d'adresse</label>
+            <input name="line2" placeholder="ex : Appartement 15" bind:value={user.address.line2} autocomplete="address-line2" />
+          </div>
+
+          <div class="form-control">
+            <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
+              <div class="w-full pr-0 lg:pr-2 mb-3 md:mb-0">
+                <label for="postcode">Code postal *</label>
+                <input name="postcode" placeholder="ex : 74000" bind:value={user.address.zipcode} use:bindClass={{ form: facturationForm, name: "zipcode" }} autocomplete="postal-code" />
+                <ErrorContainer field={$facturationForm.fields.zipcode} />
+              </div>
+              <div class="w-full">
+                <label for="city">Ville *</label>
+                <input name="city" placeholder="ex : Annecy" bind:value={user.address.city} use:bindClass={{ form: facturationForm, name: "city" }} autocomplete="address-level2" />
+                <ErrorContainer field={$facturationForm.fields.city} />
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full form-control" style="display: block">
+            <label for="country">Pays *</label>
+            <CountrySelect bind:selectedValue={user.address.country} formName={facturationForm} name="country" {errorsHandler} /> 
           </div>
         </div>
-      </div>
-
-      <div class="w-full form-control" style="display: block">
-        <label for="country">Pays *</label>
-        <CountrySelect bind:selectedValue={user.address.country} formName={facturationForm} name="country" {errorsHandler} /> 
-      </div>
+      {/if}
     </div>
   </div>
 {/if}

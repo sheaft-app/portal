@@ -189,6 +189,34 @@
     debouncedSaveOrder();
   }
 
+  const blink = (deliveries) => {
+    if (!deliveries || deliveries.length == 0) return;
+
+    deliveries.map((d, index) => {
+      const element = document.getElementById(d.producer.id);
+
+      if (index == 0) {
+        var headerOffset = document.getElementById('navbar').offsetHeight;
+        var elementPosition = element.offsetTop;
+        var offsetPosition = elementPosition - headerOffset;
+        
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });   
+      }
+
+      element.classList.add("blink")
+      setTimeout(() => element.classList.remove("blink"), 3000);
+    });
+  }
+  
+  const validateCart = () => {
+    if (!isValid)
+      return blink($cartItems.filter(c => !c.producer.deliveryHour));
+    return validatedCart = true
+  }
+
   const handleSubmit = async () => {
     await saveOrder();
     
@@ -375,11 +403,11 @@
               <div class="pt-2 lg:pt-3">
                 <button
                   type="button"
-                  on:click={() => validatedCart = true}
+                  on:click={validateCart}
                   class:disabled={paymentInfo.productsCount === 0 || !isValid || isLoadingPaymentInfo}
-                  disabled={!isValid || isLoadingPaymentInfo}
                   class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
                   justify-center m-auto"
+                  disabled={paymentInfo.productsCount === 0 || isLoadingPaymentInfo}
                   style="padding-left: 50px; padding-right: 50px;">
                   {#if isCreatingOrder}
                     <Icon data={faCircleNotch} spin />

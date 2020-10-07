@@ -7,13 +7,12 @@
   <div class="w-full lg:w-2/3 px-6 rounded-t-lg lg:rounded-none pt-8">
     <h2 class="font-semibold">Frais de paiement bancaire, késako ?</h2>
     <span class="bg-primary h-1 w-20 block mt-2 mb-4"></span>
-    <p>Nous utilisons MANGOPAY, un service de paiement externe opéré par l'entreprise française Leetchi, qui assure la sécurité des transactions.</p>
+    <p>Nous utilisons <a target="_blank" href="https://mangopay.com/fr">MANGOPAY</a>, un service de paiement externe opéré par l'entreprise française Leetchi, qui assure la sécurité des transactions.</p>
     <p><b>Sheaft ne touche pas un seul centime de ces frais</b>. Ils ne servent qu'à opérer la transaction de manière 100% chiffrée et sécurisée et à garantir ainsi la sécurité de vos données bancaires.</p>
     <p>Ces frais sont comparables à ceux appliqués sur le terminal de paiement d'un commerçant ou d'un producteur.</p>
     <p>La méthode de calcul des frais est la suivante : 1,8% du montant total + 0,18€</p>
     <p>Ainsi pour un montant total de 10€, 0,36€ sont ajoutés pour couvrir les frais de paiement sécurisé.</p>
-    <p>Toutes les informations de MANGOPAY sont disponibles sur leur site web : <a target="_blank" href="https://mangopay.com/fr">www.mangopay.com</a></p>
-    <button type="button" on:click={close} class="btn btn-accent btn-lg mt-5 mb-5">Fermer</button>
+    <button type="button" on:click={close} class="btn btn-lg mt-5 mb-5 border border-gray-400">Fermer</button>
   </div>
 </div>
 

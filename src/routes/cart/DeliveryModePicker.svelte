@@ -83,6 +83,7 @@
 {:else}
   {#if data && !selected && !selectedDeliveryHour}
     <div
+      id={data.id}
       class="cursor-pointer p-4 bg-gray-100 border border-gray-400"
       on:click={showDeliveryPickModal}>
       <div class="flex text-accent">
@@ -116,7 +117,7 @@
       </p>
     {/if}
     <div
-      class="p-4 bg-gray-100 border-gray-400 border">
+      class="p-4 bg-gray-100 border-gray-400 border delivery-picker" id={data.id}>
       <div class="block md:flex md:flex-row">
         {#if displayLocation}
           <div class="flex w-full">

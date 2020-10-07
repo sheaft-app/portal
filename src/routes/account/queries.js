@@ -6,11 +6,9 @@ export const GET_CONSUMER_DETAILS = gql`
 			id
 			lastName
 			firstName
-			name
 			email
 			phone
 			picture
-			anonymous
 		}
 	}
 `;

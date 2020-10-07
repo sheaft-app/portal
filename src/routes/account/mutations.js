@@ -2,21 +2,13 @@ import gql from "graphql-tag";
 
 export const UPDATE_CONSUMER = gql`
 	mutation UpdateConsumer($input: UpdateConsumerInput) {
-		updateConsumerUser(input: $input) {
+		updateConsumer(input: $input) {
 			id
-			address {
-				department{
-					code
-					name
-				}
-			}
 			lastName
 			firstName
-			name
 			email
 			phone
 			picture
-			anonymous
 		}
 	}
 `;
