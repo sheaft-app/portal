@@ -102,10 +102,9 @@
 		isPaying = true;
 		var res = await graphQLInstance.mutate(PAY_ORDER, { id: order.id }, errorsHandler.Uuid);
 
-		isPaying = false;
-
 		if (!res.success) {
 			// todo
+			isPaying = false;
 			return;
 		}
 

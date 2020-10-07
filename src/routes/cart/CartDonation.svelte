@@ -14,7 +14,7 @@
 		localStorage.getItem("user_current_order")
   );
 
-  const roundedValue = Math.ceil(order.totalPrice) - order.totalPrice;
+  $: roundedValue = Math.ceil(order.totalPrice - order.donation) - (order.totalPrice - order.donation);
   
   const choose = (_choice) => {
     choice = _choice;
@@ -39,7 +39,9 @@
     <p class="font-light mb-3">En donnant 1€ à Sheaft, vous économisez plus d'argent qu'en payant la marge d'un intermédiaire.</p>
     <p class="font-light mb-3">En prime, vous devenez une pierre angulaire de ce grand projet social et solidaire.</p>
     <BlowingButton blowed={choice === CHOICE_EURO} on:click={() => choose(CHOICE_EURO)} text="Donner 1€" blowedText="Donner 1€"/>
-    <BlowingButton blowed={choice === CHOICE_ROUNDED} on:click={() => choose(CHOICE_ROUNDED)} text="Donner l'arrondi ({formatMoney(roundedValue)})" blowedText="Donner l'arrondi ({formatMoney(roundedValue)})"/>
+    {#if roundedValue > 0}
+      <BlowingButton blowed={choice === CHOICE_ROUNDED} on:click={() => choose(CHOICE_ROUNDED)} text="Donner l'arrondi ({formatMoney(roundedValue)})" blowedText="Donner l'arrondi ({formatMoney(roundedValue)})"/>
+    {/if}
     <button 
       on:click={() => choose(CHOICE_NONE)}
       class="btn m-auto shadow justify-center md:w-full no-give" 
@@ -60,7 +62,7 @@
         {/if}
       </div>
       <div class="mt-5 mb-5 m-auto w-full">
-        <button class:disabled={isLoadingPaymentInfo} type="button" on:click={handleSubmit} class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
+        <button type="button" on:click={handleSubmit} class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
           {#if choice === CHOICE_EURO}
             Poursuivre en faisant don de 1€
           {/if}
