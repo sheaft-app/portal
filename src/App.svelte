@@ -69,20 +69,13 @@
       signalrInstance.start();
       await loginFreshdesk();
     }
-
-    var user = authInstance.user;
-    if (
-      user.state &&
-      user.state.redirectTo &&
-      user.state.redirectTo.slice(1) != "/"
-    ) {
-      routerInstance.goTo(user.state.redirectTo.slice(1), null, true);
-    }
     
     if (config.production) {
       analyticsInstance.insights.clearAuthenticatedUserContext();
       analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
     }
+    
+    routerInstance.goTo("/", null, true);
   });
 
   const localStorageCartItems = JSON.parse(localStorage.getItem("user_cart"));

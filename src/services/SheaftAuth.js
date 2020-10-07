@@ -145,9 +145,13 @@ class SheaftAuth {
 
 	async login(redirectUrl) {
 		try {
-			return await this.userManager.signinRedirect({
-				state: { redirectTo: `#/${redirectUrl}` },
-			});
+			if(redirectUrl && redirectUrl.length > 0){
+				return await this.userManager.signinRedirect({
+					state: { redirectTo: `#${redirectUrl}` },
+				});
+			}
+			
+			return await this.userManager.signinRedirect();
 		} catch (exc) {
 			location.hash = "";
 			location.reload();
