@@ -71,6 +71,7 @@
     }
     
     if (config.production) {
+		  var user = this.authInstance.user;
       analyticsInstance.insights.clearAuthenticatedUserContext();
       analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
     }

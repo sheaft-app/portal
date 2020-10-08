@@ -194,7 +194,7 @@ class SheaftGuard {
 			user.state.redirectTo.slice(1) != "/"
 		) {
 			return {
-				Path:user.state.redirectTo.slice(1),
+				Path: user.state.redirectTo.slice(1),
 				Params: null
 			}
 		}
