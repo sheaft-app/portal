@@ -180,7 +180,7 @@
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
-				class="py-2 lg:mb-6 pb-5 px-6 lg:px-6 lg:py-8 static lg:block bg-white
+				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:py-8 static lg:block bg-white
 				shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
 				style="height: fit-content;">
 				<div>

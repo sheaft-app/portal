@@ -14,16 +14,17 @@
 </script>
 
 <LegalsForm bind:validatedInfoOnce bind:user {errorsHandler} accordeon={true} bind:selectedAccordeon bind:invalid canFlex={false}>
-  <section slot="header" class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2 px-5 lg:px-0">
+  <section slot="header" class="mb-4 pb-4 pt-3 lg:pt-2 px-5 lg:px-0">
     <div class="mb-3">
       <button
         class="text-gray-600 items-center flex uppercase"
         on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
         <Icon data={faChevronLeft} class="mr-2 inline" />
-        Revenir au panier
+        Aller au panier
       </button>
     </div>
-    <h1 class="text-2xl mb-0 text-gray-700">Informations de facturation</h1>
+    <h1 class="font-semibold uppercase mb-0">Informations de facturation</h1>
+    <span class="bg-primary h-1 w-20 block mt-2"></span>
   </section>
   <div slot="basics-header" class:mb-4={selectedAccordeon == "info"} class="-my-3 -mx-5 px-5 py-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-start">
     <div class="w-full">

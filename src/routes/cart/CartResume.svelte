@@ -411,7 +411,7 @@
                 <button
                   type="button"
                   on:click={validateCart}
-                  class:disabled={paymentInfo.productsCount === 0 || !isValid || isLoadingPaymentInfo}
+                  class:disabled={paymentInfo.productsCount === 0 || isLoadingPaymentInfo}
                   class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
                   justify-center m-auto"
                   disabled={paymentInfo.productsCount === 0 || isLoadingPaymentInfo}

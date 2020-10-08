@@ -31,47 +31,51 @@
   <Loader />
 {:else}
   <div in:fly|local={{ x: 300, duration: 300 }}>
-      <div class="bg-white shadow px-5 py-3 lg:rounded">
-        {#if order.donation !== 0}
-          <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
-            <Icon data={faHeart} class="mr-3" />
-            {#if order.donation == 1}
-              <span>Vous êtes extraordinaire !</span>
-            {:else}
-              <span>Merci beaucoup !</span>
-            {/if}
-          </div>
+    <div class="px-5 mt-3 lg:mt-0 md:px-0 mb-6">
+      <h1 class="font-semibold uppercase mb-0">Vérification et paiement</h1>
+      <span class="bg-primary h-1 w-20 block mt-2"></span>
+    </div>
+    <div class="bg-white shadow px-5 py-3 lg:rounded">
+      {#if order.donation !== 0}
+        <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
+          <Icon data={faHeart} class="mr-3" />
           {#if order.donation == 1}
-            <p>Merci beaucoup, votre contribution de {formatMoney(order.donation || 0)} est un très gros coup de pouce et représente beaucoup pour nous ! 😍</p>
+            <span>Vous êtes extraordinaire !</span>
           {:else}
-            <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous 😊</p>
+            <span>Merci beaucoup !</span>
           {/if}
-          <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
-          <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo({ 
-            Path: CartRoutes.Resume.Path, 
-            Params: {
-              Query: {
-                step: "donation"
-              }
-            }
-          })}>Je souhaite modifier mon don</button>
+        </div>
+        {#if order.donation == 1}
+          <p>Merci beaucoup, votre contribution de {formatMoney(order.donation || 0)} est un très gros coup de pouce et représente beaucoup pour nous ! 😍</p>
         {:else}
-          <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-white shadow lg:rounded-t font-semibold items-center flex">
-            <Icon data={faHeart} class="mr-3 text-red-500" />
-            <span>Sheaft ne vit que par les dons</span>
-          </div>
-          <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui proposons un outil gratuit pour vous permettre de bien manger plus facilement.</p>
-          <p>Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit projet de devenir grand.</p>
-          <button class="btn btn-accent btn-lg mt-2" on:click={() => routerInstance.goTo({ 
-            Path: CartRoutes.Resume.Path, 
-            Params: {
-              Query: {
-                step: "donation"
-              }
-            }
-          })}>Je veux faire un don</button>
+          <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous 😊</p>
         {/if}
-      </div>
+        <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
+        <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo({ 
+          Path: CartRoutes.Resume.Path, 
+          Params: {
+            Query: {
+              step: "donation"
+            }
+          }
+        })}>Je souhaite modifier mon don</button>
+      {:else}
+        <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-white shadow lg:rounded-t font-semibold items-center flex">
+          <Icon data={faHeart} class="mr-3 text-red-500" />
+          <span>Sheaft ne vit que par les dons</span>
+        </div>
+        <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui proposons un outil gratuit pour vous permettre de bien manger plus facilement.</p>
+        <p>Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit projet de devenir grand.</p>
+        <button class="btn btn-accent btn-lg mt-2" on:click={() => routerInstance.goTo({ 
+          Path: CartRoutes.Resume.Path, 
+          Params: {
+            Query: {
+              step: "donation"
+            }
+          }
+        })}>Je veux faire un don</button>
+      {/if}
+    </div>
     <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
       <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
         <p>Informations facturation</p>

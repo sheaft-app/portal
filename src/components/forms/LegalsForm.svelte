@@ -123,13 +123,13 @@
       {#if !accordeon || (accordeon && selectedAccordeon == "info")}
         <div transition:slide|local>
           <div class="form-control">
-            <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
-              <div class="w-full pr-0 lg:pr-2 mb-3 md:mb-0">
+            <div class="flex flex-wrap lg:flex-row w-full">
+              <div class="lg:w-1/2 w-full pr-0 md:pr-2 mb-3 lg:mb-0">
                 <label for="firstName">Prénom *</label>
                 <input name="firstName" placeholder="ex : Jean" bind:value={user.firstName} use:bindClass={{ form: facturationForm, name: "firstName" }} autocomplete="given-name" />
                 <ErrorContainer field={$facturationForm.fields.firstName} />
               </div>
-              <div class="w-full">
+              <div class="lg:w-1/2 w-full">
                 <label for="lastName">Nom de famille *</label>
                 <input name="lastName" placeholder="ex : Dupont" bind:value={user.lastName} use:bindClass={{ form: facturationForm, name: "lastName" }} autocomplete="family-name"  />
                 <ErrorContainer field={$facturationForm.fields.lastName} />
@@ -199,13 +199,13 @@
           </div>
 
           <div class="form-control">
-            <div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
-              <div class="w-full pr-0 lg:pr-2 mb-3 md:mb-0">
+            <div class="flex flex-wrap lg:flex-row w-full">
+              <div class="lg:w-1/2 w-full pr-0 lg:pr-2 mb-3 lg:mb-0">
                 <label for="postcode">Code postal *</label>
                 <input name="postcode" placeholder="ex : 74000" bind:value={user.address.zipcode} use:bindClass={{ form: facturationForm, name: "zipcode" }} autocomplete="postal-code" />
                 <ErrorContainer field={$facturationForm.fields.zipcode} />
               </div>
-              <div class="w-full">
+              <div class="lg:w-1/2 w-full ">
                 <label for="city">Ville *</label>
                 <input name="city" placeholder="ex : Annecy" bind:value={user.address.city} use:bindClass={{ form: facturationForm, name: "city" }} autocomplete="address-level2" />
                 <ErrorContainer field={$facturationForm.fields.city} />
