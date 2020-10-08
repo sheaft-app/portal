@@ -95,7 +95,7 @@
   {#if !order}
     <Loader />
   {:else}
-    <section class="mx-0 pb-5">
+    <section class="mx-0">
       <div class="mb-3">
         <button
           class="text-gray-600 items-center flex uppercase"

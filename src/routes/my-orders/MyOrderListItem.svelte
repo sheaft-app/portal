@@ -33,7 +33,7 @@
 		</div>
 	</div>
 	<div class="text-base flex flex-row mb-2">
-		<p class="text-gray-600 w-full">Lieu de récupération</p>
+		<p class="text-gray-600 w-full">Adresse</p>
 		<div class="w-full">
 			<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.line1}</p>
 			{#if order.expectedDelivery.address.line2}

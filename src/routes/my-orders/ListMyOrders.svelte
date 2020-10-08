@@ -164,7 +164,7 @@
 			<div
 				class="align-middle inline-block min-w-full overflow-hidden items" style="padding-left: 1px; padding-right: 1px;">
 				<div
-					class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 md:gap-3 -mx-4
+					class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 md:gap-3 -mx-4
 					md:mx-0 mb-10">
 					{#each orders as order, index}
 						<MyOrderListItem {order} />
