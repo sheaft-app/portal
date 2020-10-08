@@ -13,7 +13,6 @@
   import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy } from "svelte";
   import "notyf/notyf.min.css";
-  import Icon from "svelte-awesome";
   import Router from "svelte-spa-router";
   import Modal from "./components/modal/Modal.svelte";
   import Nav from "./components/nav/Nav.svelte";
@@ -28,6 +27,7 @@
     logoutFreshdesk
   } from "./services/SheaftFreshdesk.js";
   import Oidc from "oidc-client";
+  import OidcRoutes from "./routes/oidc/routes";
   
   $: isLoading = true;
 
@@ -75,7 +75,8 @@
       analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
     }
     
-    routerInstance.goTo("/", null, true);
+    if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
+      routerInstance.goTo("/", null, true);
   });
 
   const localStorageCartItems = JSON.parse(localStorage.getItem("user_cart"));
