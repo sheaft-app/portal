@@ -43,7 +43,6 @@
 <ActionConfirm
 	{errorsHandler}
 	title={purchaseOrders.length > 1 ? 'Accepter les commandes' : 'Accepter la commande'}
-	level="success"
 	icon={faCheck}
 	submit={handleSubmit}
 	submitText="Accepter"

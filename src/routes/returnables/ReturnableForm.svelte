@@ -44,48 +44,51 @@
       <ErrorContainer field={$returnableForm.fields.name}/>
     </div>  
     <div class="form-control">
-      <div class="w-full">
-        <label for="grid-price">Prix hors taxes *</label>
-        <input
-          bind:value={returnable.wholeSalePrice}
-          class:disabled={isLoading}
-          use:bindClass={{ form: returnableForm, name: "wholeSalePrice" }}
-          disabled={isLoading}
-          id="grid-price"
-          type="number"
-          step=".01"
-          placeholder="0.50" />
-      </div>
-      <ErrorContainer field={$returnableForm.fields.wholeSalePrice}/>
-    </div>
-    <div class="form-control">
-      <div class="w-full">
-        <label for="grid-vat">TVA *</label>
-        <div class="w-full text-lg justify-center button-group" use:bindClass={{ form: returnableForm, name: "vat" }}>
-          <button
-            on:click={() => selectVat(5.5)}
-            type="button"
-            class:selected={returnable.vat === 5.5}
-            class:disabled={isLoading}>
-            5,5%
-          </button>
-          <button
-            on:click={() => selectVat(10)}
-            type="button"
-            class:selected={returnable.vat === 10}
-            class:disabled={isLoading}>
-            10%
-          </button>
-           <button
-            on:click={() => selectVat(20)}
-            type="button"
-            class:selected={returnable.vat === 20}
-            class:disabled={isLoading}>
-            20%
-          </button>
+      <div class="flex w-full">
+        <div class="w-full pr-2">
+          <label for="grid-price">Prix HT *</label>
+          <input
+            bind:value={returnable.wholeSalePrice}
+            class:disabled={isLoading}
+            use:bindClass={{ form: returnableForm, name: "wholeSalePrice" }}
+            disabled={isLoading}
+            id="grid-price"
+            type="number"
+            step=".01"
+            placeholder="0.50" />
+          <ErrorContainer field={$returnableForm.fields.wholeSalePrice}/>
+        </div>
+        <div class="w-full">
+          <label for="grid-vat">TVA *</label>
+          <div class="w-full text-lg justify-center button-group" use:bindClass={{ form: returnableForm, name: "vat" }}>
+            <button
+              on:click={() => selectVat(5.5)}
+              type="button"
+              class="text-sm md:text-base"
+              class:selected={returnable.vat === 5.5}
+              class:disabled={isLoading}>
+              5,5%
+            </button>
+            <button
+              on:click={() => selectVat(10)}
+              type="button"
+              class="text-sm md:text-base"
+              class:selected={returnable.vat === 10}
+              class:disabled={isLoading}>
+              10%
+            </button>
+            <button
+              on:click={() => selectVat(20)}
+              type="button"
+              class="text-sm md:text-base"
+              class:selected={returnable.vat === 20}
+              class:disabled={isLoading}>
+              20%
+            </button>
+          </div>
+          <ErrorContainer field={$returnableForm.fields.vat}/>
         </div>
       </div>
-      <ErrorContainer field={$returnableForm.fields.vat}/>
     </div>
     <div class="form-control">
       <div class="w-full">

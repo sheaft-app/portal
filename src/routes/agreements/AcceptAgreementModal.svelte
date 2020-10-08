@@ -52,7 +52,6 @@ import { GET_AGREEMENTS } from "./queries.js";
 <ActionConfirm
   {errorsHandler}
   title='Accepter un accord'
-  level="success"
   icon={faCheck}
   {isLoading}
   submit={handleSubmit}

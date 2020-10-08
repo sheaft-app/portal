@@ -32,7 +32,7 @@
         href="javascript:void(0)"
         on:click={() => goToHome(authInstance, routerInstance)}>
         Rafraîchir</a>
-      <p class="text-sm text-gray-500 mt-5">Aucune connexion internet</p>
+      <p class="text-sm text-gray-600 mt-5">Aucune connexion internet</p>
     </div>
   </div>
 </div>

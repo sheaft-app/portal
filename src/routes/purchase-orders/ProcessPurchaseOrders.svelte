@@ -50,9 +50,9 @@ import { GET_ORDERS } from "./queries";
 	submit={handleSubmit}
 	{isLoading}
 	close={() => handleClose({ success: false, data: null })}>
-	<p class="leading-5 text-gray-500">
+	<p class="leading-5">
 		Préparer {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
-		alertera automatiquement votre client que vous avez débuter la préparation
+		alertera automatiquement votre client que vous avez débuté la préparation
 		de leur commande.
 	</p>
 </ActionConfirm>

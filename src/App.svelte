@@ -317,10 +317,6 @@
     color: #205164;
   }
 
-  h1 {
-    font-size: 2em;
-  }
-
   .back-bg-clr {
     background-color: #fbfbfb !important;
   }

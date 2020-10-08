@@ -92,7 +92,7 @@
         </button>
       </div>
       <div class="flex">
-        <h1 class="text-2xl mb-0">{product.name}</h1>
+        <h1 class="font-semibold uppercase mb-0">{product.name}</h1>
         {#if !product.available}
           <div
             class="rounded-full bg-orange-300 ml-2 px-3 py-1 shadow uppercase

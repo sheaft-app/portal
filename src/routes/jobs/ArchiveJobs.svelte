@@ -49,12 +49,11 @@
 	title={jobs.length > 1 ? 'Archiver les tâches' : 'Archiver la tâche'}
 	submit={handleSubmit}
 	close={() => handleClose({ success: false, data: null })}
-	level="success"
 	submitText="Oui"
 	icon={faCheck}
 	{isLoading}
 	closeText="Non">
-	<p class="py-2 leading-5 text-gray-500">
+	<p class="py-2 leading-5">
 		Êtes-vous sûr de vouloir archiver {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}
 		?
 	</p>

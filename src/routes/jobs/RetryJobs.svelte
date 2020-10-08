@@ -49,11 +49,10 @@ import { GET_JOBS } from "./queries";
 	title={jobs.length > 1 ? 'Réinitialiser les tâches' : 'Réinitialiser la tâche'}
 	submit={handleSubmit}
 	close={() => handleClose({ success: false, data: null })}
-	level="success"
 	submitText="Oui"
 	icon={faCheck}
 	{isLoading}>
-	<p class="py-2 leading-5 text-gray-500">
+	<p class="py-2 leading-5">
 		Êtes-vous sûr de vouloir réinitialiser {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}
 		?
 	</p>

@@ -51,7 +51,7 @@
 	submitText="Confirmer l'annulation"
 	closeText="Fermer"
 	{close}>
-	<p class="leading-5 text-gray-500">
+	<p class="leading-5">
 		Annuler {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
 		alertera automatiquement votre client.
 	</p>

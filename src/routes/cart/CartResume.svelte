@@ -257,11 +257,12 @@
   <TransitionWrapper>
     <form on:submit|preventDefault={() => {}}>
       <div class="pb-6">
-        <h1>Votre Panier</h1>
+        <h1 class="font-semibold uppercase">Votre Panier</h1>
+        <span class="bg-primary h-1 w-20 block mt-2"></span>
         {#if $cartItems.length > 0}
           {#if firstTimeOnCart}
             <div class="py-5 px-3 md:px-6 overflow-x-auto bg-green-100 shadow
-            rounded w-full">
+            rounded w-full mb-2">
               <p class="uppercase font-bold leading-none">
                 Ok, et maintenant ?
               </p>

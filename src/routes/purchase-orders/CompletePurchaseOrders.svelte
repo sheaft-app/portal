@@ -43,14 +43,13 @@ import { GET_ORDERS } from "./queries";
 <ActionConfirm
 	{errorsHandler}
 	title={purchaseOrders.length > 1 ? 'Terminer ces commandes' : 'Terminer cette commande'}
-	level="success"
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"
 	icon={faCheck}
 	{isLoading}
 	close={() => handleClose({ success: false, data: null })}>
-	<p class="leading-5 text-gray-500">
+	<p class="leading-5">
 		Compléter {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
 		alertera automatiquement votre client que tout est prêt.
 	</p>

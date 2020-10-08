@@ -54,7 +54,7 @@ import { GET_ORDERS } from "./queries";
   close={() => handleClose({ success: false, data: null })}>
   <p class="leading-5">
     Refuser {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'} alertera
-    automatiquement vos client.
+    automatiquement {purchaseOrders.length > 1 ? 'vos clients' : 'votre client'}.
   </p>
   <form class="mt-2">
     <div class="form-control w-full">

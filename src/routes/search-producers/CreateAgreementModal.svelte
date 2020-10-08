@@ -45,7 +45,6 @@
 <ActionConfirm
 	{errorsHandler}
 	title="Demander un accord"
-	level="success"
 	icon={faCheck}
 	submit={handleSubmit}
 	{isLoading}

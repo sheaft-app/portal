@@ -129,7 +129,7 @@ faFileExport
   {#if !order}
     <Loader />
   {:else}
-    <section class="mx-0 pb-5">
+    <section class="mx-0">
       <div class="mb-3">
         <button
           class="text-gray-600 items-center flex uppercase"
@@ -138,11 +138,8 @@ faFileExport
           Commandes
         </button>
       </div>
-      <div class="flex flex-wrap items-center">
-        <div>
-          <h1 class="text-2xl lg:text-3xl mb-0">Détails de la commande</h1>
-        </div>
-      </div>
+      <h1 class="font-semibold uppercase mb-0">Détails de la commande</h1>
+      <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
     {#if order.status === OrderStatusKind.Waiting.Value}
       <div
@@ -223,7 +220,7 @@ faFileExport
                 {#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
                   À livrer le : 
                 {:else}
-                  À récupérer le :
+                  Le client récupérera la commande le :
                 {/if}
                 <b class="font-semibold">
                   {format(

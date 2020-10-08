@@ -52,7 +52,13 @@
 
     var res = await graphQLInstance.mutate(
       UPDATE_SELLING_POINT,
-      sellingPoint,
+      {
+        ...sellingPoint,
+        address: {
+          ...sellingPoint.address,
+          country: "FR"
+        }
+      },
       errorsHandler.Uuid,
       GET_SELLING_POINTS
     );
@@ -101,7 +107,7 @@
         </button>
       </div>
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl mb-0">Modifier point de vente</h1>
+        <h1 class="font-semibold uppercase mb-0">{sellingPoint.name || "Modifier point de vente"}</h1>
         <button
           class="btn btn-lg bg-red-500 text-white"
           on:click={() => showDeleteModal()}>

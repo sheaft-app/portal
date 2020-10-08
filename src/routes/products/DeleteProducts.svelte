@@ -41,13 +41,13 @@
   submit={handleSubmit}
   {errorsHandler}
   close={() => handleClose({ success: false, data: null })}>
-  <p class="leading-5 text-gray-500">
+  <p class="leading-5">
     Vous vous apprêtez à
-    <span class="text-gray-700">
+    <b>
       supprimer {selectedItems.length} produits.
-    </span>
+    </b>
   </p>
-  <p class="text-gray-500">
+  <p>
     Cette opération supprimera tous les produits ci-dessous. Cette opération est
     <span class="text-red-600 font-bold">irréversible.</span>
   </p>

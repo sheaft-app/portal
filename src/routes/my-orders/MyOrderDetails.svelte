@@ -104,12 +104,9 @@
           Mes commandes
         </button>
       </div>
-      <div class="flex flex-wrap items-center">
-        <div>
-          <h1 class="text-2xl md:text-3xl mb-0">Détails de la commande</h1>
-          <h4 class="text-gray-600">#{order.reference}</h4>
-        </div>
-      </div>
+      <h1 class="font-semibold uppercase mb-0">Détails de la commande</h1>
+      <h4 class="text-gray-600">#{order.reference}</h4>
+      <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
     {#if order.status == OrderStatusKind.Cancelled.Value}
       <div

@@ -32,7 +32,7 @@
       <a class="btn-link" 
       href="javascript:void(0)"
       on:click={() => goToHome(authInstance, routerInstance)}>Retourner à l'accueil</a>
-      <p class="text-sm text-gray-500 mt-5">Erreur 500 - Erreur interne</p>
+      <p class="text-sm text-gray-600 mt-5">Erreur 500 - Erreur interne</p>
     </div>
   </div>
 </div>

@@ -87,12 +87,9 @@
     <Loader />
   {:else}
     <section
-      class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl mb-0 text-gray-700">
-          Modifier vos horaires de livraison
-        </h1>
-      </div>
+      class="md:pt-12 lg:pt-2">
+      <h1 class="font-semibold uppercase mb-0">Vos horaires de livraison magasin</h1>
+      <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
     <div class="mb-5">
       <p>Cette section n'est utile pour vous que si vous souhaitez commercer avec des professionels. Elle sert à leur afficher vos horaires de livraison.</p>

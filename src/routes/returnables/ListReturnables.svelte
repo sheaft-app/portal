@@ -62,20 +62,20 @@
 		defaultSearchValues={ReturnableRoutes.List.Params.Query}
 		{getRowBackgroundColor}
 		{onRowClick}>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+		<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div
 				class="text-sm leading-5 font-medium truncate"
 				style="max-width: 180px;">
 				{returnable.name}
 			</div>
 		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5">{returnable.wholeSalePrice}€</div>
 		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5">{returnable.vat}%</div>
 		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5">{returnable.onSalePrice}€</div>
 		</td>
 	</Table>

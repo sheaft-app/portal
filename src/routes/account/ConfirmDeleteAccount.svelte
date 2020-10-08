@@ -48,7 +48,7 @@
   submit={handleSubmit}
   {valid}
   close={() => closeModal({ success: false, data: null })}>
-  <p class="leading-5 text-gray-500" />
+  <p class="leading-5" />
   <form class="mt-6">
     <p class="block uppercase tracking-wide text-red-500 text-xs font-bold">
       Attention, la suppression du compte est irréversible, vous perdrez toutes

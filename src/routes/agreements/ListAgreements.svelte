@@ -94,7 +94,8 @@
 
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
-  <h1 class="mb-6 hidden md:block">Accords</h1>
+  <h1 class="font-semibold uppercase hidden md:block">Accords</h1>
+  <span class="bg-primary h-1 w-20 mt-2 mb-6 hidden md:block"></span>
   {#if isLoading}
     <Loader />
   {:else if agreements.length > 0}

@@ -19,7 +19,6 @@
 <ActionConfirm
   {errorsHandler}
   title="Des cookies locaux !"
-  level="success"
   submit={handleSubmit}
   submitText="J'accepte"
   closeText="Je refuse"

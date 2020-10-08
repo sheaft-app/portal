@@ -100,7 +100,7 @@
 				</button>
 			</div>
 			<div class="flex justify-between items-center">
-				<h1 class="text-2xl mb-0">Modifier la consigne</h1>
+    	<h1 class="font-semibold uppercase mb-0">{returnable.name}</h1>
 				<button
 					class="btn btn-lg bg-red-500 text-white"
 					on:click={() => showDeleteModal()}>

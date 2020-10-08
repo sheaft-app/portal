@@ -56,11 +56,11 @@ import { GET_JOBS } from "./queries";
 	icon={faTimes}
 	{isLoading}
 	closeText="Non">
-	<p class="py-2 leading-5 text-gray-500">
+	<p class="py-2 leading-5">
 		Êtes-vous sûr de vouloir annuler {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}
 		?
 	</p>
-	<p class="py-2 leading-5 text-gray-500">
+	<p class="py-2 leading-5">
 		Vous pouvez spécifier une raison pour l'annulation de {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}.
 	</p>
 	<label>Raison</label>

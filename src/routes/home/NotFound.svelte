@@ -31,6 +31,6 @@
       href="javascript:void(0)"
       on:click={() => goToHome(authInstance, routerInstance)}>
       Retourner à l'accueil</a>
-    <p class="text-sm text-gray-500 mt-5">Erreur 404 - Ressource introuvable</p>
+    <p class="text-sm text-gray-600 mt-5">Erreur 404 - Ressource introuvable</p>
   </div>
 </div>

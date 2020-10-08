@@ -48,11 +48,11 @@
 	{isLoading}
 	{close}
 	{errorsHandler}>
-	<p class="leading-5 text-gray-600">
+	<p class="leading-5">
 		Vous vous apprêtez à
 		<span class="text-gray-700">supprimer cette livraison</span>
 	</p>
-	<p class="text-gray-600">
+	<p>
 		Cette opération est
 		<span class="text-red-600 font-bold">irréversible.</span>
 	</p>

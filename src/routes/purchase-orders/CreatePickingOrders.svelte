@@ -106,7 +106,6 @@
   {submit}
   {isLoading}
   close={closeModal}
-  level="success"
   submitText="Préparer"
   icon={faCheck}
   {valid}

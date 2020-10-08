@@ -173,9 +173,8 @@
 
 <TransitionWrapper>
   <form on:submit|preventDefault={handleSubmit}>
-    <div class="pb-3">
-      <h1>Passer une commande</h1>
-    </div>
+    <h1 class="font-semibold uppercase mb-0">Passer une commande</h1>
+    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     <ErrorCard {errorsHandler} />
     {#if isLoading}
       <Loader />

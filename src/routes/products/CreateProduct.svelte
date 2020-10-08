@@ -81,7 +81,7 @@
         Produits
       </button>
     </div>
-    <h1 class="text-2xl mb-0 text-gray-700">Créer un nouveau produit</h1>
+    <h1 class="font-semibold uppercase mb-0">Créer un nouveau produit</h1>
   </section>
   <ProductForm
     submit={handleSubmit}

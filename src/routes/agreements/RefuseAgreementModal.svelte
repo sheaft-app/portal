@@ -50,7 +50,7 @@ import { GET_AGREEMENTS } from "./queries.js";
   submitText="Confirmer"
   closeText="Annuler"
   close={() => handleClose({success:false, data:null})}>
-  <p class="leading-5 text-gray-500">
+  <p class="leading-5">
     Vous vous apprêtez à refuser l'accord entre {agreement.delivery.producer.name} et {agreement.store.name}.
   </p>
   <div class="form-control w-full mt-2">

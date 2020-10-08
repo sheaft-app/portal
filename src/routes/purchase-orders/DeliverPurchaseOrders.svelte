@@ -43,14 +43,13 @@
 <ActionConfirm
 	{errorsHandler}
 	title={purchaseOrders.length > 1 ? 'Marquer ces commandes comme livrées' : 'Marquer cette commande comme livrée'}
-	level="success"
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"
 	icon={faCheck}
 	{isLoading}
 	close={() => handleClose({ success: false, data: null })}>
-	<p class="leading-5 text-gray-500">
+	<p class="leading-5">
 		Marquer {purchaseOrders.length > 1 ? 'ces commandes comme délivrées' : 'cette commande comme délivrée'}
 		enverra une confirmation au(x) client(s) qu'il a bien récupérer sa commande.
 	</p>

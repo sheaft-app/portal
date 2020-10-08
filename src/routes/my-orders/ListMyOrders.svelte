@@ -127,7 +127,8 @@
 	{#if $isLoading}
 		<Loader />
 	{:else if $items.length > 0 || validatingOrders.length > 0}
-		<h1 class="mb-6">Mes commandes</h1>
+		<h1 class="font-semibold uppercase">Vos Commandes</h1>
+		<span class="bg-primary h-1 w-20 block mt-2 mb-6"></span>
 		{#if !hiddenNavigation}
 			<div
 				class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
@@ -161,7 +162,7 @@
 		</div>
 		<div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
 			<div
-				class="align-middle inline-block min-w-full overflow-hidden items px-1">
+				class="align-middle inline-block min-w-full overflow-hidden items" style="padding-left: 1px; padding-right: 1px;">
 				<div
 					class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 md:gap-3 -mx-4
 					md:mx-0 mb-10">

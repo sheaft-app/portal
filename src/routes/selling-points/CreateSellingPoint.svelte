@@ -37,7 +37,13 @@ import { GET_SELLING_POINTS } from "./queries";
 
     var res = await graphQLInstance.mutate(
       CREATE_SELLING_POINT, 
-      sellingPoint, 
+      {
+        ...sellingPoint,
+        address: {
+          ...sellingPoint.address,
+          country: "FR"
+        }
+      }, 
       errorsHandler.Uuid,
       GET_SELLING_POINTS);
 
@@ -66,7 +72,7 @@ import { GET_SELLING_POINTS } from "./queries";
         Points de vente
         </button>
     </div>
-    <h1 class="text-2xl mb-0 text-gray-700">Ajouter un nouveau point de vente</h1>
+        <h1 class="font-semibold uppercase mb-0">Créer un nouveau point de vente</h1>
   </section>
   <SellingPointForm
     submit={handleSubmit}
