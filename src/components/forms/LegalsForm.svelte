@@ -36,7 +36,8 @@
   hideResidence = false,
   facturationForm = null,
   accordeon = false,
-  selectedAccordeon = null;
+  selectedAccordeon = null,
+  validatedInfoOnce = false;
 
   const graphQLInstance = GetGraphQLInstance();
 
@@ -160,9 +161,9 @@
             <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} /> 
           </div>
 
-          {#if facturationForm}
+          {#if accordeon && facturationForm && !validatedInfoOnce}
             <button 
-              on:click={() => { selectedAccordeon = "address" }}
+              on:click={() => { validatedInfoOnce = true; selectedAccordeon = "address"; }}
               disabled={
                 !$facturationForm.fields.firstName.valid ||
                 !$facturationForm.fields.lastName.valid ||

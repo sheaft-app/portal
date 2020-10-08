@@ -152,9 +152,10 @@
 				<div class="bg-white shadow px-4 py-3 mb-3">
 					<div class="flex items-center mb-2">
 						<Icon data={faCircleNotch} class="text-green-500 mr-3" spin />
-						<p class="font-semibold text-green-500">Traitement du paiement en cours</p>
+						<p class="font-semibold text-green-500">Un paiement est en cours de traitement</p>
 					</div>
 					<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de traitement. Dès que le paiement aura été traité, la commande apparaîtra ici.</p>
+					<p>Vous n'avez rien à faire. On vous fait signe dès qu'il arrive quoi que ce soit !</p>
 				</div>
 			{/each}
 		</div>

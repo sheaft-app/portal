@@ -415,11 +415,14 @@
                 <div class="mt-3 flex justify-end">
                   <button
                     on:click={() => handleRatingSubmit()}
+                    disabled={isSubmittingRate}
+                    class:disabled={isSubmittingRate}
                     aria-label="Envoyer mon avis"
                     class="btn btn-primary btn-lg">
+                    Envoyer
                     {#if isSubmittingRate}
-                      <Icon data={faCircleNotch} spin />
-                    {:else}Envoyer{/if}
+                      <Icon data={faCircleNotch} spin class="ml-2" />
+                    {/if}
                   </button>
                 </div>
               {/if}
@@ -431,8 +434,8 @@
           </p>
         {/if}
       {/if}
-      {#each ratings as rating}
-        <div class="flex items-start py-4">
+      {#each ratings as rating, index}
+        <div class="flex items-start py-4 border-gray-400" class:border-b={index !== ratings.length - 1}>
           <div class="flex-shrink-0">
             <div class="inline-block relative">
               <div

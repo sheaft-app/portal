@@ -274,6 +274,9 @@
 								justify-center m-auto"
 								style="padding-left: 50px; padding-right: 50px;">
 								Suivant
+								{#if isSavingLegals}
+									<Icon data={faCircleNotch} spin class="ml-2" />
+								{/if}
 							</button>
 						{/if}
 					</div>
