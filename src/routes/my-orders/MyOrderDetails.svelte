@@ -3,7 +3,7 @@
   import CancelMyOrders from "./CancelMyOrders.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
-  import { faTruck, faTruckLoading, faChevronLeft, faHourglass, faCheck, faTimesCircle, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+  import { faTruck, faTruckLoading, faChevronLeft, faHourglass, faCheck, faTimesCircle, faMapMarkerAlt, faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
   import { format } from "date-fns";
   import { fr } from "date-fns/locale";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -212,22 +212,24 @@
               </div>
             </div>
           {:else}
-            <div class="mr-5 hidden md:block">
-              <Icon data={faMapMarkerAlt} scale="1.5" />
-            </div>
             <div>
               <p class="uppercase font-bold leading-none">
                 Où et quand récupérer ma commande ?
               </p>
               <div class="mt-2">
-                <p>
-                  <b>
-                    {order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
-                    {order.expectedDelivery.address.city}
-                  </b>
-                </p>
-                <p class="mb-1">
-                  <b>
+                <div class="flex">
+                  <Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;" />
+                  <div>
+                    <p>{order.expectedDelivery.address.line1}</p>
+                    {#if order.expectedDelivery.address.line2}  
+                      <p>{order.expectedDelivery.address.line2}</p>
+                    {/if}
+                    <p>{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="mb-1">
+                    <Icon data={faCalendar} class="mr-2 w-3 h-3" />
                     {format(
                       new Date(order.expectedDelivery.expectedDeliveryDate),
                       'PPPP',
@@ -235,12 +237,15 @@
                         locale: fr
                       }
                     )}
-                  </b>
-                  entre
-                  <b>{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
-                  et
-                  <b>{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
-                </p>
+                  </p>
+                  <p class="mb-1">
+                    <Icon data={faClock} class="mr-2 w-3 h-3" />
+                    entre
+                    {timeSpanToFrenchHour(order.expectedDelivery.from)}
+                    et
+                    {timeSpanToFrenchHour(order.expectedDelivery.to)}
+                  </p>
+                </div>
                 <a
                   target="_blank"
                   class="btn btn-lg bg-accent text-white shadow font-semibold mt-2

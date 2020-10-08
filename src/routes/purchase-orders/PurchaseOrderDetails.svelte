@@ -268,7 +268,11 @@ faFileExport
             class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-indigo-500 w-full lg:w-auto">
             <Icon data={faFileExport} class="mr-2 hidden lg:inline w-4 h-4" />
-            <span>Accepter et faire un bon de préparation</span>
+            {#if order.status !== OrderStatusKind.Accepted.Value}
+              <span>Accepter et faire un bon de préparation</span>
+            {:else}
+              <span>Faire un bon de préparation</span>
+            {/if}
           </button>
           <button
             on:click={acceptOrder}

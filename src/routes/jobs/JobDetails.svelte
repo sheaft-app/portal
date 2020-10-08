@@ -200,7 +200,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={faCheck} scale="1.5" class="mr-5 text-green-400" />
+					<Icon data={faCheck} scale="1.5" class="mr-5 text-green-500" />
 					<div>
 						<p class="uppercase font-bold leading-none">Terminée</p>
 						<div class="mt-2">
