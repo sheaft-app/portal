@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Icon from "svelte-awesome";
-  import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import { faPaperPlane, faCircleNotch, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import CitySearch from "./../../components/search/CitySearch.svelte";
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
@@ -51,7 +51,8 @@
             disabled={isLoading}
             id="grid-name"
             type="text"
-            placeholder="Donner un nom pour le retrouver plus facilement dans votre liste (optionnel)" />
+            placeholder="ex : Marché d'Annecy (vieille ville)" />
+          <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Donner un nom pour le retrouver plus facilement dans votre liste. Visible que de vous.</small>
         </div>
       </div>
       <div class="form-control">

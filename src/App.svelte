@@ -696,7 +696,6 @@
 
   .skeleton-box {
     position: relative;
-    border: none !important;
     overflow: hidden;
     background-color: #e2e8f0;
 

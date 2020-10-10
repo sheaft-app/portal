@@ -1,6 +1,6 @@
 <script>
 	import Loader from "../Loader.svelte";
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate, tick } from "svelte";
   import LetterCheckbox from "../controls/LetterCheckbox.svelte";
   import TimePicker from "../controls/TimePicker.svelte";
   import DayOfWeekKind from "../../enums/DayOfWeekKind";
@@ -15,7 +15,7 @@
   DayOfWeekKind.Saturday, 
   DayOfWeekKind.Sunday].map((day) => day = { ...day, checked: false });
 
-  onMount(() => {
+  onMount(async () => {
     days.map((d, i) => {
       if (opening.days.includes(d.Value)) {
         d.checked = true;
@@ -23,10 +23,13 @@
     });
 
     days = days;
+    await tick();
     opening.days = days;
   })
 
-  $: opening.days = days;
+  afterUpdate(() => {
+    opening.days = days;
+  })
 </script>
 
 <div class="flex flex-wrap items-center my-2">

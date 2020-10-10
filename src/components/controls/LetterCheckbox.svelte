@@ -1,6 +1,6 @@
 <script>
   export let checked,
-    onClick = null,
+    onClick = () => {},
     sign = "o",
     classes = null;
 </script>

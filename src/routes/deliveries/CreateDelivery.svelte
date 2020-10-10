@@ -68,7 +68,7 @@
     <h1 class="font-semibold uppercase mb-0">Vos horaires de livraison magasin</h1>
     <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
   </section>
-  <div class="mb-5">
+  <div class="mb-5 text-gray-600">
     <p>Cette section n'est utile pour vous que si vous souhaitez commercer avec des professionels. Elle sert à leur afficher vos horaires de livraison.</p>
     <p>Les particuliers ne voient pas ces informations.</p>
   </div>

@@ -25,6 +25,7 @@
     </div>
     <h1 class="font-semibold uppercase mb-0">Informations de facturation</h1>
     <span class="bg-primary h-1 w-20 block mt-2"></span>
+    <p class="text-gray-600 mt-2">Ces informations ne vous seront demandées que pour la première commande. Elles permettent d'authentifier vos transactions.</p>
   </section>
   <div slot="basics-header" class:mb-4={selectedAccordeon == "info"} class="-my-3 -mx-5 px-5 py-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-start">
     <div class="w-full">
