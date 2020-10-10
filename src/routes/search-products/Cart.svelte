@@ -8,6 +8,8 @@
   import { formatMoney } from "./../../helpers/app.js";
   import CartRoutes from "../cart/routes";
   import { unfreezeBody } from "./../../helpers/app.js";
+  import Icon from "svelte-awesome";
+  import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
   const routerInstance = GetRouterInstance();
   const authInstance = GetAuthInstance();
@@ -96,22 +98,25 @@
   bottom-items"
   class:opacity-50={$cartItems.length === 0}>
   <div class="flex justify-between items-center">
-    <div class="uppercase">
+    <div class="uppercase w-full">
       <p class="text-sm text-gray-600">{productsCount} articles</p>
       <p class="text-xl">
         Total:
         <span class="font-bold">{formatMoney(total)}</span>
       </p>
     </div>
-    <button
-      type="button"
-      aria-label="Suivant"
-      on:click={goToCart}
-      class="btn btn-primary btn-lg leading-none"
-      disabled={$cartItems.length === 0}
-      class:disabled={$cartItems.length === 0}>
-      Suivant
-    </button>
+    <div class="w-full">
+      <button
+        type="button"
+        aria-label="Suivant"
+        on:click={goToCart}
+        class="btn btn-primary w-full py-3 px-3 leading-none justify-center text-lg font-semibold"
+        disabled={$cartItems.length === 0}
+        class:disabled={$cartItems.length === 0}>
+        Suivant
+        <Icon class="ml-2" data={faChevronRight} />
+      </button>
+    </div>
   </div>
 </div>
 
