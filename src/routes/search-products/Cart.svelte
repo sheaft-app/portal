@@ -5,7 +5,7 @@
   import GetRouterInstance from "../../services/SheaftRouter";
   import GetAuthInstance from "../../services/SheaftAuth";
   import { cartItems, cartExpanded } from "./../../stores/app.js";
-  import { roundMoney } from "./../../helpers/app.js";
+  import { formatMoney } from "./../../helpers/app.js";
   import CartRoutes from "../cart/routes";
   import { unfreezeBody } from "./../../helpers/app.js";
 
@@ -22,7 +22,7 @@
   }, 0);
   
   $: total = $cartItems.reduce((sum, product) => {
-    return roundMoney(parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0);
+    return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
   }, 0);
 
   const hideCart = () => {
@@ -83,7 +83,7 @@
       </div>
       <div class="w-2/12 text-right">
         <p class="font-bold leading-none">
-          {roundMoney(line.onSalePricePerUnit * line.quantity)}€
+          {formatMoney(line.onSalePricePerUnit * line.quantity)}
         </p>
       </div>
     </div>
@@ -100,7 +100,7 @@
       <p class="text-sm text-gray-600">{productsCount} articles</p>
       <p class="text-xl">
         Total:
-        <span class="font-bold">{total}€</span>
+        <span class="font-bold">{formatMoney(total)}</span>
       </p>
     </div>
     <button

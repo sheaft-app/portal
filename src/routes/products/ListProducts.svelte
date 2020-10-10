@@ -29,6 +29,7 @@
 	import JobRoutes from "./../jobs/routes.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import { formatMoney } from "./../../helpers/app";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -241,10 +242,10 @@
 		</td>
 		<td class="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div class="text-sm leading-5 font-medium">
-				{product.onSalePricePerUnit} €
+				{formatMoney(product.onSalePricePerUnit)}
 			</div>
 			<div class="text-sm leading-5 text-gray-600">
-				{product.vatPricePerUnit}€ TVA
+				{formatMoney(product.vatPricePerUnit)} TVA
 			</div>
 		</td>
 		<td

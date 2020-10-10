@@ -29,6 +29,7 @@
 		canDeliverOrders,
 		canShipOrders,
 	} from "./validators";
+	import { formatMoney } from "./../../helpers/app";
 	import {
 		GET_ORDERS,
 		HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
@@ -268,7 +269,7 @@
 		</td>
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5 text-gray-900">
-				{order.totalOnSalePrice} €
+				{formatMoney(order.totalOnSalePrice)}
 			</div>
 			<div class="text-sm leading-5 text-gray-600">
 				{order.productsCount} produits

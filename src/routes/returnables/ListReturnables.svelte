@@ -8,6 +8,7 @@
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import { formatMoney } from "./../../helpers/app";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -70,13 +71,13 @@
 			</div>
 		</td>
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5">{returnable.wholeSalePrice}€</div>
+			<div class="text-sm leading-5">{formatMoney(returnable.wholeSalePrice)}</div>
 		</td>
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 			<div class="text-sm leading-5">{returnable.vat}%</div>
 		</td>
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5">{returnable.onSalePrice}€</div>
+			<div class="text-sm leading-5">{formatMoney(returnable.onSalePrice)}</div>
 		</td>
 	</Table>
 	{#if noResults}

@@ -5,7 +5,7 @@
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import CartMap from "./CartMap.svelte";
   import { cartItems, cartItemsOrderedByProducer } from "./../../stores/app.js";
-  import { roundMoney, formatMoney } from "./../../helpers/app.js";
+  import { formatMoney } from "./../../helpers/app.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import GetRouterInstance from "../../services/SheaftRouter";
   import { CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER } from "./mutations.js";

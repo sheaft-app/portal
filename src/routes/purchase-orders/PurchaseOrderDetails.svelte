@@ -14,7 +14,7 @@
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import GetRouterInstance from "./../../services/SheaftRouter";``
-  import { timeSpanToFrenchHour } from "./../../helpers/app";
+  import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app";
   import { GET_ORDER_DETAILS } from "./queries.js";
   import { 
     canCreatePickingOrder,
@@ -371,7 +371,7 @@ faFileExport
             <div class="flex items-center mb-2">
               <p>
                 <span class="text-gray-600">Montant :</span>
-                {order.totalWholeSalePrice}€
+                {formatMoney(order.totalWholeSalePrice)}
               </p>
             </div>
           </div>
@@ -442,7 +442,7 @@ faFileExport
                         <div class="items-center">
                           <p>{line.name}</p>
                           <p class="whitespace-no-wrap block lg:hidden">
-                            {line.unitOnSalePrice}€
+                            {formatMoney(line.unitOnSalePrice)}
                           </p>
                           <p class="text-gray-600 whitespace-no-wrap">
                             #{line.reference}
@@ -453,7 +453,7 @@ faFileExport
                         class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base hidden lg:table-cell">
                         <p class="whitespace-no-wrap">
-                          {line.unitOnSalePrice}€
+                          {formatMoney(line.unitOnSalePrice)}
                         </p>
                       </td>
                       <td
@@ -465,7 +465,7 @@ faFileExport
                         class="px-4 md:px-8 py-5 border-b border-r border-gray-400
                         bg-white text-sm lg:text-base text-right">
                         <p class="whitespace-no-wrap">
-                          {line.totalOnSalePrice}€
+                          {formatMoney(line.totalOnSalePrice)}
                         </p>
                       </td>
                     </tr>
@@ -487,7 +487,7 @@ faFileExport
                       class="border-b border-gray-400 bg-white px-4 md:px-8
                       py-5 text-lg text-right font-bold col-span-1 border-r"
                       colspan="1">
-                      {order.totalWholeSalePrice}€
+                      {formatMoney(order.totalWholeSalePrice)}
                     </td>
                   </tr>
                 </tbody>

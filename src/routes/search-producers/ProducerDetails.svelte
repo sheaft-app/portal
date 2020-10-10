@@ -12,6 +12,7 @@
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
+  import { formatMoney } from "./../../helpers/app";
   import { GET_PRODUCER_DETAILS, GET_PRODUCER_PRODUCTS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
@@ -303,7 +304,7 @@
               </div>
               <div
                 class="text-base text-right font-semibold">
-                {product.wholeSalePricePerUnit}€ H.T
+                {formatMoney(product.wholeSalePricePerUnit)} H.T
                 <div class="text-xs">({`${product.quantityPerUnit}${product.unit}`})</div>
               </div>
             </div>

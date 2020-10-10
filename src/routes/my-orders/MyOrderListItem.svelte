@@ -5,7 +5,7 @@
   import GetRouterInstance from "./../../services/SheaftRouter";
   import MyOrderRoutes from "./routes";
   import OrderStatusKind from "./../../enums/OrderStatusKind";
-	import { timeSpanToFrenchHour, encodeQuerySearchUrl } from "./../../helpers/app";
+	import { timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney } from "./../../helpers/app";
 	import Icon from "svelte-awesome";
 	import { faMapMarkedAlt, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,7 +23,7 @@
 	</div>
 	<div class="text-base mt-5 flex flex-row mb-1">
 		<p class="text-gray-600 w-full">Panier</p>
-		<p class="text-normal font-semibold w-full">{order.totalOnSalePrice}€ ({order.productsCount} articles)</p>
+		<p class="text-normal font-semibold w-full">{formatMoney(order.totalOnSalePrice)} ({order.productsCount} articles)</p>
 	</div>
 	<div class="text-base flex flex-row mb-2">
 		<p class="text-gray-600 w-full">À récupérer le</p>

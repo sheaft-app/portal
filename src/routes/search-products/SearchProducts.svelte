@@ -25,7 +25,7 @@
   import Icon from "svelte-awesome";
   import { faFilter } from "@fortawesome/free-solid-svg-icons";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-  import { roundMoney, freezeBody, unfreezeBody, formatMoney } from "./../../helpers/app.js";
+  import { freezeBody, unfreezeBody, formatMoney } from "./../../helpers/app.js";
   import Loader from "./../../components/Loader.svelte";
   import SkeletonCard from "./SkeletonCard.svelte";
   import Roles from "./../../enums/Roles";

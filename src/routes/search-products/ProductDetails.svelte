@@ -14,7 +14,7 @@
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { cartItems, selectedItem } from "./../../stores/app.js";
-  import { timeSpanToFrenchHour } from "./../../helpers/app.js";
+  import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
   import DayOfWeekKind from "./../../enums/DayOfWeekKind";
@@ -223,7 +223,7 @@
         {/if}
       </div>
       <p class="text-xl lg:text-2xl font-bold">
-        {product.onSalePricePerUnit}€
+        {formatMoney(product.onSalePricePerUnit)}
         <span class="font-normal">
           ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
         </span>
@@ -243,7 +243,7 @@
                 class="m-auto mb-1"
                 style="width: 30px;" />
               <p class="font-semibold">Consigne</p>
-              <p class="text-gray-600">{product.returnable.onSalePrice}€</p>
+              <p class="text-gray-600">{formatMoney(product.returnable.onSalePrice)}</p>
             </div>
           {/if}
         </div>

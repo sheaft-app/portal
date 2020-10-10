@@ -16,7 +16,7 @@
   import { GET_MY_ORDER_DETAILS } from "./queries.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import { timeSpanToFrenchHour, encodeQuerySearchUrl } from "./../../helpers/app";
+  import { timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney } from "./../../helpers/app";
 
   export let params = {};
 
@@ -372,7 +372,7 @@
             <div class="flex items-center mb-2">
               <p>
                 <span class="text-gray-600">Montant :</span>
-                {order.totalWholeSalePrice}€
+                {formatMoney(order.totalWholeSalePrice)}
               </p>
             </div>
           </div>
@@ -444,7 +444,7 @@
                         <div class="items-center">
                           <p>{line.name}</p>
                           <p class="whitespace-no-wrap block lg:hidden">
-                            {line.unitOnSalePrice}€ / unité
+                            {formatMoney(line.unitOnSalePrice)} / unité
                           </p>
                           <p class="text-gray-600 whitespace-no-wrap">
                             #{line.reference}
@@ -455,7 +455,7 @@
                         class="px-4 md:px-8 py-5 border-b border-gray-200
                         bg-white text-sm lg:text-base hidden lg:table-cell">
                         <p class="whitespace-no-wrap">
-                          {line.unitOnSalePrice}€
+                          {formatMoney(line.unitOnSalePrice)}
                         </p>
                       </td>
                       <td
@@ -467,7 +467,7 @@
                         class="px-4 md:px-8 py-5 border-b border-gray-200
                         bg-white text-sm lg:text-base text-right">
                         <p class="whitespace-no-wrap">
-                          {line.totalOnSalePrice}€
+                          {formatMoney(line.totalOnSalePrice)}
                         </p>
                       </td>
                     </tr>
@@ -490,7 +490,7 @@
                       py-5 text-lg text-right
                       font-bold"
                       colspan="1">
-                      {order.totalWholeSalePrice}€
+                      {formatMoney(order.totalWholeSalePrice)}
                     </td>
                   </tr>
                 </tbody>

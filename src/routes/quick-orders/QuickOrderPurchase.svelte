@@ -9,7 +9,7 @@
   import DeliveryModePicker from "../cart/DeliveryModePicker.svelte";
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import { roundMoney, formatMoney } from "./../../helpers/app.js";
+  import { formatMoney } from "./../../helpers/app.js";
   import { CREATE_BUSINESS_ORDER } from "./mutations.js";
   import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
   import Select from "./../../components/controls/select/Select";
