@@ -22,14 +22,19 @@
   const { open } = getContext("modal");
 
   let isLoading = false;
+  let isSendingRGPDRequest = false;
+  let hasSentRGPDRequest = false;
   let userId = $authUserAccount.profile.sub;
 
   const handleExport = async () => {
+    isSendingRGPDRequest = true;
     var res = await graphQLInstance.mutate(EXPORT_DATA, { id: userId }, errorsHandler.Uuid);
+    isSendingRGPDRequest = false;
     if (!res.success) {
       //TODO
       return;
     }
+    hasSentRGPDRequest = true;
   };
 
   const updateImage = () => {
@@ -109,9 +114,14 @@
       <button
         class="btn bg-white px-4 py-2 shadow mt-3 font-semibold
         hover:bg-gray-100"
+        class:disabled={isSendingRGPDRequest ||hasSentRGPDRequest}
+        disabled={isSendingRGPDRequest || hasSentRGPDRequest}
         on:click={handleExport}>
         Je demande une copie de mes données
       </button>
+      {#if hasSentRGPDRequest}
+        <p class="text-green-500 mt-1">Votre demande a bien été envoyée. Vous recevrez votre rapport de données par mail sous 15 jours.</p>
+      {/if}
     </div>
     <hr class="mt-10 mb-5" />
     <div>
