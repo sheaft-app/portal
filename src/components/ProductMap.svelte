@@ -91,7 +91,7 @@
     const coordonnates = producerWithProductsCount.map(producer => 
       L.marker([producer.address.latitude, producer.address.longitude], {
         icon: renderMarker()
-      }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} articles</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.address.zipcode} ${producer.address.city}</p>`) 
+      }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} article${producer.nbProducts > 1 ? 's' : ''}</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.address.zipcode} ${producer.address.city}</p>`) 
     );
 
     cartItemsMarkers = L.layerGroup(coordonnates).addTo(map);
