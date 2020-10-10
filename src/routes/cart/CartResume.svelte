@@ -47,7 +47,7 @@
     totalReturnableOnSalePrice: 0,
     returnablesCount: 0
   };
-  $: orderedCartItems = $cartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : -1);
+  $: orderedCartItems = $cartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
 
   var order = JSON.parse(
     localStorage.getItem("user_current_order")
