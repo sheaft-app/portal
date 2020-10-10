@@ -663,6 +663,7 @@
 <div
   class="{containerClasses}
   {hasError ? 'ssp-hasError' : ''}"
+  class:skeleton-box={disabled}
   style={containerStyles}
   class:invalid
   on:click={handleClick}
@@ -688,6 +689,7 @@
       {..._inputAttributes}
       bind:this={input}
       on:focus={handleFocus}
+      disabled
       bind:value={filterText}
       placeholder={placeholderText}
       style={inputStyles}

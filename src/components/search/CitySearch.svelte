@@ -17,7 +17,8 @@
     initAddress = null,
     selectedAddress = null,
     invalid = false,
-    bindClassData = null;
+    bindClassData = null,
+    isDisabled = false;
 
   let isLoading = false;
 
@@ -132,7 +133,7 @@
   <Select
     loadOptions={text => loadData(text)}
     {getOptionLabel}
-    isDisabled={isLoading}
+    isDisabled={isLoading || isDisabled}
     isWaiting={isLoading}
     {invalid}
     icon={faMapMarkerAlt}

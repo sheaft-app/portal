@@ -697,7 +697,7 @@
   .skeleton-box {
     position: relative;
     overflow: hidden;
-    background-color: #e2e8f0;
+    background-color: #e2e8f0 !important;
 
     &::after {
       position: absolute;

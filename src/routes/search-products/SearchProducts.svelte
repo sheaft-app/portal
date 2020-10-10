@@ -46,6 +46,7 @@
   let lastFetchLength = 0;
   let departmentProgress = null;
   let totalProducts = 0;
+  let isLoadingCitySearch = false;
   const QUERY_SIZE = 25;
 
   let defaultSearchValues = {
@@ -279,6 +280,16 @@
       if (localPosition) {
         updateUserLocationInQueryString(localPosition);
         initLocation = localPosition;
+      } else {
+        isLoadingCitySearch = true;
+        await fetch("http://ip-api.com/json/")
+          .then((res) => res.json())
+          .then((json) => {
+            if (json.status == "success") {
+              initLocation = { latitude: json.lat, longitude: json.lon }
+            }
+            isLoadingCitySearch = false;
+          })
       }
     }
 
@@ -350,6 +361,7 @@
         class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
         <CitySearch
           withGeolocationButton={true}
+          isDisabled={isLoadingCitySearch}
           initAddress={initLocation}
           bind:selectedAddress={selectedLocation}
           containerStyles="background-color: #ffffff; border: none; border-radius:
