@@ -23,6 +23,12 @@
 <form>
   <fieldset>
     <div class="w-full mb-2 md:mb-0 px-5">
+      <p class="text-gray-600">
+        Votre entreprise peut être visible des {isStore ? 'producteurs' : 'magasins'}. Un module dédié vous permet de les trouver et leur permettent de vous trouver.
+      </p>
+      <p class="text-gray-600">
+        Activez cette option si vous souhaitez pouvoir commercer avec eux.
+      </p>
       <div class="mt-2">
         <Toggle
           classNames="ml-1 justify-center"
@@ -30,7 +36,7 @@
           on:change={() => (company.openForNewBusiness = !company.openForNewBusiness)}>
           <span class="ml-1">
             Je veux être visible des {isStore ? 'producteurs' : 'magasins'}
-            afin qu'ils me contactent pour commercer avec eux.
+            pour commercer avec eux.
           </span>
         </Toggle>
       </div>

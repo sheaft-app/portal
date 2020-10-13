@@ -2,8 +2,10 @@
   import CitySearch from "./../../../components/search/CitySearch.svelte";
   import ErrorContainer from "./../../../components/ErrorContainer.svelte";
   import Loader from "./../../../components/Loader.svelte";
+  import Icon from "svelte-awesome";
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-  export let company, addressForm, stepper = 4, isStore, submit = () => {};
+  export let company, stepper = 4, isStore, submit = () => {};
 
   let isSearchingAddress = false;
   let valid = false;
@@ -98,6 +100,7 @@
         placeholder="Entrez l'adresse de votre lieu de production"
         initialValue={company.address} />
     </div>
+    <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Tapez une adresse puis sélectionnez la correspondance dans la liste.</small>
   </div>
 {/if}
 

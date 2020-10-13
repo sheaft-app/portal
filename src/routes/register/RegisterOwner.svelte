@@ -28,7 +28,6 @@
   const errorsHandler = new SheaftErrors();
 
   let isRegistering = false;
-  let addressForm = null;
   let showSponsoring = false;
   let stepper = 0;
   let vat = null;
@@ -81,67 +80,63 @@
   };
 
   const handleSubmit = async () => {
-    addressForm.validate();
-
-    if ($addressForm.valid) {
-      if (vat) {
-        company.legals.vatIdentifier = "FR" + vat + company.legals.siret.toString().substring(0, 9);
-      }
-
-      var register = null;
-      if (isStore) {
-        register = REGISTER_STORE;
-        company.openingHours = normalizeOpeningHours(openings);
-      } else {
-        register = REGISTER_PRODUCER;
-        delete company["openingHours"];
-      }
-
-      delete company.address['insee'];
-      delete company.address['id'];
-
-      const dateParts = company.legals.owner.birthDate.trim().split("/");
-
-      isRegistering = true;
-      var res = await graphQLInstance.mutate(register, {
-        ...company,
-        address: {
-          ...company.address,
-          country: "FR"
-        },
-        legals: {
-          ...company.legals,
-          siret: company.legals.siret.toString(),
-          address: {
-            ...company.legals.address,
-            country: company.legals.address.country.code
-          },
-          owner: {
-            ...company.legals.owner,
-            address: {
-              ...company.legals.owner.address,
-              country: company.legals.owner.address.country.code
-            },
-            countryOfResidence: company.legals.owner.address.country.code,
-            nationality: company.legals.owner.nationality.code,
-            birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-          }
-        }
-      }, errorsHandler.Uuid);
-
-      if (!res.success) {
-      isRegistering = false;
-        //TODO
-        return;
-      }
-
-      await authInstance.loginSilent();
-      authRegistered.set(true);
-      localStorage.removeItem("user_choosen_role");
-      localStorage.removeItem("sponsoring");
-      routerInstance.goTo("/");
-      isRegistering = false;
+    if (vat) {
+      company.legals.vatIdentifier = "FR" + vat + company.legals.siret.toString().substring(0, 9);
     }
+
+    var register = null;
+    if (isStore) {
+      register = REGISTER_STORE;
+      company.openingHours = normalizeOpeningHours(openings);
+    } else {
+      register = REGISTER_PRODUCER;
+      delete company["openingHours"];
+    }
+
+    delete company.address['insee'];
+    delete company.address['id'];
+
+    const dateParts = company.legals.owner.birthDate.trim().split("/");
+
+    isRegistering = true;
+    var res = await graphQLInstance.mutate(register, {
+      ...company,
+      address: {
+        ...company.address,
+        country: "FR"
+      },
+      legals: {
+        ...company.legals,
+        siret: company.legals.siret.toString(),
+        address: {
+          ...company.legals.address,
+          country: company.legals.address.country.code
+        },
+        owner: {
+          ...company.legals.owner,
+          address: {
+            ...company.legals.owner.address,
+            country: company.legals.owner.address.country.code
+          },
+          countryOfResidence: company.legals.owner.address.country.code,
+          nationality: company.legals.owner.nationality.code,
+          birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+        }
+      }
+    }, errorsHandler.Uuid);
+
+    if (!res.success) {
+    isRegistering = false;
+      //TODO
+      return;
+    }
+
+    await authInstance.loginSilent();
+    authRegistered.set(true);
+    localStorage.removeItem("user_choosen_role");
+    localStorage.removeItem("sponsoring");
+    routerInstance.goTo("/");
+    isRegistering = false;
   };
 
   $: isStore = params.id == Roles.Store.Value;
@@ -168,7 +163,7 @@
         {:else if stepper == 3}
           <FormBusinessHours bind:company {isStore} bind:openings bind:stepper /> 
         {:else if stepper == 4}
-          <FormProductionSite bind:company {isStore} bind:stepper bind:addressForm submit={handleSubmit} />
+          <FormProductionSite bind:company {isStore} bind:stepper submit={handleSubmit} />
         {/if}
       {/if}
     </div>
