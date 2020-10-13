@@ -396,9 +396,21 @@
     color: #009688 !important;
   }
 
+  @media (min-width: 1024px) {
+    .notyf__toast {
+      max-width: 400px !important;
+    }
+  }
+
   .notyf__toast {
-    max-width: 400px !important;
     background-color: #ffffff !important;
+    @apply border;
+    @apply border-gray-200;
+    @apply shadow-xl;
+  }
+
+  .notyf__toast--upper {
+    margin-bottom: 0 !important;
   }
 
   .notyf__wrapper {
@@ -421,6 +433,13 @@
   .notyf {
     padding-top: 85px;
   }
+  
+  @media (max-width: 1023px) {
+    .notyf {
+      padding-top: 45px;
+    }
+  }
+ 
 
   .material-icons {
     margin-top: 0;
@@ -677,16 +696,6 @@
       &.active {
         width: 100%;
       }
-    }
-
-    .notyf {
-      padding-top: 0;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .notyf {
-      padding-top: 55px;
     }
   }
 

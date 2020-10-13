@@ -99,8 +99,7 @@
         <a href="https://sheaftapp.blob.core.windows.net/resources/excel/sheaft_catalogue_produits.xlsx"> en cliquant ici</a>.
       </li>
       <li>
-        Complétez le fichier Excel téléchargé en veillant à bien respecter les
-        colones.
+        Complétez le fichier Excel téléchargé en veillant à bien respecter les colonnes.
       </li>
     </ul>
   </div>

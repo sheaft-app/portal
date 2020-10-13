@@ -154,7 +154,7 @@ class SheaftNotificationManager {
 		if (notification.show)
 			this.notify.open({
 				type: notification.type,
-				message: notification.url ? `<a href="${notification.url}">${notification.message}</a>` : notification.message,
+				message: notification.url ? `<p class="mb-2">${notification.message}</p><a href="${notification.url}">Voir les détails</a>` : notification.message,
 			});
 	}
 

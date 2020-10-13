@@ -19,6 +19,6 @@
     <Icon 
 		data={data.Icon}
 		scale=".7" 
-		spin={status === OrderStatusKind.Waiting.Value || status === AgreementStatusKind.WaitingForProducerApproval.Value || status === AgreementStatusKind.WaitingForStoreApproval.Value} 
+		spin={status === OrderStatusKind.Processing.Value || status === OrderStatusKind.Waiting.Value || status === AgreementStatusKind.WaitingForProducerApproval.Value || status === AgreementStatusKind.WaitingForStoreApproval.Value} 
 		/>
 </div>

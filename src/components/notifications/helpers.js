@@ -24,7 +24,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.Name} souhaites vendre vos produits dans leur magasin.`,
+				`Le magasin ${notification.content.Name} souhaite établir un partenariat avec vous.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -34,7 +34,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.Name} souhaites vendre ses produits chez vous.`,
+				`Le producteur ${notification.content.Name} souhaite établir un partenariat avec vous.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -44,7 +44,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.Name} a accepté votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a accepté votre demande de partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -54,7 +54,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.Name} a accepté votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a accepté votre demande de partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -64,7 +64,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.Name} a annulé votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a annulé votre partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -74,7 +74,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.Name} a annulé votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a annulé votre partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -84,7 +84,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.Name} a décliné votre demande de vendre vos produits dans leur magasin.`,
+				`${notification.content.Name} a décliné votre partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -94,7 +94,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.Name} a décliné votre demande de vendre ses produits dans votre magasin.`,
+				`${notification.content.Name} a décliné votre partenariat.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -124,7 +124,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`Votre export de données a échoué`,
+				`Votre export de données a échoué.`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				true,
@@ -134,7 +134,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.SenderName} à noter votre produit '${notification.content.ProductName}'`,
+				`${notification.content.SenderName} a laissé un avis sur '${notification.content.ProductName}.'`,
 				`#/products/${notification.content.ProductId}/ratings`,
 				true,
 				true,
@@ -144,7 +144,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`La création de votre bon de préparation '${notification.content.Name}' a échouée`,
+				`La création de votre bon de préparation '${notification.content.Name}' a échoué.`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				true,
@@ -204,7 +204,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`Votre commande ${notification.content.Reference} pour le ${notification.content.ExpectedDeliveryDate} a bien été créée.`,
+				`Votre commande pour le ${notification.content.ExpectedDeliveryDate} a bien été envoyée.`,
 				`#/orders/${notification.content.PurchaseOrderId}`,
 				true,
 				false,
@@ -214,7 +214,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`Une nouvelle commande a été créée par ${notification.content.SenderName} pour le ${notification.content.ExpectedDeliveryDate}`,
+				`${notification.content.SenderName} a passé commande pour le ${notification.content.ExpectedDeliveryDate}.`,
 				`#/orders/${notification.content.PurchaseOrderId}`,
 				true,
 				false,
@@ -224,7 +224,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"progress",
-				`${notification.content.VendorName} est en train de préparer votre commande ${notification.content.Reference}`,
+				`${notification.content.VendorName} est en train de préparer votre commande.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -234,7 +234,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"warning",
-				`La commande pour le ${notification.content.ExpectedDeliveryDate}, numéro ${notification.content.Reference}, a été annulée par ${notification.content.SenderName}`,
+				`${notification.content.SenderName} a annulé votre commande pour le ${notification.content.ExpectedDeliveryDate}.`,
 				`#/orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -254,7 +254,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`Votre commande ${notification.content.Reference} est prête`,
+				`Votre commande ${notification.content.Reference} est prête.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -264,7 +264,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"error",
-				`Votre commande ${notification.content.Reference} a été refusée par ${notification.content.VendorName}`,
+				`${notification.content.VendorName} a refusé votre commande.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -274,7 +274,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"info",
-				`Votre commande ${notification.content.Reference} a été acceptée par ${notification.content.VendorName}`,
+				`${notification.content.VendorName} a accepté votre commande.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -284,7 +284,7 @@ export const getFormattedNotification = (notification, local, display) => {
 			return getNotification(
 				notification,
 				"success",
-				`Le paiement de ${notification.content.TotalPrice}€ pour votre commande groupée ${notification.content.Reference}, a été accepté.`,
+				`Le paiement de votre commande de ${notification.content.TotalPrice}€ a été accepté.`,
 				`#/my-orders`,
 				true,
 				true,
