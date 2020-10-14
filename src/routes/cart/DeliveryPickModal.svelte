@@ -58,7 +58,7 @@
               class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2
               bg-white rounded"
               on:click={() => updateSelectedValue(delivery, deliveryHour)}>
-              <p>
+              <p class="font-semibold">
                 <Icon data={faCalendar} class="mr-2 w-3 h-3"/>
                 {format(new Date(deliveryHour.expectedDeliveryDate), 'PPPP', {
                   locale: fr

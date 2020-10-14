@@ -170,9 +170,9 @@
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3">
-        <p class="uppercase font-bold leading-none">Commande livrée</p>
+        <p class="uppercase font-bold leading-none">Commande récupérée</p>
         <div class="mt-2">
-          <p>Votre commande vous a été livrée</p>
+          <p>Vous avez récupéré cette commande.</p>
         </div>
       </div>
     {/if}
@@ -311,7 +311,7 @@
             class="md-step p-0 md:p-6"
             class:active={getProcessStep(order.status) >= 4}>
             <div class="md-step-circle">
-              {#if getProcessStep(order.status) <= 4}
+              {#if getProcessStep(order.status) <= 4 && order.status !== OrderStatusKind.Delivered.Value}
                 <span>4</span>
               {:else}
                 <Icon data={faCheck} class="mb-1" />
