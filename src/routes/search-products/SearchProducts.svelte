@@ -23,7 +23,7 @@
   import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import Icon from "svelte-awesome";
-  import { faFilter } from "@fortawesome/free-solid-svg-icons";
+  import { faFilter, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
   import { freezeBody, unfreezeBody, formatMoney } from "./../../helpers/app.js";
   import Loader from "./../../components/Loader.svelte";
@@ -269,6 +269,15 @@
       return selectedItem.set(null);
     }
   }
+  
+  const removeTag = (tag) => {
+    let queryParam = null;
+
+    if (tag == "bio") queryParam = "labels";
+    else queryParam = "category";
+
+    return routerInstance.pushQueryParams({ [queryParam]: "" });
+  };
 
   onMount(async () => {
     var newPosition = retrieveUserLocationInQueryString();
@@ -479,10 +488,12 @@
             {#if $filters.tags && $filters.tags.length > 0}
               {#each $filters.tags as tag}
                 <span
+                  on:click={() => removeTag(tag)}
                   style="font-size: .6rem"
                   class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-                  items-center bg-gray-200">
+                  items-center bg-gray-200 cursor-pointer">
                   {tag}
+                  <Icon data={faTimesCircle} scale=".7" class="ml-2" />
                 </span>
               {/each}
             {/if}
