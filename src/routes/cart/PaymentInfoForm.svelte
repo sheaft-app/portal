@@ -64,7 +64,7 @@
           <Icon data={faHeart} class="mr-3 text-red-500" />
           <span>Sheaft ne vit que par les dons</span>
         </div>
-        <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui proposons un outil gratuit pour vous permettre de bien manger plus facilement.</p>
+        <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui propose un outil gratuit pour vous permettre de bien manger plus facilement.</p>
         <p>Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit projet de devenir grand.</p>
         <button class="btn btn-accent btn-lg mt-2" on:click={() => routerInstance.goTo({ 
           Path: CartRoutes.Resume.Path, 

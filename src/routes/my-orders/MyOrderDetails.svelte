@@ -148,7 +148,7 @@
             stock et de sa capacité de production.
           </p>
           <p>
-            Vous serez informé dès l'instant où le producteur aura traité
+            Vous recevrez un e-mail dès l'instant où le producteur aura traité
             votre commande.
           </p>
         </div>

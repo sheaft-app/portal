@@ -44,14 +44,14 @@
   <p class="leading-5">
     Vous vous apprêtez à
     <b>
-      supprimer {selectedItems.length} produits.
+      supprimer {selectedItems.length} produit{selectedItems.length > 1 ? "s" : ""}.
     </b>
   </p>
   <p>
     Cette opération supprimera tous les produits ci-dessous. Cette opération est
     <span class="text-red-600 font-bold">irréversible.</span>
   </p>
-  <ul class="text-gray-600 text-sm mt-2">
+  <ul class="text-gray-600 mt-2 font-semibold">
     {#each selectedItems as product}
       <li>{product.name}</li>
     {/each}

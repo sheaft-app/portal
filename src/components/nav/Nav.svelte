@@ -104,23 +104,6 @@
           scale="0.9" />
         {AccountRoutes.Profile.Name}
       </a>
-      {#if isOwner($authUserAccount)}
-        <a
-          class="px-4 block hover:bg-gray-100 py-3 text-normal"
-          href="javascript:void(0)"
-          on:click={() => {
-            userMenuExpended.set(false);
-            routerInstance.goTo(AccountRoutes.Company);
-          }}>
-          <Icon
-            data={AccountRoutes.Company.Icon}
-            class="inline mr-4 md:mr-1 w-4"
-            scale="0.9" />
-          {isInRole($authUserAccount, [
-            Roles.Producer.Value
-          ]) ? 'Mon entreprise' : 'Mon commerce'}
-        </a>
-      {/if}
       <hr />
       <button
         on:click={() => {

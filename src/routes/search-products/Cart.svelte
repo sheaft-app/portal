@@ -90,7 +90,7 @@
       </div>
     </div>
   {:else}
-    <div class="text-gray-600 text-center px-3 text-sm">Les produits dans votre panier s'afficheront ici à mesure que vous les ajoutez.</div>
+    <div class="text-gray-600 text-center px-3 text-sm">Les produits de votre panier s'affichent ici à mesure que vous les ajoutez.</div>
   {/each}
 </section>
 <div

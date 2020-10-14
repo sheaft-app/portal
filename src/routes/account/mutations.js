@@ -20,8 +20,6 @@ export const UPDATE_STORE = gql`
 			lastName
 			firstName
 			name
-			siret
-			vatIdentifier
 			openForNewBusiness
 			description
 			email
@@ -34,11 +32,6 @@ export const UPDATE_STORE = gql`
 				country
 				latitude
 				longitude
-			}
-			tags{
-				id 
-				name
-				kind
 			}
 			openingHours {
 				day
@@ -56,8 +49,6 @@ export const UPDATE_PRODUCER = gql`
 			lastName
 			firstName
 			name
-			siret
-			vatIdentifier
 			openForNewBusiness
 			description
 			email
@@ -70,11 +61,6 @@ export const UPDATE_PRODUCER = gql`
 				country
 				latitude
 				longitude
-			}
-			tags{
-				id 
-				name
-				kind
 			}
 		}
 	}

@@ -52,10 +52,10 @@
   <form class="mt-6">
     <p class="block uppercase tracking-wide text-red-500 text-xs font-bold">
       Attention, la suppression du compte est irréversible, vous perdrez toutes
-      vos données (points, commandes, etc...).
+      vos données (points, commandes, etc.).
     </p>
     <p class="mb-3 mt-1">
-      Vous pouvez indiquer une raison pour nous aider à améliorer le service.
+      Vous nous quittez ? 😔 Pour nous aider à améliorer notre service, dites-nous pourquoi ici :
     </p>
     <textarea
       bind:value={reason}
@@ -65,7 +65,7 @@
       placeholder="Raison (optionnel)"
       type="text" />
     <p class="mb-3 mt-4">
-      Pour confirmer veuillez écrire SUPPRIMER dans le champs ci-dessous
+      Pour confirmer, veuillez écrire SUPPRIMER dans le champ ci-dessous
     </p>
     <input
       bind:value={validationInput}

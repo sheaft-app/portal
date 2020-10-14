@@ -1,7 +1,6 @@
 <script>
 	import { onMount, onDestroy, getContext } from "svelte";
 	import { fly, slide } from "svelte/transition";
-  import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
   import { cartItems } from "./../../stores/app.js";
   import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
@@ -26,7 +25,7 @@
   const routerInstance = GetRouterInstance();
   const { open } = getContext("modal");
 
-	let step = 1, acceptCgv = false;
+	let step = 1;
 
 	let isLoading = true;
 	let userLegalsFound = false;
@@ -236,27 +235,13 @@
 							<p class="font-bold text-lg">{formatMoney(order.totalPrice)}</p>
 						</div>
 					</div>
-					{#if step == 2}
-						<div class="pt-4 pb-8 lg:px-2" in:slide>
-							<label class="cursor-pointer">
-								<InputCheckbox
-									checked={acceptCgv}
-									onClick={() => (acceptCgv = !acceptCgv)} />
-								Je reconnais avoir lu et compris
-								<a href="https://www.sheaft.com/legals" target="_blank">
-									les CGV
-								</a>
-								et je les accepte
-							</label>
-						</div>
-					{/if}
 					<div class="border-t border-gray-400 mt-3 pt-3">
 						{#if step == 2}
 							<button
 								type="button"	
 								on:click={handleSubmit}
-								disabled={!acceptCgv || isPaying}
-								class:disabled={!acceptCgv || isPaying}
+								disabled={isPaying}
+								class:disabled={isPaying}
 								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
 								justify-center m-auto"
 								style="padding-left: 50px; padding-right: 50px;">

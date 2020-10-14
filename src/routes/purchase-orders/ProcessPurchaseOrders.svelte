@@ -43,7 +43,6 @@ import { GET_ORDERS } from "./queries";
 <ActionConfirm
 	{errorsHandler}
 	title={purchaseOrders.length > 1 ? 'Préparer ces commandes' : 'Préparer cette commande'}
-	level="info"
 	icon={faCheck}
 	submitText="Préparer"
 	closeText="Fermer"
@@ -53,6 +52,6 @@ import { GET_ORDERS } from "./queries";
 	<p class="leading-5">
 		Préparer {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
 		alertera automatiquement votre client que vous avez débuté la préparation
-		de leur commande.
+		de sa commande.
 	</p>
 </ActionConfirm>

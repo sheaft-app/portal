@@ -9,6 +9,7 @@
 
   let isSearchingAddress = false;
   let valid = false;
+  let acceptCgv = false;
 
   const resetAddress = () => {
     company.address = {
@@ -26,7 +27,7 @@
     }
   }
   
-  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode;
+  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode && acceptCgv;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -90,6 +91,18 @@
           Modifier l'adresse
         </button>
       </p>
+      <div class="mt-2">
+        <label class="cursor-pointer">
+          <InputCheckbox
+            checked={acceptCgv}
+            onClick={() => (acceptCgv = !acceptCgv)} />
+          Je reconnais avoir lu et compris
+          <a href="https://www.sheaft.com/legals" target="_blank">
+            les conditions générales de vente et d'utilisation
+          </a>
+          et je les accepte
+        </label>
+      </div>
     </fieldset>
   </form>
 {:else}

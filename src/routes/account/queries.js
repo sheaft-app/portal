@@ -29,18 +29,11 @@ export const GET_STORE_DETAILS = gql`
 			lastName
 			firstName
 			name
-			siret
-			vatIdentifier
 			openForNewBusiness
 			description
 			email
 			phone
 			picture
-			tags {
-				id
-				kind
-				name
-			}
 			openingHours {
 				day
 				from
@@ -66,18 +59,11 @@ export const GET_PRODUCER_DETAILS = gql`
 			lastName
 			firstName
 			name
-			siret
-			vatIdentifier
 			openForNewBusiness
 			description
 			email
 			phone
 			picture
-			tags {
-				id
-				kind
-				name
-			}
 		}
 	}
 `;

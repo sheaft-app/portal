@@ -24,6 +24,7 @@
   const errorsHandler = new SheaftErrors();
 
   let isRegistering = false;
+  let acceptCgv = false;
   let sponsorShow = false;
   let selectedDepartment = null;
 
@@ -187,6 +188,18 @@
                 </div>
               {/if}
             </div>
+            <div class="mt-4">
+              <label class="cursor-pointer">
+                <InputCheckbox
+                  checked={acceptCgv}
+                  onClick={() => (acceptCgv = !acceptCgv)} />
+                Je reconnais avoir lu et compris
+                <a href="https://www.sheaft.com/legals" target="_blank">
+                  les conditions générales de vente et d'utilisation
+                </a>
+                et je les accepte
+              </label>
+            </div>
             <!-- <div class="flex flex-wrap justify-center">
               <div>
                 <label
@@ -219,7 +232,8 @@
         </div>
         <div>
           <button
-            class:disabled={!$consumerForm.valid}
+            class:disabled={!$consumerForm.valid || !acceptCgv}
+            disabled={!acceptCgv}
             on:click={handleSubmit}
             aria-label="Valider"
             class="form-button uppercase text-sm cursor-pointer text-white
