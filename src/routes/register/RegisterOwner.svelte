@@ -36,7 +36,7 @@
   let invalidSiret = false;
 
   let company = {
-    name: authInstance.user.profile.name || null,
+    name: null,
     openForNewBusiness: true,
     address: {
       line1: null,
@@ -60,11 +60,11 @@
         line2: null,
         city: null,
         zipcode: null,
-        country: null
+        country: 'FR'
       },
       owner: {
-        firstName: null,
-        lastName: null,
+        firstName: authInstance.user.profile.given_name || null,
+        lastName: authInstance.user.profile.family_name || null,
         email: authInstance.user.profile.email || null,
         birthDate: null,
         nationality: null,
@@ -73,7 +73,7 @@
           line2: null,
           city: null,
           zipcode: null,
-          country: null
+          country: 'FR'
         }
       }
     }

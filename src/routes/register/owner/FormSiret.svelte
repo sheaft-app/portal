@@ -42,8 +42,8 @@
       if (siret.length < 14 || siret.length > 14) return;
 
       isSearchingSiret = true;
-      var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, { input: siret});
-      if (!res.success || !res.data.active) {
+      var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, { input: siret });
+      if (!res.success) {
         isSearchingSiret = false;
         invalidSiret = true;
         stepper++;
@@ -51,6 +51,7 @@
       }
 
     company.legals.address = res.data.address;
+    company.legals.kind = res.data.kind;
     company.name = res.data.name;
     company.firstName = company.firstName
       ? company.firstName

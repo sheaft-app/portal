@@ -16,6 +16,7 @@ export const SEARCH_COMPANY_SIRET = gql`
 				lastName
 			}
 			name
+			kind
 			siren
 			siret
 		}

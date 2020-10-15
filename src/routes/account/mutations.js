@@ -53,7 +53,7 @@ export const UPDATE_PRODUCER = gql`
 			description
 			email
 			phone
-			address{
+			address {
 				line1
 				line2
 				zipcode
