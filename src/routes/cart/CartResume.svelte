@@ -398,16 +398,16 @@
                     <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalFees)}</p>
                   </div>
                 </div>
-                <div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
+                <div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
                   <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
-                    <p class:invisible={isLoadingPaymentInfo}>Total</p>
+                    <p class="uppercase font-semibold" class:invisible={isLoadingPaymentInfo}>Total</p>
                   </div>
                   <div class:skeleton-box={isLoadingPaymentInfo}>
                     <p class="font-bold text-lg" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalPrice)}</p>
                   </div>
                 </div>
               </div>
-              <div class="pt-2 lg:pt-3">
+					  <div class="mt-3">
                 <button
                   type="button"
                   on:click={validateCart}

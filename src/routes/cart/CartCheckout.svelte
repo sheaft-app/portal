@@ -36,18 +36,18 @@
 	let paymentError = null;
 
 	let user = {
-    firstName: null,
-    lastName: null,
+    firstName: $authUserAccount.profile.given_name,
+    lastName: $authUserAccount.profile.family_name,
     birthDate: null,
 		nationality: null,
-		countryOfResidence: null,
-    email: null,
+		countryOfResidence: "FR",
+    email: $authUserAccount.profile.email,
     address: {
       line1: null,
       line2: null,
       city: null,
 			zipcode: null,
-			country: null
+			country: "FR"
 		}
 	};
 
@@ -227,7 +227,7 @@
 							</div>
 						</div>
 					{/if}
-					<div class="flex justify-between w-full lg:px-3 border-gray-300 pt-2">
+					<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
 						<div class="text-left">
 							<p class="uppercase font-semibold">Total</p>
 						</div>
@@ -235,7 +235,7 @@
 							<p class="font-bold text-lg">{formatMoney(order.totalPrice)}</p>
 						</div>
 					</div>
-					<div class="border-t border-gray-400 mt-3 pt-3">
+					<div class="mt-3">
 						{#if step == 2}
 							<button
 								type="button"	
