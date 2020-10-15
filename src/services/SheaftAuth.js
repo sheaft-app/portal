@@ -40,12 +40,12 @@ class SheaftAuth {
 				authUserAccount.set(user);
 				authAuthenticated.set(true);
 
-				try {					
+				try {
 					var result = await fetch(
 						config.api + "/graphql",
 						getUserInfoSettings(user)
 					);
-					
+
 					var content = await result.json();
 					if (content.data.me && content.data.me.id) {
 						authRegistered.set(true);
@@ -54,13 +54,12 @@ class SheaftAuth {
 					} else if (content.errors && content.errors.length > 0) {
 						authInstance.logoutFromApp();
 						return;
-					} else { 
+					} else {
 						authRegistered.set(false);
 					}
 
 					authAuthorized.set(true);
 					authInitialized.set(true);
-
 				} catch (err) {
 					console.error(err.toString());
 					authAuthorized.set(false);
@@ -119,8 +118,9 @@ class SheaftAuth {
 	}
 
 	userIsLoggedIn() {
-		var result = !this.userIsAnonymous() && this.initialized && this.authenticated;
-		if (!result) this.login();
+		var result =
+			!this.userIsAnonymous() && this.initialized && this.authenticated;
+		if (!result) this.login(window.location.hash);
 
 		return result;
 	}
@@ -145,12 +145,20 @@ class SheaftAuth {
 
 	async login(redirectUrl) {
 		try {
-			if(redirectUrl && redirectUrl.length > 0){
+			if (redirectUrl && redirectUrl.length > 0) {				
+				if (redirectUrl.indexOf("/") == 0) {
+					redirectUrl = `#${redirectUrl}`;
+				}
+
+				if (redirectUrl[0] != '#') {
+					redirectUrl = `#/${redirectUrl}`;
+				}
+
 				return await this.userManager.signinRedirect({
-					state: { redirectTo: `#${redirectUrl}` },
+					state: { redirectTo: redirectUrl },
 				});
 			}
-			
+
 			return await this.userManager.signinRedirect();
 		} catch (exc) {
 			location.hash = "";
