@@ -15,13 +15,7 @@
 
   const handleGet = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.query(
-			getQuery,
-			{
-				id: userId,
-			},
-			errorsHandler.Uuid
-		);
+		var res = await graphQLInstance.query(getQuery, { id: userId, }, errorsHandler.Uuid);
 		isLoading = false;
 
 		if (!res.success) {
@@ -38,11 +32,7 @@
 		if ($form.valid) {
 			isLoading = true;
 
-			var res = await graphQLInstance.mutate(
-				updateQuery,
-				user,
-				errorsHandler.Uuid
-			);
+			var res = await graphQLInstance.mutate(updateQuery,user, errorsHandler.Uuid);
 			isLoading = false;
 
 			if (!res.success) {

@@ -13,7 +13,7 @@
 
 {#if show}
 	<div
-		class="p-4 py-3 bg-white shadow-lg fixed -mx-4 md:mx-0 actions-bar rounded hidden md:block" style="z-index: 1; max-width: fit-content;">
+		class="p-4 py-3 bg-white shadow-lg fixed -mx-4 md:mx-0 actions-bar rounded hidden md:block border border-gray-400" style="z-index: 1; max-width: fit-content;">
 		<div class="flex justify-between">
 			{#each actions as act}
 				<Action

@@ -1,6 +1,5 @@
 import {
 	faQuestion,
-	faHourglass,
 	faThumbsUp,
 	faCircleNotch,
 	faThumbsDown,
@@ -11,6 +10,18 @@ import {
 	faTruckLoading
 } from "@fortawesome/free-solid-svg-icons";
 import GetEnumObjectFor from './helpers.js';
+
+export const PurchaseOrderStatus = {
+	WAITING: "WAITING",
+	ACCEPTED: "ACCEPTED",
+	PROCESSING: "PROCESSING",
+	COMPLETED: "COMPLETED",
+	SHIPPING: "SHIPPING",
+	DELIVERED: "DELIVERED",
+	REFUSED: "REFUSED",
+	CANCELLED: "CANCELLED",
+	NONE: "NONE",
+};
 
 let enums = {
 	Waiting: {

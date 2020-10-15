@@ -7,6 +7,7 @@ export const GET_ORDERS = gql`
 		$after: String
 		$before: String
 		$orderBy: PurchaseOrderDtoSort
+		$where: PurchaseOrderDtoFilter
 	) {
 		purchaseOrders(
 			first: $first
@@ -14,6 +15,7 @@ export const GET_ORDERS = gql`
 			after: $after
 			before: $before
 			order_by: $orderBy
+			where: $where
 		) {
 			pageInfo {
 				startCursor

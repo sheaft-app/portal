@@ -1,6 +1,7 @@
 <script>
 	import Paginate from "./../../enums/Paginate";
 	import OrderByDirection from "./../../enums/OrderByDirection";
+	import { PurchaseOrderStatus } from "./../../enums/OrderStatusKind";
 	import Loader from "./../Loader.svelte";
 	import Icon from "svelte-awesome";
 	import { querystring } from "svelte-spa-router";
@@ -22,7 +23,7 @@
 			orderBy: "createdOn",
 			direction: OrderByDirection.DESC,
 			paginate: Paginate.After,
-			take: 20,
+			take: 20
 		},
 		selectedItems = null,
 		getRowBackgroundColor = null,
@@ -184,6 +185,7 @@
 					after: _searchValues.cursor,
 					before: null,
 					orderBy: {},
+					where: _searchValues.where ? {} : null
 				};
 				break;
 			case Paginate.Before:
@@ -193,6 +195,7 @@
 					before: _searchValues.cursor,
 					after: null,
 					orderBy: {},
+					where: _searchValues.where ? {} : null
 				};
 				break;
 			case Paginate.Last:
@@ -202,6 +205,7 @@
 					after: null,
 					before: _searchValues.cursor,
 					orderBy: {},
+					where: _searchValues.where ? {} : null
 				};
 				break;
 			case Paginate.First:
@@ -212,8 +216,13 @@
 					before: null,
 					after: _searchValues.cursor,
 					orderBy: {},
+					where: _searchValues.where ? {} : null
 				};
 				break;
+		}
+
+		if (_searchValues.where && _searchValues.whereValues) {
+			settings.where[_searchValues.where] = _searchValues.whereValues.split(',');
 		}
 
 		settings.orderBy[_searchValues.orderBy] = _searchValues.direction;
@@ -241,6 +250,7 @@
 		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;" on:click={() => toggleMoreActions.set(false)}></div>
 	{/if}
 	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0 table-container">
+		<slot name="filters"></slot>
 		<table class={classes}>
 			<thead>
 				<tr class="bg-white">

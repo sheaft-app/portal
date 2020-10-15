@@ -51,6 +51,6 @@
 	close={() => handleClose({ success: false, data: null })}>
 	<p class="leading-5">
 		Marquer {purchaseOrders.length > 1 ? 'ces commandes comme livrées' : 'cette commande comme livrée'}
-		enverra une confirmation au client qu'il a bien récupéré sa commande.
+		confirmera au client qu'il a bien récupéré sa commande.
 	</p>
 </ActionConfirm>
