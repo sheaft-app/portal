@@ -21,6 +21,17 @@ export const SEARCH_PRODUCERS = gql`
 	}
 `;
 
+export const GET_MY_BUSINESS_LOCATION = gql`
+	query GetMyBusinessLocation {
+		myBusiness {
+			address {
+				latitude
+				longitude
+			}
+		}
+	}
+`;
+
 export const GET_PRODUCER_DETAILS = gql`
 	query GetProducerDetails($id: ID!) {
 		producer(input: $id) {

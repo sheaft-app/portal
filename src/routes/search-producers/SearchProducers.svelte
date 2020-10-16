@@ -3,7 +3,7 @@
 	import AgreementStatusKind from "./../../enums/AgreementStatusKind.js";
 	import { fly } from "svelte/transition";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import { SEARCH_PRODUCERS, GET_AGREEMENTS } from "./queries.js";
+	import { SEARCH_PRODUCERS, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION } from "./queries.js";
 	import { isLoading, filters, isFetchingMore, items } from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import { selectedItem } from "./../../stores/app.js";
@@ -37,6 +37,7 @@
 	let prevFeed = [];
 	let currentPage = 0;
 	let lastFetchLength = 0;
+	let businessLocation = null;
 
 	function fetchMoreOnIntersect(node, params) {
 		observer.observe(node);
@@ -168,8 +169,21 @@
 		}
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		items.set([]);
+
+		var response = await graphQLInstance.query(
+			GET_MY_BUSINESS_LOCATION,
+			null,
+			errorsHandler.Uuid
+		);
+
+		if (!response.success) {
+			// todo
+			return;
+		}
+
+		businessLocation = response.data.address;
 
 		window.addEventListener("popstate", popStateListener, false);
 	});
@@ -267,7 +281,7 @@
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 				md:gap-3 -mx-4 md:mx-0">
 				{#each $items as producer, index}
-					<ProducerCard {producer} bind:hoveredProducer />
+					<ProducerCard {producer} bind:hoveredProducer {businessLocation} />
 					{#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
 						<div use:fetchMoreOnIntersect>
 							<div class="shadow-md h-full skeleton-box rounded-t-md">

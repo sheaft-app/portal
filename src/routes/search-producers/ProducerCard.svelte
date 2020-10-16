@@ -1,14 +1,18 @@
 <script>
+	import { onMount } from "svelte";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import GetRouterInstance from "../../services/SheaftRouter.js";
   import Icon from "svelte-awesome";
   import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
+  import { authUserAccount } from "./../../stores/auth.js";
+	import GetAuthInstance from "./../../services/SheaftAuth.js";
 
-  const routerInstance = GetRouterInstance();
+  const authInstance = GetAuthInstance();
+
   export let producer,
-    hoveredProducer = null;
+    hoveredProducer = null,
+    businessLocation = null;
 
   const observer = new IntersectionObserver(onIntersect);
   let src = "";
@@ -45,13 +49,16 @@
     };
   };
 
-  const values = routerInstance.getQueryParams();
-  const distanceInfos = GetDistanceInfos(
-    values["latitude"],
-    values["longitude"],
-    producer.address.latitude,
-    producer.address.longitude
-  );
+  let distanceInfos = null;
+
+  $: if (businessLocation) {
+     distanceInfos = GetDistanceInfos(
+        businessLocation.latitude,
+        businessLocation.longitude,
+        producer.address.latitude,
+        producer.address.longitude
+      );
+  }
 </script>
 
 <div
@@ -98,6 +105,7 @@
           {/if}
         </div>
         <div class="pr-8">
+          {#if distanceInfos}
             <div
               class="distance-badge inline-block text-xs font-bold
               text-white px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
@@ -110,6 +118,7 @@
                 {distanceInfos.label}
               </div>
             </div>
+          {/if}
           <h4
             class="font-semibold text-base lg:text-lg leading-tight
             mb-1 mt-3">

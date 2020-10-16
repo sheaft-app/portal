@@ -1,14 +1,12 @@
 <script>
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import GetRouterInstance from "../../services/SheaftRouter.js";
   import Icon from "svelte-awesome";
   import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
 
-  export let store, hoveredStore = null;
+  export let store, hoveredStore = null, businessLocation = null;
 
-  const routerInstance = GetRouterInstance();
   const observer = new IntersectionObserver(onIntersect);
   let src = "";
 
@@ -43,14 +41,17 @@
       longitude: store.address.longitude
     };
   };
+  
+  let distanceInfos = null;
 
-  const values = routerInstance.getQueryParams();
-  const distanceInfos = GetDistanceInfos(
-    values["latitude"],
-    values["longitude"],
-    store.address.latitude,
-    store.address.longitude
-  );
+  $: if (businessLocation) {
+     distanceInfos = GetDistanceInfos(
+        businessLocation.latitude,
+        businessLocation.longitude,
+        producer.address.latitude,
+        producer.address.longitude
+      );
+  }
 </script>
 
 <div

@@ -2,7 +2,7 @@
   import { onMount, onDestroy, getContext } from "svelte";
 	import AgreementStatusKind from './../../enums/AgreementStatusKind.js';
   import { fly } from "svelte/transition";
-  import { SEARCH_STORES, GET_AGREEMENTS } from "./queries.js";
+  import { SEARCH_STORES, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION } from "./queries.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
   import { isLoading, isFetchingMore, filters, items } from "./store";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -39,6 +39,7 @@
   let currentPage = 0;
   let lastFetchLength = 0;
   const QUERY_SIZE = 20;
+  let businessLocation = null;
 
   function fetchMoreOnIntersect(node, params) {
     observer.observe(node);
@@ -156,8 +157,21 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     items.set([]);
+
+    var response = await graphQLInstance.query(
+			GET_MY_BUSINESS_LOCATION,
+			null,
+			errorsHandler.Uuid
+		);
+
+		if (!response.success) {
+			// todo
+			return;
+		}
+
+		businessLocation = response.data.address;
 
     window.addEventListener("popstate", popStateListener, false);
   });
@@ -200,7 +214,7 @@
       <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-3">
         {#each Array(9) as _i}
-          <SkeletonStoreCard />
+          <SkeletonStoreCard  />
         {/each}
       </div>
     {:else}
@@ -228,7 +242,7 @@
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
         md:gap-3 -mx-4 md:mx-0">
         {#each $items as store, index}
-          <StoreCard {store} bind:hoveredStore />
+          <StoreCard {store} bind:hoveredStore {businessLocation} />
           {#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
             <div use:fetchMoreOnIntersect>
               <SkeletonStoreCard />

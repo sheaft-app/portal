@@ -229,12 +229,6 @@
     routerInstance.goTo(CartRoutes.Checkout)
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
     isCreatingOrder = false;
-
-    // routerInstance.goTo(CartRoutes.Success, {
-    //   Query: {
-    //     id: response.data.map(order => order.id)
-    //   }
-    // });
   }
 
   const removeProduct = id => {

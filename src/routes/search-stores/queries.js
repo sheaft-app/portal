@@ -68,6 +68,17 @@ export const GET_AGREEMENTS = gql`
 	}
 `;
 
+export const GET_MY_BUSINESS_LOCATION = gql`
+	query GetMyBusinessLocation {
+		myBusiness {
+			address {
+				latitude
+				longitude
+			}
+		}
+	}
+`;
+
 export const GET_STORE_AGREEMENTS = gql`
 	query GetStoreAgreements($id: ID!) {
 		storeAgreements(
