@@ -59,15 +59,11 @@
 
   async function submit() {
     isLoading = true;
-    const hours = moment === "am" ? 9 : 14;
-    const expectedDeliveryDate = dateSelectionRequired
-      ? format(setHours(new Date(date), hours), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
-      : null;
 
     const mutation = {
       mutation: EXPORT_PICKING_FROM_ORDERS,
       variables: {
-        input: { purchaseOrderIds, expectedDeliveryDate, name }
+        input: { purchaseOrderIds, name }
       }
     };
 
@@ -83,7 +79,7 @@
       );
     } else {
       notificationsInstance.error(
-        "Une erreur est survenue pendant    la demande de création du bon de préparation."
+        "Une erreur est survenue pendant la demande de création du bon de préparation."
       );
     }
 

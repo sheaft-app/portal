@@ -186,29 +186,19 @@ export const UPLOAD_PURCHASE_ORDERS = gql`
 `;
 
 export const EXPORT_PICKING_FROM_ORDERS = gql`
-	mutation ExportPickingFromOrders($input: IdsInput!) {
+	mutation ExportPickingFromOrders($input: ExportPickingOrdersInput!) {
 		exportPickingFromOrders(input: $input) {
-			nodes {
-				id
-				totalOnSalePrice
-				totalWholeSalePrice
-				totalVatPrice
-				reference
-				productsCount
-				expectedDelivery {
-					kind
-					expectedDeliveryDate
-				}
-				createdOn
-				status
-				vendor {
-					name
-				}
-				sender {
-					name
-					email
-					phone
-				}
+			id
+			name
+			createdOn
+			updatedOn
+			status
+			kind
+			startedOn
+			completedOn
+			file
+			user {
+				name
 			}
 		}
 	}
