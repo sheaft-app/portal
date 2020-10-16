@@ -86,7 +86,7 @@
 
   .modal {
     background: white;
-    overflow-y: scroll;
+    overflow: auto;
     margin-top:-64px;
     max-height: calc(100vh - 200px);
     transition: all .2s ease-in-out;
