@@ -48,8 +48,8 @@
      distanceInfos = GetDistanceInfos(
         businessLocation.latitude,
         businessLocation.longitude,
-        producer.address.latitude,
-        producer.address.longitude
+        store.address.latitude,
+        store.address.longitude
       );
   }
 </script>
