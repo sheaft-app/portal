@@ -372,7 +372,7 @@
             <div class="flex items-center mb-2">
               <p>
                 <span class="text-gray-600">Montant :</span>
-                {formatMoney(order.totalWholeSalePrice)}
+                {formatMoney(order.totalOnSalePrice)}
               </p>
             </div>
           </div>
@@ -419,7 +419,7 @@
                       class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider hidden lg:table-cell">
-                      Prix unitaire
+                      Prix unitaire TTC
                     </th>
                     <th
                       class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -431,7 +431,7 @@
                       class="px-4 md:px-8 py-3 border-b md:border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider">
-                      Prix total
+                      Prix Total TTC
                     </th>
                   </tr>
                 </thead>
@@ -477,20 +477,20 @@
                       class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
                       colspan="2">
-                      Total :
+                      Total TTC:
                     </td>
                     <td
                       class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
                       colspan="3">
-                      Total :
+                      Total TTC:
                     </td>
                     <td
                       class="bg-white px-4 md:px-8
                       py-5 text-lg text-right
                       font-bold"
                       colspan="1">
-                      {formatMoney(order.totalWholeSalePrice)}
+                      {formatMoney(order.totalOnSalePrice)}
                     </td>
                   </tr>
                 </tbody>
