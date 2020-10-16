@@ -116,11 +116,9 @@ export const GET_RETURNABLES = gql`
 export const GET_TAGS = gql`
 	query Tags {
 		tags {
-			nodes {
-				id
-				name
-				kind
-			}
+			id
+			name
+			kind
 		}
 	}
 `;

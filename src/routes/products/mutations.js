@@ -33,6 +33,11 @@ export const UPDATE_PRODUCT = gql`
 			vatPricePerUnit
 			createdOn
 			available
+			tags {
+				id
+				name
+				kind
+			}
 		}
 	}
 `;
