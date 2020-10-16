@@ -17,6 +17,7 @@
   const { open } = getContext("modal");
 
   let store = null;
+  let storeDoesntExist = false;
   let distanceInfos = null;
   let isLoading = false;
   let openings = [];
@@ -59,6 +60,7 @@
       //TODO
       isLoading = false;
       console.error("No store found for this ID");
+      storeDoesntExist = true;
       return;
     }
 
@@ -113,7 +115,11 @@
     <span>Fermer</span>
   </button>
 </div>
-{#if !store}
+{#if storeDoesntExist} 
+  <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
+    <p class="text-center">Mince, il semblerait que ce magasin n'existe plus !</p>
+  </div>
+{:else if !store}
   <div class="px-4 sm:px-6">
     <div class="-mx-10">
       <div class="skeleton-box w-full rounded-t-md shadow-md h-40 lg:h-64" />

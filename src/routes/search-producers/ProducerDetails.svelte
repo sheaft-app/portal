@@ -28,6 +28,7 @@
 
   let producer = null;
   let isLoading = true;
+  let producerDoesntExist = false;
   let distanceInfos = null;
 
   const openAndLoad = async () => {
@@ -50,6 +51,7 @@
       // TODO
       isLoading = false;
       console.error("No producer found for this ID");
+      producerDoesntExist = true;
       return;
     }
 
@@ -167,7 +169,11 @@
     <span>Fermer</span>
   </button>
 </div>
-{#if !producer}
+{#if producerDoesntExist} 
+  <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
+    <p class="text-center">Mince, il semblerait que ce producteur n'existe plus !</p>
+  </div>
+{:else if !producer}
   <div class="px-4 sm:px-6">
     <div class="-mx-10">
       <div class="skeleton-box w-full rounded-t-md shadow-md h-40 lg:h-64" />
