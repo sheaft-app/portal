@@ -60,7 +60,7 @@
 	);
 
 	onMount(async () => {
-		if (!order) {
+		if (!order || $cartItems.length == 0) {
 			// todo : terminée, envoyer une notif
 			if ($cartItems.length > 0) {
 				return routerInstance.goTo(CartRoutes.Resume);
@@ -159,10 +159,10 @@
 	<Loader />
 {:else}
 	{#if paymentError}
-		<div class="text-center lg:text-left mb-5" style="word-break: break-word;">
-			<p>{paymentError}</p>
-			<p class="mt-2">Si le problème persiste, contactez le service technique.</p>
-			<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={handleSubmit}>Réessayer</button>
+		<div class="mb-10 p-4 border border-red-500 text-red-500 text-center lg:text-left">
+			<p class="mb-2">{paymentError}</p>
+			<p class="mb-2">Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service technique.</p>
+			<button class="btn btn-lg btn-accent m-auto lg:m-0" disabled={isPaying}	class:disabled={isPaying} on:click={handleSubmit}>Réessayer</button>
 		</div>
 	{/if}
 	<ErrorCard {errorsHandler} />
