@@ -58,7 +58,7 @@ export const GET_ORDER_DETAILS = gql`
 		purchaseOrder(input: $id) {
 			id
 			reference
-			totalWholeSalePrice
+			totalOnSalePrice
 			status
 			createdOn
 			totalVatPrice
