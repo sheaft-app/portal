@@ -2,16 +2,16 @@
   import { onMount, onDestroy } from "svelte";
   import { fly } from "svelte/transition";
   import AcceptCookies from "./AcceptCookies.svelte";
-  import GetAnalyticsInstance from "./../../services/SheaftAnalytics.js";
+  // import GetAnalyticsInstance from "./../../services/SheaftAnalytics.js";
 
-  const analyticsInstance = GetAnalyticsInstance();
+  // const analyticsInstance = GetAnalyticsInstance();
 
   let displayCookiePop = false;
 
   const handleSubmit = async (res) => {
-    analyticsInstance.insights.config.isCookieUseDisabled = !res;
-    analyticsInstance.insights.config.isStorageUseDisabled = !res;
-    analyticsInstance.insights.config.enableSessionStorageBuffer = res;
+    // analyticsInstance.insights.config.isCookieUseDisabled = !res;
+    // analyticsInstance.insights.config.isStorageUseDisabled = !res;
+    // analyticsInstance.insights.config.enableSessionStorageBuffer = res;
     localStorage.setItem("user_cookies_consent", JSON.stringify(res));
     displayCookiePop = false;
   };
@@ -26,7 +26,7 @@
       return;
     }
 
-    analyticsInstance.insights.config.isCookieUseDisabled = !cookieConsent;
+    // analyticsInstance.insights.config.isCookieUseDisabled = !cookieConsent;
   });
 </script>
 

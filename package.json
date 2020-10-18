@@ -24,7 +24,6 @@
     "@babel/runtime-corejs3": "^7.11.2",
     "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
-    "@microsoft/applicationinsights-web": "^2.5.8",
     "@microsoft/signalr": "^3.1.8",
     "apollo-boost": "^0.4.7",
     "apollo-cache-inmemory": "^1.6.5",

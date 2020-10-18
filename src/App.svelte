@@ -3,11 +3,9 @@
   import { InitNotifications } from "./services/SheaftNotifications.js";
   import { InitSignalr } from "./services/SheaftSignalr.js";
   import { InitRouter } from "./services/SheaftRouter.js";
-  import { InitAnalytics } from "./services/SheaftAnalytics.js";
   import { InitGuard } from "./services/SheaftGuard.js";
   import { InitGraphQL } from "./services/SheaftGraphQL.js";
   import SheaftErrors from "./services/SheaftErrors.js";
-  import Loader from "./components/Loader.svelte";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
   import { cartItems, allDepartmentsProgress } from "./stores/app";
   import { authRegistered } from "./stores/auth";
@@ -38,7 +36,7 @@
   var authSettings = config.auth.settings;
   authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
 
-  const analyticsInstance = InitAnalytics(config.analytics.settings);
+  // const analyticsInstance = InitAnalytics(config.analytics.settings);
   const authInstance = InitAuth(authSettings);
   const routerInstance = InitRouter();
   const guardInstance = InitGuard(authInstance, routerInstance);
@@ -70,11 +68,11 @@
       await loginFreshdesk();
     }
     
-    if (config.production) {
-		  var user = authInstance.user;
-      analyticsInstance.insights.clearAuthenticatedUserContext();
-      analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
-    }
+    // if (config.production) {
+		//   var user = authInstance.user;
+    //   analyticsInstance.insights.clearAuthenticatedUserContext();
+    //   analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
+    // }
     
     if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
       routerInstance.goTo("/", null, true);
@@ -88,10 +86,10 @@
   window.addEventListener("beforeinstallprompt", e => {});
 
   window.addEventListener("appinstalled", evt => {
-    analyticsInstance.insights.trackEvent({
-      description: "",
-      type: "AppInstalled"
-    });
+    // analyticsInstance.insights.trackEvent({
+    //   description: "",
+    //   type: "AppInstalled"
+    // });
     notificationInstance.info(
       "L'application a été installée sur votre apppareil avec succès !"
     );
@@ -99,17 +97,17 @@
   });
 
   window.addEventListener("load", () => {
-    if (navigator.standalone) {
-      analyticsInstance.insights.trackEvent(
-        { description: "", type: "AppLoaded" },
-        ["app"]
-      );
-    } else {
-      analyticsInstance.insights.trackEvent(
-        { description: "", type: "AppLoaded" },
-        ["browser"]
-      );
-    }
+    // if (navigator.standalone) {
+    //   analyticsInstance.insights.trackEvent(
+    //     { description: "", type: "AppLoaded" },
+    //     ["app"]
+    //   );
+    // } else {
+    //   analyticsInstance.insights.trackEvent(
+    //     { description: "", type: "AppLoaded" },
+    //     ["browser"]
+    //   );
+    // }
   });
 
   onMount(async () => {
