@@ -12,7 +12,7 @@
     // analyticsInstance.insights.config.isCookieUseDisabled = !res;
     // analyticsInstance.insights.config.isStorageUseDisabled = !res;
     // analyticsInstance.insights.config.enableSessionStorageBuffer = res;
-    localStorage.setItem("user_cookies_consent", true);
+    localStorage.setItem("user_cookies_consent", JSON.stringify(true));
     displayCookiePop = false;
   };
 
