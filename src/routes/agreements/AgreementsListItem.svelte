@@ -19,7 +19,15 @@
 	<div class="flex flex-row items-center">
 		<DisplayStatusIcon status={agreement.status} type="agreement" />
 		<div class="ml-3 leading-tight">
-			<p class="font-semibold text-{AgreementStatusKind.color(agreement.status)}">{AgreementStatusKind.label(agreement.status)}</p>
+			<p class="font-semibold text-{AgreementStatusKind.color(agreement.status)}">
+			{#if agreement.status == AgreementStatusKind.WaitingForProducerApproval.Value && authManager.isInRole([Roles.Producer.Value])}
+				Vous devez traiter cet accord
+			{:else if agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value && authManager.isInRole([Roles.Store.Value])}
+				Vous devez traiter cet accord
+			{:else}
+				{AgreementStatusKind.label(agreement.status)}
+			{/if}
+			</p>
 			{#if authManager.isInRole([Roles.Producer.Value])}
 				<span class="text-lg font-medium">{agreement.store.name}</span>
 			{:else}
