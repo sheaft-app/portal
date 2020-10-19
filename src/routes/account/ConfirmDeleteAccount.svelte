@@ -12,6 +12,7 @@
   var graphQL = GetGraphQLInstance();
   let validationInput = null;
   let reason = null;
+  let isRemoving = false;
 
   $: valid = validationInput == "SUPPRIMER";
 
