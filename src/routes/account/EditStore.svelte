@@ -97,7 +97,7 @@
 		</Toggle>
 	</div>
 	{#if store.openForNewBusiness}
-		<div class="form-control mt-2" transition:slide>
+		<div class="form-control mt-2" transition:slide|local>
 			<div class="w-full" use:bindClass={{ form: storeForm, name: "openingHours" }}>
 				<label for="grid-timestamp">Horaires d'ouverture *</label>
 				<OpeningHoursContainer bind:openings={store.openingHours} />
