@@ -111,21 +111,26 @@
           quantity: product.quantity
         };
       }),
-      producersExpectedDeliveries: selectedDeliveries.map((d) => {
+      donation: "NONE",
+      producersExpectedDeliveries: productsFiltered.map(product => {
         return {
-          producerId: d.id,
-          deliveryModeId: d.selectedDelivery.id, 
-          expectedDeliveryDate: d.selectedDeliveryHour.expectedDeliveryDate
-        }
+          producerId: product.producer.id,
+          deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
+          expectedDeliveryDate: product.producer.deliveryHour ? product.producer.deliveryHour.expectedDeliveryDate : null
+        };
       })
+      .filter(
+        (producer, index, self) =>
+          index === self.findIndex(t => t.producerId === producer.producerId)
+      )
     }, errorsHandler.Uuid);
+
+    isCreatingOrder = false;
 
     if (!res.success) {
       // todo 
       return;
     }
-
-    isCreatingOrder = false;
 
     routerInstance.goTo(MyOrdersRoutes.List);
   }

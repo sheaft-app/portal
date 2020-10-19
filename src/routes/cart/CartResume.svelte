@@ -116,7 +116,7 @@
           index === self.findIndex(t => t.producerId === producer.producerId)
       );
 
-    //   l'utilisateur n'a pas choisi tous les points de retrait, on ne les envoie pas updateOrder
+    //  l'utilisateur n'a pas choisi tous les points de retrait, on n'envoie pas updateOrder
     if (producersExpectedDeliveries.find((p) => !p.deliveryModeId)) {
       producersExpectedDeliveries = null;
     }
