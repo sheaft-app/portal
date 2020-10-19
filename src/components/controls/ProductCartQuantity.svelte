@@ -1,14 +1,17 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
   import { cartItems, searchResults } from "./../../stores/app.js";
   import { fly } from "svelte/transition";
 
-  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0;
+  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null;
 
   let product = $cartItems.find(c => c.id === productId);
   let quantity = 0;
   let displayFeedback = false;
 
-  let timeout = null;
+  onMount(() => {
+    displayFeedback = false;
+  })
 
   const handleLess = () => {
     if (quantity !== minQuantity) {
@@ -42,6 +45,10 @@
     if (!product) {
       product = $searchResults.find(p => p.id === productId);
       $cartItems = [product, ...$cartItems];
+    }
+
+    if (!product) {
+      return;
     }
 
     product.quantity = quantity;
@@ -106,7 +113,7 @@
   </div>
   <div onselectstart="return false" class="mt-2 relative hidden lg:block">
     {#if quantity > 0 && displayFeedback}
-      <div transition:fly={{ y: -30 }} class="text-sm text-center absolute w-full">
+      <div transition:fly|local={{ y: -30 }} class="text-sm text-center absolute w-full">
         <p>x{quantity} dans le panier</p>
       </div>
     {/if}

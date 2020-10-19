@@ -40,6 +40,12 @@
   let values = routerInstance.getQueryParams();
   let distanceInfos = null;
   let deliveries = [];
+  let timeout = null;
+
+  if (timeout) {
+    clearTimeout(timeout);
+  }
+
 
   const getProductDetails = async id => {
     isLoading = true;
@@ -47,7 +53,7 @@
 
     if (!res.success) {
       isLoading = false;
-      selectedItem.set(null);
+      close();
       //TODO
       return;
     }
@@ -65,7 +71,7 @@
 
     if (!res.success) {
       isLoading = false;
-      selectedItem.set(null);
+      close();
       //TODO
     }
 
@@ -149,9 +155,18 @@
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
       event.preventDefault();
-      selectedItem.set(null);
+
+      close()
     }
   };
+
+  const close = () => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    selectedItem.set(null);
+  }
 
   $: if ($selectedItem) openAndLoad($selectedItem);
   $: isInCart = $cartItems.find(c => c.id === $selectedItem) || false;
@@ -164,7 +179,7 @@
   hidden lg:block"
   style="z-index: 2;">
   <button
-    on:click={() => selectedItem.set(null)}
+    on:click={close}
     aria-label="Fermer"
     class="font-bold flex items-center">
     <Icon data={faTimesCircle} class="mr-2" />
@@ -253,6 +268,7 @@
       <ProductCartQuantity
         productId={$selectedItem}
         plusButtonActive
+        bind:timeout
         userFeedback />
     {/if}
     <div class="mt-5">
