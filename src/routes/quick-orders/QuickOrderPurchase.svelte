@@ -55,7 +55,9 @@
       }
     }).sort((a, b) => a.producer.name >= b.producer.name ? 1 : -1);
 
-    loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
+    if (normalizedProducts.length > 1) {
+      loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
+    }
 
     dirty = false;
   }
