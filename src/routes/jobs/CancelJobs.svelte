@@ -6,7 +6,7 @@
 	import GetNotificationsInstance from "./../../services/SheaftNotifications";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import SheaftErrors from "./../../services/SheaftErrors";
-import { GET_JOBS } from "./queries";
+	import { GET_JOBS } from "./queries";
 
 	const errorsHandler = new SheaftErrors();
 

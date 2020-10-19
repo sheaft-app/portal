@@ -47,12 +47,12 @@
     classNames="ml-3"
     isChecked={activeLabels.includes('bio')}
     on:change={() => toggleBio()}>
-     <span>Magasin proposant déjà des produits de l'agriculture biologique</span>
+     <span>Producteur pratiquant l'agriculture biologique</span>
   </Toggle>
 </div>
 <div class="mt-6">
   <label class="block uppercase tracking-wide text-xs font-bold mb-2">
-    Magasin proposant déjà
+    Producteur proposant déjà
   </label>
   <CategorySelect
     callback={close}

@@ -29,14 +29,13 @@
   let producersDisplayed = [];
   let selectedDeliveries = [];
   let isLoading = false;
-  let acceptCgv = false;
   let dirty = false;
   let isLoadingDeliveries = true;
   let comment = "";
 
   $: isCreatingOrder = false;
 
-  $: isValid = acceptCgv && !producerDeliveries.find(d => !d.deliveryHour);
+  $: isValid = !normalizedProducts.find(c => !c.producer.deliveryHour);
 
   const getAllAvailableProducts = async () => {
     isLoading = true;
@@ -53,7 +52,7 @@
         ...i,
         quantity: 0
       }
-    }).sort((a, b) => a.producer.name >= b.producer.name ? 1 : -1);
+    }).sort((a, b) => a.producer.name >= b.producer.name ? 1 : 0);
 
     if (normalizedProducts.length > 1) {
       loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
@@ -77,15 +76,6 @@
     }
 
     producerDeliveries = res.data;
-    selectedDeliveries = res.data.map((d) => {   
-      return {
-        id: d.id,
-        name: d.name,
-        selectedDelivery: d.deliveries[0],
-        selectedDeliveryHour: d.deliveries[0].deliveryHours[0]
-      }
-    })
-
     isLoadingDeliveries = false;
   }
 
@@ -94,8 +84,9 @@
 
     if (product.quantity !== 0) {
       product.quantity = (product.quantity || 1) - 1;
-      normalizedProducts[product] = product;
     }
+
+    normalizedProducts = normalizedProducts;
 
     if (!dirty) dirty = true;
   };
@@ -103,7 +94,8 @@
   const handleMore = productId => {
     let product = normalizedProducts.find(p => p.id === productId);
     product.quantity = (product.quantity || 0) + 1;
-    normalizedProducts[product] = product;
+
+    normalizedProducts = normalizedProducts;
 
     if (!dirty) dirty = true;
   };
@@ -182,42 +174,42 @@
       <Loader />
     {:else if normalizedProducts.length > 0}
       {#if producerDeliveries.length > 1}
-      <div class="hidden lg:block mb-5">
-        <div class="themed w-full lg:w-1/2">
-          <Select
-            items={producerDeliveries}
-            getOptionLabel={(l) => l.name}
-            getSelectionLabel={(l) => l.name}
-            showChevron={true}
-            hideSelectedOnFocus={true}
-            on:select={(selectedVal) => { producersDisplayed = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [] }}
-            optionIdentifier="id"
-            placeholder="Filtrez les producteurs"
-            noOptionsMessage="Aucun producteur trouvé"
-            isSearchable={true}
-            isMulti={true}
-            isClearable={false}
-            containerStyles="font-weight: 600; color: #4a5568; height: 43px;" />
+        <div class="hidden lg:block mb-5">
+          <div class="themed w-full lg:w-1/2">
+            <Select
+              items={producerDeliveries}
+              getOptionLabel={(l) => l.name}
+              getSelectionLabel={(l) => l.name}
+              showChevron={true}
+              hideSelectedOnFocus={true}
+              on:select={(selectedVal) => { producersDisplayed = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [] }}
+              optionIdentifier="id"
+              placeholder="Filtrez les producteurs"
+              noOptionsMessage="Aucun producteur trouvé"
+              isSearchable={true}
+              isMulti={true}
+              isClearable={false}
+              containerStyles="font-weight: 600; color: #4a5568; height: 43px;" />
+          </div>
         </div>
-      </div>
       {/if}
       <!-- <div class="block lg:hidden">
         <button on:click={showFilterProducersModal} type="button" class="btn btn-lg bg-white shadow">Filtrer les producteurs</button>
       </div> -->
       <div class="lg:flex lg:flex-row">
         <div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
-          <div
-            class="align-middle inline-block min-w-full overflow-hidden items">
-            {#each (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts) as item, i (item.id)}
+          <div class="align-middle inline-block min-w-full overflow-hidden items">
+            {#each (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts) as item, i}
               {#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts)[i - 1].producer.name !== item.producer.name}
-                <p style="border-bottom: 0;" class="text-lg font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
+                <p style="border-bottom: 0;" class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
                   {item.producer.name}
                 </p>
                 <DeliveryModePicker 
                   selected={item.producer.delivery}
+                  bind:storeCartItems={normalizedProducts}
                   selectedDeliveryHour={item.producer.deliveryHour}
                   data={producerDeliveries.find(p => p.id === item.producer.id)}
-                  storeDelivery={true} 
+                  storeDelivery={true}
                   displayLocation={false}
                   isLoading={isLoadingDeliveries}
                 />
@@ -294,7 +286,7 @@
             class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
             bg-white shadow w-full"
             style="height: fit-content;">
-            <div class="flex justify-between w-full px-3">
+            <div class="flex justify-between w-full lg:px-3 pb-2">
               <div class="text-left">
                 <p>Montant HT</p>
                 <p class="text-sm text-gray-600">
@@ -307,7 +299,7 @@
                 <p>{formatMoney(totalHt)}</p>
               </div>
             </div>
-            <div class="flex justify-between w-full px-3">
+            <div class="flex justify-between w-full lg:px-3 pb-2">
               <div class="text-left">
                 <p>TVA</p>
               </div>
@@ -315,31 +307,21 @@
                 <p>{formatMoney(totalVat)}</p>
               </div>
             </div>
-            <div class="flex justify-between w-full px-3">
+            <div class="flex justify-between w-full lg:px-3 pb-2">
               <div class="text-left">
                 <p>Consignes TTC</p>
               </div>
               <p>{formatMoney(deposit)}</p>
             </div>
-            <div class="flex justify-between w-full px-3">
+            <div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
               <div class="text-left">
-                <p>Total TTC</p>
+                <p class="uppercase font-semibold">Total</p>
               </div>
-              <p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
+              <div>
+                <p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
+              </div>
             </div>
             <div class="pt-2 lg:pt-3">
-              <div class="pt-4 pb-8 px-2">
-                <label class="cursor-pointer">
-                  <InputCheckbox
-                    checked={acceptCgv}
-                    onClick={() => (acceptCgv = !acceptCgv)} />
-                  Je reconnais avoir lu et compris
-                  <a href="https://www.sheaft.com/legals" target="_blank">
-                    les CGV
-                  </a>
-                  et je les accepte
-                </label>
-              </div>
               <button
                 type="submit"
                 class:disabled={productsCount === 0 || isCreatingOrder || !isValid}

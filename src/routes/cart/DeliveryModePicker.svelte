@@ -19,6 +19,7 @@
   export let displayLocation = true;
   export let storeDelivery = false;
   export let isLoading = false;
+  export let storeCartItems = [];
 
   $: oneOptionOnly = data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
 
@@ -45,27 +46,40 @@
   })
 
   const updateCartItems = () => {
+    let items = $cartItems;
+
+    if (storeCartItems.length > 1) {
+      items = storeCartItems;
+    }
+
     if (data && selected && selectedDeliveryHour) {
       // mettre à jour le lieu et l'horaire livraison dans le cartItem
-      let otherProducersCartItems = $cartItems.filter(c => c.producer.id !== data.id);
+      let otherProducersCartItems = items.filter(c => c.producer.id !== data.id);
 
-      let newCartItems = $cartItems
+      let newCartItems = items
         .filter(c => c.producer.id === data.id)
-        .map(cartItem => {
+        .map(item => {
           return {
-            ...cartItem,
+            ...item,
             producer: {
-              ...cartItem.producer,
+              ...item.producer,
               delivery: selected,
               deliveryHour: selectedDeliveryHour
             }
           };
         });
 
-      cartItems.set([
-        ...otherProducersCartItems, 
-        ...newCartItems
-      ]);
+      if (storeCartItems.length > 1) {
+        storeCartItems = [
+          ...otherProducersCartItems, 
+          ...newCartItems
+        ];
+      } else {
+        cartItems.set([
+          ...otherProducersCartItems, 
+          ...newCartItems
+        ]);
+      }
     }
   };
 </script>
