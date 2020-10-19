@@ -17,12 +17,23 @@
 	const refresh = () => {
 		location.reload();
 	};
+	
+	const scrollTo = (node) => {
+		var headerOffset = document.getElementById('navbar').offsetHeight;
+		var elementPosition = node.offsetTop;
+		var offsetPosition = elementPosition - headerOffset;
+		
+		window.scrollTo({
+				top: offsetPosition,
+				behavior: "smooth"
+		});  
+	}
 
 	$: getErrors($errors);
 </script>
 
 {#if componentErrors.length >= 1}
-	<div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row {classes}" in:slide>
+	<div use:scrollTo class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row {classes}" in:slide>
 		{#if displayIcon}
 			<div class="hidden lg:block">
 				<Icon data={faExclamationTriangle} class="lg:mr-2 lg:mt-2 lg:mb-0 mb-2" />
