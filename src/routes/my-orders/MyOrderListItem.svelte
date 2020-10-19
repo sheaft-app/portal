@@ -32,6 +32,7 @@
 			<p class="text-normal font-semibold w-full">entre {timeSpanToFrenchHour(order.expectedDelivery.from)} et {timeSpanToFrenchHour(order.expectedDelivery.to)}</p>
 		</div>
 	</div>
+	{#if order.expectedDelivery.address}
 	<div class="text-base flex flex-row mb-2">
 		<p class="text-gray-600 w-full">Adresse</p>
 		<div class="w-full">
@@ -42,6 +43,7 @@
 			<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
 		</div>
 	</div>
+	{/if}
 	{#if order.status != OrderStatusKind.Refused.Value || order.status != OrderStatusKind.Cancelled.Value || order.status != OrderStatusKind.Delivered.Value}
 		<a
 			target="_blank"
