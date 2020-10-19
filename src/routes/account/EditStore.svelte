@@ -27,15 +27,13 @@
 		openingHours: [],
 		openForNewBusiness: false
 	};
-
-	let openings = store.openingHours;
 	
 	const storeForm = form(() => ({
     firstName: { value: store.firstName, validators: ['required'], enabled: true },
     lastName: { value: store.lastName, validators: ['required'], enabled: true },
     email: { value: store.email, validators: ['required', 'email'], enabled: true },
 		address: { value: store.address, validators: ['required'], enabled: true },
-    openingHours: { value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: store.openForNewBusiness }
+    openingHours: { value: store.openingHours, validators: ['required', 'openingsDays', 'openingsDates'], enabled: store.openForNewBusiness }
 	}), {
     initCheck: false
 	});
@@ -102,7 +100,7 @@
 		<div class="form-control mt-2" transition:slide>
 			<div class="w-full" use:bindClass={{ form: storeForm, name: "openingHours" }}>
 				<label for="grid-timestamp">Horaires d'ouverture *</label>
-				<OpeningHoursContainer bind:openings={openings} />
+				<OpeningHoursContainer bind:openings={store.openingHours} />
 				<ErrorContainer field={$storeForm.fields.openingHours} />
 			</div>
 		</div>

@@ -9,7 +9,7 @@ const checkout = "/checkout";
 
 const CartRoutes = {
 	Prefix: `${prefix}`,
-	Roles: [Roles.Consumer.Value, Roles.Store.Value],
+	Roles: [Roles.Consumer.Value],
 	Resume: {
 		Name: "Mon panier",
 		Icon: faShoppingCart,

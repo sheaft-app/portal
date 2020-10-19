@@ -17,14 +17,7 @@ export const UPDATE_STORE = gql`
 	mutation UpdateStore($input: UpdateStoreInput) {
 		updateStore(input: $input) {
 			id
-			lastName
-			firstName
-			name
-			openForNewBusiness
-			description
-			email
-			phone
-			address{
+			address {
 				line1
 				line2
 				zipcode
@@ -33,6 +26,14 @@ export const UPDATE_STORE = gql`
 				latitude
 				longitude
 			}
+			lastName
+			firstName
+			name
+			openForNewBusiness
+			description
+			email
+			phone
+			picture
 			openingHours {
 				day
 				from

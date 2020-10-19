@@ -7,6 +7,7 @@
 	import { faCircleNotch, faCheck } from "@fortawesome/free-solid-svg-icons";
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
+  import { normalizeOpeningHours } from "./../../helpers/app";
 
   export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
 
@@ -30,9 +31,18 @@
 		form.validate();
 
 		if ($form.valid) {
-			isLoading = true;
+      isLoading = true;
+      let variables = user;
+      
+      if (user.openingHours) {
+        let openingHours = normalizeOpeningHours(user.openingHours);
+        variables = {
+          ...user,
+          openingHours
+        }
+      };
 
-			var res = await graphQLInstance.mutate(updateQuery,user, errorsHandler.Uuid);
+			var res = await graphQLInstance.mutate(updateQuery, variables, errorsHandler.Uuid);
 			isLoading = false;
 
 			if (!res.success) {
