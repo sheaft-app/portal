@@ -482,14 +482,9 @@
               <!-- <span class="ml-2 text-green-600 text-xs">Achat vérifié</span> -->
             </p>
             <RatingStars rating={rating.value} color="#009688" />
-            <div class="mt-3">
-              <!-- <span class="font-bold">Sapien consequat eleifend!</span> -->
-              {#if rating.comment}
-                <p class="mt-1">{rating.comment}</p>
-              {:else}
-                <p class="italic text-gray-600">Avis laissé sans commentaire</p>
-              {/if}
-            </div>
+            {#if rating.comment}
+              <p class="mt-3">{rating.comment}</p>
+            {/if}
           </div>
         </div>
       {/each}
