@@ -34,6 +34,7 @@
 	import SkeletonCard from "./SkeletonCard.svelte";
 	import Roles from "./../../enums/Roles";
 	import CartRoutes from "../cart/routes";
+	import QuickOrderRoutes from "../quick-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 
@@ -411,7 +412,7 @@
 								</p>
 								<div class="mt-1 flex flex-wrap">
 									{#if authManager.isInRole([Roles.Store.Value])}
-										<button class="btn btn-accent btn-lg">
+										<button class="btn btn-accent btn-lg" on:click={() => routerInstance.goTo(QuickOrderRoutes.Purchase)}>
 											Passer une commande
 										</button>
 									{/if}
