@@ -169,7 +169,7 @@
     {#if order.status == OrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
-        rounded mb-3"></div>
+        rounded mb-3">
         {#if authInstance.isInRole([Roles.Store.Value])}
           <p class="uppercase font-bold leading-none">Commande récupérée</p>
           <div class="mt-2">
