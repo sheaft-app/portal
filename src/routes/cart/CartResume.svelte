@@ -20,7 +20,8 @@
   import CartDonation from "./CartDonation.svelte";
   import debounce from "lodash/debounce";
   import MangoPayInfo from "./MangoPayInfo.svelte";
-	import { fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
+  import orderBy from "lodash/orderBy";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
@@ -47,7 +48,7 @@
     totalReturnableOnSalePrice: 0,
     returnablesCount: 0
   };
-  $: orderedCartItems = $cartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
+  $: orderedCartItems = orderBy($cartItems, i => i.producer.name, ['asc']);
 
   var order = JSON.parse(
     localStorage.getItem("user_current_order")
@@ -256,7 +257,7 @@
         {#if $cartItems.length > 0}
           {#if firstTimeOnCart}
             <div class="py-5 px-3 md:px-6 overflow-x-auto bg-green-100 shadow
-            rounded w-full mb-2">
+            rounded w-full mb-2 mt-2">
               <p class="uppercase font-bold leading-none">
                 Ok, et maintenant ?
               </p>
@@ -280,8 +281,8 @@
             {/if}
             <div
               class="align-middle inline-block min-w-full overflow-hidden items">
-              {#each orderedCartItems as item, i}
-                {#if i === 0 || $cartItems[i - 1].producer.name !== item.producer.name}
+              {#each orderedCartItems as item, i (item.id)}
+                {#if i === 0 || orderedCartItems[i - 1].producer.name !== item.producer.name}
                   <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
                     <span
                       class="rounded-full inline-flex w-6 h-6 items-center
