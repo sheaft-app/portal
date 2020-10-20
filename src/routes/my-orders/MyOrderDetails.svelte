@@ -169,11 +169,18 @@
     {#if order.status == OrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
-        rounded mb-3">
-        <p class="uppercase font-bold leading-none">Commande récupérée</p>
-        <div class="mt-2">
-          <p>Vous avez récupéré cette commande.</p>
-        </div>
+        rounded mb-3"></div>
+        {#if authInstance.isInRole([Roles.Store.Value])}
+          <p class="uppercase font-bold leading-none">Commande récupérée</p>
+          <div class="mt-2">
+            <p>Vous avez récupéré cette commande.</p>
+          </div>
+        {:else}
+          <p class="uppercase font-bold leading-none">Commande livrée</p>
+          <div class="mt-2">
+            <p>Cette commande vous a été livrée.</p>
+          </div>
+        {/if}
       </div>
     {/if}
     {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
@@ -202,9 +209,9 @@
                     )}
                   </b>
                   entre
-                  <b>{order.expectedDelivery.from}</b>
+                  <b>{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
                   et
-                  <b>{order.expectedDelivery.to}</b>
+                  <b>{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
                 </p>
               </div>
             </div>
@@ -317,7 +324,11 @@
                 <Icon data={faCheck} class="mb-1" />
               {/if}
             </div>
-            <div class="md-step-title text-xs md:text-base">Récupérée</div>
+            {#if authInstance.isInRole([Roles.Store.Value])}
+              <div class="md-step-title text-xs md:text-base">Livrée</div>
+            {:else}
+              <div class="md-step-title text-xs md:text-base">Récupérée</div>
+            {/if}
             <div class="md-step-bar-left hidden md:block" />
             <div class="md-step-bar-right hidden md:block" />
           </div>
@@ -326,7 +337,7 @@
     {/if}
     <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
       <div
-        class="flex flex-wrap bg-white w-full items-center">
+        class="flex flex-wrap bg-white w-full items-top">
         <div
           class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400">
@@ -361,7 +372,11 @@
         <div
           class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400">
-          <p class="uppercase font-bold pb-2">Le panier</p>
+          {#if authInstance.isInRole([Roles.Store.Value])}
+            <p class="uppercase font-bold pb-2">Le contenu</p>
+          {:else}
+            <p class="uppercase font-bold pb-2">Le panier</p>
+          {/if}
           <div class="mt-3">
             <div class="flex items-center mb-2">
               <p>
@@ -509,10 +524,6 @@
           <p>
             Vous pouvez annuler votre commande tant que celle-ci n'est pas en
             cours de préparation.
-          </p>
-          <p>
-            Attention : annuler un certain nombre de commandes par mois peut
-            vous faire perdre des points.
           </p>
           <button
             on:click={cancelOrder}

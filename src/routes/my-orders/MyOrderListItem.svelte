@@ -1,4 +1,5 @@
 <script>
+  import GetAuthInstance from "./../../services/SheaftAuth";
 	import DisplayStatusIcon from "./../../components/status/DisplayStatusIcon.svelte";
   import { format } from "date-fns";
   import { fr } from "date-fns/locale";
@@ -8,10 +9,14 @@
 	import { timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney } from "./../../helpers/app";
 	import Icon from "svelte-awesome";
 	import { faMapMarkedAlt, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+  import Roles from "./../../enums/Roles";
 
-  export let order;
+	export let order;
+	
   const routerInstance = GetRouterInstance();
+  const authInstance = GetAuthInstance();
 </script>
+
 <div
 	class="px-6 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">
 	<div class="flex flex-row items-center">
@@ -22,29 +27,38 @@
 		</div>
 	</div>
 	<div class="text-base mt-5 flex flex-row mb-1">
-		<p class="text-gray-600 w-full">Panier</p>
+		{#if authInstance.isInRole([Roles.Store.Value])}
+			<p class="text-gray-600 w-full">Commande</p>
+		{:else}
+			<p class="text-gray-600 w-full">Panier</p>
+		{/if}
 		<p class="text-normal font-semibold w-full">{formatMoney(order.totalOnSalePrice)} ({order.productsCount} articles)</p>
 	</div>
 	<div class="text-base flex flex-row mb-2">
-		<p class="text-gray-600 w-full">À récupérer le</p>
-		<div class="w-full">
-			<p class="text-normal font-semibold w-full">{format(new Date(order.expectedDelivery.expectedDeliveryDate), 'PPP', { locale: fr })}</p>
-			<p class="text-normal font-semibold w-full">entre {timeSpanToFrenchHour(order.expectedDelivery.from)} et {timeSpanToFrenchHour(order.expectedDelivery.to)}</p>
-		</div>
+		{#if authInstance.isInRole([Roles.Store.Value])}
+			<p class="text-gray-600 w-full">Livrée le</p>
+		{:else}
+			<p class="text-gray-600 w-full">À récupérer le</p>
+		{/if}
+			<div class="w-full">
+				<p class="text-normal font-semibold w-full">{format(new Date(order.expectedDelivery.expectedDeliveryDate), 'PPP', { locale: fr })}</p>
+				<p class="text-normal font-semibold w-full">entre {timeSpanToFrenchHour(order.expectedDelivery.from)} et {timeSpanToFrenchHour(order.expectedDelivery.to)}</p>
+			</div>
 	</div>
-	{#if order.expectedDelivery.address}
-	<div class="text-base flex flex-row mb-2">
-		<p class="text-gray-600 w-full">Adresse</p>
-		<div class="w-full">
-			<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.line1}</p>
-			{#if order.expectedDelivery.address.line2}
-				<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.line2}</p>
-			{/if}
-			<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
+	
+	{#if !authInstance.isInRole([Roles.Store.Value]) && order.expectedDelivery.address}
+		<div class="text-base flex flex-row mb-2">
+			<p class="text-gray-600 w-full">Adresse</p>
+			<div class="w-full">
+				<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.line1}</p>
+				{#if order.expectedDelivery.address.line2}
+					<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.line2}</p>
+				{/if}
+				<p class="text-normal font-semibold w-full">{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
+			</div>
 		</div>
-	</div>
 	{/if}
-	{#if order.status != OrderStatusKind.Refused.Value || order.status != OrderStatusKind.Cancelled.Value || order.status != OrderStatusKind.Delivered.Value}
+	{#if !authInstance.isInRole([Roles.Store.Value]) && (order.status != OrderStatusKind.Refused.Value || order.status != OrderStatusKind.Cancelled.Value || order.status != OrderStatusKind.Delivered.Value)}
 		<a
 			target="_blank"
 			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
