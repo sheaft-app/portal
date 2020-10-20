@@ -4,7 +4,7 @@
   import { REFUSE_PURCHASE_ORDERS } from "./mutations.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import SheaftErrors from "./../../services/SheaftErrors";
-import { GET_ORDERS } from "./queries";
+  import { GET_ORDERS } from "./queries";
 
   export let onClose, close, purchaseOrders;
 

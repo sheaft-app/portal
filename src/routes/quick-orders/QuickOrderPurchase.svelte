@@ -10,8 +10,8 @@
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { formatMoney } from "./../../helpers/app.js";
-  import { CREATE_BUSINESS_ORDER } from "./mutations.js";
   import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
+  import ConfirmOrder from "./ConfirmOrder.svelte";
   import Select from "./../../components/controls/select/Select";
   import MyOrdersRoutes from "../my-orders/routes";
   import SearchProducerRoutes from "../search-producers/routes";
@@ -33,9 +33,7 @@
   let isLoadingDeliveries = true;
   let comment = "";
 
-  $: isCreatingOrder = false;
-
-  $: isValid = !normalizedProducts.find(c => !c.producer.deliveryHour);
+  $: isValid = normalizedProducts.filter((p) => (p.quantity >= 1 && !p.producer.deliveryHour)).length == 0;
 
   const getAllAvailableProducts = async () => {
     isLoading = true;
@@ -52,7 +50,7 @@
         ...i,
         quantity: 0
       }
-    }).sort((a, b) => a.producer.name >= b.producer.name ? 1 : 0);
+    });
 
     if (normalizedProducts.length > 1) {
       loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
@@ -88,7 +86,7 @@
 
     normalizedProducts = normalizedProducts;
 
-    if (!dirty) dirty = true;
+    dirty = true;
   };
 
   const handleMore = productId => {
@@ -97,42 +95,37 @@
 
     normalizedProducts = normalizedProducts;
 
-    if (!dirty) dirty = true;
+    dirty = true;
   };
 
   const handleSubmit = async (products) => {
-    isCreatingOrder = true;
     const productsFiltered = normalizedProducts.filter(p => p.quantity > 0);
+    const producersExpectedDeliveries = productsFiltered.map(product => {
+      return {
+        producerId: product.producer.id,
+        deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
+        expectedDeliveryDate: product.producer.deliveryHour ? product.producer.deliveryHour.expectedDeliveryDate : null
+      };
+    })
+    .filter(
+      (producer, index, self) =>
+        index === self.findIndex(t => t.producerId === producer.producerId)
+    );
 
-    var res = await graphQLInstance.mutate(CREATE_BUSINESS_ORDER, {
-      products: productsFiltered.map(product => {
-        return {
-          id: product.id,
-          quantity: product.quantity
-        };
-      }),
-      donation: "NONE",
-      producersExpectedDeliveries: productsFiltered.map(product => {
-        return {
-          producerId: product.producer.id,
-          deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
-          expectedDeliveryDate: product.producer.deliveryHour ? product.producer.deliveryHour.expectedDeliveryDate : null
-        };
-      })
-      .filter(
-        (producer, index, self) =>
-          index === self.findIndex(t => t.producerId === producer.producerId)
-      )
-    }, errorsHandler.Uuid);
-
-    isCreatingOrder = false;
-
-    if (!res.success) {
-      // todo 
-      return;
-    }
-
-    routerInstance.goTo(MyOrdersRoutes.List);
+    open(ConfirmOrder, {
+      data: {
+        allProducts: productsFiltered,
+        products: productsFiltered.map(product => {
+          return {
+            id: product.id,
+            quantity: product.quantity
+          };
+        }),
+        donation: "NONE",
+        producersExpectedDeliveries
+      },
+      onClose: () => routerInstance.goTo(MyOrdersRoutes.List)
+    });
   }
 
   const showFilterProducersModal = () => {
@@ -179,8 +172,8 @@
       <Loader />
     {:else if normalizedProducts.length > 0}
       {#if producerDeliveries.length > 1}
-        <div class="hidden lg:block mb-5">
-          <div class="themed w-full lg:w-1/2">
+        <div class="mb-5">
+          <div class="themed w-full">
             <Select
               items={producerDeliveries}
               getOptionLabel={(l) => l.name}
@@ -194,7 +187,7 @@
               isSearchable={true}
               isMulti={true}
               isClearable={false}
-              containerStyles="font-weight: 600; color: #4a5568; height: 43px;" />
+              containerStyles="font-weight: 600; color: #4a5568;" />
           </div>
         </div>
       {/if}
@@ -329,14 +322,12 @@
             <div class="pt-2 lg:pt-3">
               <button
                 type="submit"
-                class:disabled={productsCount === 0 || isCreatingOrder || !isValid}
-                disabled={productsCount === 0 || isCreatingOrder || !isValid}
+                class:disabled={productsCount === 0 || !isValid}
+                disabled={productsCount === 0 || !isValid}
                 class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
                 justify-center m-auto"
                 style="padding-left: 50px; padding-right: 50px;">
-                {#if isCreatingOrder}
-                  <Icon data={faCircleNotch} spin />
-                {:else}Valider{/if}
+                Valider
               </button>
             </div>
           </div>

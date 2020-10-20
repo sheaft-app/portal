@@ -46,19 +46,16 @@
   })
 
   const updateCartItems = () => {
-    let items = $cartItems;
+    let items = $cartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
 
     if (storeCartItems.length > 1) {
-      items = storeCartItems;
+      items = storeCartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
     }
 
     if (data && selected && selectedDeliveryHour) {
       // mettre à jour le lieu et l'horaire livraison dans le cartItem
-      let otherProducersCartItems = items.filter(c => c.producer.id !== data.id);
-
-      let newCartItems = items
-        .filter(c => c.producer.id === data.id)
-        .map(item => {
+      let newCartItems = items.map(item => {
+        if (item.producer.id === data.id) {
           return {
             ...item,
             producer: {
@@ -67,18 +64,15 @@
               deliveryHour: selectedDeliveryHour
             }
           };
-        });
-
+        } else {
+          return item;
+        }
+      }).sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
+      
       if (storeCartItems.length > 1) {
-        storeCartItems = [
-          ...otherProducersCartItems, 
-          ...newCartItems
-        ];
+        storeCartItems = newCartItems;
       } else {
-        cartItems.set([
-          ...otherProducersCartItems, 
-          ...newCartItems
-        ]);
+        $cartItems = newCartItems;
       }
     }
   };
@@ -116,7 +110,7 @@
           {label}
       </p>
     {/if}
-    <div class="mb-3 p-4 text-red-500 border-red-500 border">
+    <div class="p-4 text-red-500 border-red-500 border">
         <p>Une erreur est survenue pendant la récupération des informations de livraison du producteur.</p>
         <p>Essayez de rafraîchir la page. Si l'erreur persiste, contactez le service technique.</p>
     </div>  
