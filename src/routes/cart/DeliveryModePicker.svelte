@@ -110,7 +110,7 @@
           {label}
       </p>
     {/if}
-    <div class="p-4 text-red-500 border-red-500 border">
+    <div class="p-4 bg-red-500 text-white border">
         <p>Une erreur est survenue pendant la récupération des informations de livraison du producteur.</p>
         <p>Essayez de rafraîchir la page. Si l'erreur persiste, contactez le service technique.</p>
     </div>  

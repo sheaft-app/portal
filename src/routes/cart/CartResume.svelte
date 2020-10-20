@@ -202,6 +202,8 @@
     deliveries.map((d, index) => {
       const element = document.getElementById(d.producer.id);
 
+      if (!element) return;
+
       if (index == 0) {
         var headerOffset = document.getElementById('navbar').offsetHeight;
         var elementPosition = element.offsetTop;
