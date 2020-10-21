@@ -46,7 +46,6 @@
     clearTimeout(timeout);
   }
 
-
   const getProductDetails = async id => {
     isLoading = true;
     var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, { id: id }, errorsHandler.Uuid);

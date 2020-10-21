@@ -162,7 +162,6 @@
 	const refetch = async () => {
 		isLoading.set(true);
 		await searchProducts(0);
-		isLoading.set(false);
 	};
 
 	const searchProducts = async (page) => {
@@ -191,6 +190,7 @@
 		lastFetchLength = response.data.products.length;
 
 		searchResults.set(prevFeed);
+		isLoading.set(false);
 	};
 
 	const expendCart = () => {

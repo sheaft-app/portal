@@ -205,7 +205,7 @@ export const getFormattedNotification = (notification, local, display) => {
 				notification,
 				"info",
 				`Votre commande pour le ${notification.content.ExpectedDeliveryDate} a bien été envoyée.`,
-				`#/orders/${notification.content.PurchaseOrderId}`,
+				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				false,
 				local
