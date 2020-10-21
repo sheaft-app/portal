@@ -114,7 +114,7 @@
         shadow rounded mb-3">
         <p class="uppercase font-bold leading-none">Commande annulée</p>
         <div class="mt-2">
-        <p>Votre commande a été annulée, vous ne pouvez plus interagir avec.</p>
+        <p>La commande a été annulée, vous ne pouvez plus interagir avec.</p>
           {#if order.reason}
             <p class="mt-2 font-semibold">Raison : {order.reason}</p>
           {/if}
@@ -127,7 +127,7 @@
         shadow rounded mb-3">
         <p class="uppercase font-bold leading-none">Commande refusée</p>
         <div class="mt-2">
-        <p>Votre commande a été refusée, vous ne pouvez plus interagir avec.</p>
+        <p>La commande a été refusée, vous ne pouvez plus interagir avec.</p>
           {#if order.reason}
             <p class="mt-2 font-semibold">Raison : {order.reason}</p>
           {/if}
