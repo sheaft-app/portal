@@ -54,7 +54,7 @@
 			},
 			quantityPerUnit: {
 				value: product.quantityPerUnit,
-				validators: ["required", "min:1"],
+				validators: ["required", "min:0.01"],
 				enabled: product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value,
 			},
 			selectedCategory: {
@@ -296,6 +296,7 @@
 							<div class="mr-2">
 								<input
 									type="number"
+									step="0.10"
 									bind:value={product.quantityPerUnit}
 									use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
 									id="grid-quantityPerUnit"
