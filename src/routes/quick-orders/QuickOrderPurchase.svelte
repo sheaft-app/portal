@@ -1,11 +1,8 @@
 <script>
   import { getContext, onMount } from "svelte";
-  import Icon from "svelte-awesome";
-  import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import SheaftErrors from "./../../services/SheaftErrors.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
-  import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
   import DeliveryModePicker from "../cart/DeliveryModePicker.svelte";
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -18,6 +15,7 @@
   import DeliveryKind from "../../enums/DeliveryKind";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import Loader from "./../../components/Loader.svelte";
+  import { MY_ORDERS } from "./../my-orders/queries.js";
 
   const { open } = getContext("modal");
   const graphQLInstance = GetGraphQLInstance();
@@ -124,7 +122,10 @@
         donation: "NONE",
         producersExpectedDeliveries
       },
-      onClose: () => routerInstance.goTo(MyOrdersRoutes.List)
+      onClose: () => {
+        graphQLInstance.clearApolloCache(MY_ORDERS);
+        routerInstance.goTo(MyOrdersRoutes.List);
+      }
     });
   }
 
