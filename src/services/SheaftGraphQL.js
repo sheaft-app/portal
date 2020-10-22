@@ -26,15 +26,15 @@ class SheaftGraphQL {
 				variables,
 			}).result();
 
-			var dataType = findDataType(request);
-			var res = handleResults(response.data, dataType);
+			var dataType = this.findDataType(request);
+			var res = this.handleResults(response.data, dataType);
 			if (!res.success) {
 				errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			}
 
 			return res;
 		} catch (ex) {
-			var res = formatServerError(ex);
+			var res = this.formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
 		}
@@ -53,265 +53,269 @@ class SheaftGraphQL {
 				},
 			});
 
-			var dataType = findDataType(request);
-			var res = handleResults(response.data, dataType);
+			var dataType = this.findDataType(request);
+			var res = this.handleResults(response.data, dataType);
 
 			if (!res.success) {
 				errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			} else {
-				updateApolloCache(res, dataType, input, typename);
+				this.updateApolloCache(res, dataType, input, typename);
 			}
 
 			return res;
 		} catch (ex) {
-			var res = formatServerError(ex);
+			var res = this.formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
 		}
 	}
-}
 
-function findIdInDataType(dataType) {
-	var idFound = false;
-	for (var i = 0; i < dataType.length; i++) {
-		if (dataType[i] === "id") idFound = true;
-		else if (Array.isArray(dataType[i]))
-			idFound = findIdInDataType(dataType[i]);
+	findIdInDataType(dataType) {
+		var idFound = false;
+		for (var i = 0; i < dataType.length; i++) {
+			if (dataType[i] === "id") idFound = true;
+			else if (Array.isArray(dataType[i]))
+				idFound = this.findIdInDataType(dataType[i]);
 
-		if (idFound) break;
-	}
-	return idFound;
-}
-
-function updateApolloCache(res, dataType, input, typename) {
-	if (!res || !res.data) return;
-
-	if (dataType.length > 1 && !findIdInDataType(dataType)) {
-		throw "ID is mandatory to update the cache.";
-	}
-
-	var hasInputIds = input.id || input.ids;
-	if (Array.isArray(res.data)) {
-		for (var i = 0; i < res.data.length; i++) {
-			handleApolloCache(res.data[i], hasInputIds, typename);
+			if (idFound) break;
 		}
-	} else if (dataType.length > 1) {
-		handleApolloCache(res.data, hasInputIds, typename);
-	} else if (typeof res.data == "boolean" && input.id) {
-		deleteItemInApolloCache(input.id, typename);
-	} else if (typeof res.data == "boolean" && input.ids) {
-		input.ids.forEach((id) => {
-			deleteItemInApolloCache(id, typename);
-		});
-	}
-}
-
-function handleApolloCache(item, hasInputIds, typename) {
-	if (item.id && hasInputIds) {
-		return updateItemInApolloCache(item);
+		return idFound;
 	}
 
-	clearApolloCache(typename);
-}
+	updateApolloCache(res, dataType, input, typename) {
+		if (!res || !res.data) return;
 
-function clearApolloCache(typename) {
-	if (!typename) return;
+		if (dataType.length > 1 && !this.findIdInDataType(dataType)) {
+			throw "ID is mandatory to update the cache.";
+		}
 
-	var type = findDataType(typename)[0];
-	if (!type) return;
+		var hasInputIds = input.id || input.ids;
+		if (Array.isArray(res.data)) {
+			for (var i = 0; i < res.data.length; i++) {
+				this.handleApolloCache(res.data[i], hasInputIds, typename);
+			}
+		} else if (dataType.length > 1) {
+			this.handleApolloCache(res.data, hasInputIds, typename);
+		} else if (typeof res.data == "boolean" && input.id) {
+			this.deleteItemInApolloCache(input.id, typename);
+		} else if (typeof res.data == "boolean" && input.ids) {
+			input.ids.forEach((id) => {
+				this.deleteItemInApolloCache(id, typename);
+			});
+		}
+	}
 
-	if (!client.cache.data.data.ROOT_QUERY) return;
+	handleApolloCache(item, hasInputIds, typename) {
+		if (item.id && hasInputIds) {
+			return this.updateItemInApolloCache(item);
+		}
 
-	var cacheUpdated = false;
-	var props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
-	for (var i = 0; i < props.length; i++) {
-		if (props[i] == type || props[i].indexOf(type + "(") > -1) {
-			var queries = Object.getOwnPropertyNames(client.cache.data.data);
-			for (var j = 0; j < queries.length; j++) {
-				if (queries[j].indexOf("$ROOT_QUERY." + props[i]) > -1) {
-					client.cache.data.delete(queries[j]);
-					cacheUpdated = true;
+		this.clearApolloCache(typename);
+	}
+
+	clearApolloCache(typename) {
+		if (!typename) return;
+
+		var type = this.findDataType(typename)[0];
+		if (!type) return;
+
+		if (!client.cache.data.data.ROOT_QUERY) return;
+
+		var cacheUpdated = false;
+		var props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
+		for (var i = 0; i < props.length; i++) {
+			if (props[i] == type || props[i].indexOf(type + "(") > -1) {
+				var queries = Object.getOwnPropertyNames(client.cache.data.data);
+				for (var j = 0; j < queries.length; j++) {
+					if (queries[j].indexOf("$ROOT_QUERY." + props[i]) > -1) {
+						client.cache.data.delete(queries[j]);
+						cacheUpdated = true;
+					}
 				}
 			}
 		}
+
+		if (cacheUpdated) client.resetStore();
 	}
 
-	if (cacheUpdated) client.resetStore();
-}
+	updateItemInApolloCache(item) {
+		if (!item.__typename) {
+			console.error("Cannot update apollo cache when typename is undefined.");
+			return;
+		}
 
-function updateItemInApolloCache(item) {
-	if (!item.__typename) {
-		console.error("Cannot update apollo cache when typename is undefined.");
-		return;
-	}
-
-	client.writeFragment({
-		id: item.id,
-		fragment: gql`
+		client.writeFragment({
+			id: item.id,
+			fragment: gql`
 			fragment apolloFragment on ${item.__typename} {
 				id
 			}
 		`,
-		data: item,
-	});
-}
+			data: item,
+		});
+	}
 
-function deleteItemInApolloCache(id, typename) {
-	client.cache.data.delete(id);
-	clearApolloCache(typename);
-}
+	deleteItemInApolloCache(id, typename) {
+		client.cache.data.delete(id);
+		this.clearApolloCache(typename);
+	}
 
-function findDataType(data) {
-	return findRecursiveSelection(data.definitions[0].selectionSet.selections);
-}
+	findDataType(data) {
+		return this.findRecursiveSelection(data.definitions[0].selectionSet.selections);
+	}
 
-function findRecursiveSelection(selections) {
-	var values = [];
-	for (var i = 0; i < selections.length; i++) {
-		if (!selections[i]) continue;
+	findRecursiveSelection(selections) {
+		var values = [];
+		for (var i = 0; i < selections.length; i++) {
+			if (!selections[i]) continue;
 
-		values.push(selections[i].name.value);
-		if (selections[i].selectionSet && selections[i].selectionSet.selections) {
-			var items = findRecursiveSelection(selections[i].selectionSet.selections);
-			if (items.length > 0) values.push(items);
+			values.push(selections[i].name.value);
+			if (selections[i].selectionSet && selections[i].selectionSet.selections) {
+				var items = this.findRecursiveSelection(
+					selections[i].selectionSet.selections
+				);
+				if (items.length > 0) values.push(items);
+			}
 		}
+
+		return values;
 	}
 
-	return values;
-}
+	handleResults(data, dataTypes) {
+		var resultData = data[dataTypes[0]];
+		if (!resultData && dataTypes.length > 1) {
+			var selection = dataTypes[1].filter(
+				(dt) => dt == "nodes" || dt == "edges"
+			);
+			if (selection.length == 0)
+				return {
+					data: null,
+					success: false,
+				};
+		}
 
-function handleResults(data, dataTypes) {
-	var resultData = data[dataTypes[0]];
-	if (!resultData && dataTypes.length > 1) {
-		var selection = dataTypes[1].filter((dt) => dt == "nodes" || dt == "edges");
-		if (selection.length == 0)
+		var errors = null;
+		var success = true;
+
+		if (typeof resultData === "boolean") {
 			return {
-				data: null,
-				success: false,
+				data: resultData,
+				errors: null,
+				success: success,
 			};
-	}
+		}
 
-	var errors = null;
-	var success = true;
+		if (resultData.nodes)
+			return {
+				data: resultData.nodes,
+				pageInfo: resultData.pageInfo,
+				totalCount: resultData.totalCount,
+				errors,
+				success,
+			};
 
-	if (typeof resultData === "boolean") {
+		if (resultData.edges)
+			return {
+				data: resultData.edges.map((n) => n.node),
+				pageInfo: resultData.pageInfo,
+				totalCount: resultData.totalCount,
+				errors,
+				success,
+			};
+
+		if (Array.isArray(resultData))
+			return {
+				data: resultData,
+				pageInfo: {
+					hasPreviousPage: false,
+					hasNextPage: false,
+					startCursor: null,
+					endCursor: null,
+				},
+				totalCount: resultData.length,
+				errors,
+				success,
+			};
+
 		return {
 			data: resultData,
-			errors: null,
-			success: success,
-		};
-	}
-
-	if (resultData.nodes)
-		return {
-			data: resultData.nodes,
-			pageInfo: resultData.pageInfo,
-			totalCount: resultData.totalCount,
 			errors,
 			success,
 		};
+	}
 
-	if (resultData.edges)
-		return {
-			data: resultData.edges.map((n) => n.node),
-			pageInfo: resultData.pageInfo,
-			totalCount: resultData.totalCount,
-			errors,
-			success,
-		};
+	formatServerError(error) {
+		var errors = [];
+		if (error.toString() == "Error: Network error: Failed to fetch") {
+			errors = [
+				{
+					code: "OFFLINE",
+					message:
+						"La connexion au serveur a été perdue, veuillez réitérer votre demande dès que la connexion sera rétablie",
+				},
+			];
+		} else {
+			errors = this.getErrors(error);
+		}
 
-	if (Array.isArray(resultData))
 		return {
-			data: resultData,
+			data: [],
 			pageInfo: {
 				hasPreviousPage: false,
 				hasNextPage: false,
 				startCursor: null,
 				endCursor: null,
 			},
-			totalCount: resultData.length,
-			errors,
-			success,
+			totalCount: 0,
+			success: false,
+			errors: errors,
 		};
-
-	return {
-		data: resultData,
-		errors,
-		success,
-	};
-}
-
-function formatServerError(error) {
-	var errors = [];
-	if (error.toString() == "Error: Network error: Failed to fetch") {
-		errors = [
-			{
-				code: "OFFLINE",
-				message:
-					"La connexion au serveur a été perdue, veuillez réitérer votre demande dès que la connexion sera rétablie",
-			},
-		];
-	} else {
-		errors = getErrors(error);
 	}
 
-	return {
-		data: [],
-		pageInfo: {
-			hasPreviousPage: false,
-			hasNextPage: false,
-			startCursor: null,
-			endCursor: null,
-		},
-		totalCount: 0,
-		success: false,
-		errors: errors,
-	};
-}
+	getErrors(error) {
+		if (error && error.graphQLErrors) {
+			var errors = [];
+			for (var i = 0; i < error.graphQLErrors.length; i++) {
+				var graphQlError = error.graphQLErrors[i];
+				var code = null;
+				if (graphQlError.extensions && graphQlError.extensions.code) {
+					code = graphQlError.extensions.code;
+				}
 
-function getErrors(error) {
-	if (error && error.graphQLErrors) {
-		var errors = [];
-		for (var i = 0; i < error.graphQLErrors.length; i++) {
-			var graphQlError = error.graphQLErrors[i];
-			var code = null;
-			if (graphQlError.extensions && graphQlError.extensions.code) {
-				code = graphQlError.extensions.code;
+				if (!code) code = "Unexpected";
+
+				var message = null;
+
+				if (
+					graphQlError.extensions &&
+					graphQlError.extensions.hasOwnProperty(code)
+				) {
+					message = graphQlError.extensions[code];
+				}
+
+				if (!message) {
+					message =
+						graphQlError.extensions && graphQlError.extensions.message
+							? graphQlError.extensions.message
+							: graphQlError.message;
+				}
+
+				errors.push({
+					code,
+					message,
+				});
 			}
 
-			if (!code) code = "Unexpected";
-
-			var message = null;
-
-			if (
-				graphQlError.extensions &&
-				graphQlError.extensions.hasOwnProperty(code)
-			) {
-				message = graphQlError.extensions[code];
-			}
-
-			if (!message) {
-				message =
-					graphQlError.extensions && graphQlError.extensions.message
-						? graphQlError.extensions.message
-						: graphQlError.message;
-			}
-
-			errors.push({
-				code,
-				message,
-			});
+			return errors;
 		}
 
-		return errors;
+		return [
+			{
+				code: "Unexpected",
+				message: "Une erreur inattendue est survenue !",
+			},
+		];
 	}
-
-	return [
-		{
-			code: "Unexpected",
-			message: "Une erreur inattendue est survenue !",
-		},
-	];
 }
 
 let graphQLInstance = null;

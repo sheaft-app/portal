@@ -53,7 +53,8 @@
   const signalrInstance = InitSignalr(
     config.signalr + "/hubs/sheaft",
     authInstance,
-    notificationsInstance
+    notificationsInstance,
+    apiInstance
   );
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
