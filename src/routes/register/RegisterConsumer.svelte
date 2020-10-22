@@ -35,7 +35,7 @@
     email: authInstance.user.profile.email || null,
     phone: authInstance.user.profile.phone || null,
     picture: authInstance.user.profile.picture || null,
-    sponsoringCode: JSON.parse(localStorage.getItem("sponsoring")) || null
+    sponsoringCode: JSON.parse(localStorage.getItem("user_sponsoring")) || null
   };
 
   const consumerForm = form(() => ({
@@ -66,7 +66,7 @@
       await authInstance.loginSilent();
       authRegistered.set(true);
       localStorage.removeItem("user_choosen_role");
-      localStorage.removeItem("sponsoring");
+      localStorage.removeItem("user_sponsoring");
       routerInstance.goTo("/");
       isRegistering = false;
     }

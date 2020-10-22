@@ -7,17 +7,13 @@ import {
 	authRegistered,
 	authAuthorized,
 } from "./../stores/auth.js";
+import { clearLocalStorage } from "./../helpers/storage";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
 		this.userManager = new Oidc.UserManager(oidcSettings);
 		this.userManager.clearStaleState();
-
-		authAuthenticated.set(false);
-		authInitialized.set(false);
-		authRegistered.set(false);
-		authAuthorized.set(false);
-		authUserAccount.set({ profile: { role: "ANONYMOUS" } });
+		this.setAuthStatus({ profile: { role: "ANONYMOUS" } }, false, false, false, false);
 
 		this.userSub = authUserAccount.subscribe((value) => {
 			this.user = value;
@@ -37,69 +33,15 @@ class SheaftAuth {
 
 		this.userManager.getUser().then(async (user) => {
 			if (user) {
-				authUserAccount.set(user);
-				authAuthenticated.set(true);
-
-				try {
-					var result = await fetch(
-						config.api + "/graphql",
-						getUserInfoSettings(user)
-					);
-
-					var content = await result.json();
-					if (content.data.me && content.data.me.id) {
-						authRegistered.set(true);
-						localStorage.removeItem("user_choosen_role");
-						localStorage.removeItem("sponsoring");
-					} else if (content.errors && content.errors.length > 0) {
-						authInstance.logoutFromApp();
-						return;
-					} else {
-						authRegistered.set(false);
-					}
-
-					authAuthorized.set(true);
-					authInitialized.set(true);
-				} catch (err) {
-					console.error(err.toString());
-					authAuthorized.set(false);
-					authInitialized.set(false);
-				}
-			} else {
-				authRegistered.set(false);
-				authAuthenticated.set(false);
-				authAuthorized.set(false);
-				authInitialized.set(true);
+				await this.retrieveUser(user);
+				return;
 			}
+
+			this.setAuthStatus({ profile: { role: "ANONYMOUS" } }, false, false, false, true);
 		});
 
 		this.userManager.events.addUserLoaded(async (user) => {
-			authUserAccount.set(user);
-			authAuthenticated.set(true);
-
-			try {
-				var result = await fetch(
-					config.api + "/graphql",
-					getUserInfoSettings(user)
-				);
-
-				var content = await result.json();
-				if (content.data.me && content.data.me.id) {
-					authRegistered.set(true);
-					localStorage.removeItem("user_choosen_role");
-					localStorage.removeItem("sponsoring");
-				} else if (content.errors && content.errors.length > 0) {
-					authInstance.logoutFromApp();
-					return;
-				} else {
-					authRegistered.set(false);
-				}
-
-				authAuthorized.set(true);
-			} catch (err) {
-				console.error(err.toString());
-				authAuthorized.set(false);
-			}
+			await this.retrieveUser(user);
 		});
 
 		this.userManager.events.addUserUnloaded((e) => {});
@@ -111,6 +53,35 @@ class SheaftAuth {
 		this.userManager.events.addAccessTokenExpired(async () => {
 			await this.login();
 		});
+	}
+
+	async retrieveUser(user) {
+		try {
+			var result = await fetch(
+				config.api + "/graphql",
+				getUserInfoSettings(user)
+			);
+
+			var content = await result.json();
+			if (content.data.me && content.data.me.id) {
+				this.setAuthStatus(user, true, true, true, true);
+			} else if (content.errors && content.errors.length > 0) {
+				throw content.errors;
+			} else {
+				this.setAuthStatus(user, true, true, false, true);
+			}
+		} catch (err) {
+			console.error(err ? err.toString() : "An authorization exception occured.");
+			await authInstance.logout();
+		}
+	}
+
+	setAuthStatus(user, authenticated, authorized, registered, initialized) {
+		authUserAccount.set(user);
+		authAuthenticated.set(authenticated);
+		authAuthorized.set(authorized);
+		authRegistered.set(registered);
+		authInitialized.set(initialized);
 	}
 
 	userIsAnonymous() {
@@ -145,12 +116,12 @@ class SheaftAuth {
 
 	async login(redirectUrl) {
 		try {
-			if (redirectUrl && redirectUrl.length > 0) {				
+			if (redirectUrl && redirectUrl.length > 0) {
 				if (redirectUrl.indexOf("/") == 0) {
 					redirectUrl = `#${redirectUrl}`;
 				}
 
-				if (redirectUrl[0] != '#') {
+				if (redirectUrl[0] != "#") {
 					redirectUrl = `#/${redirectUrl}`;
 				}
 
@@ -186,23 +157,9 @@ class SheaftAuth {
 
 	async logout() {
 		try {
-			localStorage.removeItem("user_cart");
-			localStorage.removeItem("user_choosen_role");
-			localStorage.removeItem("sponsoring");
-			localStorage.removeItem("user_cookie_consent");
-
-			return await this.userManager.signoutRedirect();
-		} catch (exc) {
-			location.hash = "";
-			location.reload();
-		}
-	}
-
-	async logoutFromApp() {
-		try {
+			clearLocalStorage();
+			await this.userManager.signoutRedirect();
 			await this.userManager.removeUser();
-			location.hash = "";
-			location.reload();
 		} catch (exc) {
 			location.hash = "";
 			location.reload();

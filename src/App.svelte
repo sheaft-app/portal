@@ -36,7 +36,6 @@
   var authSettings = config.auth.settings;
   authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
 
-  // const analyticsInstance = InitAnalytics(config.analytics.settings);
   const authInstance = InitAuth(authSettings);
   const routerInstance = InitRouter();
   const guardInstance = InitGuard(authInstance, routerInstance);
@@ -60,6 +59,7 @@
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
     if (!authenticated) {
       await logoutFreshdesk();
+      signalrInstance.stop();
       return;
     }
 
@@ -67,12 +67,6 @@
       signalrInstance.start();
       await loginFreshdesk();
     }
-    
-    // if (config.production) {
-		//   var user = authInstance.user;
-    //   analyticsInstance.insights.clearAuthenticatedUserContext();
-    //   analyticsInstance.insights.setAuthenticatedUserContext(user.profile.sub);
-    // }
     
     if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
       routerInstance.goTo("/", null, true);
@@ -86,10 +80,6 @@
   window.addEventListener("beforeinstallprompt", e => {});
 
   window.addEventListener("appinstalled", evt => {
-    // analyticsInstance.insights.trackEvent({
-    //   description: "",
-    //   type: "AppInstalled"
-    // });
     notificationInstance.info(
       "L'application a été installée sur votre apppareil avec succès !"
     );
@@ -97,27 +87,16 @@
   });
 
   window.addEventListener("load", () => {
-    // if (navigator.standalone) {
-    //   analyticsInstance.insights.trackEvent(
-    //     { description: "", type: "AppLoaded" },
-    //     ["app"]
-    //   );
-    // } else {
-    //   analyticsInstance.insights.trackEvent(
-    //     { description: "", type: "AppLoaded" },
-    //     ["browser"]
-    //   );
-    // }
   });
 
   onMount(async () => {
     isLoading = true;
 
-    var sponsoring = routerInstance.getQueryParam("sponsoring");
+    var sponsoring = routerInstance.getQueryParam("user_sponsoring");
     if (sponsoring) {
-      localStorage.setItem("sponsoring", JSON.stringify(sponsoring));
+      localStorage.setItem("user_sponsoring", JSON.stringify(sponsoring));
     } else {
-      localStorage.removeItem("sponsoring");
+      localStorage.removeItem("user_sponsoring");
     }
 
     var role = routerInstance.getQueryParam("role");
@@ -126,13 +105,12 @@
       await authInstance.login();
     }
 
-    isLoading = false;
-
     const progress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
       .then(response => response.json())
       .then(data => data);
       
     allDepartmentsProgress.set(progress);
+    isLoading = false;
   });
 
   onDestroy(async () => {

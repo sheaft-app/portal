@@ -31,7 +31,7 @@
   let showSponsoring = false;
   let stepper = 0;
   let vat = null;
-  let sponsorshipCode = JSON.parse(localStorage.getItem("sponsoring"));
+  let sponsorshipCode = JSON.parse(localStorage.getItem("user_sponsoring"));
   let openings = [];
   let invalidSiret = false;
 
@@ -134,7 +134,7 @@
     await authInstance.loginSilent();
     authRegistered.set(true);
     localStorage.removeItem("user_choosen_role");
-    localStorage.removeItem("sponsoring");
+    localStorage.removeItem("user_sponsoring");
     routerInstance.goTo("/");
     isRegistering = false;
   };

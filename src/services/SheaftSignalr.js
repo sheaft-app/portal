@@ -36,16 +36,14 @@ class SheaftSignalr {
 		});
 	}
 
-	updateConnectionUser() {
-		this.connection.stop().then(() => {
-			if (this.connection.state == HubConnectionState.Disconnected)
-				this.connection.start().catch((err) => console.error(err));
-		});
-	}
-
 	start() {
 		if (this.connection.state == HubConnectionState.Disconnected)
 			this.connection.start().catch((err) => console.error(err));
+	}	
+
+	stop() {
+		if (this.connection.state == HubConnectionState.Connected)
+			this.connection.stop().catch((err) => console.error(err));
 	}
 }
 
