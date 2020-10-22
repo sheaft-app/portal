@@ -1,29 +1,33 @@
 <script>
-	import { onMount, onDestroy, getContext } from "svelte";
-	import { fly, slide } from "svelte/transition";
-  import { cartItems } from "./../../stores/app.js";
-  import { formatMoney } from "./../../helpers/app.js";
+	import { onMount, getContext } from "svelte";
+	import { fly } from "svelte/transition";
+	import { cartItems } from "./../../stores/app.js";
+	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import PaymentInfoForm from "./PaymentInfoForm.svelte";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL";
-  import GetRouterInstance from "../../services/SheaftRouter";
+	import GetGraphQLInstance from "../../services/SheaftGraphQL";
+	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_MY_CONSUMER_LEGALS, GET_ORDER } from "./queries";
-	import { PAY_ORDER, CREATE_CONSUMER_LEGALS, UPDATE_CONSUMER_LEGALS } from "./mutations";
+	import {
+		PAY_ORDER,
+		CREATE_CONSUMER_LEGALS,
+		UPDATE_CONSUMER_LEGALS,
+	} from "./mutations";
 	import Loader from "../../components/Loader.svelte";
-  import { authUserAccount } from "./../../stores/auth.js";
-  import MangoPayInfo from "./MangoPayInfo.svelte";
-  import CartRoutes from "./routes";
+	import { authUserAccount } from "./../../stores/auth.js";
+	import MangoPayInfo from "./MangoPayInfo.svelte";
+	import CartRoutes from "./routes";
 	import SearchProductsRoutes from "../search-products/routes";
 	import ErrorCard from "../../components/ErrorCard.svelte";
-  import Icon from "svelte-awesome";
+	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-  import formatISO from "date-fns/formatISO";
+	import formatISO from "date-fns/formatISO";
 
-  const errorsHandler = new SheaftErrors();
+	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
-  const routerInstance = GetRouterInstance();
-  const { open } = getContext("modal");
+	const routerInstance = GetRouterInstance();
+	const { open } = getContext("modal");
 
 	let step = 1;
 
@@ -36,28 +40,26 @@
 	let paymentError = null;
 
 	let user = {
-    firstName: $authUserAccount.profile.given_name,
-    lastName: $authUserAccount.profile.family_name,
-    birthDate: null,
+		firstName: $authUserAccount.profile.given_name,
+		lastName: $authUserAccount.profile.family_name,
+		birthDate: null,
 		nationality: null,
 		countryOfResidence: "FR",
-    email: $authUserAccount.profile.email,
-    address: {
-      line1: null,
-      line2: null,
-      city: null,
+		email: $authUserAccount.profile.email,
+		address: {
+			line1: null,
+			line2: null,
+			city: null,
 			zipcode: null,
-			country: "FR"
-		}
+			country: "FR",
+		},
 	};
 
-  const showTransactionInfo = () => {
-    open(MangoPayInfo, {});
+	const showTransactionInfo = () => {
+		open(MangoPayInfo, {});
 	};
-	
-	let order = JSON.parse(
-		localStorage.getItem("user_current_order")
-	);
+
+	let order = JSON.parse(localStorage.getItem("user_current_order"));
 
 	onMount(async () => {
 		if (!order || $cartItems.length == 0) {
@@ -70,10 +72,14 @@
 		}
 
 		const values = routerInstance.getQueryParams();
-		
+
 		paymentError = values["message"] || null;
 
-		var resOrder = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
+		var resOrder = await graphQLInstance.query(
+			GET_ORDER,
+			{ input: order.id },
+			errorsHandler.Uuid
+		);
 
 		if (!resOrder.success) {
 			isLoading = false;
@@ -82,7 +88,11 @@
 
 		order = resOrder.data;
 
-		var resLegals = await graphQLInstance.query(GET_MY_CONSUMER_LEGALS, {}, errorsHandler.Uuid);
+		var resLegals = await graphQLInstance.query(
+			GET_MY_CONSUMER_LEGALS,
+			{},
+			errorsHandler.Uuid
+		);
 
 		if (!resLegals.success) {
 			userLegalsFound = false;
@@ -95,11 +105,15 @@
 		userLegalsFound = true;
 		step = 2;
 		isLoading = false;
-	})
+	});
 
 	const handleSubmit = async () => {
 		isPaying = true;
-		var res = await graphQLInstance.mutate(PAY_ORDER, { id: order.id }, errorsHandler.Uuid);
+		var res = await graphQLInstance.mutate(
+			PAY_ORDER,
+			{ id: order.id },
+			errorsHandler.Uuid
+		);
 
 		if (!res.success) {
 			// todo
@@ -108,9 +122,8 @@
 		}
 
 		localStorage.setItem("user_last_transaction", res.data.identifier);
-
 		window.location = res.data.redirectUrl;
-	}
+	};
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
@@ -122,24 +135,30 @@
 			...user,
 			address: {
 				...user.address,
-				country: user.address.country.code
+				country: user.address.country.code,
 			},
 			countryOfResidence: user.countryOfResidence.code,
 			nationality: user.nationality.code,
 			id: legalId,
-			birthDate: formatISO(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
-		}
+			birthDate: formatISO(
+				new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+			),
+		};
 
 		if (!legalId) {
 			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;
 			variables = {
 				...variables,
-				userId: $authUserAccount.profile.sub
-			}
-			delete variables['id'];
+				userId: $authUserAccount.profile.sub,
+			};
+			delete variables["id"];
 		}
 
-		var res = await graphQLInstance.mutate(consumerLegalsMutation, variables, errorsHandler.Uuid);
+		var res = await graphQLInstance.mutate(
+			consumerLegalsMutation,
+			variables,
+			errorsHandler.Uuid
+		);
 
 		if (!res.success) {
 			// todo
@@ -151,9 +170,8 @@
 		legalId = res.data.id;
 		isSavingLegals = false;
 		++step;
-	}
+	};
 </script>
-
 
 {#if isLoading}
 	<Loader />
@@ -161,27 +179,43 @@
 	{#if paymentError}
 		<div class="mb-10 p-4 bg-red-500 text-white text-center lg:text-left">
 			<p class="mb-2">{paymentError}</p>
-			<p class="mb-2">Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service technique.</p>
-			<button class="btn btn-lg btn-accent m-auto lg:m-0" disabled={isPaying}	class:disabled={isPaying} on:click={handleSubmit}>Réessayer</button>
+			<p class="mb-2">
+				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service technique.
+			</p>
+			<button
+				class="btn btn-lg btn-accent m-auto lg:m-0"
+				disabled={isPaying}
+				class:disabled={isPaying}
+				on:click={handleSubmit}>Réessayer</button>
 		</div>
 	{/if}
 	<ErrorCard {errorsHandler} />
-	<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
+	<div
+		class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0"
+		in:fly|local={{ x: 300, duration: 300 }}>
 		<div class="w-full lg:w-7/12">
 			{#if step == 1}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
+					<FacturationForm
+						bind:user
+						bind:invalid={facturationFormInvalid}
+						{errorsHandler} />
 				</div>
 			{:else if step == 2}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<PaymentInfoForm bind:user {order} bind:step {isSavingLegals} {errorsHandler} />
+					<PaymentInfoForm
+						bind:user
+						{order}
+						bind:step
+						{isSavingLegals}
+						{errorsHandler} />
 				</div>
 			{/if}
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
 				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:py-8 static lg:block bg-white
-				shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
+					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
 				style="height: fit-content;">
 				<div>
 					<div class="flex justify-between w-full lg:px-3 pb-2">
@@ -204,14 +238,19 @@
 								</p>
 							</div>
 							<div>
-								<p class="font-medium">{formatMoney(order.totalReturnableOnSalePrice)}</p>
+								<p class="font-medium">
+									{formatMoney(order.totalReturnableOnSalePrice)}
+								</p>
 							</div>
 						</div>
 					{/if}
 					<div class="flex justify-between w-full lg:px-3 pb-2">
 						<div class="text-left">
 							<p>Frais bancaires</p>
-							<p class="leading-none text-gray-600 text-sm"><button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button></p>
+							<p class="leading-none text-gray-600 text-sm">
+								<button class="btn-link" on:click={showTransactionInfo}>C'est
+									quoi ?</button>
+							</p>
 						</div>
 						<div>
 							<p class="font-medium">{formatMoney(order.totalFees)}</p>
@@ -227,7 +266,9 @@
 							</div>
 						</div>
 					{/if}
-					<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
+					<div
+						class="flex justify-between w-full lg:px-3 border-t border-gray-400
+							pt-2">
 						<div class="text-left">
 							<p class="uppercase font-semibold">Total</p>
 						</div>
@@ -238,29 +279,26 @@
 					<div class="mt-3">
 						{#if step == 2}
 							<button
-								type="button"	
+								type="button"
 								on:click={handleSubmit}
 								disabled={isPaying}
 								class:disabled={isPaying}
 								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
-								justify-center m-auto"
+									justify-center m-auto"
 								style="padding-left: 50px; padding-right: 50px;">
 								{#if isPaying}
 									<Icon data={faCircleNotch} spin />
-								{:else}
-									Passer la commande
-								{/if}
+								{:else}Passer la commande{/if}
 							</button>
 						{:else}
 							<button
 								type="button"
 								on:click={handleSubmitLegals}
-								class:disabled={isSavingLegals || facturationFormInvalid}
+								class:disabled={isSavingLegals || facturationFormInvalid}
 								class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
-								justify-center m-auto"
+									justify-center m-auto"
 								style="padding-left: 50px; padding-right: 50px;">
-								Suivant
-								{#if isSavingLegals}
+								Suivant {#if isSavingLegals}
 									<Icon data={faCircleNotch} spin class="ml-2" />
 								{/if}
 							</button>

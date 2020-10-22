@@ -1,30 +1,32 @@
 <script>
-	import Icon from "svelte-awesome";
 	import { onMount } from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-  import { cartItems } from "./../../stores/app.js";
+	import { cartItems } from "./../../stores/app.js";
 	import { GET_MY_ORDERS } from "./queries.js";
+	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
-	import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
 	let orders = [];
 
-  const resetCart = () => {
-    cartItems.set([]);
+	const resetCart = () => {
+		cartItems.set([]);
 		localStorage.setItem("user_cart", JSON.stringify($cartItems));
 		localStorage.removeItem("user_last_transaction");
 	};
-	
+
 	onMount(async () => {
 		let values = routerInstance.getQueryParams();
 
 		const transactionCartId = localStorage.getItem("user_last_transaction");
-		
+
+		graphQLInstance.clearApolloCache(MY_ORDERS);
+		graphQLInstance.clearApolloCache(MY_VALIDATING_ORDERS);
+
 		if (values.transactionId && transactionCartId == values.transactionId) {
 			resetCart();
 		}
@@ -66,17 +68,17 @@
 						doivent maintenant les valider. Vous recevrez une notification pour
 						chaque mise à jour.
 					</p>
-					<p class="text-xl font-semibold mb-2 mt-6">Besoin d'une information ?</p>
+					<p class="text-xl font-semibold mb-2 mt-6">
+						Besoin d'une information ?
+					</p>
 					<p>
 						Vous voulez savoir où en est votre commande ? Vous avez oublié où
 						aller la chercher ? À quelle heure ? Vous pouvez trouver toutes les
-						informations dans les détails de la commande dans votre espace
-						<a
+						informations dans les détails de la commande dans votre espace <a
 							href="javascript:void(0)"
 							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
 							Mes Commandes
-						</a>
-						.
+						</a> .
 					</p>
 				{:else}
 					<p class="mt-5 text-2xl text-primary">
@@ -91,17 +93,17 @@
 						Votre commande a été envoyée au producteur, qui doit maintenant la
 						valider. Vous recevrez une notification quand celle-ci sera prête.
 					</p>
-					<p class="text-xl font-semibold mb-2 mt-6">Besoin d'une information ?</p>
+					<p class="text-xl font-semibold mb-2 mt-6">
+						Besoin d'une information ?
+					</p>
 					<p>
 						Vous voulez savoir où en est votre commande ? Vous avez oublié où
 						aller la chercher ? À quelle heure ? Vous pouvez trouver toutes les
-						informations dans les détails de la commande dans votre espace
-						<a
+						informations dans les détails de la commande dans votre espace <a
 							href="javascript:void(0)"
 							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
 							Mes Commandes
-						</a>
-						.
+						</a> .
 					</p>
 				{/if}
 			</div>
@@ -116,7 +118,7 @@
 		{:else}
 			<p class="text-xl mb-2 font-semibold mt-6">Votre commande</p>
 		{/if}
-    {#each orders as order}
+		{#each orders as order}
 			<!-- <div class="mb-1">
 				- {order.vendor.name}
 				<a
@@ -128,15 +130,14 @@
 					voir le détail
 				</a>
       </div> -->
-      <div class="mb-1">
-				- {order.vendor.name} : 
-				<a
+			<div class="mb-1">
+				- {order.vendor.name} : <a
 					href="javascript:void(0)"
 					on:click={() => routerInstance.goTo(MyOrderRoutes.Details, {
 							id: order.id,
 						})}>#{order.reference}
 				</a>
-      </div>
+			</div>
 		{/each}
 		<!-- <div class="mt-2">
       <a href="javascript:void(0)" on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>Voir toutes mes Commandes</a>
