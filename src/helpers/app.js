@@ -1,4 +1,5 @@
 import Guid from "./Guid";
+import ConditioningKind from "../enums/ConditioningKind";
 
 export const timeSpanToFrenchHour = (timeSpan) => {
 	if (!timeSpan) {
@@ -115,3 +116,22 @@ export const unfreezeBody = () => {
 }
 
 export const formatMoney = (price) => `${price.toFixed(2).replace('.',',')}€`;
+
+export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) => {
+	if (!conditioning || conditioning == ConditioningKind.NotSpecified.Value) {
+		return '';
+	}
+
+	switch (conditioning) {
+		case ConditioningKind.Box.Value:
+			return `(Boîte de ${quantityPerUnit})`;
+		case ConditioningKind.Bunch.Value:
+			return `(${quantityPerUnit}) botte${quantityPerUnit > 1 ? 's' : ''})`;
+		case ConditioningKind.Bouquet.Value:
+			return `(${quantityPerUnit}) bouquet${quantityPerUnit > 1 ? 's' : ''})`;
+		case ConditioningKind.Piece.Value:
+			return `(${quantityPerUnit}) pièce${quantityPerUnit > 1 ? 's' : ''})`;
+		default:
+			return `(${quantityPerUnit}${unit})`;
+	}
+}

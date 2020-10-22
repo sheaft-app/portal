@@ -46,7 +46,7 @@
 				{/each}
 				<p class="mt-2">Si le problème persiste, contactez le service technique.</p>
 				{#if retry}
-					<button class="btn btn-lg btn-accent m-auto lg:m-0" on:click={refresh}>Réessayer</button>
+					<button class="btn btn-lg btn-white m-auto lg:m-0" on:click={refresh}>Réessayer</button>
 				{/if}
 		</div>
 	</div>

@@ -183,7 +183,7 @@
 				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service technique.
 			</p>
 			<button
-				class="btn btn-lg btn-accent m-auto lg:m-0"
+				class="btn btn-lg btn-white m-auto lg:m-0"
 				disabled={isPaying}
 				class:disabled={isPaying}
 				on:click={handleSubmit}>Réessayer</button>

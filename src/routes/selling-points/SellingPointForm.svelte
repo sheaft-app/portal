@@ -23,7 +23,7 @@
   const handleSubmit = () => {
     sellingPointForm.validate();
     
-    if ($sellingPointForm.valid) {
+    if ($sellingPointForm.valid && !isLoading) {
       sellingPoint.openingHours = normalizeOpeningHours(openings);
       delete sellingPoint.address['insee'];
       submit();

@@ -44,7 +44,7 @@
 		{ name: "Produit", sortLabel: "name" },
 		{ name: "Description", displayOn: "md" },
 		{ name: "Notation", displayOn: "md" },
-		{ name: "Prix (TTC)", noMobilePadding: true },
+		{ name: "Prix", noMobilePadding: true },
 		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
 	];
 
@@ -242,10 +242,10 @@
 		</td>
 		<td class="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div class="text-sm leading-5 font-medium">
-				{formatMoney(product.onSalePricePerUnit)}
+				{formatMoney(product.wholeSalePricePerUnit)}
 			</div>
 			<div class="text-sm leading-5 text-gray-600">
-				{formatMoney(product.vatPricePerUnit)} TVA
+				+{formatMoney(product.vatPricePerUnit)} TVA
 			</div>
 		</td>
 		<td

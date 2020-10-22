@@ -15,7 +15,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import GetRouterInstance from "./../../services/SheaftRouter";``
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app";
-  import { GET_ORDER_DETAILS } from "./queries.js";
+  import { GET_ORDERS, GET_ORDER_DETAILS } from "./queries.js";
   import { 
     canCreatePickingOrder,
     canCancelOrder,
@@ -114,6 +114,7 @@ faFileExport
       onClose: async res => {
         if (res.success) {
           await getPurchaseOrder(item.id);
+					graphQLInstance.clearApolloCache(GET_ORDERS);
         }
       }
     });

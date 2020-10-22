@@ -80,6 +80,15 @@
 		whereValues: selectedStatus ? selectedStatus.map((s) => s.value) : null
 	});
 
+	const filterStatus = Object.entries(OrderStatusKind).map(([key, value]) => {
+		if (value.Value && value.Label) {
+			return { 
+				value: value.Value,
+				label: value.Label
+			}
+		}
+	}).filter((o) => o && o.value && o.value !== "NONE");
+		
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
 			HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
@@ -92,19 +101,10 @@
 
 		hasPendingJobs = res.data;
 	};
-
-	const filterStatus = Object.entries(OrderStatusKind).map(([key, value]) => {
-		if (value.Value && value.Label) {
-			return { 
-				value: value.Value,
-				label: value.Label
-			}
-		}
-	}).filter((o) => o && o.value !== "NONE");
-
+	
 	onMount(async () => {
 		const values = routerInstance.getQueryParams();
-		if (values["where"] && values["whereValues"]) {
+		if (values["where"] && values["whereValues"] && filterStatus.length >= 1) {
 			selectedStatus = values["whereValues"].split(',').map((v) => filterStatus.find((o) => o.value == v));
 		}
 
@@ -147,6 +147,7 @@
 				if (res.success) {
 					routerInstance.refresh();
 					selectedItems = [];
+					graphQLInstance.clearApolloCache(GET_ORDERS);
 				}
 			},
 		});
@@ -282,6 +283,7 @@
 				<Select 
 					isMulti={true}
 					bind:selectedValue={selectedStatus}
+					optionIdentifier="value"
 					placeholder="N'afficher que les commandes avec le statut..."
 					items={filterStatus}
 				/>

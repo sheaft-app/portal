@@ -46,7 +46,7 @@
 				enabled: true,
 			},
 			vat: { value: product.vat, validators: ["required"], enabled: true },
-			unit: { value: product.unit, validators: ["required"], enabled: true },
+			unit: { value: product.unit, validators: ["required"], enabled: product.conditioning == ConditioningKind.Bulk.Value},
 			conditioning: {
 				value: product.conditioning,
 				validators: ["required"],
@@ -54,8 +54,8 @@
 			},
 			quantityPerUnit: {
 				value: product.quantityPerUnit,
-				validators: ["required", "min:0.01"],
-				enabled: true,
+				validators: ["required", "min:1"],
+				enabled: product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value,
 			},
 			selectedCategory: {
 				value: selectedCategory,
@@ -71,7 +71,7 @@
 	const handleSubmit = async () => {
     productForm.validate();
 
-    if ($productForm.valid) {
+    if ($productForm.valid && !isLoading) {
       if (product.conditioning != ConditioningKind.Bulk.Value)
           product.unit = UnitKind.NotSpecified.Value;
       return submit();
@@ -288,41 +288,43 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-control">
-				<div class="w-full">
-					<label for="grid-quantityPerUnit">{product.conditioning === ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *"}</label>
-					<div class="flex w-full">
-						<div class="mr-2">
-							<input
-								type="number"
-								bind:value={product.quantityPerUnit}
-								use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
-								id="grid-quantityPerUnit"
-								placeholder="ex : 5"
-								class:skeleton-box={isLoading}
-								disabled={isLoading} />
-							<ErrorContainer field={$productForm.fields.quantityPerUnit} />
-						</div>
-						{#if product.conditioning == ConditioningKind.Bulk.Value}
-							<div>
-								<select
-									bind:value={product.unit}
-									id="grid-unit"
-									use:bindClass={{ form: productForm, name: 'unit' }}
+			{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
+				<div class="form-control">
+					<div class="w-full">
+						<label for="grid-quantityPerUnit">{product.conditioning === ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *"}</label>
+						<div class="flex w-full">
+							<div class="mr-2">
+								<input
+									type="number"
+									bind:value={product.quantityPerUnit}
+									use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
+									id="grid-quantityPerUnit"
+									placeholder="ex : 5"
 									class:skeleton-box={isLoading}
-									disabled={isLoading}>
-									<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
-									<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
-									<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
-									<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
-									<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
-								</select>
-								<ErrorContainer field={$productForm.fields.unit} />
+									disabled={isLoading} />
+								<ErrorContainer field={$productForm.fields.quantityPerUnit} />
 							</div>
-						{/if}
+							{#if product.conditioning == ConditioningKind.Bulk.Value}
+								<div>
+									<select
+										bind:value={product.unit}
+										id="grid-unit"
+										use:bindClass={{ form: productForm, name: 'unit' }}
+										class:skeleton-box={isLoading}
+										disabled={isLoading}>
+										<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
+										<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
+										<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
+										<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
+										<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
+									</select>
+									<ErrorContainer field={$productForm.fields.unit} />
+								</div>
+							{/if}
+						</div>
 					</div>
 				</div>
-			</div>
+			{/if}
 		</div>
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="height: 300px;">

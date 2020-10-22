@@ -21,7 +21,7 @@
   const handleSubmit = () => {
     returnableForm.validate();
 
-    if ($returnableForm.valid) {
+    if ($returnableForm.valid && !isLoading) {
       submit();
     }
   }
