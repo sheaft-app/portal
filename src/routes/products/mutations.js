@@ -27,17 +27,26 @@ export const UPDATE_PRODUCT = gql`
 			rating
 			ratingsCount
 			description
-			picture
 			weight
+			picture
 			vat
+			quantityPerUnit
+			conditioning
+			unit
+			returnable {
+				id
+				name
+				vat
+				wholeSalePrice
+			}
 			vatPricePerUnit
 			createdOn
-			available
 			tags {
 				id
 				name
 				kind
 			}
+			available
 		}
 	}
 `;
