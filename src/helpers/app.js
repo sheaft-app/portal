@@ -123,15 +123,17 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 	}
 
 	switch (conditioning) {
+		case ConditioningKind.Bulk.Value:
+			return `(${quantityPerUnit}${unit})`;
 		case ConditioningKind.Box.Value:
 			return `(Boîte de ${quantityPerUnit})`;
 		case ConditioningKind.Bunch.Value:
-			return `(${quantityPerUnit}) botte${quantityPerUnit > 1 ? 's' : ''})`;
+			return `(1 botte)`;
 		case ConditioningKind.Bouquet.Value:
-			return `(${quantityPerUnit}) bouquet${quantityPerUnit > 1 ? 's' : ''})`;
+			return `(1 bouquet)`;
 		case ConditioningKind.Piece.Value:
-			return `(${quantityPerUnit}) pièce${quantityPerUnit > 1 ? 's' : ''})`;
+			return `(${quantityPerUnit} pièce${quantityPerUnit > 1 ? 's' : ''})`;
 		default:
-			return `(${quantityPerUnit}${unit})`;
+			return '';
 	}
 }

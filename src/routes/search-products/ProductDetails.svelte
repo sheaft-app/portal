@@ -22,7 +22,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import DeliveryKind from "../../enums/DeliveryKind";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import { groupBy, encodeQuerySearchUrl } from "./../../helpers/app";
+  import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -239,7 +239,7 @@
       <p class="text-xl lg:text-2xl font-bold">
         {formatMoney(product.onSalePricePerUnit)}
         <span class="font-normal">
-          ({`${product.quantityPerUnit}${UnitKind.label(product.unit)}`})
+          {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
         </span>
       </p>
       <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">

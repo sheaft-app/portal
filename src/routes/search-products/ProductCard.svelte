@@ -8,7 +8,7 @@
   import { faMapMarkerAlt, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
-  import { formatMoney } from "./../../helpers/app";
+  import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
 
   const routerInstance = GetRouterInstance();
   export let product, hoveredProduct = null;
@@ -140,7 +140,7 @@
             justify-between items-center hidden lg:block">
             {formatMoney(product.onSalePricePerUnit)}
             <span class="text-xxs lg:text-sm lg:inline hidden font-normal">
-              ({`${product.quantityPerUnit}${product.unit}`})
+              {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
             </span>
           </div>
           <div
@@ -171,7 +171,7 @@
           <div
             class="text-base lg:text-lg w-3/12 lg:w-full font-semibold lg:hidden">
             {formatMoney(product.onSalePricePerUnit)}
-            <div class="text-xxs">({`${product.quantityPerUnit}${product.unit}`})</div>
+            <div class="text-xxs">{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</div>
           </div>
           {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
             <div class="w-7/12 lg:w-full lg:mt-4">
