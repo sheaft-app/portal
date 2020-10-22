@@ -5,8 +5,7 @@ import { getFormattedNotification } from "./../components/notifications/helpers.
 let allNotifications = [];
 
 class SheaftNotificationManager {
-	constructor(notifSettings) {		
-
+	constructor(notifSettings) {
 		this.notificationSubscribe = notifications.subscribe((items) => {
 			allNotifications = items;
 		})
@@ -141,7 +140,7 @@ class SheaftNotificationManager {
 	}
 
 	formatAndSendNotification(message, type, url, addToStore, show){		
-		var notif = getFormattedNotification({message, type, url, addToStore, show}, true);
+		var notif = getFormattedNotification(null, {message, type, url, addToStore, show}, true);
 		this.sendNotification(notif);
 	}
 

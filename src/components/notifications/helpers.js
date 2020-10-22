@@ -8,9 +8,11 @@ import {
     faExclamationTriangle,
     faExclamation
   } from "@fortawesome/free-solid-svg-icons";
-  import Guid from "./../../helpers/Guid.js"
+  import Guid from "./../../helpers/Guid.js";
+  import {GET_PRODUCTS} from "./../../routes/products/queries";
+  
 
-export const getFormattedNotification = (notification, local, display) => {
+export const getFormattedNotification = (graphql, notification, local, display) => {
 	if(notification.content && typeof(notification.content) == "string" && notification.content.length > 0){
 		notification.content = JSON.parse(notification.content);
 	}
@@ -191,6 +193,12 @@ export const getFormattedNotification = (notification, local, display) => {
 				local
 			);
 		case "ProductImportSucceededEvent":
+			if(graphql){
+				graphql.clearApolloCache(GET_PRODUCTS);
+				if(location.hash.indexOf('products') > -1)
+					location.reload();
+			}
+
 			return getNotification(
 				notification,
 				"success",
