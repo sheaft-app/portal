@@ -57,6 +57,10 @@
     apiInstance
   );
 
+  const initSubscription = authInitialized.subscribe(async initialized => {
+      isLoading = false;
+  });
+
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
     if (!authenticated) {
       await logoutFreshdesk();
@@ -106,11 +110,10 @@
       await authInstance.login();
     }
 
-    const progress = await fetch('https://content.sheaft.com/progress/departments.json')
-      .then(response => response.json())
-      .then(data => data);
+    const progress = await fetch('https://content.sheaft.com/progress/departments.json');
+    var data = await progress.json();
       
-    allDepartmentsProgress.set(progress);
+    allDepartmentsProgress.set(data);
     isLoading = false;
   });
 
@@ -119,6 +122,7 @@
     window.removeEventListener("load");
     window.removeEventListener("appinstalled");
     authSubscription.unsubscribe();
+    initSubscription.unsubscribe();
     authInstance.unregister();
     routerInstance.unregister();
     guardInstance.unregister();
