@@ -28,9 +28,17 @@
   function onIntersect(entries) {
     if (!src && entries[0].isIntersecting) {
       const img = new Image();
-      img.src = product.picture;
+      let picture = null;
+      
+      if (document.documentElement.clientWidth <= 1023) {
+        picture = product.imageSmall;
+      } else {
+        picture = product.imageMedium;
+      }
+
+      img.src = picture;
       img.onload = () => {
-        src = product.picture;
+        src = picture;
       };
 
       return;
@@ -136,7 +144,7 @@
             </span>
           </div>
           <div
-            class="text-base lg:text-lg w-full font-semibold mb-2 flex
+            class="text-base lg:text-lg w-full font-semibold mb-2
             justify-between items-center hidden lg:block">
             {formatMoney(product.onSalePricePerUnit)}
             <span class="text-xxs lg:text-sm lg:inline hidden font-normal">

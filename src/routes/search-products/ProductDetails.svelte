@@ -242,9 +242,11 @@
           {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
         </span>
       </p>
-      <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
-        {product.description}
-      </p>
+      {#if product.description}
+        <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
+          {product.description}
+        </p>
+      {/if}
     </div>
     {#if product.isReturnable}
       <div class="mb-5 md:mb-0">

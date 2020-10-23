@@ -8,6 +8,8 @@ export const SEARCH_PRODUCTS = gql`
 				id
 				name
 				picture
+				imageMedium
+				imageSmall
 				rating
 				onSalePricePerUnit
 				onSalePrice
