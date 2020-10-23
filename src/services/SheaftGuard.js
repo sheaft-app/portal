@@ -48,6 +48,7 @@ import {
 	authAuthenticated,
 	authRegistered,
 	authAuthorized,
+	authInitialized,
 } from "../stores/auth";
 
 class SheaftGuard {
@@ -180,8 +181,8 @@ class SheaftGuard {
 			return false;
 		});
 
-		this.authorizedSub = authAuthorized.subscribe((authorized) => {
-			if (authorized && !this.authInstance.registered)
+		this.initializedSub = authInitialized.subscribe((initialized) => {
+			if (initialized && !this.authInstance.registered)
 				this.routerInstance.goTo(RegisterRoutes.Choose);
 		});
 	}
@@ -225,7 +226,7 @@ class SheaftGuard {
 
 	handleRouteNavigation = (exec, autoRedirect) => {
 		if (
-			this.authInstance.authorized &&
+			this.authInstance.initialized &&
 			!this.authInstance.registered &&
 			this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0
 		) {
@@ -242,7 +243,7 @@ class SheaftGuard {
 	};
 
 	unregister() {
-		this.authorizedSub.unsubscribe();
+		this.initializedSub.unsubscribe();
 	}
 }
 
