@@ -238,7 +238,7 @@
 		if (getRowBackgroundColor) return getRowBackgroundColor(item);
 		else return "";
 	};
-	$: noResults = !isLoading && items.length < 1;
+	$: noResults = !isLoading && items.length < 1 && !(_searchValues.where && _searchValues.where.length > 1);
 
 	$: refetch($querystring);
 </script>
