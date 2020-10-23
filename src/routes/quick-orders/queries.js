@@ -34,8 +34,14 @@ export const GET_ALL_PRODUCTS = gql`
 				weight
 				quantityPerUnit
 				wholeSalePricePerUnit
+				onSalePricePerUnit
 				vat
 				vatPricePerUnit
+				returnable {
+					wholeSalePrice
+					onSalePrice
+          vatPrice
+        }
 				quantityPerUnit
 				producer {
 					id

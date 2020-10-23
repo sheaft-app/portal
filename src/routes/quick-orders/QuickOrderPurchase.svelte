@@ -147,16 +147,20 @@
   $: productsCount = normalizedProducts.reduce((sum, product) => {
     return sum + (product.quantity || 0);
   }, 0);
-  // todo calculer le deposit
-  $: deposit = 0;
-  $: totalHt = normalizedProducts.reduce((sum, product) => {
+  $: totalReturnable = normalizedProducts.reduce((sum, product) => {  
+    return parseFloat(sum) + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0);
+  }, 0);
+  $: totalProductsHt = normalizedProducts.reduce((sum, product) => {
     return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
   }, 0);
-  $: totalVat = normalizedProducts.reduce((sum, product) => {
-    return parseFloat(sum) + product.vatPricePerUnit * (product.quantity || 0);
+  $: totalHt = normalizedProducts.reduce((sum, product) => {
+    return parseFloat(sum) + (product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) * (product.quantity || 0);
   }, 0);
-  $: totalTtc = deposit + normalizedProducts.reduce((sum, product) => {
-    return parseFloat(sum) + (product.wholeSalePricePerUnit + product.vatPricePerUnit) * (product.quantity || 0);
+  $: totalVat = normalizedProducts.reduce((sum, product) => {
+    return parseFloat(sum) + (product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0);
+  }, 0);
+  $: totalTtc = normalizedProducts.reduce((sum, product) => {
+    return parseFloat(sum) + (product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) * (product.quantity || 0);
   }, 0);
 </script>
 
@@ -295,8 +299,14 @@
                 </p>
               </div>
               <div>
-                <p>{formatMoney(totalHt)}</p>
+                <p>{formatMoney(totalProductsHt)}</p>
               </div>
+            </div>
+            <div class="flex justify-between w-full lg:px-3 pb-2">
+              <div class="text-left">
+                <p>Consignes HT</p>
+              </div>
+              <p>{formatMoney(totalReturnable)}</p>
             </div>
             <div class="flex justify-between w-full lg:px-3 pb-2">
               <div class="text-left">
@@ -306,15 +316,17 @@
                 <p>{formatMoney(totalVat)}</p>
               </div>
             </div>
-            <div class="flex justify-between w-full lg:px-3 pb-2">
-              <div class="text-left">
-                <p>Consignes TTC</p>
-              </div>
-              <p>{formatMoney(deposit)}</p>
-            </div>
             <div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
               <div class="text-left">
-                <p class="uppercase font-semibold">Total</p>
+                <p class="uppercase font-semibold">Total HT</p>
+              </div>
+              <div>
+                <p class="font-bold text-lg">{formatMoney(totalHt)}</p>
+              </div>
+            </div>
+            <div class="flex justify-between w-full lg:px-3 pt-2">
+              <div class="text-left">
+                <p class="uppercase font-semibold">Total TTC</p>
               </div>
               <div>
                 <p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
