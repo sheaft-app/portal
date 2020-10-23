@@ -65,7 +65,7 @@
         accept="image/png, image/jpeg" />
       <div class="mt-5 mb-5 m-auto text-center">
         {#if src}
-          <p class="leading-5 text-gray-500 py-3 hidden lg:block">
+          <p class="leading-5 text-gray-600 py-3 hidden lg:block">
             Faites glisser l'image pour la recadrer
           </p>
         {/if}

@@ -229,7 +229,7 @@
 					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
 					{format(new Date(job.createdOn), 'PP', { locale: fr })}
 				</p>
-				<p class="text-gray-500">
+				<p class="text-gray-600">
 					<Icon data={faClock} scale=".8" class=" inline" />
 					{format(new Date(job.createdOn), 'p', { locale: fr })}
 				</p>
@@ -249,7 +249,7 @@
 					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
 					{format(new Date(getLastUpdate(job)), 'PP', { locale: fr })}
 				</p>
-				<p class="text-gray-500">
+				<p class="text-gray-600">
 					<Icon data={faClock} scale=".8" class=" inline" />
 					{format(new Date(getLastUpdate(job)), 'p', { locale: fr })}
 				</p>

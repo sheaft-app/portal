@@ -325,7 +325,7 @@ faFileExport
     {/if}
     <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5">
       <div
-        class="flex flex-wrap bg-white w-full items-center border
+        class="flex flex-wrap bg-white w-full items-top border
         border-gray-400">
         <div
           class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0

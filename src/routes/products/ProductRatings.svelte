@@ -87,7 +87,7 @@
               </div>
             </div>
             <div class="ml-6">
-              <span class="font-light block text-sm text-gray-500">
+              <span class="font-light block text-sm text-gray-600">
                 {format(new Date(rating.createdOn), 'PP', { locale: fr })}
               </span>
               <p class="flex items-baseline">
@@ -101,7 +101,7 @@
                 {#if rating.comment}
                   <p class="mt-1">{rating.comment}</p>
                 {:else}
-                  <p class="italic text-gray-500">
+                  <p class="italic text-gray-600">
                     Avis laissé sans commentaire
                   </p>
                 {/if}

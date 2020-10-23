@@ -150,7 +150,7 @@
 		<section class="mx-0 pb-5">
 			<div class="mb-3">
 				<button
-					class="text-gray-500 items-center flex uppercase"
+					class="text-gray-600 items-center flex uppercase"
 					on:click={() => routerInstance.goBack()}>
 					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
 					Tâches
@@ -204,7 +204,7 @@
 					<div>
 						<p class="uppercase font-bold leading-none">Terminée</p>
 						<div class="mt-2">
-							<p>Cette tâche s'est executée avec succès</p>
+							<p>Cette tâche s'est exécutée avec succès.</p>
 						</div>
 					</div>
 				</div>
@@ -304,8 +304,8 @@
 		</div>
 		<div class="px-0 md:px-5 overflow-x-auto -mx-5">
 			<div
-				class="flex flex-wrap bg-white w-full shadow items-center border-b
-				border-gray-400">
+				class="flex flex-wrap bg-white w-full shadow border-b
+				border-gray-400 items-top">
 				<div
 					class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
 					lg:border-r border-solid border-gray-400">
@@ -313,13 +313,13 @@
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-500">Nom :</span>
+								<span class="text-gray-600">Nom :</span>
 								{job.name}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-500">Type :</span>
+								<span class="text-gray-600">Type :</span>
 								{JobKind.label(job.kind)}
 							</p>
 						</div>
@@ -332,13 +332,13 @@
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-500">Créée le :</span>
+								<span class="text-gray-600">Créée le :</span>
 								{format(new Date(job.createdOn), 'PPPPp', { locale: fr })}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-500">Démarrée le :</span>
+								<span class="text-gray-600">Démarrée le :</span>
 								{#if job.startedOn}
 									{format(new Date(job.startedOn), 'PPPPp', { locale: fr })}
 								{:else}en attente{/if}
@@ -346,7 +346,7 @@
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-500">Demandeur :</span>
+								<span class="text-gray-600">Demandeur :</span>
 								{job.user.name}
 							</p>
 						</div>
@@ -360,14 +360,14 @@
 						<div class="mt-3">
 							<div class="flex items-center mb-2">
 								<p>
-									<span class="text-gray-500">Terminée le :</span>
+									<span class="text-gray-600">Terminée le :</span>
 									{format(new Date(job.completedOn), 'PPPPp', { locale: fr })}
 								</p>
 							</div>
 							{#if job.file}
 								<div class="flex items-center mb-2">
 									<p>
-										<span class="text-gray-500">Fichier :</span>
+										<span class="text-gray-600">Fichier :</span>
 										<a href={job.file}>Télécharger</a>
 									</p>
 								</div>
