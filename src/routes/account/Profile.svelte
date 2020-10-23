@@ -65,7 +65,7 @@
     $authUserAccount.profile &&
     $authUserAccount.profile.picture
       ? $authUserAccount.profile.picture
-      : "https://sheaftapp.blob.core.windows.net/pictures/users/profile.svg";
+      : "https://content.sheaft.com/pictures/users/profile.svg";
 </script>
 
 <svelte:head>

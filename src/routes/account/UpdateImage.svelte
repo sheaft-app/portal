@@ -7,7 +7,7 @@
 
   const errorsHandler = new SheaftErrors();
 
-  export let id, mutation, close, onClose, initialSrc = "https://sheaftapp.blob.core.windows.net/pictures/users/profile.svg";
+  export let id, mutation, close, onClose, initialSrc = "https://content.sheaft.com/pictures/users/profile.svg";
   var graphQLInstance = GetGraphQLInstance();
   let src = initialSrc;
 

@@ -145,11 +145,50 @@ export default {
 				{
 					handler: "CacheFirst",
 					urlPattern: new RegExp(
-						"^https://sheaftapp.blob.core.windows.net/pictures/.*",
+						"^https://content.sheaft.com/pictures/.*",
 						"iyg"
 					),
 					options: {
-						cacheName: "sheaftstorage-cache",
+						cacheName: "sheaftcontent-cache",
+						cacheableResponse: {
+							statuses: [0, 200],
+						},
+					},
+				},
+				{
+					handler: "CacheFirst",
+					urlPattern: new RegExp(
+						"^https://app.sheaft.com/assets/.*",
+						"iyg"
+					),
+					options: {
+						cacheName: "sheaftassets-cache",
+						cacheableResponse: {
+							statuses: [0, 200],
+						},
+					},
+				},
+				{
+					handler: "CacheFirst",
+					urlPattern: new RegExp(
+						"^https://app.sheaft.com/img/.*",
+						"iyg"
+					),
+					options: {
+						cacheName: "sheaftimg-cache",
+						cacheableResponse: {
+							statuses: [0, 200],
+						},
+					},
+				},
+				{
+					handler: "CacheFirst",
+					urlPattern: new RegExp(
+						"^https://app.sheaft.com/dist/vendor-.*",
+						"iyg"
+					),
+					options: {
+						cacheName: "sheaftvendor-cache",
 						cacheableResponse: {
 							statuses: [0, 200],
 						},

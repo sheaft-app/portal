@@ -121,7 +121,7 @@
 
   const getUserPicture = picture => {
     if (picture) return picture;
-    return "https://sheaftapp.blob.core.windows.net/pictures/users/profile.svg";
+    return "https://content.sheaft.com/pictures/users/profile.svg";
   };
 
   const focus = node => {
@@ -215,7 +215,7 @@
         </div>
       {/if}
       <div
-        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://sheaftapp.blob.core.windows.net/pictures/products/categories/default.jpg'}); background-size: cover;"
+        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://content.sheaft.com/pictures/products/categories/default.jpg'}); background-size: cover;"
         class:opacity-50={product.picture.includes("pictures/products/categories/")}
         class="w-full shadow-md h-40 lg:h-64" />
       <!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">

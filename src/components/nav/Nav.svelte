@@ -323,7 +323,7 @@
           {$authUserAccount.profile.given_name ? $authUserAccount.profile.given_name : $authUserAccount.profile.name}
         </span>
         <div
-          style="background: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : "https://sheaftapp.blob.core.windows.net/pictures/users/profile.svg"}');
+          style="background: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : "https://content.sheaft.com/pictures/users/profile.svg"}');
           background-size: cover; background-position: center;"
           class="rounded-full bg-white user-photo ml-2 w-5 h-5 lg:w-8 lg:h-8" />
       </button>

@@ -106,7 +106,7 @@
       await authInstance.login();
     }
 
-    const progress = await fetch('https://sheaftapp.blob.core.windows.net/progress/departments.json')
+    const progress = await fetch('https://content.sheaft.com/progress/departments.json')
       .then(response => response.json())
       .then(data => data);
       

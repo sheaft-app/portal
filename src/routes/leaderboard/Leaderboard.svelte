@@ -77,7 +77,7 @@
 
   const getUserPicture = (user) => {
     if (user.picture) return user.picture;
-    return "https://sheaftapp.blob.core.windows.net/pictures/users/profile.svg";
+    return "https://content.sheaft.com/pictures/users/profile.svg";
   }
 
   const getUserName = (user) => {
