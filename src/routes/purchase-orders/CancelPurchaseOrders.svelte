@@ -46,6 +46,7 @@
 	{errorsHandler}
 	title={purchaseOrders.length > 1 ? 'Annuler ces commandes' : 'Annuler cette commande'}
 	level="danger"
+	{isLoading}
 	icon={faTimes}
 	submit={handleSubmit}
 	submitText="Confirmer l'annulation"
