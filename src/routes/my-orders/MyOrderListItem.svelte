@@ -18,7 +18,7 @@
 </script>
 
 <div
-	class="px-6 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">
+	class="px-8 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">
 	<div class="flex flex-row items-center">
 		<DisplayStatusIcon status={order.status} type="order" />
 		<div class="ml-3 leading-tight">

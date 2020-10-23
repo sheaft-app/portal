@@ -63,7 +63,7 @@ let enums = {
 	Refused: {
 		Value: "REFUSED",
 		Label: "Refusée",
-		Icon: faThumbsDown,
+		Icon: faTimes,
 		Color: "red-500",
 	},
 	Cancelled: {

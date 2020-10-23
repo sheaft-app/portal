@@ -12,7 +12,7 @@
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
-  import { formatMoney } from "./../../helpers/app";
+  import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
   import { GET_PRODUCER_DETAILS, GET_PRODUCER_PRODUCTS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
@@ -311,7 +311,7 @@
               <div
                 class="text-base text-right font-semibold">
                 {formatMoney(product.wholeSalePricePerUnit)} H.T
-                <div class="text-xs">({`${product.quantityPerUnit}${product.unit}`})</div>
+                <div class="text-xs">{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</div>
               </div>
             </div>
           </div>

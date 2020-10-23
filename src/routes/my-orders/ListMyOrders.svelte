@@ -131,7 +131,7 @@
 		<span class="bg-primary h-1 w-20 block mt-2 mb-6"></span>
 		{#if !hiddenNavigation}
 			<div
-				class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+				class="text-lg justify-center button-group mb-5 w-full md:w-auto -mx-1 md:mx-0">
 				<button
 					on:click={() => selectOrdersDisplay('active')}
 					type="button"

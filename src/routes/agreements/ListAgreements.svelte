@@ -94,13 +94,13 @@
 
 <TransitionWrapper>
   <ErrorCard {errorsHandler} />
-  <h1 class="font-semibold uppercase hidden md:block">Accords</h1>
-  <span class="bg-primary h-1 w-20 mt-2 mb-6 hidden md:block"></span>
+  <h1 class="font-semibold uppercase">Accords</h1>
+  <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
   {#if isLoading}
     <Loader />
   {:else if agreements.length > 0}
     {#if !hiddenNavigation}
-      <div class="text-lg justify-center button-group mb-5 w-full -mx-1 md:mx-0">
+      <div class="text-lg justify-center button-group mb-5 w-full md:w-auto -mx-1 md:mx-0">
         <button
           on:click={() => selectAgreementsDisplay("active")}
           type="button"
