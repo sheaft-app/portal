@@ -4,6 +4,7 @@
   import { GET_DELIVERIES } from "./queries";
   import Loader from "./../../components/Loader.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+  import { timeSpanToFrenchHour } from "./../../helpers/app";
 
   const graphQLInstance = GetGraphQLInstance();
 
@@ -56,7 +57,7 @@
 
 <div class="form-control mt-2" style="display: block;">
   <div class="mb-2">
-    <label for="grid-timestamp">Quand souhaitez-vous livrer ce magasin ? (choix multiples) *</label>
+    <label for="grid-timestamp">Quels horaires préférez-vous pour livrer ce magasin ? (choix multiples) *</label>
   </div>
   {#if isLoading}
     <Loader />
@@ -67,7 +68,7 @@
         class:active={selectedDelivery && selectedDelivery.selectedHours && selectedDelivery.selectedHours.find((h) => h.index === index)}
         on:click={() => selectDelivery(delivery.id, openingHour, index)} 
         class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded">
-        Le {DayOfWeekKind.label(openingHour.day).toLowerCase()} entre {openingHour.from} et {openingHour.to}
+        Le {DayOfWeekKind.label(openingHour.day).toLowerCase()} entre {timeSpanToFrenchHour(openingHour.from)} et {timeSpanToFrenchHour(openingHour.to)}
       </div>
     {/each}
   {/if}

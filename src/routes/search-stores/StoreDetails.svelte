@@ -9,7 +9,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { GET_STORE_DETAILS, GET_STORE_AGREEMENTS } from "./queries.js";
   import { selectedItem } from "./../../stores/app.js";
-  import { groupBy } from "./../../helpers/app";
+  import { groupBy, timeSpanToFrenchHour } from "./../../helpers/app";
   import AgreementRoutes from "../agreements/routes";
 
   const graphQLInstance = GetGraphQLInstance();
@@ -246,11 +246,11 @@
         {#each openings as opening}
           <div class="flex mb-2">
             <p style="min-width: 100px;">
-              {DayOfWeekKind.label(opening[0].day)}
+              {DayOfWeekKind.get(opening[0].day).Label}
             </p>
             <div class="ml-3">
               {#each opening as openingHour}
-                <p>{`${opening.from} à ${opening.to}`}</p>
+                <p>{`${timeSpanToFrenchHour(openingHour.from)} à ${timeSpanToFrenchHour(openingHour.to)}`}</p>
               {/each}
             </div>
           </div>

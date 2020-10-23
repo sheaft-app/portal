@@ -7,6 +7,8 @@
 	import GetAuthInstance from "../../services/SheaftAuth.js";
 	import { fr } from "date-fns/locale";
 	import Roles from "./../../enums/Roles";
+	import Icon from "svelte-awesome";
+	import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 	export let agreement;
 
@@ -41,7 +43,10 @@
 	</div>
 	<div class="mt-3">
 		<a href="javascript:void(0)"
+			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
+			style="width: fit-content"
 			on:click="{() => routerInstance.goTo(AgreementRoutes.Details, { id: agreement.id })}">
+			<Icon data={faChevronRight} class="mr-2 w-4 h-4" />
 			Détails de l'accord
 		</a>
 	</div>

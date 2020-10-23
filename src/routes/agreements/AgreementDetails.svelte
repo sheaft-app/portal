@@ -18,6 +18,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import AgreementRoutes from "./routes";
   import { timeSpanToFrenchHour } from "./../../helpers/app";
+  import Roles from "./../../enums/Roles";
 
   export let params = {};
 
@@ -125,6 +126,8 @@
             </div>
             <div class="mt-2">
               <a
+                class="border btn btn-lg text-accent"
+                style="width: fit-content; border-color: #ff4081;"
                 href="javascript:void(0)"
                 on:click={showCancelAgreementModal}>
                 Révoquer l'accord
@@ -189,119 +192,121 @@
         </div>
       {/if}
       <div class="flex flex-wrap -mx-4 md:mx-0">
-        <div class="w-full lg:w-1/2 lg:pr-1">
-          <div class="relative">
-            <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
-              <div class="flex items-baseline">
-                <div
-                  class="text-gray-600 text-xs uppercase font-semibold
-                  tracking-wide">
-                  Producteur
+        {#if authManager.isInRole([Roles.Store.Value])}
+          <div class="w-full lg:w-1/2 lg:pr-1">
+            <div class="relative">
+              <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
+                <div class="flex items-baseline">
+                  <div
+                    class="text-gray-600 text-xs uppercase font-semibold
+                    tracking-wide">
+                    Producteur
+                  </div>
                 </div>
-              </div>
-              <h4 class="mt-1 font-semibold text-lg leading-tight truncate">
-                {agreement.delivery.producer.name}
-              </h4>
-              <div class="mt-1">
-                <p class="text-base mb-1">
-                  <Icon
-                    data={faPhone}
-                    class="mr-1 inline"
-                    style="margin-bottom: 1px; width: 20px;" />
-                  {#if agreement.delivery.producer.phone}
-                    <a href="tel:{agreement.delivery.producer.phone}">
-                      {agreement.delivery.producer.phone}
+                <h4 class="mt-1 font-semibold text-lg leading-tight truncate">
+                  {agreement.delivery.producer.name}
+                </h4>
+                <div class="mt-1">
+                  <p class="text-base mb-1">
+                    <Icon
+                      data={faPhone}
+                      class="mr-1 inline"
+                      style="margin-bottom: 1px; width: 20px;" />
+                    {#if agreement.delivery.producer.phone}
+                      <a href="tel:{agreement.delivery.producer.phone}">
+                        {agreement.delivery.producer.phone}
+                      </a>
+                    {:else}Non renseigné{/if}
+                  </p>
+                  <p class="text-base mb-1">
+                    <Icon
+                      data={faEnvelope}
+                      class="mr-1 inline"
+                      style="margin-bottom: 3px; width: 20px;" />
+                    <a href="mailto:{agreement.delivery.producer.email}">
+                      {agreement.delivery.producer.email}
                     </a>
-                  {:else}Non renseigné{/if}
-                </p>
-                <p class="text-base mb-1">
-                  <Icon
-                    data={faEnvelope}
-                    class="mr-1 inline"
-                    style="margin-bottom: 3px; width: 20px;" />
-                  <a href="mailto:{agreement.delivery.producer.email}">
-                    {agreement.delivery.producer.email}
-                  </a>
-                </p>
-                <div class="text-base flex">
-                  <Icon
-                    data={faMapMarkerAlt}
-                    class="mr-2 inline"
-                    style="margin-bottom: 3px; width: 20px;" />
-                  <div class="leading-none">
-                    <div class="mb-1">
-                      {agreement.delivery.producer.address.line1}
-                    </div>
-                    {#if agreement.delivery.producer.address.line2}
-                      <div>{agreement.delivery.producer.address.line2}</div>
-                    {/if}
-                    <div>
-                      {agreement.delivery.producer.address.zipcode}
-                      {agreement.delivery.producer.address.city}
+                  </p>
+                  <div class="text-base flex">
+                    <Icon
+                      data={faMapMarkerAlt}
+                      class="mr-2 inline"
+                      style="margin-bottom: 3px; width: 20px;" />
+                    <div class="leading-none">
+                      <div class="mb-1">
+                        {agreement.delivery.producer.address.line1}
+                      </div>
+                      {#if agreement.delivery.producer.address.line2}
+                        <div>{agreement.delivery.producer.address.line2}</div>
+                      {/if}
+                      <div>
+                        {agreement.delivery.producer.address.zipcode}
+                        {agreement.delivery.producer.address.city}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="w-full lg:w-1/2">
-          <div class="relative">
-            <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
-              <div class="flex items-baseline">
-                <div
-                  class="text-gray-600 text-xs uppercase font-semibold
-                  tracking-wide">
-                  Magasin
+        {:else}
+          <div class="w-full lg:w-1/2 lg:pr-1">
+            <div class="relative">
+              <div class="bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
+                <div class="flex items-baseline">
+                  <div
+                    class="text-gray-600 text-xs uppercase font-semibold
+                    tracking-wide">
+                    Magasin
+                  </div>
                 </div>
-              </div>
-              <h4 class="mt-1 font-semibold text-lg leading-tight truncate">
-                {agreement.store.name}
-              </h4>
-              <div class="mt-1">
-                <p class="text-base mb-1">
-                  <Icon
-                    data={faPhone}
-                    class="mr-1 inline"
-                    style="margin-bottom: 1px; width: 20px;" />
-                  {#if agreement.store.phone}
-                    <a href="tel:{agreement.store.phone}">
-                      {agreement.store.phone}
+                <h4 class="mt-1 font-semibold text-lg leading-tight truncate">
+                  {agreement.store.name}
+                </h4>
+                <div class="mt-1">
+                  <p class="text-base mb-1">
+                    <Icon
+                      data={faPhone}
+                      class="mr-1 inline"
+                      style="margin-bottom: 1px; width: 20px;" />
+                    {#if agreement.store.phone}
+                      <a href="tel:{agreement.store.phone}">
+                        {agreement.store.phone}
+                      </a>
+                    {:else}Non renseigné{/if}
+                  </p>
+                  <p class="text-base mb-1">
+                    <Icon
+                      data={faEnvelope}
+                      class="mr-1 inline"
+                      style="margin-bottom: 3px; width: 20px;" />
+                    <a href="mailto:{agreement.store.email}">
+                      {agreement.store.email}
                     </a>
-                  {:else}Non renseigné{/if}
-                </p>
-                <p class="text-base mb-1">
-                  <Icon
-                    data={faEnvelope}
-                    class="mr-1 inline"
-                    style="margin-bottom: 3px; width: 20px;" />
-                  <a href="mailto:{agreement.store.email}">
-                    {agreement.store.email}
-                  </a>
-                </p>
-                <div class="text-base flex">
-                  <Icon
-                    data={faMapMarkerAlt}
-                    class="mr-2 inline"
-                    style="margin-bottom: 3px; width: 20px;" />
-                  <div class="leading-none">
-                    <div class="mb-1">{agreement.store.address.line1}</div>
-                    {#if agreement.store.address.line2}
-                      <div>{agreement.store.address.line2}</div>
-                    {/if}
-                    <div>
-                      {agreement.store.address.zipcode}
-                      {agreement.store.address.city}
+                  </p>
+                  <div class="text-base flex">
+                    <Icon
+                      data={faMapMarkerAlt}
+                      class="mr-2 inline"
+                      style="margin-bottom: 3px; width: 20px;" />
+                    <div class="leading-none">
+                      <div class="mb-1">{agreement.store.address.line1}</div>
+                      {#if agreement.store.address.line2}
+                        <div>{agreement.store.address.line2}</div>
+                      {/if}
+                      <div>
+                        {agreement.store.address.zipcode}
+                        {agreement.store.address.city}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        {/if}
         {#if agreement.selectedHours.length > 0}
-          <div
-            class="p-6 overflow-x-auto bg-white md:shadow md:rounded w-full md:mt-2 border-t border-b border-gray-400 md:border-none">
+          <div class="w-full lg:w-1/2 bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
             <div class="flex">
               <Icon data={faTruck} scale="1.3" class="mr-5" />
               <div>
