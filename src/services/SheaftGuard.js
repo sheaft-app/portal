@@ -227,6 +227,7 @@ class SheaftGuard {
 	handleRouteNavigation = (exec, autoRedirect) => {
 		if (
 			this.authInstance.initialized &&
+			this.authInstance.authorized &&
 			!this.authInstance.registered &&
 			this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0
 		) {
