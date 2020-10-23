@@ -182,7 +182,7 @@ class SheaftGuard {
 		});
 
 		this.initializedSub = authInitialized.subscribe((initialized) => {
-			if (initialized && !this.authInstance.registered)
+			if (initialized && this.authInstance.authorized && !this.authInstance.registered)
 				this.routerInstance.goTo(RegisterRoutes.Choose);
 		});
 	}
