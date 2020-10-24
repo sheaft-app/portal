@@ -8,11 +8,13 @@
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import { normalizeOpeningHours } from "./../../helpers/app";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
 
 	const graphQLInstance = GetGraphQLInstance();
   const authInstance = GetAuthInstance();
+  const notificationsInstance = new GetNotificationsInstance();
 
   const handleGet = async () => {
 		isLoading = true;
@@ -48,7 +50,11 @@
 			if (!res.success) {
 				//TODO
 				return;
-			}
+      }
+      
+      notificationsInstance.success(
+        "Vos modifications ont bien été appliquées."
+      );
 
 			await authInstance.loginSilent();
 		}

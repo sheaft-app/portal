@@ -14,6 +14,7 @@
   import ProductRoutes from "./routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   export let params = {};
 
@@ -21,6 +22,8 @@
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
   const errorsHandler = new SheaftErrors();
+  const notificationsInstance = new GetNotificationsInstance();
+  
 
   let product = null;
   let isLoading = false;
@@ -68,6 +71,10 @@
       //TODO
         return;
     }
+
+    notificationsInstance.success(
+      "Vos modifications ont bien été appliquées."
+    );
 
     routerInstance.goTo(ProductRoutes.List);
   };

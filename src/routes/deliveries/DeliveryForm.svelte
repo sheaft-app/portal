@@ -56,7 +56,8 @@
   <div class="form-control mt-5">
     <button
       type="submit"
-      class:disabled={!$deliveryForm.valid}
+      class:disabled={!$deliveryForm.valid || isLoading}
+      disabled={isLoading}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
         data={isLoading ? faCircleNotch : faPaperPlane}

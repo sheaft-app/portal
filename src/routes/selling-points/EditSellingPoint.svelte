@@ -14,10 +14,12 @@
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
   const graphQLInstance = GetGraphQLInstance();
+  const notificationsInstance = new GetNotificationsInstance();
   const routerInstance = GetRouterInstance();
 
   export let params;
@@ -68,6 +70,10 @@
       isUpdatingSellingPoint = false;
       return;
     }
+
+    notificationsInstance.success(
+      "Vos modifications ont bien été appliquées."
+    );
 
     isUpdatingSellingPoint = false;
     routerInstance.goTo(SellingPointRoutes.List);
