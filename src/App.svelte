@@ -510,9 +510,19 @@
       @apply text-white;
     }
 
+    &.disabled {
+      border: none;
+    }
+
     &-accent {
       background: #ff4081;
+      border: 1px solid #ff4081;
       @apply text-white;
+
+      &:hover {
+        @apply bg-white;
+        color: #ff4081;
+      }
     }
 
     &-white {

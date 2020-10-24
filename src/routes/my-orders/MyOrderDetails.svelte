@@ -252,8 +252,7 @@
                 </div>
                 <a
                   target="_blank"
-                  class="btn btn-lg bg-accent text-white shadow font-semibold mt-2
-                  hover:bg-gray-100"
+                  class="btn btn-lg btn-accent font-semibold mt-2"
                   style="width: fit-content"
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}>
                   Voir sur Google Maps
@@ -527,10 +526,9 @@
           </p>
           <button
             on:click={cancelOrder}
-            class="btn btn-lg btn-accent shadow mt-3 font-semibold
-            hover:bg-gray-100">
+            class="btn btn-lg btn-accent shadow mt-3 font-semibold">
             Annuler ma commande
-          </button>
+          </button> 
         </div>
       </div>
     </div>
