@@ -8,7 +8,7 @@ const search = "";
 
 const SearchProductRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Anonymous.Value, Roles.Consumer.Value],
+	Roles:[Roles.Anonymous.Value, Roles.Consumer.Value, Roles.Admin.Value, Roles.Support.Value],
 	Search: {
 		Name: "Explorer",
 		Icon: faSearch,
