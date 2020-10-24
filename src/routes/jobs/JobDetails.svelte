@@ -118,7 +118,9 @@
 			jobs: [currentJob],
 			onClose: async (res) => {
 				if (res.success) {
-          await getJob(currentJob.id);
+					await getJob(currentJob.id);
+					graphQLInstance.clearApolloCache(GET_JOBS);
+					routerInstance.goTo(JobRoutes.List);
 				}
 			},
 		});
