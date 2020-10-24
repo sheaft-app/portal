@@ -120,7 +120,7 @@
         Je demande une copie de mes données
       </button>
       {#if hasSentRGPDRequest}
-        <p class="text-green-500 mt-1">Votre demande a bien été envoyée. Vous recevrez votre rapport de données par mail sous 15 jours.</p>
+        <p class="text-green-500 mt-1">Votre demande a bien été envoyée. Vous recevrez votre rapport de données par mail sous 48h.</p>
       {/if}
     </div>
     <hr class="mt-10 mb-5" />
