@@ -373,6 +373,9 @@ faFileExport
               <p>
                 <span class="text-gray-600">Montant :</span>
                 {formatMoney(order.totalOnSalePrice)}
+                {#if order.totalReturnableOnSalePrice > 0}
+                  (dont {formatMoney(order.totalReturnableOnSalePrice)} consignes)
+                {/if}
               </p>
             </div>
           </div>
@@ -468,6 +471,11 @@ faFileExport
                         <p class="whitespace-no-wrap">
                           {formatMoney(line.totalOnSalePrice)}
                         </p>
+                        {#if line.totalReturnableOnSalePrice > 0}
+                          <p class="text-blue-500 whitespace-no-wrap">
+                            <img src="./img/returnable.svg" alt="Consigné" class="mr-1" style="width: 15px; display: inline;"  /> {formatMoney(line.totalReturnableOnSalePrice)}
+                          </p>
+                        {/if}
                       </td>
                     </tr>
                   {/each}

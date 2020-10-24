@@ -66,6 +66,7 @@ export const GET_MY_ORDER_DETAILS = gql`
 			reference
 			totalOnSalePrice
 			status
+			totalReturnableOnSalePrice
 			createdOn
 			totalVatPrice
 			reason
@@ -100,7 +101,9 @@ export const GET_MY_ORDER_DETAILS = gql`
 				reference
 				quantity
 				totalOnSalePrice
+				totalOnSalePrice
 				unitOnSalePrice
+				totalReturnableOnSalePrice
 			}
 		}
 	}
