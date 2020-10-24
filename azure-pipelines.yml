@@ -5,9 +5,6 @@
 
 trigger:
   batch: true
-  branches:  
-    include:
-      - refs/tags/publish
 
 pool:
   vmImage: "ubuntu-latest"
