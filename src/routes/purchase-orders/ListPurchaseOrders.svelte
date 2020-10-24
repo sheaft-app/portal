@@ -178,6 +178,7 @@
 			icon: faCheck,
 			text: "Accepter",
 			color: "green",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => refuseOrders(),
@@ -185,6 +186,7 @@
 			icon: faTimes,
 			text: "Refuser",
 			color: "red",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => cancelOrders(),
@@ -192,6 +194,7 @@
 			icon: faBackspace,
 			text: "Annuler",
 			color: "orange",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => processOrders(),
@@ -199,7 +202,8 @@
 			icon: faPlay,
 			text: "Démarrer la préparation",
 			color: "green",
-			hideIfDisabled: true
+			hideIfDisabled: true,
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => completeOrders(),
@@ -207,7 +211,8 @@
 			icon: faClipboardCheck,
 			text: "Terminer la préparation",
 			color: "green",
-			hideIfDisabled: true
+			hideIfDisabled: true,
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => createPickingOrder(),
@@ -215,7 +220,9 @@
 			icon: faFileExport,
 			text: selectedItems.filter((o) => o.status == OrderStatusKind.Waiting.Value).length >= 1 ? "Accepter et faire un bon de préparation" : "Faire un bon de préparation",
 			color: "indigo",
-			hideIfDisabled: true
+			hideIfDisabled: true,
+
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => deliverOrders(),
@@ -223,7 +230,8 @@
 			icon: faTruckLoading,
 			text: "Marquer comme livrées",
 			color: "teal",
-			hideIfDisabled: true
+			hideIfDisabled: true,
+			displaySelectedItemsNumber: true
 		},
 	];
 </script>

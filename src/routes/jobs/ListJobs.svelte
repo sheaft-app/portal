@@ -150,7 +150,7 @@
 		selectedItems.length > 0 &&
 		selectedItems.filter(
 			(o) =>
-				o.status != ProcessStatusKind.Done.Value ||
+				o.status != ProcessStatusKind.Done.Value &&
 				o.status != ProcessStatusKind.Failed.Value
 		).length == selectedItems.length;
 
@@ -161,6 +161,7 @@
 			text: "Réinitialiser",
 			icon: faRedoAlt,
 			color: "teal",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => pauseJobs(),
@@ -168,6 +169,7 @@
 			text: "Mettre en pause",
 			icon: faPause,
 			color: "orange",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => resumeJobs(),
@@ -175,6 +177,7 @@
 			text: "Reprendre",
 			icon: faPlay,
 			color: "green",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => cancelJobs(),
@@ -182,13 +185,15 @@
 			text: "Annuler",
 			icon: faTimes,
 			color: "red",
+			displaySelectedItemsNumber: true
 		},
 		{
 			click: () => archiveJobs(),
 			disabled: !canArchiveJobs,
 			text: "Archiver",
 			icon: faArchive,
-			color: "gray",
+			color: "normal",
+			displaySelectedItemsNumber: true
 		},
   ];
 </script>
@@ -200,7 +205,7 @@
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
 	{#if !noResults}
-		<Actions {actions} />
+		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 	{/if}
 	<Table
 		graphQuery={GET_JOBS}
