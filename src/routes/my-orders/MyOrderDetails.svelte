@@ -220,8 +220,8 @@
               <p class="uppercase font-bold leading-none">
                 Où et quand récupérer ma commande ?
               </p>
-              <div class="mt-2">
-                <div class="flex">
+              <div class="mt-3">
+                <div class="flex mb-2">
                   <Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;" />
                   <div>
                     <p>{order.expectedDelivery.address.line1}</p>
@@ -231,7 +231,7 @@
                     <p>{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
                   </div>
                 </div>
-                <div>
+                <div class="mb-3">
                   <p class="mb-1">
                     <Icon data={faCalendar} class="mr-2 w-3 h-3" />
                     {format(
@@ -253,7 +253,7 @@
                 <a
                   target="_blank"
                   class="btn btn-lg btn-accent font-semibold mt-2"
-                  style="width: fit-content"
+                  style="width: max-content;"
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}>
                   Voir sur Google Maps
                 </a>
