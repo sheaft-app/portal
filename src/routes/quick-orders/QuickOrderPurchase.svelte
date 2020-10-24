@@ -16,6 +16,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import Loader from "./../../components/Loader.svelte";
   import { MY_ORDERS } from "./../my-orders/queries.js";
+  import orderBy from "lodash/orderBy";
 
   const { open } = getContext("modal");
   const graphQLInstance = GetGraphQLInstance();
@@ -43,12 +44,12 @@
       return;
     }
 
-    normalizedProducts = res.data.map((i) => {
+    normalizedProducts = orderBy(res.data.map((i) => {
       return {
         ...i,
         quantity: 0
       }
-    });
+    }), i => i.producer.name, ['asc']);
 
     if (normalizedProducts.length > 1) {
       loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
@@ -201,7 +202,7 @@
       </div> -->
       <div class="lg:flex lg:flex-row">
         <div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
-          <div class="align-middle inline-block min-w-full overflow-hidden items">
+          <div class="align-middle inline-block min-w-full overflow-hidden items mb-5">
             {#each (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts) as item, i}
               {#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts)[i - 1].producer.name !== item.producer.name}
                 <p style="border-bottom: 0;" class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
@@ -246,7 +247,7 @@
                       on:click|stopPropagation={() => handleLess(item.id)}>
                       -
                     </button>
-                     <input
+                    <input
                       min="0"
                       max="999"
                       type="number"
