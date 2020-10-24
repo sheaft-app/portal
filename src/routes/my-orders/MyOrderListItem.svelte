@@ -36,7 +36,7 @@
 	</div>
 	<div class="text-base flex flex-row mb-2">
 		{#if authInstance.isInRole([Roles.Store.Value])}
-			<p class="text-gray-600 w-full">Livrée le</p>
+			<p class="text-gray-600 w-full">Livraison prévue le</p>
 		{:else}
 			<p class="text-gray-600 w-full">À récupérer le</p>
 		{/if}
