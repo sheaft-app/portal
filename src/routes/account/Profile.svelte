@@ -108,8 +108,8 @@
       </p>
       <p>
         Vous pouvez obtenir une copie des informations collectées par notre
-        applications (soit vos nom, prénom, nombre de points,
-        commandes et recherches) en cliquant sur le bouton ci-dessous.
+        application (soit vos nom, prénom, nombre de points,
+        commandes et avis) en cliquant sur le bouton ci-dessous.
       </p>
       <button
         class="btn bg-white px-4 py-2 shadow mt-3 font-semibold
