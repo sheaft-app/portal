@@ -264,7 +264,7 @@
                 Ok, et maintenant ?
               </p>
               <ul class="mt-4">
-                <p>1. Sélectionnez une horaire et un lieu de récupération pour chaque producteur.</p>
+                <p>1. Sélectionnez un horaire et un lieu de récupération pour chaque producteur.</p>
                 <p>2. Le lieu de récupération apparaît sur la carte avec son numéro associé.</p>
               </ul>
             </div>
