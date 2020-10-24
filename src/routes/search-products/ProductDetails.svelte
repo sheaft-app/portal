@@ -248,7 +248,7 @@
         </p>
       {/if}
     </div>
-    {#if product.isReturnable}
+    {#if product.returnable}
       <div class="mb-5 md:mb-0">
         <div class="flex justify-center">
           {#if product.returnable.onSalePrice}
