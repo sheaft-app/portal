@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">
+    <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5 lg:mb-5">
       <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
         <p>Panier</p>
         <button class="btn btn-link items-center" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
