@@ -114,7 +114,7 @@
       </div>
     </section>
     <div class="w-full xl:w-8/12">
-      {#if agreement.status == 'ACCEPTED'}
+      {#if agreement.status == AgreementStatusKind.Accepted.Value}
         <div
           class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
           md:rounded md:mb-2">
@@ -136,7 +136,7 @@
           </div>
         </div>
       {/if}
-      {#if agreement.status == 'CANCELLED'}
+      {#if agreement.status == AgreementStatusKind.Cancelled.Value}
         <div
           class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
           shadow md:rounded md:mb-2">
@@ -153,7 +153,7 @@
           </div>
         </div>
       {/if}
-      {#if agreement.status == 'REFUSED'}
+      {#if agreement.status == AgreementStatusKind.Refused.Value}
         <div
           class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100
           shadow md:rounded md:mb-2">
