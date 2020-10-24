@@ -83,7 +83,7 @@
 		align-items: center;
 		border: 1px solid #cbd5e0;
 		border-radius: 5px;
-		width: fit-content;
+		width: max-content;
 		background-color: #ffffff;
 	}
 

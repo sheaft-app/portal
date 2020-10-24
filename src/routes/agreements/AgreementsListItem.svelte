@@ -44,7 +44,7 @@
 	<div class="mt-3">
 		<a href="javascript:void(0)"
 			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
-			style="width: fit-content"
+			style="width: max-content"
 			on:click="{() => routerInstance.goTo(AgreementRoutes.Details, { id: agreement.id })}">
 			<Icon data={faChevronRight} class="mr-2 w-4 h-4" />
 			Détails de l'accord

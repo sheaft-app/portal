@@ -368,6 +368,7 @@
 
 <style lang="scss">
 	.themed {
+    --cursor: pointer;
 		--multiItemMargin: 5px 2px;
 		--multiItemActiveBG: #ebedef;
 		--multiItemDisabledHoverBg: #ebedef;

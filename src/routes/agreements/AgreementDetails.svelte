@@ -127,7 +127,7 @@
             <div class="mt-2">
               <a
                 class="border btn btn-lg text-accent"
-                style="width: fit-content; border-color: #ff4081;"
+                style="width: max-content; border-color: #ff4081;"
                 href="javascript:void(0)"
                 on:click={showCancelAgreementModal}>
                 Révoquer l'accord

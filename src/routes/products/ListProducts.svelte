@@ -192,7 +192,7 @@
 							on:click={() => goToJobs()}
 							class="btn py-2 px-3 bg-white shadow font-semibold
 							hover:bg-gray-100"
-							style="width: fit-content;">
+							style="width: max-content;">
 							Voir les tâches en cours
 						</a>
 					</div>

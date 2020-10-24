@@ -62,7 +62,7 @@
 		<a
 			target="_blank"
 			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
-			style="width: fit-content"
+			style="width: max-content"
 			href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}>
 			<Icon data={faMapMarkedAlt} class="mr-2 w-4 h-4" />
 			Voir le lieu sur Google Maps
@@ -71,7 +71,7 @@
 	<div class="mt-3">
 		<a href="javascript:void(0)" 
 			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
-			style="width: fit-content"
+			style="width: max-content"
 			on:click="{() => routerInstance.goTo(MyOrderRoutes.Details, {id: order.id})}">
 			<Icon data={faChevronRight} class="mr-2 w-4 h-4" />
 			Voir détails de la commande
