@@ -26,7 +26,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`Le magasin ${notification.content.Name} souhaite établir un partenariat avec vous.`,
+				`Un magasin souhaiterait commercer avec vous.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -36,7 +36,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`Le producteur ${notification.content.Name} souhaite établir un partenariat avec vous.`,
+				`Un producteur souhaiterait commercer avec vous.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -46,7 +46,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.Name} a accepté votre demande de partenariat.`,
+				`Votre demande d'accord commercial a été acceptée.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -56,7 +56,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`${notification.content.Name} a accepté votre demande de partenariat.`,
+				`Votre demande d'accord commercial a été acceptée.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -66,7 +66,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.Name} a annulé votre partenariat.`,
+				`Un accord commercial a été annulé par un magasin.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -76,7 +76,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.Name} a annulé votre partenariat.`,
+				`Un accord commercial a été annulé par un producteur.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -86,7 +86,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.Name} a décliné votre partenariat.`,
+				`Votre demande d'accord commercial a été refusée.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
@@ -96,13 +96,13 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.Name} a décliné votre partenariat.`,
+				`Votre demande d'accord commercial a été refusée.`,
 				`#/agreements/${notification.content.AgreementId}`,
 				true,
 				false,
 				local
 			);
-		case "UserExportDataProcessingEvent":
+		case "UserDataExportProcessingEvent":
 			return getNotification(
 				notification,
 				"progress",
@@ -112,7 +112,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				false,
 				local
 			);
-		case "UserExportDataSucceededEvent":
+		case "UserDataExportSucceededEvent":
 			return getNotification(
 				notification,
 				"success",
@@ -122,7 +122,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				true,
 				local
 			);
-		case "UserExportDataFailedEvent":
+		case "UserDataExportFailedEvent":
 			return getNotification(
 				notification,
 				"warning",
@@ -298,7 +298,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				true,
 				local
 			);
-		case "UserPointsRewardedEvent":
+		case "UserPointsCreatedEvent":
 			var action = "contribué à l'économie locale";
 			switch (notification.content.Kind) {
 				case "BUG_BOUNTY":
