@@ -45,24 +45,26 @@
 	const getNextResults = async () => {
 		isLoading = true;
 		var res = await graphQLInstance.query(GET_NOTIFICATIONS, createVariables());
-		isLoading = false;
 		if (!res.success) {
+			isLoading = false;
 			//TODO
 			return;
 		}
 
 		pageInfo = res.pageInfo;
 		parseNotifications(res.data);
+		isLoading = false;
 	};
 
 	const markAllAsRead = async (date) => {
 		isLoading = true;
 		var res = await graphQLInstance.mutate(MARK_USER_NOTIFICATIONS_AS_READ);
-		isLoading = false;
-
-		if (res.success) {
-			date = res.data;
+		if(!res.success){				
+			isLoading = false;
+			return;
 		}
+
+		date = res.data;
 		var array = $notifications.map((e) => {
 			if (e.createdOn < date) e.unread = false;
 			return e;
@@ -87,10 +89,14 @@
 		displayNotificationCenter.set(false);
 	};
 
-	const parseNotifications = async (notifs) => {
-		if (!notifs) return;
+	const parseNotifications = (notifs) => {
+		if (!notifs || notifs.length == 0) {			
+			notificationsHidden = true;
+			notifications.set([]);
+			return;
+		}
 
-		var results = notifs.map((n) => getFormattedNotification(n, false));
+		var results = notifs.map((n) => getFormattedNotification(null, n, false));
 		var arr = [...$notifications, results][0];
 
 		notifications.set(arr);
