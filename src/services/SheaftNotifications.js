@@ -148,6 +148,7 @@ class SheaftNotificationManager {
 		if (notification.addToStore) {
 			allNotifications.push(notification);
 			notifications.set(allNotifications);
+			notificationsCount.set(allNotifications.filter((e) => e.unread).length);
 		}
 
 		if (notification.show)

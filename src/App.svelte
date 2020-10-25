@@ -26,6 +26,8 @@
   } from "./services/SheaftFreshdesk.js";
   import Oidc from "oidc-client";
   import OidcRoutes from "./routes/oidc/routes";
+  import { notificationsCount } from "./components/notifications/store";
+  import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
   
   $: isLoading = true;
 
@@ -71,6 +73,11 @@
     if (authenticated) {
       signalrInstance.start();
       await loginFreshdesk();
+
+      var res = await apiInstance.query(GET_UNREAD_NOTIFICATIONS_COUNT);
+      if (res.success) {
+        notificationsCount.set(res.data);
+      }      
     }
     
     if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)

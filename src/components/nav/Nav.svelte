@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import NotificationsPanel from "./../notifications/NotificationsPanel.svelte";
   import {
-    notifications,
+    notificationsCount,
     displayNotificationCenter
   } from "./../notifications/store.js";
   import Icon from "svelte-awesome";
@@ -302,11 +302,11 @@
         class="flex uppercase text-white mr-4 md:mr-4 items-center"
         class:hidden={!($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
         <Icon data={faBell} class="mr-3 inline" scale="1.2" />
-        {#if $notifications.filter(n => n.unread).length > 0}
+        {#if $notificationsCount > 0}
           <span
             class="absolute rounded-full bg-accent text-white"
             style="padding: 0px 5px; font-size: 11px; margin-top: -7px; margin-left: 10px;">
-            {$notifications.filter(n => n.unread).length}
+            {$notificationsCount}
           </span>
         {/if}
       </button>

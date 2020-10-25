@@ -5,7 +5,7 @@
 	import { fr } from "date-fns/locale";
 	import Icon from "svelte-awesome";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
-	import { notifications, displayNotificationCenter } from "./store.js";
+	import { notifications, displayNotificationCenter, notificationsCount } from "./store.js";
 	import { GET_NOTIFICATIONS } from "./queries.js";
 	import {
 		MARK_USER_NOTIFICATIONS_AS_READ,
@@ -24,7 +24,7 @@
 	const PAGE_LIMIT_SIZE = 30;
 
 	let isLoading = false;
-	let notificationsHidden = true;
+	let notificationsHidden = false;
 
 	let pageInfo = {
 		hasNextPage: false,
@@ -64,13 +64,14 @@
 			return;
 		}
 
-		date = res.data;
+		date = new Date(res.data);
 		var array = $notifications.map((e) => {
 			if (e.createdOn < date) e.unread = false;
 			return e;
 		});
 
 		notifications.set(array);
+		notificationsCount.set(array.filter((e) => e.unread).length);
 	};
 
 	const markAsRead = async (notification) => {
@@ -86,6 +87,7 @@
 		});
 
 		notifications.set(array);
+		notificationsCount.set(array.filter((e) => e.unread).length);
 		displayNotificationCenter.set(false);
 	};
 
@@ -93,6 +95,7 @@
 		if (!notifs || notifs.length == 0) {			
 			notificationsHidden = true;
 			notifications.set([]);
+			notificationsCount.set(0);
 			return;
 		}
 
@@ -100,14 +103,16 @@
 		var arr = [...$notifications, results][0];
 
 		notifications.set(arr);
+		notificationsCount.set(arr.filter((e) => e.unread).length);
 	};
 
 	$: hasUnreadNotification = $notifications.filter((n) => n.unread).length > 0;
 	$: hasMoreNotifications = pageInfo.hasNextPage;
 
 	onMount(async () => {
-		await markAllAsRead(new Date());
-		notificationsHidden = false;
+		setTimeout(async() => { 
+			await markAllAsRead(new Date());
+		}, 5000);		
 
 		if ($notifications && $notifications.length > 0) return;
 
