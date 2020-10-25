@@ -55,9 +55,9 @@
       return;
     }
 
-    const products = await loadProducts();
-    const delivery = await loadDelivery();
-    const agreements = await loadAgreements();
+    const products = await loadProducts(res.data.id);
+    const delivery = await loadDelivery(res.data.id);
+    const agreements = await loadAgreements(res.data.id);
 
     distanceInfos = GetDistanceInfos(
       values["latitude"],
@@ -76,7 +76,7 @@
 
   const loadProducts = async (id) => {
     var res = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
-      companyId: $selectedItem.id
+      companyId: id
     });
 
     if (!res.success) {
@@ -91,10 +91,10 @@
     return res.data;
   }
 
-  const loadDelivery = async () =>  {
+  const loadDelivery = async (id) =>  {
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
       input: {
-        ids: [$selectedItem.id],
+        ids: [id],
         kinds: [DeliveryKind.ProducerToStore.Value]
       } 
     });
@@ -111,8 +111,8 @@
     return res.data[0];
   }
 
-  const loadAgreements = async () =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_AGREEMENTS, { input: $selectedItem.id } );
+  const loadAgreements = async (id) =>  {
+    var res = await graphQLInstance.query(GET_PRODUCER_AGREEMENTS, { id } );
 
     if (!res.success) {
       //todo

@@ -123,8 +123,17 @@ export const GET_PRODUCER_DELIVERIES = gql`
 `;
 
 export const GET_PRODUCER_AGREEMENTS = gql`
-	query GetProducerAgreements($input: ID!) {
-		producerAgreements(input: $input) {
+	query GetProducerAgreements($id: ID!) {
+		producerAgreements(
+			input: $id
+			first: 50
+			where: {
+				status_in: [
+					ACCEPTED
+					WAITING_FOR_PRODUCER_APPROVAL
+					WAITING_FOR_STORE_APPROVAL
+				]
+			}) {
 			nodes {
 				id
 				status
