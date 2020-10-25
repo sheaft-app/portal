@@ -39,12 +39,7 @@
   isLoading={isLoading}
   {errorsHandler}
   submit={handleSubmit}
-  close={() => handleClose({ success: false, data: null })}>
-  <p class="leading-5">
-    Vous vous apprêtez à rendre
-    <b>{status ? 'disponible' : 'indisponible'} {selectedItems.length} produits à la vente.</b>
-  </p>
-  <br/>
+  close={() => handleClose({ success: false, data: null })}>  
   <p>
     Cette opération rendra les produits ci-dessous {status ? '' : 'non'} disponibles à la vente.
   </p>

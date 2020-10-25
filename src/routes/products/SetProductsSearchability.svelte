@@ -40,13 +40,8 @@
   {errorsHandler}
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>
-  <p class="leading-5">
-    Vous vous apprêtez à
-    <b>{status ? 'référencer' : 'ne plus référencer'} {selectedItems.length} produits dans la recherche des consommateurs.</b>
-  </p>
-  <br/>
   <p>
-    Cette opération rendra les produits ci-dessous {status ? 'visibles' : 'invisible'} dans la recherche des consommateurs
+    Cette opération rendra les produits ci-dessous {status ? 'visibles' : 'invisibles'} dans la recherche des consommateurs
   </p>
   <ul class="text-sm mt-2 font-semibold">
     {#each selectedItems as product}

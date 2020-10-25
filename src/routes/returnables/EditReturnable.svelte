@@ -13,7 +13,7 @@
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "../../components/ErrorCard.svelte";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+    import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
 	export let params;
 
@@ -21,7 +21,7 @@
 	const { open } = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
-  const notificationsInstance = new GetNotificationsInstance();
+    const notificationsInstance = new GetNotificationsInstance();
 
 	let isLoading = false;
 	let returnable = null;
@@ -57,7 +57,7 @@
 			UPDATE_RETURNABLE,
 			returnable,
 			errorsHandler.Uuid,
-      GET_RETURNABLES
+            GET_RETURNABLES
     );
     
 		isLoading = false;

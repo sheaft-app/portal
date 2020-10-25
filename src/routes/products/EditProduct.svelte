@@ -15,6 +15,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+import DeleteProducts from "./DeleteProducts.svelte";
 
   export let params = {};
 
@@ -31,6 +32,17 @@
   onMount(async () => {
     await getProduct();
   });
+  
+	const showDeleteModal = () => {
+		open(DeleteProducts, {
+			selectedItems: [product],
+			onClose: async (res) => {
+				if (res.success) {
+					routerInstance.goTo(ProductRoutes.List);
+				}
+			},
+		});
+	};
 
   const getProduct = async () => {
     isLoading = true;
@@ -99,31 +111,37 @@
           Produits
         </button>
       </div>
-      <div class="flex">
-        <h1 class="font-semibold uppercase mb-0">{product.name}</h1>
-        {#if !product.available}
-          <div
-            class="rounded-full bg-orange-300 ml-2 px-3 py-1 shadow uppercase
-            font-semibold text-xs text-white mt-1 h-6">
-            Non disponible à la vente
-          </div>
-        {/if}
-        {#if !product.searchable}
-          <div
-            class="rounded-full bg-orange-300 ml-2 px-3 py-1 shadow uppercase
-            font-semibold text-xs text-white mt-1 h-6">
-            Non référencé pour les consommateurs
-          </div>
-        {/if}
-      </div>
-      <h3 class="text-gray-600">#{product.reference}</h3>
-      <div class="text-sm leading-5 text-gray-600">
-        <RatingStars rating={product.rating} />
-        {#if product.ratingsCount > 0}
-          <a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
-            Voir les {product.ratingsCount} avis
-          </a>
-        {/if}
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="font-semibold uppercase mb-0">{product.name}</h1>
+          <span>
+          <RatingStars rating={product.rating} />
+          {#if product.ratingsCount > 0}
+            <a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
+              Voir les {product.ratingsCount} avis
+            </a>
+          {/if}
+          </span>
+          {#if !product.available}
+            <span
+              class="rounded-full bg-orange-300 ml-2 mr-2 px-3 py-1 shadow uppercase
+              font-semibold text-xs text-white my-2 h-6">
+              Indisponible
+            </span>
+          {/if}
+          {#if !product.searchable}
+            <span
+              class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
+              font-semibold text-xs text-white my-2 h-6">
+              Non référencé
+            </span>
+          {/if}  
+        </div>      
+				<button
+        class="btn btn-lg bg-red-500 text-white"
+        on:click={() => showDeleteModal()}>
+        Supprimer
+      </button>
       </div>
     </section>
     <ProductForm

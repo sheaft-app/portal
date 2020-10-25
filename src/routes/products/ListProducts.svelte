@@ -43,7 +43,8 @@
 
 	const headers = [
 		{ name: "Produit", sortLabel: "name" },
-		{ name: "Description", displayOn: "md" },
+		{ name: "Disponible", displayOn: "md" },
+		{ name: "Référencé", displayOn: "md" },
 		{ name: "Notation", displayOn: "md" },
 		{ name: "Prix", noMobilePadding: true },
 		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
@@ -118,11 +119,6 @@
 		routerInstance.goTo(JobRoutes.List);
 	};
 
-	const getRowBackgroundColor = (item) => {
-		if (!item.available || !item.searchable) return "bg-orange-100";
-		return "";
-	};
-
 	const onRowClick = (item) => {
 		routerInstance.goTo(ProductRoutes.Details, { id: item.id });
 	};
@@ -152,6 +148,7 @@
 		},
 		{
 			click: () => showSetAvailabilityModal(false),
+			hideIfDisabled: true,
 			disabled: !hasSelectedOneItem || hasSelectedDisabledItem,
 			text: "Rendre indisponible",
 			icon: faTimesCircle,
@@ -160,6 +157,7 @@
 		},
 		{
 			click: () => showSetAvailabilityModal(true),
+			hideIfDisabled: true,
 			disabled: !hasSelectedOneItem || hasSelectedEnabledItem,
 			text: "Rendre disponible",
 			icon: faPlay,
@@ -168,6 +166,7 @@
 		},
 		{
 			click: () => showSetSearchabilityModal(false),
+			hideIfDisabled: true,
 			disabled: !hasSelectedOneItem || hasSelectedUnsearchableItem,
 			text: "Ne plus référencer",
 			icon: faTimesCircle,
@@ -176,6 +175,7 @@
 		},
 		{
 			click: () => showSetSearchabilityModal(true),
+			hideIfDisabled: true,
 			disabled: !hasSelectedOneItem || hasSelectedSearchableItem,
 			text: "Référencer",
 			icon: faPlay,
@@ -248,7 +248,6 @@
 		{errorsHandler}
 		defaultSearchValues={ProductRoutes.List.Params.Query}
 		bind:selectedItems
-		{getRowBackgroundColor}
 		{onRowClick}>
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div
@@ -264,8 +263,23 @@
 		<td
 			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				hidden md:table-cell">
-			<div class="text-sm leading-5 truncate" style="max-width: 250px;">
-				{product.description || ''}
+			<div class="text-sm leading-5">
+				{#if product.available}
+					<span>Oui</span>
+				{:else}
+					<span class="text-orange-500">Non</span>
+				{/if}
+			</div>
+		</td>
+		<td
+			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
+				hidden md:table-cell">
+			<div class="text-sm leading-5">
+				{#if product.searchable}
+					<span>Oui</span>
+				{:else}
+					<span class="text-orange-500">Non</span>
+				{/if}
 			</div>
 		</td>
 		<td
