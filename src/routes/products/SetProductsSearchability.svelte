@@ -16,7 +16,7 @@
 
     var res = await graphQLInstance.mutate(SET_PRODUCTS_SEARCHABILITY, {
       ids: selectedItems.map(s => s.id),
-      available: status
+      searchable: status
     }, errorsHandler.Uuid);
 
     isLoading = false;
