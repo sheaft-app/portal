@@ -136,7 +136,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.SenderName} a laissé un avis sur '${notification.content.ProductName}.'`,
+				`Un consommateur a laissé un avis sur votre produit.`,
 				`#/products/${notification.content.ProductId}/ratings`,
 				true,
 				true,
@@ -146,7 +146,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"warning",
-				`La création de votre bon de préparation '${notification.content.Name}' a échoué.`,
+				`La création de votre bon de préparation a échoué.`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				true,
@@ -156,7 +156,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"progress",
-				`Votre bon de préparation '${notification.content.Name}' est en cours de création`,
+				`Votre bon de préparation est en cours de génération...`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				false,
@@ -166,7 +166,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`Votre bon de préparation '${notification.content.Name}' est prêt`,
+				`Votre bon de préparation est prêt !`,
 				`${notification.content.Url}`,
 				true,
 				true,
@@ -176,7 +176,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"warning",
-				`L'import de vos produits a échoué`,
+				`L'import de vos produits a échoué.`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				true,
@@ -186,7 +186,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"progress",
-				`L'import de vos produits est en cours`,
+				`L'import de vos produits est en cours...`,
 				`#/jobs/${notification.content.JobId}`,
 				true,
 				false,
@@ -202,7 +202,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`Votre import de produits est terminé`,
+				`Votre import de produits est terminé !`,
 				`#/products/`,
 				true,
 				true,
@@ -212,7 +212,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`Votre commande pour le ${notification.content.ExpectedDeliveryDate} a bien été envoyée.`,
+				`Votre commande a bien été envoyée.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				false,
@@ -222,8 +222,8 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.SenderName} a passé commande pour le ${notification.content.ExpectedDeliveryDate}.`,
-				`#/orders/${notification.content.PurchaseOrderId}`,
+				`Vous avez reçu une nouvelle commande.`,
+				`#/purchase-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				false,
 				local
@@ -232,7 +232,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"progress",
-				`${notification.content.VendorName} est en train de préparer votre commande.`,
+				`Votre commande est en cours de préparation.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -242,8 +242,8 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"warning",
-				`${notification.content.SenderName} a annulé votre commande pour le ${notification.content.ExpectedDeliveryDate}.`,
-				`#/orders/${notification.content.PurchaseOrderId}`,
+				`Une de vos commandes a été annulée.`,
+				`#/purchase-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
 				local
@@ -252,7 +252,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`Votre commande ${notification.content.Reference} a été annulée.`,
+				`Votre commande a été annulée par le producteur.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -262,7 +262,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`Votre commande ${notification.content.Reference} est prête.`,
+				`Votre commande est prête.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -272,7 +272,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.VendorName} a refusé votre commande.`,
+				`Votre commande a été refusée par le producteur.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -282,7 +282,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"info",
-				`${notification.content.VendorName} a accepté votre commande.`,
+				`Votre commande a été acceptée.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
 				true,
 				true,
@@ -292,8 +292,18 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"success",
-				`Le paiement de votre commande de ${notification.content.TotalPrice}€ a été accepté.`,
-				`#/my-orders`,
+				`Le paiement de votre commande a été accepté.`,
+				`#/my-orders/`,
+				true,
+				true,
+				local
+			);
+		case "PayinFailedEvent":
+			return getNotification(
+				notification,
+				"warning",
+				`Le paiement de votre commande a échoué.`,
+				`#/my-orders/`,
 				true,
 				true,
 				local
