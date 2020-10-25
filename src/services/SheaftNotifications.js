@@ -1,5 +1,5 @@
 import { Notyf } from "notyf";
-import { notifications } from "./../components/notifications/store.js";
+import { notifications, notificationsCount } from "./../components/notifications/store.js";
 import { getFormattedNotification } from "./../components/notifications/helpers.js";
 
 let allNotifications = [];
