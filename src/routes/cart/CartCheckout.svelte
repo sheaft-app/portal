@@ -234,11 +234,11 @@
 							<div class="text-left">
 								<p>Consignes</p>
 								<p class="text-sm text-gray-600">
-									{order.returnablesCount} consignes
+									dont {order.returnablesCount} consignes
 								</p>
 							</div>
 							<div>
-								<p class="font-medium">
+								<p class="text-blue-500 font-medium">
 									{formatMoney(order.totalReturnableOnSalePrice)}
 								</p>
 							</div>

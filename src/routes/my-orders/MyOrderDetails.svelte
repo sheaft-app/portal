@@ -388,7 +388,7 @@
                 <span class="text-gray-600">Montant :</span>
                 {formatMoney(order.totalOnSalePrice)}
                 {#if order.totalReturnableOnSalePrice > 0}
-                 (dont {formatMoney(order.totalReturnableOnSalePrice)} consignes)
+                 (dont {formatMoney(order.totalReturnableOnSalePrice)} de consignes)
                 {/if}
               </p>
             </div>

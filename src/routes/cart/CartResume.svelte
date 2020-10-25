@@ -369,13 +369,13 @@
                 {#if paymentInfo.returnablesCount >= 1}
                   <div class="flex justify-between w-full lg:px-3 pb-2">
                     <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
-                      <p>Consignes</p>
+                      <p>dont consignes</p>
                       <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
                         {paymentInfo.returnablesCount} consignes
                       </p>
                     </div>
                     <div class:skeleton-box={isLoadingPaymentInfo}>
-                      <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalReturnableOnSalePrice)}</p>
+                      <p class="text-blue-500 font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalReturnableOnSalePrice)}</p>
                     </div>
                   </div>
                 {/if}
