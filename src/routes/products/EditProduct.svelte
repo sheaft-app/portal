@@ -15,7 +15,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-import DeleteProducts from "./DeleteProducts.svelte";
+  import DeleteProducts from "./DeleteProducts.svelte";
 
   export let params = {};
 
@@ -25,7 +25,6 @@ import DeleteProducts from "./DeleteProducts.svelte";
   const errorsHandler = new SheaftErrors();
   const notificationsInstance = new GetNotificationsInstance();
   
-
   let product = null;
   let isLoading = false;
 
