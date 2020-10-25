@@ -2,13 +2,12 @@
   import { onMount, onDestroy, getContext } from "svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
-  import { CREATE_DELIVERY } from "./mutations";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import Loader from "./../../components/Loader.svelte";
   import { UPDATE_DELIVERY } from "./mutations";
   import { GET_DELIVERIES, GET_DELIVERY_DETAILS } from "./queries";
   import DeliveryForm from "./DeliveryForm.svelte";
-  import { denormalizeOpeningHours } from "./../../helpers/app";
   import DeleteDelivery from "./DeleteDelivery.svelte";
   import DeliveryRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
@@ -18,6 +17,7 @@
   const { open } = getContext("modal");
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = GetNotificationsInstance();
 
   export let params;
 
@@ -59,7 +59,7 @@
       // todo
       return;
     }
-  
+    notificationsInstance.success("Vos modifications ont bien été appliquées.");
     await fetchDelivery(delivery.id);
   };
 

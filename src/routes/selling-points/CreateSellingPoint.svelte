@@ -9,11 +9,13 @@
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 import { GET_SELLING_POINTS } from "./queries";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = new GetNotificationsInstance();
 
   let isCreatingSellingPoint = false;
 
@@ -53,6 +55,10 @@ import { GET_SELLING_POINTS } from "./queries";
       // todo
       return;
     }
+    
+    notificationsInstance.success(
+      "Votre point de vente a bien été créé."
+    );
 
     routerInstance.goTo(SellingPointRoutes.List);
   };

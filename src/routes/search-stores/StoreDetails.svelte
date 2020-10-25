@@ -11,9 +11,11 @@
   import { selectedItem } from "./../../stores/app.js";
   import { groupBy, timeSpanToFrenchHour } from "./../../helpers/app";
   import AgreementRoutes from "../agreements/routes";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = new GetNotificationsInstance();
   const { open } = getContext("modal");
 
   let store = null;
@@ -91,7 +93,9 @@
       store,
       onClosed: res => {
         if (res.success) {
-          store.agreement = res.data;
+          store.agreement = { id: res.data.id, status: res.data.status };
+          store.hasAgreement = true;
+          notificationsInstance.success("Votre demande d'accord commercial a bien été envoyée.");
         }
       }
     });

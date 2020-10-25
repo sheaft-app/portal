@@ -1,8 +1,8 @@
 <script>
-  import DeliveryFrom from "../../enums/DeliveryKind";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import { CREATE_DELIVERY } from "./mutations";
   import { GET_DELIVERIES } from "./queries";
   import DeliveryForm from "./DeliveryForm.svelte";
@@ -14,6 +14,7 @@
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = GetNotificationsInstance();
 
   let isCreatingDelivery = false;
 
@@ -52,7 +53,7 @@
       // todo
       return;
     }
-
+    notificationsInstance.success("Vos informations de livraisons ont bien été enregistrées.");
     routerInstance.goTo(DeliveryRoutes.List);
   };
 </script>

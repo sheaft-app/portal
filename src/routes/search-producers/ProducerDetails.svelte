@@ -20,9 +20,11 @@
   import { selectedItem } from "./../../stores/app.js";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import AgreementRoutes from "../agreements/routes";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = new GetNotificationsInstance();
   const { open } = getContext("modal");
   const values = routerInstance.getQueryParams();
 
@@ -136,6 +138,7 @@
         if (res.success) {
           producer.agreement = { id: res.data.id, status: res.data.status };
           producer.hasAgreement = true;
+          notificationsInstance.success("Votre demande d'accord commercial a bien été envoyée.");
         }
       }
     });

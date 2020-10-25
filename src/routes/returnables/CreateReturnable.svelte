@@ -4,6 +4,7 @@
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import ReturnableForm from "./ReturnableForm.svelte";
 	import { CREATE_RETURNABLE } from "./mutations";
 	import ReturnableRoutes from "./routes";
@@ -18,6 +19,7 @@
 	const graphQLInstance = GetGraphQLInstance();
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
+  const notificationsInstance = GetNotificationsInstance();
 
 	let isLoading = false;
 
@@ -43,7 +45,7 @@
 			//TODO
 			return;
 		}
-
+		notificationsInstance.success("Votre consigne a bien été créée.");
 		if (isInModal) await handleClose(res);
 		else routerInstance.goTo(ReturnableRoutes.List);
 	};

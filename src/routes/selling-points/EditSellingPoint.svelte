@@ -10,7 +10,6 @@
   import DeleteSellingPoint from "./DeleteSellingPoint.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
-  import { denormalizeOpeningHours } from "./../../helpers/app";
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
