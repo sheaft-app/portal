@@ -17,6 +17,7 @@
 		cartItems.set([]);
 		localStorage.setItem("user_cart", JSON.stringify($cartItems));
 		localStorage.removeItem("user_last_transaction");
+		localStorage.removeItem("user_current_order");
 	};
 
 	onMount(async () => {
@@ -27,9 +28,9 @@
 		graphQLInstance.clearApolloCache(MY_ORDERS);
 		graphQLInstance.clearApolloCache(MY_VALIDATING_ORDERS);
 
-		if (values.transactionId && transactionCartId == values.transactionId) {
-			resetCart();
-		}
+		resetCart();
+
+		//TODO should retrieve purchaseOrders with transactionCartId
 
 		if (!values || !values.id) {
 			return routerInstance.goTo(MyOrderRoutes.List);

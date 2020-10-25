@@ -68,18 +68,15 @@
 
     if (order) {
       var response = await graphQLInstance.query(GET_ORDER, { input: order.id }, errorsHandler.Uuid);
-
       if (!response.success) {
         //TODO
-        localStorage.removeItem("user_current_order");
-        order = null;
+        clearStorage();
         hasFetchedOrder = true;
         return;
       }
 
       if (response.data == null || response.data.status == "SUCCEEDED" || response.data.status == "WAITING") {
-        localStorage.removeItem("user_current_order");
-        order = null;
+        clearStorage();
       }
     }
 
@@ -88,7 +85,13 @@
     if (values["step"] && values["step"] == "donation" && isValid) {
       validatedCart = true;
     }
-  })  
+  });
+  
+  const clearStorage = () => {
+		localStorage.removeItem("user_last_transaction");
+		localStorage.removeItem("user_current_order");
+    order = null;
+  }
 
   const saveOrder = async () => {
     if (!hasFetchedOrder) {
