@@ -86,7 +86,7 @@
 		</div>
 	</div>
 	<div class="mt-4">
-		<Toggle classNames="ml-1" isChecked={producer.openForNewBusiness}>
+		<Toggle classNames="ml-1" bind:isChecked={producer.openForNewBusiness}>
 			<div class="ml-2">
 					<span class="ml-1">Je veux être visible des commerces à proximité pour qu'ils puissent me proposer des partenariats</span>
 			</div>

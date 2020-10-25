@@ -1,7 +1,8 @@
-		<script>
+<script>
 	import DeleteProducts from "./DeleteProducts.svelte";
 	import ImportProducts from "./ImportProducts.svelte";
 	import SetProductsAvailability from "./SetProductsAvailability.svelte";
+	import SetProductsSearchability from "./SetProductsSearchability.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import { onMount, getContext } from "svelte";
 	import { format } from "date-fns";
@@ -86,6 +87,19 @@
 		});
 	};
 
+	const showSetSearchabilityModal = (status) => {
+		open(SetProductsSearchability, {
+			selectedItems: selectedItems,
+			status: status,
+			onClose: async (res) => {
+				if (res.success) {
+					routerInstance.refresh();
+					selectedItems = [];
+				}
+			},
+		});
+	};
+
 	const showImportModal = () => {
 		open(ImportProducts, {
 			onClose: async (res) => {
@@ -105,7 +119,7 @@
 	};
 
 	const getRowBackgroundColor = (item) => {
-		if (!item.available) return "bg-orange-100";
+		if (!item.available || !item.searchable) return "bg-orange-100";
 		return "";
 	};
 
@@ -124,28 +138,49 @@
 	$: hasSelectedEnabledItem =
 		selectedItems.filter((i) => i.available).length > 0;
 
+	$: hasSelectedUnsearchableItem =
+		selectedItems.filter((i) => !i.searchable).length > 0;
+	$: hasSelectedSearchableItem =
+		selectedItems.filter((i) => i.searchable).length > 0;
+
 	$: actions = [
 		{
 			click: () => createNewProduct(),
 			text: "Ajouter",
 			icon: faPlus,
-			color: "green"
+			color: "green",
 		},
 		{
 			click: () => showSetAvailabilityModal(false),
 			disabled: !hasSelectedOneItem || hasSelectedDisabledItem,
-			text: "Désactiver",
+			text: "Rendre indisponible",
 			icon: faTimesCircle,
 			color: "orange",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => showSetAvailabilityModal(true),
 			disabled: !hasSelectedOneItem || hasSelectedEnabledItem,
-			text: "Activer",
+			text: "Rendre disponible",
 			icon: faPlay,
 			color: "green",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
+		},
+		{
+			click: () => showSetSearchabilityModal(false),
+			disabled: !hasSelectedOneItem || hasSelectedUnsearchableItem,
+			text: "Ne plus référencer",
+			icon: faTimesCircle,
+			color: "orange",
+			displaySelectedItemsNumber: true,
+		},
+		{
+			click: () => showSetSearchabilityModal(true),
+			disabled: !hasSelectedOneItem || hasSelectedSearchableItem,
+			text: "Référencer",
+			icon: faPlay,
+			color: "green",
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => showDeleteModal(),
@@ -153,7 +188,7 @@
 			text: "Supprimer",
 			icon: faTrash,
 			color: "red",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => showImportModal(),
@@ -163,7 +198,7 @@
 		},
 	];
 
-  $: displayNoResults = !isLoading && items.length < 1;
+	$: displayNoResults = !isLoading && items.length < 1;
 </script>
 
 <svelte:head>
@@ -175,7 +210,7 @@
 	{#if hasPendingJobs}
 		<div
 			class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
-			text-gray-600 shadow rounded mb-5">
+				text-gray-600 shadow rounded mb-5">
 			<div class="flex">
 				<Icon data={faCircleNotch} spin scale="1.3" class="mr-5" />
 				<div>
@@ -191,7 +226,7 @@
 							href="javascript:void(0)"
 							on:click={() => goToJobs()}
 							class="btn py-2 px-3 bg-white shadow font-semibold
-							hover:bg-gray-100"
+								hover:bg-gray-100"
 							style="width: max-content;">
 							Voir les tâches en cours
 						</a>
@@ -228,14 +263,14 @@
 		</td>
 		<td
 			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
-			hidden md:table-cell">
+				hidden md:table-cell">
 			<div class="text-sm leading-5 truncate" style="max-width: 250px;">
 				{product.description || ''}
 			</div>
 		</td>
 		<td
 			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
-			hidden md:table-cell">
+				hidden md:table-cell">
 			<div class="text-sm leading-5 font-medium">
 				<RatingStars rating={product.rating} />
 			</div>
@@ -250,14 +285,14 @@
 		</td>
 		<td
 			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
-			text-sm leading-5 hidden md:table-cell">
+				text-sm leading-5 hidden md:table-cell">
 			<div>
 				<p>
-					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
+					<Icon data={faCalendarAlt} scale=".8" class="inline" />
 					{format(new Date(product.createdOn), 'PP', { locale: fr })}
 				</p>
 				<p class="text-gray-600">
-					<Icon data={faClock} scale=".8" class=" inline" />
+					<Icon data={faClock} scale=".8" class="inline" />
 					{format(new Date(product.createdOn), 'p', { locale: fr })}
 				</p>
 			</div>
@@ -267,10 +302,12 @@
 	{#if displayNoResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-3">Vous n'avez pas encore de produits dans votre catalogue.</p>
+				<p class="mb-3">
+					Vous n'avez pas encore de produits dans votre catalogue.
+				</p>
 				<div
 					class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse
-					md:flex-row">
+						md:flex-row">
 					<a
 						class="btn btn-lg bg-white shadow md:mr-5 justify-center text-normal"
 						href="javascript:void(0)"

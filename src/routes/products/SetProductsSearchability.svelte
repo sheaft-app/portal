@@ -1,7 +1,7 @@
 <script>
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import { SET_PRODUCTS_AVAILABILITY } from "./mutations.js";
+  import { SET_PRODUCTS_SEARCHABILITY } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
 
   const errorsHandler = new SheaftErrors();
@@ -14,7 +14,7 @@
   const handleSubmit = async () => {
     isLoading = true;
 
-    var res = await graphQLInstance.mutate(SET_PRODUCTS_AVAILABILITY, {
+    var res = await graphQLInstance.mutate(SET_PRODUCTS_SEARCHABILITY, {
       ids: selectedItems.map(s => s.id),
       available: status
     }, errorsHandler.Uuid);
@@ -34,19 +34,19 @@
 </script>
 
 <ActionConfirm
-  title={status ? 'Rendre disponible' : 'Rendre indisponible'}
+  title={status ? 'Référencer' : 'Ne plus référencer'}
   level={status ? 'success' : "warning"}
   isLoading={isLoading}
   {errorsHandler}
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>
   <p class="leading-5">
-    Vous vous apprêtez à rendre
-    <b>{status ? 'disponible' : 'indisponible'} {selectedItems.length} produits à la vente.</b>
+    Vous vous apprêtez à
+    <b>{status ? 'référencer' : 'ne plus référencer'} {selectedItems.length} produits dans la recherche des consommateurs.</b>
   </p>
   <br/>
   <p>
-    Cette opération rendra les produits ci-dessous {status ? '' : 'non'} disponibles à la vente.
+    Cette opération rendra les produits ci-dessous {status ? 'visibles' : 'invisible'} dans la recherche des consommateurs
   </p>
   <ul class="text-sm mt-2 font-semibold">
     {#each selectedItems as product}

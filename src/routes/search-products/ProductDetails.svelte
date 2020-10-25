@@ -265,12 +265,16 @@
         </div>
       </div>
     {/if}
-    {#if !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
-      <ProductCartQuantity
-        productId={$selectedItem}
-        plusButtonActive
-        bind:timeout
-        userFeedback />
+    {#if !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}    
+      {#if product.available}
+        <ProductCartQuantity
+          productId={$selectedItem}
+          plusButtonActive
+          bind:timeout
+          userFeedback />
+      {:else}
+        <div>Non disponible</div>
+      {/if}
     {/if}
     <div class="mt-5">
       <div

@@ -47,6 +47,7 @@ export const UPDATE_PRODUCT = gql`
 				kind
 			}
 			available
+			searchable
 		}
 	}
 `;
@@ -63,6 +64,17 @@ export const SET_PRODUCTS_AVAILABILITY = gql`
 			nodes {
 				id
 				available
+			}
+		}
+	}
+`;
+
+export const SET_PRODUCTS_SEARCHABILITY = gql`
+	mutation SetProductsSearchability($input: SetProductsSearchabilityInput!) {
+		setProductsSearchability(input: $input) {
+			nodes {
+				id
+				searchable
 			}
 		}
 	}

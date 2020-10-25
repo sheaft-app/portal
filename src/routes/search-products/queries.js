@@ -30,6 +30,7 @@ export const SEARCH_PRODUCTS = gql`
 					}
 				}
 				isReturnable
+				available
 			}
 		}
 	}

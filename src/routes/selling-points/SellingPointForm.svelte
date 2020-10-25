@@ -103,7 +103,7 @@
   </div>
   <div class="form-control" style="display: block;">
     <label>Bloquer les commandes</label>
-    <Toggle disabled={isLoading} classNames="ml-1" isChecked={sellingPoint.lockOrderHoursBeforeDelivery}>
+    <Toggle disabled={isLoading} classNames="ml-1" bind:isChecked={sellingPoint.lockOrderHoursBeforeDelivery}>
       <div class="ml-2">
           <input type="number" style="width: 70px; display: inline-block;" bind:value={sellingPoint.lockOrderHoursBeforeDelivery}>
           <span class="ml-1">heures avant le début de la vente</span>

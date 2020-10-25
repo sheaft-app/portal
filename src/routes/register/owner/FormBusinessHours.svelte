@@ -32,8 +32,7 @@
       <div class="mt-2">
         <Toggle
           classNames="ml-1 justify-center"
-          isChecked={company.openForNewBusiness}
-          on:change={() => (company.openForNewBusiness = !company.openForNewBusiness)}>
+          bind:isChecked={company.openForNewBusiness}>
           <span class="ml-1">
             Je veux être visible des {isStore ? 'producteurs' : 'magasins'}
             pour commercer avec eux.

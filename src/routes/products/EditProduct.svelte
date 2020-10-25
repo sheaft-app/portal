@@ -63,7 +63,8 @@
       picture: product.picture ? product.picture : null,
       tags: product.tags.map(i => i.id),
       vat: product.vat,
-      available: product.available
+      available: product.available,
+      searchable: product.searchable
     }, errorsHandler.Uuid, GET_PRODUCTS);
     isLoading = false;
 
@@ -104,7 +105,14 @@
           <div
             class="rounded-full bg-orange-300 ml-2 px-3 py-1 shadow uppercase
             font-semibold text-xs text-white mt-1 h-6">
-            Désactivé
+            Non disponible à la vente
+          </div>
+        {/if}
+        {#if !product.searchable}
+          <div
+            class="rounded-full bg-orange-300 ml-2 px-3 py-1 shadow uppercase
+            font-semibold text-xs text-white mt-1 h-6">
+            Non référencé pour les consommateurs
           </div>
         {/if}
       </div>

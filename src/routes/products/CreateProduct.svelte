@@ -34,7 +34,8 @@
     description: null,
     picture: null,
     tags: [],
-    available: true
+    available: true,
+    searchable: true
   };
 
   const handleSubmit = async () => {
@@ -51,7 +52,8 @@
       picture: product.picture ? product.picture : null,
       tags: product.tags.map(i => i.id),
       vat: product.vat,
-      available: product.available
+      available: product.available,
+      searchable: product.searchable
     }, errorsHandler.Uuid, GET_PRODUCTS);
 
     isLoading = false;

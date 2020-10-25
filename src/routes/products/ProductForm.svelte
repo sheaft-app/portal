@@ -366,7 +366,7 @@
 			disabled={isLoading}
 			classNames="ml-1"
 			isChecked={isBio}
-			on:change={() => toggleBio()}>
+			onChange={() => toggleBio()}>
 			<img src="./img/labels/bio.png" alt="Produit bio" class="w-8" />
 		</Toggle>
 	</div>
@@ -378,6 +378,7 @@
 				getOptionLabel={(l) => l.name}
 				Item={ReturnableSelectItem}
 				getSelectionLabel={(l) => l.name}
+				isDisabled={isLoading}
 				showChevron={true}
 				hideSelectedOnFocus={true}
 				optionIdentifier="id"
@@ -405,6 +406,24 @@
 				Créer une nouvelle consigne
 			</button>
 		{/if}
+	</div>	
+	<div class="form-control" style="display: block;">
+		<label>Disponible à la vente</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			bind:isChecked={product.available}>
+		</Toggle>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Visible dans la recherche consommateur</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			bind:isChecked={product.searchable}>
+		</Toggle>
 	</div>
 	<div class="form-control">
 		<div class="w-full md:w-2/2">

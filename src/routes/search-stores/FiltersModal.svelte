@@ -46,7 +46,7 @@
   <Toggle
     classNames="ml-3"
     isChecked={activeLabels.includes('bio')}
-    on:change={() => toggleBio()}>
+    onChange={() => toggleBio()}>
      <span>Magasin vendant uniquement du bio</span>
   </Toggle>
 </div>

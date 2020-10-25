@@ -183,7 +183,11 @@
           </div>
           {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
             <div class="w-7/12 lg:w-full lg:mt-4">
-              <ProductCartQuantity productId={product.id} />
+              {#if product.available}
+                <ProductCartQuantity productId={product.id} />
+              {:else}
+                <div>Non disponible</div>
+              {/if}
             </div>
           {/if}
         </div>
