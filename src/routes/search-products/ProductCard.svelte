@@ -62,6 +62,7 @@
   style="margin-bottom:1px;"
   class="cursor-pointer rounded hover:bg-gray-100 transition duration-200
   ease-in-out focus:outline-none"
+  class:opacity-50={!product.available}
   use:lazyLoad
   on:click={() => selectedItem.set(product.id)}
   on:mouseenter={() => hoverProduct(product)}

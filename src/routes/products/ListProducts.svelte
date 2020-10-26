@@ -138,7 +138,7 @@ faInfo,
 
 		if(visibleTo.length == 2)
 			return ["Tous"];
-			
+
 		if(visibleTo.length == 0)
 			return ["Personne"];
 
