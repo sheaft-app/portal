@@ -18,6 +18,7 @@
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
   import DayOfWeekKind from "./../../enums/DayOfWeekKind";
+  import ConditioningKind from "./../../enums/ConditioningKind";
   import Roles from "./../../enums/Roles";
   import SheaftErrors from "../../services/SheaftErrors";
   import DeliveryKind from "../../enums/DeliveryKind";
@@ -237,11 +238,14 @@
         {/if}
       </div>
       <p class="text-xl lg:text-2xl font-bold">
-        {formatMoney(product.onSalePricePerUnit)}
+        {formatMoney(product.onSalePrice)}
         <span class="font-normal">
           {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
         </span>
       </p>
+      {#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePricePerUnit}
+        <p class="text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"} : {formatMoney(product.onSalePricePerUnit)})</p>
+      {/if}
       {#if product.description}
         <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
           {product.description}

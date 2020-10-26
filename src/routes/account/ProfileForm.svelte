@@ -9,12 +9,15 @@
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import { normalizeOpeningHours } from "./../../helpers/app";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+  import Cleave from "cleave.js";
+  import "cleave.js/dist/addons/cleave-phone.fr";
 
   export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
 
 	const graphQLInstance = GetGraphQLInstance();
   const authInstance = GetAuthInstance();
   const notificationsInstance = new GetNotificationsInstance();
+  let cleave = null;
 
   const handleGet = async () => {
 		isLoading = true;
@@ -59,6 +62,13 @@
 			await authInstance.loginSilent();
 		}
   };
+
+  const initializeCleave = () => {
+    cleave = new Cleave('.input-phone', {
+      phone: true,
+      phoneRegionCode: "fr"
+    });
+  }
   
 	onMount(async () => {
 		await handleGet();
@@ -113,7 +123,10 @@
           class:skeleton-box={isLoading} 
           placeholder="ex : 06 01 02 03 04"
           id="grid-phone" 
-          type="tel" />
+          class="input-phone"
+          use:initializeCleave
+          type="tel"
+          pattern="" />
       </div>
     </div>
     <slot />

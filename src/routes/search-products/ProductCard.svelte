@@ -146,7 +146,7 @@
           <div
             class="text-base lg:text-lg w-full font-semibold mb-2
             justify-between items-center hidden lg:block">
-            {formatMoney(product.onSalePricePerUnit)}
+            {formatMoney(product.onSalePrice)}
             <span class="text-xxs lg:text-sm lg:inline hidden font-normal">
               {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
             </span>
