@@ -17,6 +17,7 @@ export const GET_DEFAULT_QUICK_ORDER = gql`
 					id
 					name
 				}
+				available
 			}
 		}
 	}
@@ -32,6 +33,7 @@ export const GET_ALL_PRODUCTS = gql`
 				unit
 				conditioning
 				weight
+				available
 				quantityPerUnit
 				wholeSalePricePerUnit
 				onSalePricePerUnit

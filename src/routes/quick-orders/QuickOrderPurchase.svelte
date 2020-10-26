@@ -235,45 +235,49 @@
                     </p>
                   </div>
                 <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
+                  {#if item.available}
                     <div
                     class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
-                    <button
-                      disabled={item.quantity === 0}
-                      style="height: 36px;"
-                      type="button"
-                      aria-label="Retirer 1"
-                      class="font-bold
-                      transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
-                      on:click|stopPropagation={() => handleLess(item.id)}>
-                      -
-                    </button>
-                    <input
-                      min="0"
-                      max="999"
-                      type="number"
-                      on:click|stopPropagation
-                      on:input={e => {
-                        if (!dirty) dirty = true;
+                      <button
+                        disabled={item.quantity === 0}
+                        style="height: 36px;"
+                        type="button"
+                        aria-label="Retirer 1"
+                        class="font-bold
+                        transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
+                        on:click|stopPropagation={() => handleLess(item.id)}>
+                        -
+                      </button>
+                      <input
+                        min="0"
+                        max="999"
+                        type="number"
+                        on:click|stopPropagation
+                        on:input={e => {
+                          if (!dirty) dirty = true;
 
-                        if (e.target.value.length > e.target.maxLength) {
-                          e.target.value = e.target.value.slice(0, e.target.maxLength);
-                        }
-                      }}
-                      maxLength="3"
-                      bind:value={item.quantity}
-                      class:font-bold={item.quantity > 0}
-                      class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base"
-                      class:bg-blue-100={item.quantity > 0} />
-                    <button
-                      type="button"
-                      style="height: 36px;"
-                      class="font-bold
-                      transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
-                      aria-label="Ajouter 1"
-                      on:click|stopPropagation={() => handleMore(item.id)}>
-                      +
-                    </button>
-                  </div>
+                          if (e.target.value.length > e.target.maxLength) {
+                            e.target.value = e.target.value.slice(0, e.target.maxLength);
+                          }
+                        }}
+                        maxLength="3"
+                        bind:value={item.quantity}
+                        class:font-bold={item.quantity > 0}
+                        class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base"
+                        class:bg-blue-100={item.quantity > 0} />
+                      <button
+                        type="button"
+                        style="height: 36px;"
+                        class="font-bold
+                        transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
+                        aria-label="Ajouter 1"
+                        on:click|stopPropagation={() => handleMore(item.id)}>
+                        +
+                      </button>
+                    </div>
+                  {:else}
+                    <div>Non disponible</div>
+                  {/if}
                 </div>
                 <div class="md:w-3/12 px-3 text-right hidden md:block">
                   <p class="font-semibold text-lg">
