@@ -34,7 +34,7 @@
 </script>
 
 <ActionConfirm
-  title={status ? 'Référencer' : 'Ne plus référencer'}
+  title={status ? 'Afficher' : 'Masquer'}
   level={status ? 'success' : "warning"}
   isLoading={isLoading}
   {errorsHandler}

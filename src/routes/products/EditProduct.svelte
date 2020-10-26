@@ -132,7 +132,7 @@
             <span
               class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
               font-semibold text-xs text-white my-2 h-6">
-              Non référencé
+              Invisible
             </span>
           {/if}  
         </div>      
