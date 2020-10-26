@@ -41,7 +41,7 @@
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>
   <p>
-    Cette opération rendra les produits ci-dessous {status ? 'visibles' : 'invisibles'} dans la recherche des consommateurs
+    Cette opération rendra les produits ci-dessous {status ? 'visibles' : 'invisibles'} dans la recherche des produits
   </p>
   <ul class="text-sm mt-2 font-semibold">
     {#each selectedItems as product}

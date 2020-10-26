@@ -417,7 +417,7 @@
 		</Toggle>
 	</div>
 	<div class="form-control" style="display: block;">
-		<label>Visible dans la recherche consommateur</label>
+		<label>Visible dans la recherche des produits</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
