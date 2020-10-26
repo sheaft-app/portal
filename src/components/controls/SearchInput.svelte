@@ -27,7 +27,8 @@
   };
 
   const handleInput = debounce(e => {
-    routerInstance.replaceQueryParams({ text: searchQuery });
+    if(searchQuery.length == 0 || searchQuery.length > 2)
+      routerInstance.replaceQueryParams({ text: searchQuery });
   }, 500);
 </script>
 
