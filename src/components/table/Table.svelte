@@ -230,7 +230,7 @@
 	};
 
 	$: canSelect = selectedItems && items.length > 0;
-	$: hasSelectedAllItems = selectedItems && selectedItems.length == items.filter((i) => !disableRowSelection(i)).length;
+	$: hasSelectedAllItems = selectedItems && selectedItems.length >= 1 && selectedItems.length == items.filter((i) => !disableRowSelection(i)).length;
 	$: isRowSelected = (item) => selectedItems && selectedItems.some((si) => si.id == item.id);
 	$: rowColor = (item) => {
 		if (isRowSelected(item)) return "bg-gray-100";
