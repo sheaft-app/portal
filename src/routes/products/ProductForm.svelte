@@ -407,6 +407,19 @@
 			</button>
 		{/if}
 	</div>	
+	<div class="form-control">
+		<div class="w-full md:w-2/2">
+			<label for="grid-description">Description</label>
+			<textarea
+				bind:value={product.description}
+				id="grid-description"
+				class:disabled={isLoading}
+				disabled={isLoading}
+				type="text"
+				style="min-height:150px;"
+				placeholder="Tomate ancienne d'une variété très particulière" />
+		</div>
+	</div>
 	<div class="form-control" style="display: block;">
 		<label>Disponible à la vente</label>
 		<Toggle
@@ -433,19 +446,6 @@
 			classNames="ml-1"
 			bind:isChecked={product.visibleToStores}>
 		</Toggle>
-	</div>
-	<div class="form-control">
-		<div class="w-full md:w-2/2">
-			<label for="grid-description">Description</label>
-			<textarea
-				bind:value={product.description}
-				id="grid-description"
-				class:disabled={isLoading}
-				disabled={isLoading}
-				type="text"
-				style="min-height:150px;"
-				placeholder="Tomate ancienne d'une variété très particulière" />
-		</div>
 	</div>
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">

@@ -44,7 +44,6 @@ faInfo,
 
 	const headers = [
 		{ name: "Produit", sortLabel: "name" },
-		{ name: "Disponible", displayOn: "md" },
 		{ name: "Visible pour", displayOn: "md" },
 		{ name: "Notation", displayOn: "md" },
 		{ name: "Prix", noMobilePadding: true },
@@ -260,23 +259,12 @@ faInfo,
 		<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div
 				class="text-sm leading-5 font-medium truncate"
-				style="max-width: 180px;">
+				style="max-width: 180px;" class:text-orange-500={!product.available}>
 				{product.name}
 			</div>
 			<div class="text-sm leading-5 text-gray-600">#{product.reference}</div>
 			<div class="block md:hidden">
 				<RatingStars rating={product.rating} />
-			</div>
-		</td>
-		<td
-			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
-				hidden md:table-cell">
-			<div class="text-sm leading-5">
-				{#if product.available}
-					<span>Oui</span>
-				{:else}
-					<span class="text-orange-500">Non</span>
-				{/if}
 			</div>
 		</td>
 		<td
