@@ -417,12 +417,21 @@
 		</Toggle>
 	</div>
 	<div class="form-control" style="display: block;">
-		<label>Visible dans la recherche des produits</label>
+		<label>Visible pour les consommateurs</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
 			classNames="ml-1"
-			bind:isChecked={product.searchable}>
+			bind:isChecked={product.visibleToConsumers}>
+		</Toggle>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Visible pour les magasins</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			bind:isChecked={product.visibleToStores}>
 		</Toggle>
 	</div>
 	<div class="form-control">

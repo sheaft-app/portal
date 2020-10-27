@@ -31,7 +31,8 @@ export const GET_PRODUCTS = gql`
 					vatPricePerUnit
 					createdOn
 					available
-					searchable
+					visibleToStores
+					visibleToConsumers
 				}
 			}
 		}
@@ -69,7 +70,8 @@ export const GET_PRODUCT_DETAILS = gql`
 				kind
 			}
 			available
-			searchable
+			visibleToStores
+			visibleToConsumers
 		}
 	}
 `;

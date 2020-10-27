@@ -17,6 +17,7 @@
 		faTimesCircle,
 		faPlus,
 		faFileImport,
+faInfo,
 	} from "@fortawesome/free-solid-svg-icons";
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -44,7 +45,7 @@
 	const headers = [
 		{ name: "Produit", sortLabel: "name" },
 		{ name: "Disponible", displayOn: "md" },
-		{ name: "Visible", displayOn: "md" },
+		{ name: "Visible pour", displayOn: "md" },
 		{ name: "Notation", displayOn: "md" },
 		{ name: "Prix", noMobilePadding: true },
 		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
@@ -82,20 +83,25 @@
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.refresh();
-					selectedItems = [];
 				}
 			},
 		});
 	};
 
-	const showSetSearchabilityModal = (status) => {
+	const showSetSearchabilityModal = () => {
+		var selectedVisibleToStores = selectedItems.filter(p => p.visibleToStores).length;
+		var visibilityToStores = selectedVisibleToStores == selectedItems.length || selectedVisibleToStores > (selectedItems.length /2);
+
+		var selectedVisibleToConsumers = selectedItems.filter(p => p.visibleToConsumers).length;
+		var visibilityToConsumers = selectedVisibleToConsumers == selectedItems.length || selectedVisibleToConsumers > (selectedItems.length /2);
+
 		open(SetProductsSearchability, {
 			selectedItems: selectedItems,
-			status: status,
+			visibleToStores: visibilityToStores,
+			visibleToConsumers: visibilityToConsumers,
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.refresh();
-					selectedItems = [];
 				}
 			},
 		});
@@ -123,6 +129,22 @@
 		routerInstance.goTo(ProductRoutes.Details, { id: item.id });
 	};
 
+	const getProductVisibility = product =>{
+		var visibleTo = [];
+		if(product.visibleToStores)
+			visibleTo.push("Magasins");
+		if(product.visibleToConsumers)
+			visibleTo.push("Consommateurs");
+
+		if(visibleTo.length == 2)
+			return ["Tous"];
+			
+		if(visibleTo.length == 0)
+			return ["Personne"];
+
+		return visibleTo;
+	}
+
 	onMount(async () => {
 		await checkHasImportInProgress();
 	});
@@ -133,11 +155,6 @@
 		selectedItems.filter((i) => !i.available).length > 0;
 	$: hasSelectedEnabledItem =
 		selectedItems.filter((i) => i.available).length > 0;
-
-	$: hasSelectedUnsearchableItem =
-		selectedItems.filter((i) => !i.searchable).length > 0;
-	$: hasSelectedSearchableItem =
-		selectedItems.filter((i) => i.searchable).length > 0;
 
 	$: actions = [
 		{
@@ -165,21 +182,12 @@
 			displaySelectedItemsNumber: true,
 		},
 		{
-			click: () => showSetSearchabilityModal(false),
+			click: () => showSetSearchabilityModal(),
 			hideIfDisabled: true,
-			disabled: !hasSelectedOneItem || hasSelectedUnsearchableItem,
-			text: "Masquer",
-			icon: faTimesCircle,
-			color: "orange",
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => showSetSearchabilityModal(true),
-			hideIfDisabled: true,
-			disabled: !hasSelectedOneItem || hasSelectedSearchableItem,
-			text: "Afficher",
-			icon: faPlay,
-			color: "green",
+			disabled: !hasSelectedOneItem,
+			text: "Changer la visibilité",
+			icon: faInfo,
+			color: "blue",
 			displaySelectedItemsNumber: true,
 		},
 		{
@@ -275,11 +283,11 @@
 			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				hidden md:table-cell">
 			<div class="text-sm leading-5">
-				{#if product.searchable}
-					<span>Oui</span>
-				{:else}
-					<span class="text-orange-500">Non</span>
-				{/if}
+				<ul class="text-sm mt-2 font-semibold">
+					{#each getProductVisibility(product) as target}
+					  <li>{target}</li>
+					{/each}
+				</ul>
 			</div>
 		</td>
 		<td

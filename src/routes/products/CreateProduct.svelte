@@ -35,7 +35,8 @@
     picture: null,
     tags: [],
     available: true,
-    searchable: true
+    visibleToStores: true,
+    visibleToConsumers: true
   };
 
   const handleSubmit = async () => {
@@ -53,7 +54,8 @@
       tags: product.tags.map(i => i.id),
       vat: product.vat,
       available: product.available,
-      searchable: product.searchable
+      visibleToStores: product.visibleToStores,
+      visibleToConsumers: product.visibleToConsumers
     }, errorsHandler.Uuid, GET_PRODUCTS);
 
     isLoading = false;

@@ -75,7 +75,8 @@
       tags: product.tags.map(i => i.id),
       vat: product.vat,
       available: product.available,
-      searchable: product.searchable
+      visibleToStores: product.visibleToStores,
+      visibleToConsumers: product.visibleToConsumers
     }, errorsHandler.Uuid, GET_PRODUCTS);
     isLoading = false;
 
@@ -128,11 +129,18 @@
               Indisponible
             </span>
           {/if}
-          {#if !product.searchable}
+          {#if !product.visibleToConsumers}
             <span
               class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
               font-semibold text-xs text-white my-2 h-6">
-              Invisible
+              Masqué aux consommateurs
+            </span>
+          {/if}  
+          {#if !product.visibleToStores}
+            <span
+              class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
+              font-semibold text-xs text-white my-2 h-6">
+              Masqué aux magasins
             </span>
           {/if}  
         </div>      

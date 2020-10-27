@@ -47,7 +47,8 @@ export const UPDATE_PRODUCT = gql`
 				kind
 			}
 			available
-			searchable
+			visibleToStores
+			visibleToConsumers
 		}
 	}
 `;
@@ -74,7 +75,8 @@ export const SET_PRODUCTS_SEARCHABILITY = gql`
 		setProductsSearchability(input: $input) {
 			nodes {
 				id
-				searchable
+				visibleToStores
+				visibleToConsumers
 			}
 		}
 	}
