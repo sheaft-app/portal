@@ -4,7 +4,7 @@
   import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
-  import { timeToTimeSpan, normalizeOpeningHours } from "../../helpers/app";
+  import { timeToTimeSpan, normalizeOpeningHours, denormalizeOpeningHours } from "../../helpers/app";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
@@ -13,7 +13,7 @@
 
   // pour éviter d'avoir un two-way binding avec delivery directement
   // comme on normalise l'envoi, donc qu'on modifie delivery, le two-way binding peut provoquer une boucle
-  let openings = delivery.openingHours;
+  let openings = denormalizeOpeningHours(delivery.openingHours);
 
   const handleSubmit = () => {
     deliveryForm.validate();

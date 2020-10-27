@@ -7,7 +7,7 @@
   import SheaftErrors from "./../../services/SheaftErrors";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import GetNotificationsInstance from "./../../services/SheaftNotifications";
-  import { normalizeOpeningHours } from "./../../helpers/app";
+  import { normalizeOpeningHours, denormalizeOpeningHours } from "./../../helpers/app";
   import { onMount } from "svelte";
   import Roles from "./../../enums/Roles";
   import ErrorCard from "../../components/ErrorCard.svelte";
@@ -32,7 +32,16 @@
   let stepper = 0;
   let vat = null;
   let sponsorshipCode = JSON.parse(localStorage.getItem("user_sponsoring"));
-  let openings = [];
+  let openings = denormalizeOpeningHours([
+    {
+      id: 0,
+      days: [],
+      start: {
+        hours: 0,
+        minutes: 0
+      },
+      end: {
+        hours: 0,
   let invalidSiret = false;
 
   let company = {

@@ -7,7 +7,7 @@
 	import { faCircleNotch, faCheck } from "@fortawesome/free-solid-svg-icons";
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
-  import { normalizeOpeningHours } from "./../../helpers/app";
+  import { normalizeOpeningHours, denormalizeOpeningHours } from "./../../helpers/app";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import Cleave from "cleave.js";
   import "cleave.js/dist/addons/cleave-phone.fr";
@@ -29,7 +29,28 @@
 			return;
 		}
 
-		user = res.data;
+    user = res.data;
+    
+    if (user.openingHours) {
+      if (user.openingHours.length == 0) {
+        user.openingHours = denormalizeOpeningHours([
+          {
+            id: 0,
+            days: [],
+            start: {
+              hours: 0,
+              minutes: 0
+            },
+            end: {
+              hours: 0,
+              minutes: 0
+            }
+          }
+        ]);
+      } else {
+        user.openingHours = denormalizeOpeningHours(user.openingHours);
+      }
+    }
 	};
 
 	const handleUpdate = async () => {

@@ -5,13 +5,13 @@
   import CitySearch from "./../../components/search/CitySearch.svelte";
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
-  import { timeToTimeSpan, normalizeOpeningHours } from "./../../helpers/app";
+  import { timeToTimeSpan, normalizeOpeningHours, denormalizeOpeningHours } from "./../../helpers/app";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
 
   export let submit, initialValues, isLoading;
   let sellingPoint = initialValues;
-  let openings = sellingPoint.openingHours;
+  let openings = denormalizeOpeningHours(sellingPoint.openingHours);
 
   const selectKind = (kind) => {
      if (!isLoading)

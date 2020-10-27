@@ -1,5 +1,7 @@
 import Guid from "./Guid";
 import ConditioningKind from "../enums/ConditioningKind";
+import DayOfWeekKind from "../enums/DayOfWeekKind";
+import orderBy from "lodash/orderBy";
 
 export const timeSpanToFrenchHour = (timeSpan) => {
 	if (!timeSpan) {
@@ -44,15 +46,29 @@ export const denormalizeOpeningHours = (openingHours) =>
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];
 
-		for (var i = 0; i < group.length; i++){
-			days = days.concat(group[i].day);
+		for (var i = 0; i <= group.length; i++) {
+			if (group[i] && group[i].day) {
+				days = days.concat({
+					...DayOfWeekKind.get(group[i].day),
+					checked: true
+				});
+			}
+		}
+
+		if (days.length < 6) {
+			days = [...days, ...DayOfWeekKind.getDaysWithIndexNotIn(days.map((d) => d.Index)).map((d) => {
+				return {
+					...d,
+					checked: false
+				}
+			})];
 		}
 
 		return {
 			id: Guid.NewGuid(),
-			days,
-			start: timeSpanToTime(group[0].from),
-			end: timeSpanToTime(group[0].to)
+			days: orderBy(days, i => i.Index, ['asc']),
+			start: timeSpanToTime(group[0] ? group[0].from : timeSpanToTime(null)),
+			end: timeSpanToTime(group[0] ? group[0].to : timeSpanToTime(null))
 		}
 	})
 ;

@@ -20,11 +20,14 @@
 
 		if (!res.success) {
       // todo
-      isLoadingLists = false;
+      isLoading = false;
 			return;
     }
 
     nationalities = res.data;
+
+    if (selectedValue && typeof selectedValue == "string") selectedValue = nationalities.find((c) => c.code == selectedValue);
+
     isLoading = false;
   })
 </script>
