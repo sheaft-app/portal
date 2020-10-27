@@ -124,21 +124,21 @@
           </span>
           {#if !product.available}
             <span
-              class="rounded-full bg-orange-300 ml-2 mr-2 px-3 py-1 shadow uppercase
+              class="rounded-full bg-orange-500 ml-2 mr-2 px-3 py-1 shadow uppercase
               font-semibold text-xs text-white my-2 h-6">
               Indisponible
             </span>
           {/if}
           {#if !product.visibleToConsumers}
             <span
-              class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
+              class="rounded-full bg-orange-500 px-3 py-1 shadow uppercase
               font-semibold text-xs text-white my-2 h-6">
               Masqué aux consommateurs
             </span>
           {/if}
           {#if !product.visibleToStores}
             <span
-              class="rounded-full bg-orange-300 px-3 py-1 shadow uppercase
+              class="rounded-full bg-orange-500 px-3 py-1 shadow uppercase
               font-semibold text-xs text-white my-2 h-6">
               Masqué aux magasins
             </span>

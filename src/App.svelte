@@ -219,9 +219,9 @@
   {/if}
   <Nav />
   <AcceptCookiePlaceholder />
-  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
+  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered}>
     <Modal>
-      <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content" class:noNav={!($authRegistered && authInstance.isInRole([Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]))}>
+      <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content" class:noNav={!$authRegistered}>
         <Router routes={guardInstance.routes} />
       </div>
     </Modal>

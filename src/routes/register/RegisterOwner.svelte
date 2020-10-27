@@ -139,7 +139,7 @@
     }, errorsHandler.Uuid);
 
     if (!res.success) {
-    isRegistering = false;
+      isRegistering = false;
       //TODO
       return;
     }
