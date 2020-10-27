@@ -36,14 +36,14 @@
 </script>
 
 <ActionConfirm
-  title="Rendre visible ces produits"
+  title="Changer la visibilité de ces produits"
   level={"warning"}
   isLoading={isLoading}
   {errorsHandler}
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>
   <p>
-    Cette opération rendra les produits ci-dessous
+    Choisissez si les produits ci-dessous sont visibles ou non (curseur rose = visible)
   </p>
     <ul class="text-sm mt-2 font-semibold">
       {#each selectedItems as product}
@@ -51,7 +51,7 @@
       {/each}
     </ul>
     <br/>
-    <p>Visibles auprès des :</p>
+    <p>Par les :</p>
     <br/>
     <label>Consommateurs</label>
 		<Toggle
