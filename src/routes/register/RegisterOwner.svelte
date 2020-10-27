@@ -42,6 +42,10 @@
       },
       end: {
         hours: 0,
+        minutes: 0
+      }
+    }
+  ]);
   let invalidSiret = false;
 
   let company = {
