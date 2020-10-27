@@ -277,7 +277,7 @@
           bind:timeout
           userFeedback />
       {:else}
-        <div>Non disponible</div>
+        <div class="text-center text-red-500">Ce produit n'est pas disponible pour le moment.</div>
       {/if}
     {/if}
     <div class="mt-5">

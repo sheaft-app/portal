@@ -47,6 +47,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			onSalePricePerUnit
 			onSalePrice
 			quantityPerUnit
+			available
 			unit
 			conditioning
 			tags {
