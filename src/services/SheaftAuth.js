@@ -72,8 +72,7 @@ class SheaftAuth {
 			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occured.");
-			this.userManager.removeUser();
-			this.setAuthStatus({ profile: { role: "ANONYMOUS" } }, false, false, false, true);
+			this.setAuthStatus(user, false, false, false, true);
 			
 			if(location.hash != '/'){
 				location.hash = "/";
