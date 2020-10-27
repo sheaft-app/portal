@@ -33,7 +33,7 @@ class SheaftAuth {
 
 		this.userManager.getUser().then(async (user) => {
 			if (user) {
-				await this.retrieveUser(user);
+				await this.retrieveUser(user, true);
 				return;
 			}
 
@@ -41,7 +41,7 @@ class SheaftAuth {
 		});
 
 		this.userManager.events.addUserLoaded(async (user) => {
-			await this.retrieveUser(user);
+			await this.retrieveUser(user, false);
 		});
 
 		this.userManager.events.addUserUnloaded((e) => {});
@@ -55,7 +55,7 @@ class SheaftAuth {
 		});
 	}
 
-	async retrieveUser(user) {
+	async retrieveUser(user, onInit) {
 		try {
 			var result = await fetch(
 				config.api + "/graphql",
@@ -71,9 +71,13 @@ class SheaftAuth {
 				this.setAuthStatus(user, true, true, false, true);
 			}
 		} catch (err) {
-			console.error(err ? err.toString() : "An authorization exception occured.");
-			this.setAuthStatus(user, false, false, false, true);
-			
+			console.error(err ? err.toString() : "An authorization exception occurred.");
+			if(onInit){
+				this.userManager.removeUser();
+				return await this.login();
+			}	
+
+			this.setAuthStatus(user, false, false, false, true);			
 			if(location.hash != '/'){
 				location.hash = "/";
 				location.reload();
