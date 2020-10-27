@@ -51,7 +51,8 @@
 					...p,
 					active:
 						p.status !== OrderStatusKind.Cancelled.Value &&
-						p.status !== OrderStatusKind.Refused.Value,
+						p.status !== OrderStatusKind.Refused.Value &&
+						p.status !== OrderStatusKind.Delivered.Value,
 				};
 			})
 		);
