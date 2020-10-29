@@ -83,7 +83,15 @@
         cover; background-position: top;"
         class:opacity-50={isInCart(product)}
         class:skeleton-box={!src}
-        class="transition duration-200 ease-in-out w-full rounded-t-md" />
+        class="transition duration-200 ease-in-out w-full rounded-t-md">
+          {#if src.includes("pictures/products/categories/")}
+            <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
+              <div class="text-white text-lg p-1 bg-gray-800">
+                Aucune image disponible
+              </div>
+            </div>
+          {/if}
+        </div>
     </div>
     <div class="relative lg:block flex p-3 lg:p-0">
       <div class="block lg:hidden w-1/4 text-xs">
@@ -91,12 +99,20 @@
           style="background-image: url({src}); background-size: cover;
           background-position: top;"
           class:skeleton-box={!src}
-          class="h-20 mt-1 rounded-lg flex items-center justify-center mb-2">
+          class="h-20 mt-1 rounded-lg flex items-center justify-center mb-2 relative">
             {#if isInCart(product)}
               <div class="rounded-full p-1 w-6 h-6 text-center bg-white text-normal" style="
                 line-height: 0;
+                z-index: 1;
                 box-shadow: rgba(0, 0, 0, .6) 0px 0px 5px 3px;">
                 <Icon data={faShoppingCart} style="width: 14px;" />
+              </div>
+            {/if}
+            {#if src.includes("pictures/products/categories/")}
+              <div class="absolute" style="bottom: 10%; font-size: .50rem;">
+                <div class="text-white p-1 bg-gray-800">
+                  Aucune image
+                </div>
               </div>
             {/if}
           </div>
