@@ -4,12 +4,16 @@
   import { GET_DELIVERIES } from "./queries";
   import Loader from "./../../components/Loader.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+  import GetRouterInstance from "./../../services/SheaftRouter.js";
   import { timeSpanToFrenchHour } from "./../../helpers/app";
+  import DeliveryRoutes from "./../deliveries/routes";
 
   const graphQLInstance = GetGraphQLInstance();
+  const routerInstance = GetRouterInstance();
 
   let delivery = null;
   let isLoading = true;
+  let mustGiveDeliveries = false;
 
   export let selectedDelivery = null;
 
@@ -20,12 +24,15 @@
   const fetchDelivery = async () => {
     const res = await graphQLInstance.query(GET_DELIVERIES);
 
+    isLoading = false;
+
     if (!res.success) {
       // todo
       return;
     }
 
     if (res.data.length <= 0) {
+      mustGiveDeliveries = true;
       return console.error("Producer must provide delivery hours");
     }
 
@@ -61,8 +68,10 @@
   </div>
   {#if isLoading}
     <Loader />
-  {/if}
-  {#if delivery}
+  {:else if mustGiveDeliveries}
+    <p>Vous devez renseigner vos horaires de livraison pour demander un accord.</p>
+    <button class="btn btn-accent btn-lg" on:click={() => routerInstance.goTo(DeliveryRoutes.Create)}>Renseigner mes horaires de livraison</button>
+  {:else if delivery}
     {#each delivery.openingHours as openingHour, index}
       <div 
         class:active={selectedDelivery && selectedDelivery.selectedHours && selectedDelivery.selectedHours.find((h) => h.index === index)}

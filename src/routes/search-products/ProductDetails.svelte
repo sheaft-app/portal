@@ -24,6 +24,7 @@
   import DeliveryKind from "../../enums/DeliveryKind";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
+  import orderBy from "lodash/orderBy";
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -94,6 +95,8 @@
           ))
         }
       });
+
+      deliveries = orderBy(deliveries, (d) => d.distance.distance, ['asc']);
     }
 
     product = res.data;
@@ -322,7 +325,7 @@
         {#each deliveries as delivery}
           <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
             <div class="flex flex-row justify-between items-start mb-3">
-              <div class="w-full">
+              <div>
                 <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
                 <p>{delivery.address.line1}</p>
                 {#if product.producer.address.line2}
@@ -339,8 +342,7 @@
                 </a>
               </div>
               <div
-                class="text-xs lg:text-base
-                flex justify-center items-center" style="color: {delivery.distance.color}; border-color: {delivery.distance.color};">
+                class="text-xs lg:text-base flex justify-center items-center" style="color: {delivery.distance.color}; border-color: {delivery.distance.color};">
                 <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
                 <p class="font-bold">{delivery.distance.label}</p>
               </div>
