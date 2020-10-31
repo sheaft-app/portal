@@ -163,7 +163,7 @@
           <div
             class="text-base lg:text-lg w-full font-semibold mb-2
             justify-between items-center hidden lg:block">
-            {formatMoney(product.onSalePrice)}
+            {formatMoney(product.onSalePricePerUnit)}
             <span class="text-xxs lg:text-sm lg:inline hidden font-normal">
               {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
             </span>
@@ -195,7 +195,7 @@
         <div class="flex mt-2 lg:mt-0 items-center justify-between">
           <div
             class="text-base lg:text-lg w-3/12 lg:w-full font-semibold lg:hidden">
-            {formatMoney(product.onSalePricePerUnit)}
+            {formatMoney(product.onSalePrice)}
             <div class="text-xxs">{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</div>
           </div>
           {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}

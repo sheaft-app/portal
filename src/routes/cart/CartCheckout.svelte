@@ -223,27 +223,22 @@
 							<p>Panier</p>
 							<p class="text-sm text-gray-600">
 								{order.productsCount} articles
+								{#if order.returnablesCount >= 1}
+									dont {order.returnablesCount} consigné{order.returnablesCount > 1 ? 's' : ''}
+								{/if}
 							</p>
 						</div>
-						<div>
+						<div class="text-right">
 							<p class="font-medium">{formatMoney(order.totalOnSalePrice)}</p>
-						</div>
-					</div>
-					{#if order.returnablesCount >= 1}
-						<div class="flex justify-between w-full lg:px-3 pb-2">
-							<div class="text-left">
-								<p>Consignes</p>
-								<p class="text-sm text-gray-600">
-									dont {order.returnablesCount} consignes
-								</p>
-							</div>
-							<div>
-								<p class="text-blue-500 font-medium">
+							{#if order.returnablesCount >= 1}
+								<p class="text-blue-500 font-medium text-sm">
+									dont 
+									<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
 									{formatMoney(order.totalReturnableOnSalePrice)}
 								</p>
-							</div>
+							{/if}
 						</div>
-					{/if}
+					</div>
 					<div class="flex justify-between w-full lg:px-3 pb-2">
 						<div class="text-left">
 							<p>Frais bancaires</p>

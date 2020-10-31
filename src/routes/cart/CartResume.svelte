@@ -30,6 +30,8 @@
 
   let producersDeliveries = [];
   let hasFetchedOrder = false;
+  let producersHaveBeenRemoved = false;
+  let productsHaveBeenRemoved = false;
   let isLoadingPaymentInfo = true;
   let producerNumber = 0;
   let isLoadingDeliveries = false;
@@ -55,6 +57,7 @@
   );
 
   onMount(async () => {
+    await getProducerDeliveries();
     const values = routerInstance.getQueryParams();
 
     var firstTimeOnCartCookie = JSON.parse(
@@ -79,6 +82,7 @@
         clearStorage();
       }
     }
+
 
     hasFetchedOrder = true;
 
@@ -148,9 +152,27 @@
     isCreatingOrder = false;
 
     if (!response.success) {
-      //TODO
+      // todo
+      if (response.invalidProducts.length >= 1) {
+        // on invalide les produits
+        for (var i = 0; i < response.invalidProducts.length; i++) {
+          $cartItems = $cartItems.map((c) => {
+            if (c.id == response.invalidProducts[i].id) {
+              return {
+                ...c,
+                disabled: true
+              }
+            }
+            else return c;
+          });
+        }
+
+        producersHaveBeenRemoved = true;
+        return isLoadingPaymentInfo = false;
+      }   
+
       hasSubmitError = true;
-      return;
+      return isLoadingPaymentInfo = false;
     }
 
     paymentInfo = response.data;
@@ -162,7 +184,7 @@
     open(MangoPayInfo, {});
   };
 
-  beforeUpdate(async () => {
+  const getProducerDeliveries = async () => {
     if ($cartItems.length > 0 && producersDeliveries.length === 0) {
       isLoadingDeliveries = true;
       var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
@@ -184,13 +206,22 @@
 
       if (!res.success) {
         // todo
-        return;
+        if (res.invalidDeliveries.length >= 1) {
+          // on supprime les produits des producteurs qui n'existent plus
+          for (var i = 0; i < res.invalidDeliveries.length; i++) {
+            $cartItems = $cartItems.filter((c) => c.producer.id == res.invalidDeliveries[i]);
+          }
+
+          producersHaveBeenRemoved = true;
+        }   
+
+        return isLoadingDeliveries = false;
       }
 
       producersDeliveries = res.data;
       isLoadingDeliveries = false;
     }
-  });
+  }
 
   const debouncedSaveOrder = debounce(saveOrder, 800);
 
@@ -275,9 +306,7 @@
         {/if}
       </div>
       <div class="lg:flex lg:flex-row lg:mb-5">
-        {#if isLoadingDeliveries}
-          <Loader />
-        {:else if $cartItems.length > 0}
+        {#if $cartItems.length > 0}
           <div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
             {#if window.screen.width <= 1024}
               <div class="block lg:hidden mb-2">
@@ -300,11 +329,12 @@
                     selected={item.producer.delivery}
                     selectedDeliveryHour={item.producer.deliveryHour}
                     data={producersDeliveries.find(p => p.id === item.producer.id)} 
-                    isLoading={isLoadingDeliveries} />
+                    isLoading={isLoadingDeliveries}
+                  />
                 {/if}
                 <div
                   class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
-                  border-gray-400 border-solid items-center">
+                  border-gray-400 border-solid items-center" class:bg-orange-300={item.disabled} class:text-gray-500={item.disabled} class:line-through={item.disabled}>
                   <div class="md:w-6/12 px-3">
                     <div class="text-lg leading-5 font-medium">
                       <p>{item.name}</p>
@@ -317,28 +347,34 @@
                         {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
                       </span>
                     </p>
-                    <button
-                      type="button"
-                      class="btn-link text-sm"
-                      on:click={() => removeProduct(item.id)}>
-                      Retirer
-                    </button>
+                    {#if !item.disabled}
+                      <button
+                        type="button"
+                        class="btn-link text-sm"
+                        on:click={() => removeProduct(item.id)}>
+                        Retirer
+                      </button>
+                    {/if}
                   </div>
-                  <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
-                    <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
-                  </div>
+                  {#if !item.disabled}
+                    <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
+                      <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
+                    </div>
+                  {/if}
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
                     <p>
                       <span class="font-bold text-lg">
                         {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
                       </span>
                     </p>
-                    <button
-                      type="button"
-                      class="btn-link text-sm"
-                      on:click={() => removeProduct(item.id)}>
-                      Retirer
-                    </button>
+                    {#if !item.disabled}
+                      <button
+                        type="button"
+                        class="btn-link text-sm"
+                        on:click={() => removeProduct(item.id)}>
+                        Retirer
+                      </button>
+                    {/if}
                   </div>
                 </div>
               {/each}
@@ -360,25 +396,22 @@
                     <p class:invisible={isLoadingPaymentInfo}>Panier</p>
                     <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
                       {paymentInfo.productsCount} articles
+                      {#if paymentInfo.returnablesCount >= 1}
+                      dont {paymentInfo.returnablesCount} consigné{paymentInfo.returnablesCount > 1 ? 's' : ''}
+                      {/if}
                     </p>
                   </div>
-                  <div class:skeleton-box={isLoadingPaymentInfo}>
+                  <div class="text-right" class:skeleton-box={isLoadingPaymentInfo}>
                     <p class="font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalOnSalePrice)}</p>
+                    {#if paymentInfo.returnablesCount >= 1}
+                      <p class="text-blue-500 font-medium text-sm" class:invisible={isLoadingPaymentInfo}>
+                        dont 
+                        <img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
+                        {formatMoney(paymentInfo.totalReturnableOnSalePrice)}
+                      </p>
+                    {/if}
                   </div>
                 </div>
-                {#if paymentInfo.returnablesCount >= 1}
-                  <div class="flex justify-between w-full lg:px-3 pb-2">
-                    <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>
-                      <p>dont consignes</p>
-                      <p class="text-sm text-gray-600" class:invisible={isLoadingPaymentInfo}>
-                        {paymentInfo.returnablesCount} consignes
-                      </p>
-                    </div>
-                    <div class:skeleton-box={isLoadingPaymentInfo}>
-                      <p class="text-blue-500 font-medium" class:invisible={isLoadingPaymentInfo}>{formatMoney(paymentInfo.totalReturnableOnSalePrice)}</p>
-                    </div>
-                  </div>
-                {/if}
                 {#if paymentInfo.donation > 0}
                   <div class="flex justify-between w-full lg:px-3 pb-2">
                     <div class="text-left" class:skeleton-box={isLoadingPaymentInfo}>

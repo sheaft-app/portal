@@ -102,8 +102,8 @@
 </svelte:head>
 
 <TransitionWrapper>
-  <ErrorCard {errorsHandler}/>
   <div class="-my-2 m-auto py-2 overflow-x-auto md:w-3/5 mt-2 mb-8 h-full -mx-4 md:m-auto">
+    <ErrorCard {errorsHandler}/>
     {#if !isRegistering && !isLoading}
       <div class="w-full text-center pt-2 pb-4">
         <h1 class="font-bold text-xl">Terminons votre inscription</h1>
@@ -173,7 +173,7 @@
                 <ErrorContainer field={$consumerForm.fields.selectedDepartment} />
               </div>
             </div> -->
-            <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
+            <!-- <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
               <button
                 type="button"
                 class:hidden={sponsorShow}
@@ -187,7 +187,7 @@
                   <input id="code" type="code" bind:value={user.sponsoringCode} />
                 </div>
               {/if}
-            </div>
+            </div> -->
             <div class="mt-4">
               <label class="cursor-pointer">
                 <InputCheckbox
@@ -219,28 +219,28 @@
             </div> -->
           </fieldset>
         </form>
-      </div>
-      <div class="flex w-full justify-center mt-6">
-        <div>
-          <button
-            on:click={() => handleCancel()}
-            aria-label="Retour"
-            class="form-button uppercase text-sm cursor-pointer rounded-full
-            px-6 py-2 flex items-center justify-center m-auto">
-            Retour
-          </button>
-        </div>
-        <div>
-          <button
-            class:disabled={!$consumerForm.valid || !acceptCgv}
-            disabled={!acceptCgv}
-            on:click={handleSubmit}
-            aria-label="Valider"
-            class="form-button uppercase text-sm cursor-pointer text-white
-            shadow rounded-full px-6 py-2 flex items-center justify-center
-            m-auto bg-primary">
-            Terminer
-          </button>
+        <div class="flex w-full justify-center mt-6">
+          <div>
+            <button
+              on:click={() => handleCancel()}
+              aria-label="Retour"
+              class="form-button uppercase text-sm cursor-pointer rounded-full
+              px-6 py-2 flex items-center justify-center m-auto">
+              Retour
+            </button>
+          </div>
+          <div>
+            <button
+              class:disabled={!$consumerForm.valid || !acceptCgv}
+              disabled={!acceptCgv}
+              on:click={handleSubmit}
+              aria-label="Valider"
+              class="form-button uppercase text-sm cursor-pointer text-white
+              shadow rounded-full px-6 py-2 flex items-center justify-center
+              m-auto bg-primary">
+              Terminer
+            </button>
+          </div>
         </div>
       </div>
     {/if}

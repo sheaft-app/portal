@@ -6,6 +6,7 @@
 	import { fr } from "date-fns/locale";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
+	import GetAuthInstance from "./../../services/SheaftAuth";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import JobKind from "./../../enums/JobKind";
 	import ProcessStatusKind from "./../../enums/ProcessStatusKind";
@@ -39,10 +40,12 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import Roles from "./../../enums/roles";
 
 	export let params = {};
 
 	const errorsHandler = new SheaftErrors();
+	const authInstance = GetAuthInstance();
 	const { open } = getContext("modal");
 	const routerInstance = GetRouterInstance();
 	const graphQLInstance = GetGraphQLInstance();
@@ -150,14 +153,16 @@
 		<Loader />
 	{:else}
 		<section class="mx-0 pb-5">
-			<div class="mb-3">
-				<button
-					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goBack()}>
-					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-					Tâches
-				</button>
-			</div>
+			{#if !authInstance.isInRole([Roles.Consumer.Value])}
+				<div class="mb-3">
+					<button
+						class="text-gray-600 items-center flex uppercase"
+						on:click={() => routerInstance.goBack()}>
+						<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
+						Tâches
+					</button>
+				</div>
+			{/if}
 			<div class="flex flex-wrap items-center">
 				<div>
 					<h1 class="text-3xl mb-0 text-gray-700">Détails de la tâche</h1>

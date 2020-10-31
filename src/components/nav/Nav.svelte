@@ -323,8 +323,7 @@
           {$authUserAccount.profile.given_name ? $authUserAccount.profile.given_name : $authUserAccount.profile.name}
         </span>
         <div
-          style="background: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : "https://content.sheaft.com/pictures/users/profile.svg"}');
-          background-size: cover; background-position: center;"
+          style="background-image: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : "https://content.sheaft.com/pictures/users/profile.svg"}');"
           class="rounded-full bg-white user-photo ml-2 w-5 h-5 lg:w-8 lg:h-8" />
       </button>
     {:else}
@@ -380,9 +379,9 @@
         ])}
         <NavLink route={LeaderboardRoutes.Country} />
       {/if} -->
-      {#if $authAuthenticated && $authRegistered}
+      <!-- {#if $authAuthenticated && $authRegistered}
         <NavLink route={SponsorshipRoutes.Share} />
-      {/if}
+      {/if} -->
     </ul>
   </div>
 </nav>
@@ -390,6 +389,11 @@
 <style lang="scss">
   .username {
     top: -25px;
+  }
+
+  .user-photo {
+    background-size: cover; 
+    background-position: center;
   }
 
   .nav {

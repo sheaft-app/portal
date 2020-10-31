@@ -115,7 +115,7 @@
         <p>Essayez de rafraîchir la page. Si l'erreur persiste, contactez le service technique.</p>
     </div>  
   {/if}
-  {#if selected && selectedDeliveryHour}
+  {#if data && selected && selectedDeliveryHour}
     {#if label}
       <p 
         class:cursor-pointer={!oneOptionOnly}

@@ -69,28 +69,32 @@
       }
     }, errorsHandler.Uuid);
 
-    if (!res.success) {
+    if (!deliveriesResult.success) {
       isLoading = false;
       close();
       //TODO
     }
 
-    deliveries = deliveriesResult.data[0].deliveries.map((d) => {
-      return {
-        ...d,
-        distance: GetDistanceInfos(
-          values["latitude"],
-          values["longitude"],
-          d.address.latitude,
-          d.address.longitude
-        ),
-        deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-          index === self.findIndex((d) => (
-            d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+    if (deliveriesResult.data.length == 0) {
+      deliveries = [];
+    } else {
+      deliveries = deliveriesResult.data[0].deliveries.map((d) => {
+        return {
+          ...d,
+          distance: GetDistanceInfos(
+            values["latitude"],
+            values["longitude"],
+            d.address.latitude,
+            d.address.longitude
+          ),
+          deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+            index === self.findIndex((d) => (
+              d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+            ))
           ))
-        ))
-      }
-    });
+        }
+      });
+    }
 
     product = res.data;
     ratings = product.ratings.nodes.map(r => r);
@@ -238,13 +242,13 @@
         {/if}
       </div>
       <p class="text-xl lg:text-2xl font-bold">
-        {formatMoney(product.onSalePrice)}
+        {formatMoney(product.onSalePricePerUnit)}
         <span class="font-normal">
           {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
         </span>
       </p>
-      {#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePricePerUnit}
-        <p class="text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"} : {formatMoney(product.onSalePricePerUnit)})</p>
+      {#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePrice}
+        <p class="lg:text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"} : {formatMoney(product.onSalePrice)})</p>
       {/if}
       {#if product.description}
         <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
@@ -358,6 +362,8 @@
               {/each}
             </div>
           </div>
+        {:else}
+          <p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
         {/each}
         <div
           on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}

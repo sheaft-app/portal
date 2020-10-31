@@ -334,14 +334,23 @@
 					<div class="border border-gray-400 cursor-pointer text-center h-full">
 						{#if product.picture}
 							<div
-								class="h-full product-picture"
-								style="background: url('{product.picture}'); margin:auto;" />
+								class="h-full product-picture relative"
+								style="background: url('{product.picture}'); margin:auto;">
+								  {#if product.picture.includes("pictures/products/categories/")}
+										<div class="absolute" style="bottom: 0%; z-index: 1;">
+											<div class="text-white text-lg p-1 bg-gray-800">
+												Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.
+											</div>
+										</div>
+									{/if}
+								</div>
 						{:else}
 							<Icon
 								data={faImage}
 								class="mr-2 inline"
 								scale={2}
 								style="margin:105px;" />
+								<p class="text-gray-600">Cliquez dans la zone pour ajouter une image</p>
 						{/if}
 					</div>
 				</div>

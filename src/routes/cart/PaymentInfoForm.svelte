@@ -134,7 +134,7 @@
             <p class="text-sm">{cartItem.producer.name}</p>
           </div>
           <div class="text-right">
-            <p class="font-medium">{formatMoney(cartItem.onSalePrice)}</p>
+            <p class="font-medium">{formatMoney(cartItem.onSalePricePerUnit)}</p>
             <p class="text-sm">qté : {cartItem.quantity}</p>
           </div>
         </div>
