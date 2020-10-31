@@ -83,8 +83,8 @@
       }
     }
 
-
     hasFetchedOrder = true;
+    await saveOrder();
 
     if (values["step"] && values["step"] == "donation" && isValid) {
       validatedCart = true;
