@@ -260,10 +260,10 @@
 		);
 
 		if (department) {
-			return (departmentProgress = department);
+			return departmentProgress = department;
 		}
 
-		return (departmentProgress = null);
+		return departmentProgress = null;
 	};
 
 	const handleLocation = (location) => {
@@ -452,18 +452,22 @@
 						alt="Nous ne sommes pas encore dans ce département" />
 				</div>
 			{:else if $filters.latitude && $filters.longitude}
-				{#if departmentProgress && departmentProgress.ProducersCount > 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
+				{#if departmentProgress && departmentProgress.ProducersCount >= 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
 					<div
 						class="py-5 px-5 md:px-4 overflow-x-auto -mx-4 md:mx-0 bg-white
 							shadow lg:rounded mb-5 lg:mt-3">
 						<div class="flex">
 							<div>
 								<p class="uppercase font-bold leading-none">
-									{departmentProgress.Name}
+									{departmentProgress.Name}{#if departmentProgress.ProducersCount == 0}, on arrive bientôt !{/if}
 								</p>
 								<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 								<div class="mt-2 text-sm">
-									{#if departmentProgress.ProducersCount == 1}
+									{#if departmentProgress.ProducersCount == 0}
+										<p class="mb-2">
+											Nous avons trouvé des producteurs dans les départements voisins.
+										</p>
+									{:else if departmentProgress.ProducersCount == 1}
 										<p class="mb-2">
 											<span
 												class="font-semibold">{departmentProgress.ProducersCount}
