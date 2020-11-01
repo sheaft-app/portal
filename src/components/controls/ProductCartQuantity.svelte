@@ -2,8 +2,11 @@
   import { onMount, onDestroy } from "svelte";
   import { cartItems, searchResults } from "./../../stores/app.js";
   import { fly } from "svelte/transition";
+	import { createEventDispatcher } from 'svelte';
 
-  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null;
+  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null, disabled = false;
+
+	const dispatch = createEventDispatcher();
 
   let product = $cartItems.find(c => c.id === productId);
   let quantity = 0;
@@ -56,6 +59,8 @@
 
     if (userFeedback)
       triggerFeedback();
+
+    dispatch('updateCart');
   };
 
   const triggerFeedback = () => {
@@ -79,12 +84,13 @@
 
 <div class="m-auto {!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
   <div
-    class="flex m-auto border-gray-100 shadow border-solid rounded-full product-quantity">
+    class="flex m-auto border-gray-100 shadow border-solid rounded-full product-quantity" class:disabled>
     <button
-      disabled={quantity === minQuantity}
+      disabled={(quantity === minQuantity) || disabled}
       style="height: 36px;"
       type="button"
       aria-label="Retirer 1"
+      class:disabled
       class="font-bold
       transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  {quantity > minQuantity ? 'hover:bg-accent hover:text-white' : ''} text-accent"
       on:click|stopPropagation={() => handleLess()}>
@@ -94,6 +100,7 @@
       min="0"
       max="999"
       type="number"
+      {disabled}
       on:click|stopPropagation
       on:input={e => handleInput(e)}
       maxLength="3"
@@ -103,6 +110,8 @@
     <button
       type="button"
       style="height: 36px;"
+      class:disabled
+      {disabled}
       class="font-bold
       transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
       aria-label="Ajouter 1"

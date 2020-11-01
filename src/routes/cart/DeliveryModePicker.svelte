@@ -20,11 +20,12 @@
   export let storeDelivery = false;
   export let isLoading = false;
   export let storeCartItems = [];
+  export let disabled = false;
 
   $: oneOptionOnly = data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
 
   const showDeliveryPickModal = () => {
-    if (selected && selectedDeliveryHour && oneOptionOnly) {
+    if (disabled || (selected && selectedDeliveryHour && oneOptionOnly)) {
       return;
     }
 
@@ -93,6 +94,7 @@
     <div
       id={data.id}
       class="cursor-pointer p-4 bg-gray-100 border border-gray-400"
+      class:disabled
       on:click={showDeliveryPickModal}>
       <div class="flex text-accent">
         <Icon data={faEdit} class="mr-2 w-4" />
@@ -125,7 +127,7 @@
       </p>
     {/if}
     <div
-      class="p-4 bg-gray-100 border-gray-400 border delivery-picker" id={data.id}>
+      class="p-4 bg-gray-100 border-gray-400 border delivery-picker" class:disabled id={data.id}>
       <div class="block md:flex md:flex-row">
         {#if displayLocation}
           <div class="flex w-full">

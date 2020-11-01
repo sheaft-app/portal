@@ -32,9 +32,9 @@
   let hasFetchedOrder = false;
   let producersHaveBeenRemoved = false;
   let productsHaveBeenRemoved = false;
-  let isLoadingPaymentInfo = true;
+  let isLoadingPaymentInfo = false;
   let producerNumber = 0;
-  let isLoadingDeliveries = false;
+  let isLoadingDeliveries = true;
   let hasSubmitError = false;
   let isCreatingOrder = false;
   let orderedCartItems = [];
@@ -57,7 +57,6 @@
   );
 
   onMount(async () => {
-    await getProducerDeliveries();
     const values = routerInstance.getQueryParams();
 
     var firstTimeOnCartCookie = JSON.parse(
@@ -84,6 +83,8 @@
     }
 
     hasFetchedOrder = true;
+
+    await getProducerDeliveries();
     await saveOrder();
 
     if (values["step"] && values["step"] == "donation" && isValid) {
@@ -98,9 +99,13 @@
   }
 
   const saveOrder = async () => {
-    if (!hasFetchedOrder) {
+    if (!hasFetchedOrder || isLoadingPaymentInfo) {
       return;
     }
+
+    order = JSON.parse(
+      localStorage.getItem("user_current_order")
+    );
 
     isLoadingPaymentInfo = true;
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
@@ -129,8 +134,6 @@
       producersExpectedDeliveries = null;
     }
 
-    isCreatingOrder = true;
-
     const variables = {
       id: order ? order.id : null,
       donation: choosenDonation,
@@ -148,8 +151,6 @@
     }
 
     var response = await graphQLInstance.mutate(orderMutation, variables, errorsHandler.Uuid);
-
-    isCreatingOrder = false;
 
     if (!response.success) {
       // todo
@@ -219,7 +220,6 @@
       // mais entre temps le prod a supprimé ce lieu
       const deliveriesIds = res.data.map((r) => r.deliveries).flat().map((d) => d.id);
       const cartItemWithProducerDeliveryNotFound = $cartItems.find((c) => c.producer.delivery && c.producer.delivery.id && !deliveriesIds.includes(c.producer.delivery.id));
-
       if (cartItemWithProducerDeliveryNotFound) {
         $cartItems = $cartItems.map((c) => {
           if (c.producer.id == cartItemWithProducerDeliveryNotFound.producer.id) {
@@ -256,9 +256,6 @@
   const debouncedSaveOrder = debounce(saveOrder, 800);
 
   $: isValid = !$cartItems.find(c => !c.producer.disabled && !c.producer.deliveryHour);
-  $: if ($cartItems.length > 0) {
-    debouncedSaveOrder();
-  }
 
   $: productsHaveBeenRemoved = $cartItems.find(c => c.disabled);
   $: producersHaveBeenRemoved = $cartItems.find(c => c.producer.disabled);
@@ -305,6 +302,7 @@
     let newCart = $cartItems.filter(c => c.id !== id);
     $cartItems = newCart;
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
+    debouncedSaveOrder();
   };
 
   const removeProducer = id => {
@@ -403,6 +401,7 @@
                         selectedDeliveryHour={item.producer.deliveryHour}
                         data={producersDeliveries.find(p => p.id === item.producer.id)} 
                         isLoading={isLoadingDeliveries}
+                        disabled={isLoadingPaymentInfo}
                       />
                     {/if}
                 {/if}
@@ -433,7 +432,7 @@
                   </div>
                     <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
                     {#if !item.disabled && !item.producer.disabled}
-                        <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
+                        <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} disabled={isLoadingPaymentInfo} on:updateCart={debouncedSaveOrder} />
                     {/if}
                     </div>
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
