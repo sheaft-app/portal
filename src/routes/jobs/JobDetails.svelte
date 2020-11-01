@@ -40,7 +40,7 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import Roles from "./../../enums/roles";
+	import Roles from "./../../enums/roles.js";
 
 	export let params = {};
 
