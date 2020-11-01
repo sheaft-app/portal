@@ -56,8 +56,7 @@
 		var res = await graphQLInstance.mutate(
 			UPDATE_RETURNABLE,
 			returnable,
-			errorsHandler.Uuid,
-            GET_RETURNABLES
+			errorsHandler.Uuid
     );
     
 		isLoading = false;
@@ -79,6 +78,7 @@
 			returnable,
 			onClose: async (res) => {
 				if (res.success) {
+      		graphQLInstance.clearApolloCache(GET_RETURNABLES);
 					routerInstance.goTo(ReturnableRoutes.List);
 				}
 			},

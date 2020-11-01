@@ -69,6 +69,7 @@ faInfo,
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.refresh();
+					graphQLInstance.clearApolloCache(GET_PRODUCTS);
 					selectedItems = [];
 				}
 			},

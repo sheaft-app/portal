@@ -49,8 +49,7 @@
     var res = await graphQLInstance.mutate(
       UPDATE_DELIVERY,
       delivery,
-      errorsHandler.Uuid,
-      GET_DELIVERIES
+      errorsHandler.Uuid
     );
 
     isUpdatingDelivery = false;  
@@ -69,6 +68,7 @@
       onClose: async res => {
         if (res.success) {
           routerInstance.goTo(DeliveryRoutes.List);
+          graphQLInstance.clearApolloCache(GET_DELIVERIES);
         }
       }
     });

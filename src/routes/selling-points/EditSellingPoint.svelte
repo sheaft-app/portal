@@ -60,8 +60,7 @@
           country: "FR"
         }
       },
-      errorsHandler.Uuid,
-      GET_SELLING_POINTS
+      errorsHandler.Uuid
     );
 
     if (!res.success) {
@@ -82,6 +81,7 @@
     open(DeleteSellingPoint, {
       onClose: async res => {
         if (res.success) {
+          graphQLInstance.clearApolloCache(GET_SELLING_POINTS);
           routerInstance.goTo(SellingPointRoutes.List);
         }
       },
