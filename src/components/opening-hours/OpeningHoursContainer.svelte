@@ -11,21 +11,17 @@
 	let isLoading = true;
 
 	const addOpeningHour = () => {
+		const newOpening = denormalizeOpeningHours([{
+			id: Guid.NewGuid(),
+			days: [],
+			from: 0,
+			to: 0
+		}]);
+
 		openings = [
 			...openings,
-			{
-				id: Guid.NewGuid(),
-				days: [],
-				start: {
-					hours: 0,
-					minutes: 0
-				},
-				end: {
-					hours: 0,
-					minutes: 0
-				}
-			}
-		]
+			...newOpening
+		];
 	};
 
 	const removeOpeningHour = (id) => {
