@@ -37,7 +37,7 @@
     })
 
     if (location) {
-      slides = orderBy(slides, (d) => d.distanceInfos.distance, ['asc']);
+      slides = orderBy(slides, (d) => d.distanceInfos?.distance, ['asc']);
     }
 
     isLoading = false;
