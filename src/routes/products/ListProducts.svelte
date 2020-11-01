@@ -32,6 +32,7 @@ faInfo,
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import { formatMoney } from "./../../helpers/app";
+	import { toggleMoreActions } from "./../../stores/app";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -70,6 +71,7 @@ faInfo,
 				if (res.success) {
 					routerInstance.refresh();
 					graphQLInstance.clearApolloCache(GET_PRODUCTS);
+					toggleMoreActions.set(false);
 					selectedItems = [];
 				}
 			},
@@ -82,6 +84,7 @@ faInfo,
 			status: status,
 			onClose: async (res) => {
 				if (res.success) {
+					toggleMoreActions.set(false);
 					routerInstance.refresh();
 				}
 			},
@@ -101,6 +104,7 @@ faInfo,
 			visibleToConsumers: visibilityToConsumers,
 			onClose: async (res) => {
 				if (res.success) {
+					toggleMoreActions.set(false);
 					routerInstance.refresh();
 				}
 			},
@@ -110,7 +114,10 @@ faInfo,
 	const showImportModal = () => {
 		open(ImportProducts, {
 			onClose: async (res) => {
-				if (res.success) hasPendingJobs = true;
+				if (res.success) {
+					toggleMoreActions.set(false);
+					hasPendingJobs = true;
+				}
 			},
 		});
 	};

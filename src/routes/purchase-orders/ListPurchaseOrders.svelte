@@ -53,6 +53,7 @@
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import { toggleMoreActions } from "./../../stores/app";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
@@ -147,6 +148,7 @@
 				if (res.success) {
 					routerInstance.refresh();
 					selectedItems = [];
+					toggleMoreActions.set(false);
 					graphQLInstance.clearApolloCache(GET_ORDERS);
 				}
 			},

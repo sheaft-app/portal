@@ -41,7 +41,7 @@
 	const headers = [
 		{ name: "Nom", sortLabel: "name" },
 		{ name: "Type", displayOn: "md" },
-		{ name: "Créée le", displayOn: "md", sortLabel: "createdOn" },
+		{ name: "Créée le", sortLabel: "createdOn" },
 		{ name: "Statut", displayOn: "md", sortLabel: "status" },
 		{ name: "Dernière mise à jour", displayOn: "md" },
 	];
@@ -220,15 +220,18 @@
 		{getRowBackgroundColor}
 		{onRowClick}>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+			<div class="text-xs leading-5 font-semibold text-{ProcessStatusKind.color(job.status)}-500 block md:hidden">
+				{ProcessStatusKind.label(job.status)}
+			</div>
 			<div class="text-sm leading-5 text-gray-800">{job.name}</div>
 		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden md:table-cell">
 			<div class="text-sm leading-5 text-gray-900">
 				{JobKind.label(job.kind)}
 			</div>
 		</td>
 		<td
-			class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+			class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
 			<div>
 				<p>
 					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
@@ -242,7 +245,7 @@
 		</td>
 		<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
-				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-{ProcessStatusKind.color(job.status)}-400
+				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-{ProcessStatusKind.color(job.status)}-500
 				text-white">
 				{ProcessStatusKind.label(job.status)}
 			</span>
