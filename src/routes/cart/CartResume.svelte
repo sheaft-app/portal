@@ -109,7 +109,7 @@
 
     hasSubmitError = false;
 
-    const productsFiltered = $cartItems.filter(p => p.quantity > 0);
+    const productsFiltered = $cartItems.filter(p => p.quantity > 0 && !p.disabled && !p.producer.disabled);
 
     let producersExpectedDeliveries = productsFiltered
       .map(product => {
@@ -153,11 +153,15 @@
 
     if (!response.success) {
       // todo
-      if (response.invalidProducts.length >= 1) {
-        // on invalide les produits
-        for (var i = 0; i < response.invalidProducts.length; i++) {
+      const errors = errorsHandler.getErrors();
+      const invalidProductsError = errors.find((e) => e.message.includes('produits sont invalides'));
+
+      if (invalidProductsError) {
+        const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+
+        ids.map((i) => {
           $cartItems = $cartItems.map((c) => {
-            if (c.id == response.invalidProducts[i].id) {
+            if (c.id == i && !c.producer.disabled) {
               return {
                 ...c,
                 disabled: true
@@ -165,9 +169,8 @@
             }
             else return c;
           });
-        }
+        })
 
-        producersHaveBeenRemoved = true;
         return isLoadingPaymentInfo = false;
       }   
 
@@ -179,7 +182,7 @@
     isLoadingPaymentInfo = false;
     localStorage.setItem("user_current_order", JSON.stringify(response.data));
   };
-
+  
   const showTransactionInfo = () => {
     open(MangoPayInfo, {});
   };
@@ -187,15 +190,18 @@
   const getProducerDeliveries = async () => {
     if ($cartItems.length > 0 && producersDeliveries.length === 0) {
       isLoadingDeliveries = true;
+
+      const ids = $cartItems
+        .map(p => p.producer.id)
+        .reduce(
+          (unique, item) =>
+            unique.includes(item) ? unique : [...unique, item],
+          []
+        );
+
       var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
         input: {
-          ids: $cartItems
-            .map(p => p.producer.id)
-            .reduce(
-              (unique, item) =>
-                unique.includes(item) ? unique : [...unique, item],
-              []
-            ),
+          ids,
           kinds: [
             DeliveryKind.Farm.Value,
             DeliveryKind.Market.Value,
@@ -206,16 +212,40 @@
 
       if (!res.success) {
         // todo
-        if (res.invalidDeliveries.length >= 1) {
-          // on supprime les produits des producteurs qui n'existent plus
-          for (var i = 0; i < res.invalidDeliveries.length; i++) {
-            $cartItems = $cartItems.filter((c) => c.producer.id == res.invalidDeliveries[i]);
-          }
-
-          producersHaveBeenRemoved = true;
-        }   
-
         return isLoadingDeliveries = false;
+      }
+
+      // l'utilisateur avait déjà choisi un lieu de récup pour le prod
+      // mais entre temps le prod a supprimé ce lieu
+      const deliveriesIds = res.data.map((r) => r.deliveries).flat().map((d) => d.id);
+      const cartItemWithProducerDeliveryNotFound = $cartItems.find((c) => c.producer.delivery && c.producer.delivery.id && !deliveriesIds.includes(c.producer.delivery.id));
+
+      if (cartItemWithProducerDeliveryNotFound) {
+        $cartItems = $cartItems.map((c) => {
+          if (c.producer.id == cartItemWithProducerDeliveryNotFound.producer.id) {
+            delete c.producer['delivery'];
+            delete c.producer['deliveryHour'];
+          }
+          return c;
+        });
+      }
+
+      if (res.data.length !== ids.length) {
+        const missingIds = ids.filter((i) => !res.data.map((r) => r.id).includes(i));
+        missingIds.map((i) => {
+          $cartItems = $cartItems.map((c) => {
+            if (c.producer.id == i) {
+              return {
+                ...c,
+                producer: {
+                  ...c.producer,
+                  disabled: true
+                }
+              }
+            }
+            else return c;
+          });
+        })
       }
 
       producersDeliveries = res.data;
@@ -225,10 +255,13 @@
 
   const debouncedSaveOrder = debounce(saveOrder, 800);
 
-  $: isValid = !$cartItems.find(c => !c.producer.deliveryHour);
+  $: isValid = !$cartItems.find(c => !c.producer.disabled && !c.producer.deliveryHour);
   $: if ($cartItems.length > 0) {
     debouncedSaveOrder();
   }
+
+  $: productsHaveBeenRemoved = $cartItems.find(c => c.disabled);
+  $: producersHaveBeenRemoved = $cartItems.find(c => c.producer.disabled);
 
   const blink = (deliveries) => {
     if (!deliveries || deliveries.length == 0) return;
@@ -273,6 +306,12 @@
     $cartItems = newCart;
     localStorage.setItem("user_cart", JSON.stringify($cartItems));
   };
+
+  const removeProducer = id => {
+    let newCart = $cartItems.filter(c => c.producer.id !== id);
+    $cartItems = newCart;
+    localStorage.setItem("user_cart", JSON.stringify($cartItems));
+  };
 </script>
 
 <svelte:head>
@@ -290,6 +329,28 @@
       <div class="pb-6">
         <h1 class="font-semibold uppercase">Votre Panier</h1>
         <span class="bg-primary h-1 w-20 block mt-2"></span>
+        {#if productsHaveBeenRemoved}
+          <div class="py-5 px-3 md:px-6 overflow-x-auto bg-orange-200 shadow
+            rounded w-full mb-2 mt-2">
+              <p class="uppercase font-bold leading-none">
+                Des produits ne sont plus disponibles
+              </p>
+              <ul class="mt-4">
+                <p>Certains produits dans votre panier ne sont plus disponibles et ont été retirés. Les produits concernés sont les produits barrés avec un fond orange dans la liste. Ces produits ne seront pas commandés.</p>
+              </ul>
+            </div>
+        {/if}
+        {#if producersHaveBeenRemoved}
+          <div class="py-5 px-3 md:px-6 overflow-x-auto bg-orange-200 shadow
+            rounded w-full mb-2 mt-2">
+              <p class="uppercase font-bold leading-none">
+                Des producteurs ne sont plus disponibles
+              </p>
+              <ul class="mt-4">
+                <p>Les points de vente de certains producteurs dans votre panier ne sont plus disponibles. Leurs produits ont été retirés de votre panier.</p>
+              </ul>
+            </div>
+        {/if}
         {#if $cartItems.length > 0}
           {#if firstTimeOnCart}
             <div class="py-5 px-3 md:px-6 overflow-x-auto bg-green-100 shadow
@@ -317,24 +378,40 @@
               class="align-middle inline-block min-w-full overflow-hidden items">
               {#each orderedCartItems as item, i (item.id)}
                 {#if i === 0 || orderedCartItems[i - 1].producer.name !== item.producer.name}
-                  <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
-                    <span
-                      class="rounded-full inline-flex w-6 h-6 items-center
-                      justify-center bg-primary mr-2 text-white font-semibold">
-                      {$cartItemsOrderedByProducer.find(producer => producer.id === item.producer.id) ? $cartItemsOrderedByProducer.find(producer => producer.id === item.producer.id).index : '-'}
-                    </span>
-                    {item.producer.name}
-                  </p>
-                  <DeliveryModePicker
-                    selected={item.producer.delivery}
-                    selectedDeliveryHour={item.producer.deliveryHour}
-                    data={producersDeliveries.find(p => p.id === item.producer.id)} 
-                    isLoading={isLoadingDeliveries}
-                  />
+                    <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1} class:bg-orange-200={item.producer.disabled}>
+                      <span
+                        class="rounded-full inline-flex w-6 h-6 items-center
+                        justify-center bg-primary mr-2 text-white font-semibold"
+                        class:hidden={item.producer.disabled}>
+                        {$cartItemsOrderedByProducer.find(producer => producer.id === item.producer.id) ? $cartItemsOrderedByProducer.find(producer => producer.id === item.producer.id).index : '-'}
+                      </span>
+                      {item.producer.name}
+                    </p>
+                    {#if item.producer.disabled}
+                      <div class="bg-orange-200 py-2 pl-3 border-gray-400 border">
+                        <p>Le producteur a désactivé ses points de vente.</p>
+                        <button 
+                          type="button"
+                          class="btn-link text-sm"
+                          on:click={() => removeProducer(item.producer.id)}>
+                          Supprimer ce producteur
+                        </button>
+                      </div>
+                    {:else}
+                      <DeliveryModePicker
+                        selected={item.producer.delivery}
+                        selectedDeliveryHour={item.producer.deliveryHour}
+                        data={producersDeliveries.find(p => p.id === item.producer.id)} 
+                        isLoading={isLoadingDeliveries}
+                      />
+                    {/if}
                 {/if}
                 <div
                   class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
-                  border-gray-400 border-solid items-center" class:bg-orange-300={item.disabled} class:text-gray-500={item.disabled} class:line-through={item.disabled}>
+                  border-gray-400 border-solid items-center" 
+                  class:bg-orange-200={item.disabled || item.producer.disabled} 
+                  class:text-gray-500={item.disabled || item.producer.disabled}
+                  class:line-through={item.disabled || item.producer.disabled}>
                   <div class="md:w-6/12 px-3">
                     <div class="text-lg leading-5 font-medium">
                       <p>{item.name}</p>
@@ -347,34 +424,30 @@
                         {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
                       </span>
                     </p>
-                    {#if !item.disabled}
-                      <button
-                        type="button"
-                        class="btn-link text-sm"
-                        on:click={() => removeProduct(item.id)}>
-                        Retirer
-                      </button>
-                    {/if}
+                    <button
+                      type="button"
+                      class="btn-link text-sm"
+                      on:click={() => removeProduct(item.id)}>
+                      Retirer
+                    </button>
                   </div>
-                  {#if !item.disabled}
                     <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
-                      <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
+                    {#if !item.disabled && !item.producer.disabled}
+                        <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
+                    {/if}
                     </div>
-                  {/if}
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
                     <p>
                       <span class="font-bold text-lg">
                         {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
                       </span>
                     </p>
-                    {#if !item.disabled}
-                      <button
-                        type="button"
-                        class="btn-link text-sm"
-                        on:click={() => removeProduct(item.id)}>
-                        Retirer
-                      </button>
-                    {/if}
+                    <button
+                      type="button"
+                      class="btn-link text-sm"
+                      on:click={() => removeProduct(item.id)}>
+                      Retirer
+                    </button>
                   </div>
                 </div>
               {/each}

@@ -128,16 +128,18 @@
         </button>
       </div>
       {#each $cartItems as cartItem, index}
-        <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
-          <div>
-            <p class="font-medium">{cartItem.name}</p>
-            <p class="text-sm">{cartItem.producer.name}</p>
+        {#if !cartItem.disabled && !cartItem.producer.disabled}
+          <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
+            <div>
+              <p class="font-medium">{cartItem.name}</p>
+              <p class="text-sm">{cartItem.producer.name}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-medium">{formatMoney(cartItem.onSalePricePerUnit)}</p>
+              <p class="text-sm">qté : {cartItem.quantity}</p>
+            </div>
           </div>
-          <div class="text-right">
-            <p class="font-medium">{formatMoney(cartItem.onSalePricePerUnit)}</p>
-            <p class="text-sm">qté : {cartItem.quantity}</p>
-          </div>
-        </div>
+        {/if}
       {/each}
     </div>
   </div>
