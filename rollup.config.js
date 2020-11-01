@@ -56,7 +56,8 @@ export default {
              require("autoprefixer"),
              require("postcss-nesting")
           ],
-        }
+				},
+				scss: true
 			}),
 		}),
 		// typescript({
