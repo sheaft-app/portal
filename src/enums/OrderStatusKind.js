@@ -2,7 +2,6 @@ import {
 	faQuestion,
 	faThumbsUp,
 	faCircleNotch,
-	faThumbsDown,
 	faCheck,
 	faTimes,
 	faSpinner,
