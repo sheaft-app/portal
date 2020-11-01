@@ -39,6 +39,7 @@
     "notyf": "^3.9.0",
     "oidc-client": "^1.10.1",
     "ping.js": "^0.2.3",
+    "postcss-nesting": "^7.0.1",
     "qs": "^6.9.3",
     "svelte-apollo": "^0.3.0",
     "svelte-awesome": "^2.2.1",

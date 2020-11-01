@@ -50,9 +50,13 @@ export default {
 			dev: !production,
 			emitCss: true,
 			preprocess: autoPreprocess({
-				postcss: true,
-				scss: true,
-				typescript: true,
+				postcss: {
+          plugins: [
+             require("tailwindcss"), 
+             require("autoprefixer"),
+             require("postcss-nesting")
+          ],
+        }
 			}),
 		}),
 		// typescript({
