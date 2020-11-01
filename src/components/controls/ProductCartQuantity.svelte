@@ -113,7 +113,7 @@
   </div>
   <div onselectstart="return false" class="mt-2 relative hidden lg:block">
     {#if quantity > 0 && displayFeedback}
-      <div transition:fly|local={{ y: -30 }} class="text-sm text-center absolute w-full">
+      <div onselectstart="return false" transition:fly|local={{ y: -30 }} class="text-sm text-center absolute w-full">
         <p>x{quantity} dans le panier</p>
       </div>
     {/if}
