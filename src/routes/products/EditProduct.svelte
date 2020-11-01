@@ -51,7 +51,7 @@
     isLoading = false;
 
     if (!res.success) {
-      //TODO
+      notificationsInstance.warning("Le produit est introuvable");
       routerInstance.goTo(ProductRoutes.List);
       return;
     }

@@ -73,7 +73,10 @@
 
     if ($productForm.valid && !isLoading) {
       if (product.conditioning != ConditioningKind.Bulk.Value)
-          product.unit = UnitKind.NotSpecified.Value;
+		  product.unit = UnitKind.NotSpecified.Value;
+	  
+	  if(product.conditioning == ConditioningKind.Bouquet.Value || product.conditioning == ConditioningKind.Bunch.Value)
+	  	product.quantityPerUnit = 1;
       return submit();
     }
 	};

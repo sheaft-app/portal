@@ -6,3 +6,4 @@ dist/
 public/sw.*
 public/workbox-*
 src/configs/config.js
+.history

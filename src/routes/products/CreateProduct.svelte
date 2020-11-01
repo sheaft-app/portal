@@ -14,11 +14,13 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
 	import ConditioningKind from "../../enums/ConditioningKind";
+  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
+  const notificationsInstance = new GetNotificationsInstance();
 
   let isLoading = false;
 
@@ -65,6 +67,7 @@
       return;
     }
 
+    notificationsInstance.success("Le produit a bien été ajouté à votre catalogue");
     routerInstance.goTo(ProductRoutes.List);
   };
 </script>
