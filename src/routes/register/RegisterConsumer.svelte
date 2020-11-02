@@ -9,13 +9,14 @@
   import SheaftErrors from "./../../services/SheaftErrors";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import GetNotificationsInstance from "./../../services/SheaftNotifications";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { authRegistered } from "./../../stores/auth.js";
   import { departments } from "./../../stores/app.js";
   import Select from "./../../components/controls/select/Select.js";
   import ErrorCard from "../../components/ErrorCard.svelte";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
+import { sub } from "date-fns";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
@@ -27,6 +28,7 @@
   let acceptCgv = false;
   let sponsorShow = false;
   let selectedDepartment = null;
+  let sub = null;
 
   let user = {
     id: authInstance.user.profile.sub || null,
@@ -63,12 +65,19 @@
         return;
       }
 
-      await authInstance.loginSilent();
-      authRegistered.set(true);
+      await authInstance.loginSilent();      
       localStorage.removeItem("user_choosen_role");
       localStorage.removeItem("user_sponsoring");
-      routerInstance.goTo("/");
-      isRegistering = false;
+      sub = authRegistered.subscribe(registered => {
+        if(registered)
+          {    
+            routerInstance.goTo("/");
+          }
+          else{
+            location.hash = "/";
+            location.reload();
+          }
+      });
     }
   };
 
@@ -92,6 +101,11 @@
 
   onMount(async () => {
     // await getDepartments();
+  });
+
+  onDestroy(() => {
+    if(sub != null)
+      sub.unsubscribe();
   });
 
   // const getLabel = option => `${option.code} - ${option.name}`;

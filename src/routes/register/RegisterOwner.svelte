@@ -8,7 +8,7 @@
   import GetRouterInstance from "./../../services/SheaftRouter";
   import GetNotificationsInstance from "./../../services/SheaftNotifications";
   import { normalizeOpeningHours, denormalizeOpeningHours } from "./../../helpers/app";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import Roles from "./../../enums/Roles";
   import ErrorCard from "../../components/ErrorCard.svelte";
   import { authRegistered } from "../../stores/auth";
@@ -18,6 +18,7 @@
   import FormCompany from "./owner/FormCompany.svelte";
   import FormBusinessHours from "./owner/FormBusinessHours.svelte";
   import FormProductionSite from "./owner/FormProductionSite.svelte";
+import { sub } from "date-fns";
 
   export let params = {};
 
@@ -27,6 +28,7 @@
   const notificationsInstance = GetNotificationsInstance();
   const errorsHandler = new SheaftErrors();
 
+  let sub = null;
   let isRegistering = false;
   let showSponsoring = false;
   let stepper = 0;
@@ -145,12 +147,25 @@
     }
 
     await authInstance.loginSilent();
-    authRegistered.set(true);
     localStorage.removeItem("user_choosen_role");
     localStorage.removeItem("user_sponsoring");
-    routerInstance.goTo("/");
-    isRegistering = false;
+
+    sub = authRegistered.subscribe(registered => {
+      if(registered)
+        {    
+          routerInstance.goTo("/");
+        }
+        else{
+          location.hash = "/";
+          location.reload();
+        }
+    });
   };
+
+  onDestroy(() => {
+    if(sub != null)
+      sub.unsubscribe();
+  });
 
   $: isStore = params.id == Roles.Store.Value;
 </script>
