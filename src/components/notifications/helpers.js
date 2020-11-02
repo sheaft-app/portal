@@ -167,7 +167,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				notification,
 				"success",
 				`Votre bon de préparation est prêt !`,
-				`${notification.content.Url}`,
+				`#/jobs/${notification.content.JobId}`,
 				true,
 				true,
 				local
