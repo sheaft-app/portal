@@ -5,14 +5,14 @@ Ce projet correspond au portail applicatif web de Sheaft. Il est développé en 
 ## Pré-requis
 
 - NPM installé
-- Une API Web, Sheaft.Api est disponible dans le repository https://github.com/sheaft-app/api. (Sheaft.SignalR, Sheaft.Functions ne sont pas requis pour pouvoir utiliser le portail applicatif, ni le compte Sendgrid).
-- Un serveur d'identité, Sheaft.Identity est disponible dans le repository https://github.com/sheaft-app/identity. (le compte sendgrid n'est pas nécessaire pour utiliser le portail applicatif).
+- Une API GraphQL, Sheaft.Web.Api est disponible dans le repository https://github.com/sheaft-app/api. (Sheaft.Web.SignalR, Sheaft.Web.Jobs ne sont pas requis pour pouvoir utiliser le portail applicatif, ni le compte Amazon SES).
+- Un serveur d'identité, Sheaft.Identity est disponible dans le repository https://github.com/sheaft-app/identity. (le compte Amazon SES n'est pas nécessaire pour utiliser le portail applicatif).
 
 ## Lancement
 
 Pour lancer le portail, il suffit de :
 - Executer "npm run portal:local" pour spécifier que nous souhaitons fonctionner sans la partie remote, hebergée sur Azure. 
-- Démarrer l'api Sheaft.Api (https://localhost:5003).
+- Démarrer l'api Sheaft.Web.Api (https://localhost:5003).
 - Démarrer l'api Sheaft.Identity (https://localhost:5001)
 
 ## Build
