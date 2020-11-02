@@ -6,6 +6,7 @@ let enums = {
     Bunch: { Value: "BUNCH", Label: "Botte"},
     Bouquet : { Value: "BOUQUET", Label: "Bouquet"},
     Piece : { Value: "PIECE", Label: "Pièce"},
+    Basket : { Value: "BASKET", Label: "Panier garni"},
     NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
 }
 
