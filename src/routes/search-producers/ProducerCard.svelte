@@ -101,7 +101,7 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 20px; right: 15px;" class="absolute">
           {#if producer.tags && producer.tags.find(c => c.name == 'bio') != null}
-            <img src="./img/labels/bio.png" alt="Bio" class="mb-3" />
+            <img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Bio" class="mb-3" />
           {/if}
         </div>
         <div class="pr-8">

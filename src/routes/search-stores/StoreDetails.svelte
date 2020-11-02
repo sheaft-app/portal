@@ -176,7 +176,7 @@
         {#if store.tags && store.tags.length > 0 && store.tags.find(t => t.name === 'Bio')}
           <div class="text-center ml-3">
             <img
-              src="./img/labels/bio.png"
+              src="https://content.sheaft.com/pictures/tags/icons/bio.png"
               alt="Bio"
               class="m-auto mb-1"
               style="max-width: 30px;" />

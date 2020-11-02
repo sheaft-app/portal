@@ -147,6 +147,8 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 			return `(1 botte)`;
 		case ConditioningKind.Bouquet.Value:
 			return `(1 bouquet)`;
+		case ConditioningKind.Basket.Value:
+				return `(${quantityPerUnit} personne${quantityPerUnit > 1 ? 's' : ''})`;
 		case ConditioningKind.Piece.Value:
 			return `(${quantityPerUnit} pièce${quantityPerUnit > 1 ? 's' : ''})`;
 		default:

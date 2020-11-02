@@ -5,14 +5,9 @@
   import { GET_CATEGORIES } from "../queries.js";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import { bindClass } from '../../../vendors/svelte-forms/src/index';
+  import { bindClass } from '../../../vendors/svelte-forms/src/index';
+  import Icon from "svelte-awesome";
 
-  import meat from "../icons/meat.svg";
-  import vegetables from "../icons/vegetables.svg";
-  import dairy from "../icons/dairy.svg";
-  import drinks from "../icons/drinks.svg";
-  import fish from "../icons/fish.svg";
-  import grocery from "../icons/grocery.svg";
   import allProducts from "../icons/allProducts.svg";
 
   const routerInstance = GetRouterInstance();
@@ -81,25 +76,6 @@
     dispatch("change", selectedCategory);
     callback();
   };
-
-  const renderIcon = category => {
-    switch (category) {
-      case "fruits et légumes":
-        return vegetables;
-      case "viandes":
-        return meat;
-      case "oeufs et produits laitiers":
-        return dairy;
-      case "boissons":
-        return drinks;
-      case "poissons":
-        return fish;
-      case "épicerie":
-        return grocery;
-      default:
-        return allProducts;
-    }
-  };
 </script>
 
 <div class="inline-flex">
@@ -145,10 +121,20 @@
           class:disabled
           class:text-white={selectedCategory && selectedCategory.id === category.id}>
           <div class="mb-2">
-            <svelte:component
-              this={renderIcon(category.name.toLowerCase())}
+            <object 
+              title={category.name}
+              aria-label={category.name} 
+              type="image/svg+xml"
               width="30"
-              style={selectedCategory && selectedCategory.id === category.id ? 'fill: #ffffff;' : ''} />
+              height="30"
+              data={category.icon}
+              style={selectedCategory && selectedCategory.id === category.id ? 'filter: invert(1);' : ''}>
+              {category.name}
+            </object>
+            <!-- <svelte:component
+              this={category.icon}
+              width="30"
+              style={selectedCategory && selectedCategory.id === category.id ? 'fill: #ffffff;' : ''} /> -->
           </div>
           <span
             class="cursor-pointer uppercase tracking-wide text-xs font-bold mb-2"

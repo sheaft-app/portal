@@ -50,7 +50,7 @@
 			conditioning: {
 				value: product.conditioning,
 				validators: ["required"],
-				enabled: true,
+				enabled: true
 			},
 			quantityPerUnit: {
 				value: product.quantityPerUnit,
@@ -68,17 +68,27 @@
 		}
 	);
 
+	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
+
 	const handleSubmit = async () => {
     productForm.validate();
 
     if ($productForm.valid && !isLoading) {
-      if (product.conditioning != ConditioningKind.Bulk.Value)
-		  product.unit = UnitKind.NotSpecified.Value;
-	  
-	  if(product.conditioning == ConditioningKind.Bouquet.Value || product.conditioning == ConditioningKind.Bunch.Value)
-	  	product.quantityPerUnit = 1;
-      return submit();
-    }
+      if (product.conditioning != ConditioningKind.Bulk.Value) {
+		  	product.unit = UnitKind.NotSpecified.Value;
+			}
+		
+			if (isBasketType) {
+				console.log("passed");
+				product.conditioning = ConditioningKind.Basket.Value
+			}
+
+			if (product.conditioning == ConditioningKind.Bouquet.Value || product.conditioning == ConditioningKind.Bunch.Value) {
+				product.quantityPerUnit = 1;
+			}
+
+			return submit();
+		}
 	};
 
 	let isBio = false;
@@ -176,6 +186,14 @@
 			},
 		});
 	};
+
+	$: getQuantityPerUnitLabel = () => {
+		if (isBasketType) {
+			return "Nombre de personnes (adultes)*";
+		} 	
+		
+		return product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *";
+	}
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
@@ -259,76 +277,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-control">
-				<div class="w-full">
-					<label for="grid-conditioning">Conditionnement *</label>
-					<div class="flex w-full">
-						<div>
-							<select
-								bind:value={product.conditioning}
-								id="grid-conditioning"
-								use:bindClass={{ form: productForm, name: 'conditioning' }}
-								class:skeleton-box={isLoading}
-								disabled={isLoading}>
-								<option selected="true" value={ConditioningKind.Bulk.Value}>
-									{ConditioningKind.Bulk.Label}
-								</option>
-								<option value={ConditioningKind.Bunch.Value}>
-									{ConditioningKind.Bunch.Label}
-								</option>
-								<option value={ConditioningKind.Box.Value}>
-									{ConditioningKind.Box.Label}
-								</option>
-								<option value={ConditioningKind.Bouquet.Value}>
-									{ConditioningKind.Bouquet.Label}
-								</option>
-								<option value={ConditioningKind.Piece.Value}>
-									{ConditioningKind.Piece.Label}
-								</option>
-							</select>
-							<ErrorContainer field={$productForm.fields.conditioning} />
-						</div>
-					</div>
-				</div>
+			<div class="form-control" style="display: block;">
+				<label>Labels</label>
+				<Toggle
+					labelPosition="left"
+					disabled={isLoading}
+					classNames="ml-1"
+					isChecked={isBio}
+					onChange={() => toggleBio()}>
+					<img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Produit bio" class="w-8" />
+				</Toggle>
 			</div>
-			{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
-				<div class="form-control">
-					<div class="w-full">
-						<label for="grid-quantityPerUnit">{product.conditioning === ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *"}</label>
-						<div class="flex w-full">
-							<div class="mr-2">
-								<input
-									type="number"
-									step="0.10"
-									bind:value={product.quantityPerUnit}
-									use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
-									id="grid-quantityPerUnit"
-									placeholder="ex : 5"
-									class:skeleton-box={isLoading}
-									disabled={isLoading} />
-								<ErrorContainer field={$productForm.fields.quantityPerUnit} />
-							</div>
-							{#if product.conditioning == ConditioningKind.Bulk.Value}
-								<div>
-									<select
-										bind:value={product.unit}
-										id="grid-unit"
-										use:bindClass={{ form: productForm, name: 'unit' }}
-										class:skeleton-box={isLoading}
-										disabled={isLoading}>
-										<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
-										<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
-										<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
-										<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
-										<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
-									</select>
-									<ErrorContainer field={$productForm.fields.unit} />
-								</div>
-							{/if}
-						</div>
-					</div>
-				</div>
-			{/if}
 		</div>
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="height: 300px;">
@@ -339,7 +298,7 @@
 							<div
 								class="h-full product-picture relative"
 								style="background: url('{product.picture}'); margin:auto;">
-								  {#if product.picture.includes("pictures/products/categories/")}
+								  {#if product.picture.includes("pictures/tags/images/")}
 										<div class="absolute" style="bottom: 0%; z-index: 1;">
 											<div class="text-white text-lg p-1 bg-gray-800">
 												Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.
@@ -371,17 +330,78 @@
 			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3" />
 		<ErrorContainer field={$productForm.fields.selectedCategory} />
 	</div>
-	<div class="form-control" style="display: block;">
-		<label>Labels</label>
-		<Toggle
-			labelPosition="left"
-			disabled={isLoading}
-			classNames="ml-1"
-			isChecked={isBio}
-			onChange={() => toggleBio()}>
-			<img src="./img/labels/bio.png" alt="Produit bio" class="w-8" />
-		</Toggle>
-	</div>
+	{#if !isBasketType}
+		<div class="form-control">
+			<div class="w-full">
+				<label for="grid-conditioning">Conditionnement *</label>
+				<div class="flex w-full">
+					<div>
+						<select
+							bind:value={product.conditioning}
+							id="grid-conditioning"
+							use:bindClass={{ form: productForm, name: 'conditioning' }}
+							class:skeleton-box={isLoading}
+							disabled={isLoading}>
+							<option selected="true" value={ConditioningKind.Bulk.Value}>
+								{ConditioningKind.Bulk.Label}
+							</option>
+							<option value={ConditioningKind.Bunch.Value}>
+								{ConditioningKind.Bunch.Label}
+							</option>
+							<option value={ConditioningKind.Box.Value}>
+								{ConditioningKind.Box.Label}
+							</option>
+							<option value={ConditioningKind.Bouquet.Value}>
+								{ConditioningKind.Bouquet.Label}
+							</option>
+							<option value={ConditioningKind.Piece.Value}>
+								{ConditioningKind.Piece.Label}
+							</option>
+						</select>
+						<ErrorContainer field={$productForm.fields.conditioning} />
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
+	{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
+		<div class="form-control">
+			<div class="w-full">
+				<label for="grid-quantityPerUnit">{getQuantityPerUnitLabel()}</label>
+				<div class="flex w-full">
+					<div class="mr-2">
+						<input
+							type="number"
+							step="0.10"
+							bind:value={product.quantityPerUnit}
+							use:bindClass={{ form: productForm, name: 'quantityPerUnit' }}
+							id="grid-quantityPerUnit"
+							placeholder="ex : 5"
+							class:skeleton-box={isLoading}
+							disabled={isLoading} />
+						<ErrorContainer field={$productForm.fields.quantityPerUnit} />
+					</div>
+					{#if product.conditioning == ConditioningKind.Bulk.Value || !isBasketType}
+						<div>
+							<select
+								bind:value={product.unit}
+								id="grid-unit"
+								use:bindClass={{ form: productForm, name: 'unit' }}
+								class:skeleton-box={isLoading}
+								disabled={isLoading}>
+								<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
+								<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
+								<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
+								<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
+								<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
+							</select>
+							<ErrorContainer field={$productForm.fields.unit} />
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	{/if}
 	<div class="form-control" style="display: block;">
 		<label>Type de consigne</label>
 		<div class="themed">

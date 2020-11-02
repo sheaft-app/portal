@@ -84,7 +84,7 @@
         class:opacity-50={isInCart(product)}
         class:skeleton-box={!src}
         class="transition duration-200 ease-in-out w-full rounded-t-md">
-          {#if src.includes("pictures/products/categories/") && !isInCart(product)}
+          {#if src.includes("pictures/tags/images/") && !isInCart(product)}
             <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
               <div class="text-white text-lg p-1 bg-gray-800">
                 Aucune image disponible
@@ -108,7 +108,7 @@
                 <Icon data={faShoppingCart} style="width: 14px;" />
               </div>
             {/if}
-            {#if src.includes("pictures/products/categories/") && !isInCart(product)}
+            {#if src.includes("pictures/tags/images/") && !isInCart(product)}
               <div class="absolute" style="bottom: 10%; font-size: .50rem;">
                 <div class="text-white p-1 bg-gray-800">
                   Aucune image
@@ -132,7 +132,7 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 30px; right: 15px;" class="absolute">
           {#if product.tags.map(t => t.name).includes('bio')}
-            <img src="./img/labels/bio.png" alt="Bio" class="mb-1" />
+            <img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Bio" class="mb-1" />
           {/if}
           {#if product.isReturnable}
             <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />

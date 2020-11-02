@@ -122,6 +122,7 @@ export const GET_TAGS = gql`
 		tags {
 			id
 			name
+			icon
 			kind
 		}
 	}
