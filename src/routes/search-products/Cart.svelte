@@ -9,10 +9,12 @@
   import CartRoutes from "../cart/routes";
   import { unfreezeBody } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
-  import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronRight, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
   const routerInstance = GetRouterInstance();
   const authInstance = GetAuthInstance();
+
+  let loadToCart = false;
 
   $: if ($cartItems.length > 0) {
     $cartItems = $cartItems.filter(cartItem => cartItem.quantity > 0);
@@ -43,6 +45,7 @@
       return routerInstance.goTo(CartRoutes.Resume);
     }
     
+    loadToCart = true;
     return authInstance.login(CartRoutes.Resume.Path);
   }
 
@@ -111,10 +114,14 @@
         aria-label="Suivant"
         on:click={goToCart}
         class="btn btn-primary w-full py-3 px-3 leading-none justify-center text-lg font-semibold"
-        disabled={$cartItems.length === 0}
-        class:disabled={$cartItems.length === 0}>
+        disabled={$cartItems.length === 0 || loadToCart}
+        class:disabled={$cartItems.length === 0 || loadToCart}>
         Suivant
-        <Icon class="ml-2" data={faChevronRight} />
+        {#if loadToCart}
+          <Icon class="ml-2" data={faCircleNotch} spin />
+        {:else}
+          <Icon class="ml-2" data={faChevronRight} />
+        {/if}
       </button>
     </div>
   </div>

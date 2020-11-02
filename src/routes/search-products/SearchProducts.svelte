@@ -23,7 +23,7 @@
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import Icon from "svelte-awesome";
-	import { faFilter, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+	import { faFilter, faTimesCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 	import {
 		freezeBody,
@@ -47,6 +47,7 @@
 	let hoveredProduct = null;
 	let errors = [];
 	let prevFeed = [];
+	let loadToCart = false;
 	let currentPage = 0;
 	let lastFetchLength = 0;
 	let departmentProgress = null;
@@ -295,6 +296,15 @@
 		return routerInstance.pushQueryParams({ [queryParam]: "" });
 	};
 
+	const goToCart = () => {
+    if (authManager.authenticated) {
+      return routerInstance.goTo(CartRoutes.Resume);
+    }
+    
+    loadToCart = true;
+    return authManager.login(CartRoutes.Resume.Path);
+	}
+	
 	onMount(async () => {
 		var newPosition = retrieveUserLocationInQueryString();
 		if (newPosition) {
@@ -367,15 +377,18 @@
 				{$cartExpanded ? 'Fermer' : 'Aperçu'}
 			</button>
 			<button
-				on:click={() => {
-					hideCart();
-					routerInstance.goTo(CartRoutes.Resume);
-				}}
+				on:click={goToCart}
 				type="button"
+				disabled={$cartItems.length === 0 || loadToCart}
+				class:disabled={$cartItems.length === 0 || loadToCart}
 				class="bg-accent shadow text-white font-semibold uppercase h-10
 					rounded-full leading-none flex items-center justify-center"
 				style="width: 4em;">
-				<Icon data={faShoppingCart} />
+				{#if loadToCart}
+					<Icon data={faCircleNotch} spin />
+				{:else}
+					<Icon data={faShoppingCart} />
+				{/if}
 			</button>
 		</div>
 	</div>
