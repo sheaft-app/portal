@@ -19,18 +19,5 @@ export const config = {
 			response_mode: "query",
 		},
 	},
-	analytics: {
-		settings: {
-			config: {
-				instrumentationKey: "e271341d-a39b-4b08-b9c1-68328fb5ddab",
-				enableDebug: false,
-				enableAutoRouteTracking: true,
-				disableFetchTracking: false,
-				disableAjaxTracking: false,
-				isCookieUseDisabled: true,
-				cookieDomain: "sheaft.com",
-			},
-		},
-	},
 	production: true
 };

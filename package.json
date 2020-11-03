@@ -3,7 +3,8 @@
   "name": "sheaft",
   "scripts": {
     "autobuild": "rollup -c -w",
-    "publish": "npm install && cpy ./src/configs/config.production.js ./src/configs --rename=config.js && set NODE_ENV=PRODUCTION && rollup -c",
+    "staging": "npm install && cpy ./src/configs/config.staging.js ./src/configs --rename=config.js && set NODE_ENV=PRODUCTION && rollup -c",
+    "production": "npm install && cpy ./src/configs/config.production.js ./src/configs --rename=config.js && set NODE_ENV=PRODUCTION && rollup -c",
     "build:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=REMOTE && rollup -c && run-p  start:dev",
     "build:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && rollup -c && run-p start:dev",
     "local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev local:api",
