@@ -401,7 +401,6 @@
                         selectedDeliveryHour={item.producer.deliveryHour}
                         data={producersDeliveries.find(p => p.id === item.producer.id)} 
                         isLoading={isLoadingDeliveries}
-                        disabled={isLoadingPaymentInfo}
                       />
                     {/if}
                 {/if}

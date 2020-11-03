@@ -84,7 +84,7 @@
         class:opacity-50={isInCart(product)}
         class:skeleton-box={!src}
         class="transition duration-200 ease-in-out w-full rounded-t-md">
-          {#if src.includes("pictures/products/categories/") && !isInCart(product)}
+          {#if src.includes("pictures/tags/images/") && !isInCart(product)}
             <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
               <div class="text-white text-lg p-1 bg-gray-800">
                 Aucune image disponible
@@ -108,7 +108,7 @@
                 <Icon data={faShoppingCart} style="width: 14px;" />
               </div>
             {/if}
-            {#if src.includes("pictures/products/categories/") && !isInCart(product)}
+            {#if src.includes("pictures/tags/images/") && !isInCart(product)}
               <div class="absolute" style="bottom: 10%; font-size: .50rem;">
                 <div class="text-white p-1 bg-gray-800">
                   Aucune image

@@ -298,7 +298,7 @@
 							<div
 								class="h-full product-picture relative"
 								style="background: url('{product.picture}'); margin:auto;">
-								  {#if product.picture.includes("pictures/products/categories/")}
+								  {#if product.picture.includes("pictures/tags/images/")}
 										<div class="absolute" style="bottom: 0%; z-index: 1;">
 											<div class="text-white text-lg p-1 bg-gray-800">
 												Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.

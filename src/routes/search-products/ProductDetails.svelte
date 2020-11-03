@@ -215,7 +215,7 @@
   <div class="px-4 sm:px-6">
     <div class="-mx-6 relative" style="background-color: black">
       <!-- si on utilise l'image par défaut -->
-      {#if product.picture.includes("pictures/products/categories/")}
+      {#if product.picture.includes("pictures/tags/images/")}
         <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
           <div class="font-semibold text-white text-lg">
             Aucune image disponible
@@ -223,8 +223,8 @@
         </div>
       {/if}
       <div
-        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://content.sheaft.com/pictures/products/categories/default.jpg'}); background-size: cover;"
-        class:opacity-50={product.picture.includes("pictures/products/categories/")}
+        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://content.sheaft.com/pictures/tags/images/default.jpg'}); background-size: cover;"
+        class:opacity-50={product.picture.includes("pictures/tags/images/")}
         class="w-full shadow-md h-40 lg:h-64" />
       <!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
           <Icon data={faHeart} scale="1.3" />

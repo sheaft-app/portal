@@ -380,9 +380,9 @@
 				on:click={goToCart}
 				type="button"
 				disabled={$cartItems.length === 0 || loadToCart}
-				class:disabled={$cartItems.length === 0 || loadToCart}
 				class="bg-accent shadow text-white font-semibold uppercase h-10
 					rounded-full leading-none flex items-center justify-center"
+				class:disabled={$cartItems.length === 0 || loadToCart}
 				style="width: 4em;">
 				{#if loadToCart}
 					<Icon data={faCircleNotch} spin />
