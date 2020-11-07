@@ -80,6 +80,9 @@
       notificationsInstance.success(
         "Vos modifications ont bien été appliquées."
       );
+
+      await authInstance.loginSilent();
+      await loginFreshdesk();
 		}
   };
 
