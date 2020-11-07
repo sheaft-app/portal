@@ -11,6 +11,7 @@
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import Cleave from "cleave.js";
   import "cleave.js/dist/addons/cleave-phone.fr";
+  import {loginFreshdesk} from "./../../services/SheaftFreshdesk";
 
   export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
 
@@ -80,7 +81,8 @@
         "Vos modifications ont bien été appliquées."
       );
 
-			await authInstance.loginSilent();
+      await authInstance.loginSilent();
+      await loginFreshdesk();
 		}
   };
 
