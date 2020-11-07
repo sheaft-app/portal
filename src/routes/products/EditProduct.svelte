@@ -16,6 +16,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import DeleteProducts from "./DeleteProducts.svelte";
+  import SetProductsAvailability from "./SetProductsAvailability.svelte";
 
   export let params = {};
 
@@ -37,12 +38,26 @@
 			selectedItems: [product],
 			onClose: async (res) => {
 				if (res.success) {
+          graphQLInstance.clearApolloCache(GET_PRODUCTS);
 					routerInstance.goTo(ProductRoutes.List);
 				}
 			},
 		});
-	};
-
+  };
+  
+  const showSetAvailabilityModal = (status) => {
+		open(SetProductsAvailability, {
+			selectedItems: [product],
+			status: !product.available,
+			onClose: async (res) => {
+				if (res.success) {
+          graphQLInstance.clearApolloCache(GET_PRODUCT_DETAILS);
+					routerInstance.goTo(ProductRoutes.List);
+				}
+			},
+		});
+  };
+  
   const getProduct = async () => {
     isLoading = true;
     var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, {
@@ -144,11 +159,18 @@
             </span>
           {/if}  
         </div>      
-				<button
-        class="btn btn-lg bg-red-500 text-white"
-        on:click={() => showDeleteModal()}>
-        Supprimer
-      </button>
+      </div>
+      <div class="flex mt-2">
+        <button
+          class={`btn btn-lg bg-white border mr-2 hover:text-white ${product.available ? 'text-orange-500 border-orange-500 hover:bg-orange-500' : 'text-green-500 border-green-500 hover:bg-green-500'}`}
+          on:click={showSetAvailabilityModal}>
+          {product.available ? 'Désactiver' : 'Activer'}
+        </button>
+        <button
+          class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+          on:click={showDeleteModal}>
+          Supprimer
+        </button>
       </div>
     </section>
     <ProductForm

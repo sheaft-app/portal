@@ -105,14 +105,14 @@
 					Consignes
 				</button>
 			</div>
-			<div class="flex justify-between items-center">
-    	<h1 class="font-semibold uppercase mb-0">{returnable.name}</h1>
-				<button
-					class="btn btn-lg bg-red-500 text-white"
-					on:click={() => showDeleteModal()}>
-					Supprimer
-				</button>
-			</div>
+			<h1 class="font-semibold uppercase mb-0">{returnable.name}</h1>
+			<div class="flex mt-2">
+        <button
+          class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+          on:click={showDeleteModal}>
+          Supprimer
+        </button>
+      </div>
 		</section>
 		<ReturnableForm submit={handleSubmit} {returnable} {isLoading} />
 	{/if}

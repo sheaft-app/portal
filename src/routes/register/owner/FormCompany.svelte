@@ -4,13 +4,19 @@
   import ErrorContainer from "./../../../components/ErrorContainer.svelte";
   import CountrySelect from "./../../../components/controls/CountrySelect.svelte";
   import LegalKind from "./../../../enums/LegalKind";
+  import Icon from "svelte-awesome";
+  import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+  import Cleave from "cleave.js";
+  import "cleave.js/dist/addons/cleave-phone.fr";
   
   export let company, vat, isStore = false, stepper = 1, errorsHandler = null, invalidSiret = false;
+
+  let cleave = null;
 
   const companyForm = form(() => ({
     name: { value: company.name, validators: ['required'], enabled: true },
     kind: { value: company.legals.kind, validators: ['required'], enabled: true },
-    email: { value: company.email, validators: ['required', 'email'], enabled: true },
+    email: { value: company.legals.email, validators: ['required', 'email'], enabled: true },
     line1: { value: company.legals.address.line1, validators: ['required'], enabled: true },
     zipcode: { value: company.legals.address.zipcode, validators: ['required'], enabled: true },
     city: { value: company.legals.address.city, validators: ['required'], enabled: true },
@@ -34,7 +40,14 @@
       event.preventDefault();
       next();
     }
-	}
+  }
+  
+  const initializeCleave = () => {
+    cleave = new Cleave('.input-phone', {
+      phone: true,
+      phoneRegionCode: "fr"
+    });
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -131,6 +144,17 @@
             bind:value={company.legals.email} />
           <ErrorContainer field={$companyForm.fields.email} />
         </div>
+        <div class="w-full form-control">
+          <label for="company_email">Téléphone</label>
+          <input
+            id="company_phone"
+            class="input-phone"
+            use:initializeCleave
+            use:bindClass={{ form: companyForm, name: "phone" }}
+            bind:value={company.phone} />
+          <ErrorContainer field={$companyForm.fields.phone} />
+        </div>
+        <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant commandés auprès de vous peuvent voir votre mail et votre téléphone.</small>
       </div>
       <div class="px-5 py-3 bg-white lg:w-6/12 w-full">
         <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">

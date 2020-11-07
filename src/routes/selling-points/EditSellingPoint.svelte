@@ -14,6 +14,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+  import SetSellingPointAvailability from "./SetSellingPointAvailability.svelte";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
@@ -89,6 +90,18 @@
     });
   };
 
+  const showSetAvailabilityModal = () => {
+    open(SetSellingPointAvailability, {
+      onClose: async res => {
+        if (res.success) {
+          graphQLInstance.clearApolloCache(GET_SELLING_POINTS);
+          routerInstance.goTo(SellingPointRoutes.List);
+        }
+      },
+      sellingPoint
+    });
+  };
+
   onDestroy(() => (sellingPoint = null));
 </script>
 
@@ -113,9 +126,23 @@
       </div>
       <div class="flex justify-between items-center">
         <h1 class="font-semibold uppercase mb-0">{sellingPoint.name || "Modifier point de vente"}</h1>
+        {#if !sellingPoint.available}
+          <span
+            class="rounded-full bg-orange-500 ml-2 mr-2 px-3 py-1 shadow uppercase
+            font-semibold text-xs text-white my-2 h-6">
+            Indisponible
+          </span>
+        {/if}
+      </div>
+      <div class="flex mt-2">
         <button
-          class="btn btn-lg bg-red-500 text-white"
-          on:click={() => showDeleteModal()}>
+          class={`btn btn-lg bg-white border mr-2 hover:text-white ${sellingPoint.available ? 'text-orange-500 border-orange-500 hover:bg-orange-500' : 'text-green-500 border-green-500 hover:bg-green-500'}`}
+          on:click={showSetAvailabilityModal}>
+          {sellingPoint.available ? 'Désactiver' : 'Activer'}
+        </button>
+        <button
+          class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+          on:click={showDeleteModal}>
           Supprimer
         </button>
       </div>

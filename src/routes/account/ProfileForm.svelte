@@ -146,10 +146,9 @@
           class:skeleton-box={isLoading} 
           placeholder="ex : 06 01 02 03 04"
           id="grid-phone" 
-          class="input-phone"
-          use:initializeCleave
           type="tel"
-          pattern="" />
+          class="input-phone"
+          use:initializeCleave />
       </div>
     </div>
     <slot />

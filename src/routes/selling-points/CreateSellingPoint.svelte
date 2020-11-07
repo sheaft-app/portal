@@ -41,6 +41,7 @@ import { GET_SELLING_POINTS } from "./queries";
       CREATE_SELLING_POINT, 
       {
         ...sellingPoint,
+        available: true,
         address: {
           ...sellingPoint.address,
           country: "FR"
