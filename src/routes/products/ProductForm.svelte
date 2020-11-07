@@ -381,7 +381,7 @@
 							disabled={isLoading} />
 						<ErrorContainer field={$productForm.fields.quantityPerUnit} />
 					</div>
-					{#if product.conditioning == ConditioningKind.Bulk.Value || !isBasketType}
+					{#if product.conditioning == ConditioningKind.Bulk.Value && !isBasketType}
 						<div>
 							<select
 								bind:value={product.unit}
