@@ -25,6 +25,7 @@
 
   let isRegistering = false;
   let acceptCgv = false;
+  let acceptMangoCgv = false;
   let sponsorShow = false;
   let selectedDepartment = null;
   let sub = null;
@@ -213,6 +214,19 @@
                 et je les accepte
               </label>
             </div>
+            <div class="mt-2">
+              <label class="cursor-pointer">
+                <InputCheckbox
+                  checked={acceptMangoCgv}
+                  onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
+                Je reconnais avoir lu et compris
+                <a href="https://www.mangopay.com/terms/end-user-terms-and-conditions/Mangopay_Terms-FR.pdf" target="_blank">
+                  les conditions générales d'utilisation de MangoPay,
+                </a>
+                notre tiers de paiement, et je les accepte
+              </label>
+            </div>
+            
             <!-- <div class="flex flex-wrap justify-center">
               <div>
                 <label
@@ -244,8 +258,8 @@
           </div>
           <div>
             <button
-              class:disabled={!$consumerForm.valid || !acceptCgv}
-              disabled={!acceptCgv}
+              class:disabled={!$consumerForm.valid || !acceptCgv || !acceptMangoCgv}
+              disabled={!acceptCgv || !acceptMangoCgv}
               on:click={handleSubmit}
               aria-label="Valider"
               class="form-button uppercase text-sm cursor-pointer text-white

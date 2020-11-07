@@ -11,6 +11,7 @@
   let isSearchingAddress = false;
   let valid = false;
   let acceptCgv = false;
+  let acceptMangoCgv = false;
 
   const resetAddress = () => {
     company.address = {
@@ -28,7 +29,7 @@
     }
   }
   
-  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode && acceptCgv;
+  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode && acceptCgv && acceptMangoCgv;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -98,10 +99,22 @@
             checked={acceptCgv}
             onClick={() => (acceptCgv = !acceptCgv)} />
           Je reconnais avoir lu et compris
-          <a href="https://www.sheaft.com/legals" target="_blank">
+          <a href="https://www.sheaft.com/legals-pro" target="_blank">
             les conditions générales de vente et d'utilisation
           </a>
           et je les accepte
+        </label>
+      </div>
+      <div class="mt-2">
+        <label class="cursor-pointer">
+          <InputCheckbox
+            checked={acceptMangoCgv}
+            onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
+          Je reconnais avoir lu et compris
+          <a href="https://www.mangopay.com/terms/end-user-terms-and-conditions/Mangopay_Terms-FR.pdf" target="_blank">
+            les conditions générales d'utilisation de services de paiement de MangoPay,
+          </a>
+          notre tiers de paiement, et je les accepte
         </label>
       </div>
     </fieldset>
