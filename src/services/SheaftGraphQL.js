@@ -297,10 +297,7 @@ class SheaftGraphQL {
 				}
 
 				if (!message) {
-					message =
-						graphQlError.extensions && graphQlError.extensions.message
-							? graphQlError.extensions.message
-							: graphQlError.message;
+					message = graphQlError.message;
 				}
 
 				errors.push({
