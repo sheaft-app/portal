@@ -29,7 +29,7 @@ export function createNewTicket(subject, profile, errors) {
 		custom_fields: {
 		  cf_profile: JSON.stringify(profile),
 		  cf_page: location.hash,
-		  cf_errors: errors ? JSON.stringify(error) : null
+		  cf_errors: errors ? JSON.stringify(errors) : null
 		}
 	  });
 }
