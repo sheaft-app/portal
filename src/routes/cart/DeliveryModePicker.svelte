@@ -74,6 +74,7 @@
         storeCartItems = newCartItems;
       } else {
         $cartItems = newCartItems;
+        localStorage.setItem("user_cart", JSON.stringify($cartItems));
       }
     }
   };

@@ -76,6 +76,14 @@ export const GET_PRODUCT_DETAILS = gql`
 	}
 `;
 
+export const GET_PRODUCER_DETAILS = gql`
+	query GetProducerDetails($id: ID!) {
+		producer(input: $id) {
+			notSubjectToVat
+		}
+	}
+`
+
 export const GET_PRODUCT_RATINGS = gql`
 	query GetProductRatings($id: ID!) {
 		product(input: $id) {

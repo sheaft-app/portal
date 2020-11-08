@@ -162,11 +162,6 @@
       </div>
       <div class="flex mt-2">
         <button
-          class={`btn btn-lg bg-white border mr-2 hover:text-white ${product.available ? 'text-orange-500 border-orange-500 hover:bg-orange-500' : 'text-green-500 border-green-500 hover:bg-green-500'}`}
-          on:click={showSetAvailabilityModal}>
-          {product.available ? 'Désactiver' : 'Activer'}
-        </button>
-        <button
           class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
           on:click={showDeleteModal}>
           Supprimer

@@ -52,6 +52,7 @@
   let company = {
     name: null,
     openForNewBusiness: true,
+    notSubjectToVat: false,
     address: {
       line1: null,
       line2: null,

@@ -8,6 +8,7 @@
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import Cleave from "cleave.js";
   import "cleave.js/dist/addons/cleave-phone.fr";
+  import InputCheckbox from "./../../../components/controls/InputCheckbox.svelte";
   
   export let company, vat, isStore = false, stepper = 1, errorsHandler = null, invalidSiret = false;
 
@@ -187,7 +188,17 @@
           <label for="country">Pays *</label>
           <CountrySelect bind:selectedValue={company.legals.address.country} formName={companyForm} name="country" {errorsHandler} />
         </div>
-      </div>  
+        {#if !isStore}
+          <div class="mt-2">
+            <label class="cursor-pointer">
+              <InputCheckbox
+                checked={company.notSubjectToVat}
+                onClick={() => (company.notSubjectToVat = !company.notSubjectToVat)} />
+              Mon entreprise n'est pas assujettie à la TVA
+            </label>
+          </div>
+        {/if}
+      </div> 
     </div>
   </fieldset>
 </form>

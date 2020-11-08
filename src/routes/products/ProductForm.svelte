@@ -15,19 +15,22 @@
 	import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
 	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
 	import TagKind from "./../../enums/TagKind.js";
-	import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
+	import { GET_RETURNABLES, GET_TAGS, GET_PRODUCER_DETAILS } from "./queries.js";
 	import ChangeImage from "./ChangeImage.svelte";
 	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
+  import GetAuthInstance from "../../services/SheaftAuth";
 
 	export let submit, product, isLoading;
 
 	const { open } = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
+	const authInstance = GetAuthInstance();
 
 	let isLoadingTags = false;
 	let isLoadingReturnables = false;
+	let notSubjectToVat = false;
 
 	let selectedCategory = null;
 	let returnables = [];
@@ -45,7 +48,7 @@
 				validators: ["required", "min:0.01"],
 				enabled: true,
 			},
-			vat: { value: product.vat, validators: ["required"], enabled: true },
+			vat: { value: product.vat, validators: ["required"], enabled: !notSubjectToVat },
 			unit: { value: product.unit, validators: ["required"], enabled: product.conditioning == ConditioningKind.Bulk.Value},
 			conditioning: {
 				value: product.conditioning,
@@ -128,10 +131,24 @@
 
 	onMount(async () => {
 		isLoading = true;
+		await getProducer();
 		await getTags();
 		await getReturnables();
 		isLoading = false;
 	});
+
+	const getProducer = async () => {
+		var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
+			id: authInstance.user.profile.sub
+		});
+
+		if (!res.success) {
+			//TODO
+			return;
+		}
+
+		notSubjectToVat = res.data.notSubjectToVat;
+	}
 
 	const getReturnables = async () => {
 		isLoadingReturnables = true;
@@ -228,8 +245,8 @@
 			</div>
 			<div class="form-control">
 				<div class="flex w-full">
-					<div class="w-full pr-2">
-						<label for="grid-price">Prix HT *</label>
+					<div class="w-full" class:pr-2={!notSubjectToVat}>
+						<label for="grid-price">{notSubjectToVat ? 'Prix *' : 'Prix HT *'}</label>
 						<input
 							bind:value={product.wholeSalePricePerUnit}
 							use:bindClass={{ form: productForm, name: 'wholeSalePricePerUnit' }}
@@ -242,7 +259,7 @@
 							placeholder="ex : 2.49" />
 						<ErrorContainer field={$productForm.fields.wholeSalePricePerUnit} />
 					</div>
-					<div class="w-full">
+					<div class="w-full" class:hidden={notSubjectToVat}>
 						<label for="grid-vat">TVA *</label>
 						<div
 							class="w-full text-lg justify-center button-group"

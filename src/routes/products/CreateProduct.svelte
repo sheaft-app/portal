@@ -2,7 +2,6 @@
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
