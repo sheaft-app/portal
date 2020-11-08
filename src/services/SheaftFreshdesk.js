@@ -23,8 +23,15 @@ export function openHelpModal() {
 	FreshworksWidget("open");
 }
 
-export function createNewTicket() {
-	FreshworksWidget("open", "ticketForm");
+export function createNewTicket(subject, profile, errors) {
+	FreshworksWidget("open", "ticketForm",{
+		subject: subject,
+		custom_fields: {
+		  cf_profile: JSON.stringify(profile),
+		  cf_page: location.hash,
+		  cf_errors: errors ? JSON.stringify(error) : null
+		}
+	  });
 }
 
 export function logoutFreshdesk() {

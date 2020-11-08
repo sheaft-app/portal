@@ -278,8 +278,11 @@ class SheaftGraphQL {
 			for (var i = 0; i < error.graphQLErrors.length; i++) {
 				var graphQlError = error.graphQLErrors[i];
 				var code = null;
+				var identifier = null;
+
 				if (graphQlError.extensions && graphQlError.extensions.code) {
 					code = graphQlError.extensions.code;
+					identifier = graphQlError.extensions.RequestIdentifier;
 				}
 
 				if (!code) code = "Unexpected";
@@ -303,6 +306,8 @@ class SheaftGraphQL {
 				errors.push({
 					code,
 					message,
+					identifier,
+					error
 				});
 			}
 
@@ -313,6 +318,7 @@ class SheaftGraphQL {
 			{
 				code: "Unexpected",
 				message: "Une erreur inattendue est survenue !",
+				error : error
 			},
 		];
 	}

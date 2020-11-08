@@ -20,6 +20,8 @@ class SheaftErrors {
 				custErrors.push({
 					code: error.extensions.code,
 					message: error.extensions[error.extensions.code],
+					identifier: error.extensions.RequestIdentifier,
+					error
 				});
 			} else custErrors.push(error);
 
