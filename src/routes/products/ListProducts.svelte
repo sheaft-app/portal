@@ -86,6 +86,7 @@ faInfo,
 				if (res.success) {
 					toggleMoreActions.set(false);
 					routerInstance.refresh();
+					selectedItems = [];
 				}
 			},
 		});
@@ -106,6 +107,7 @@ faInfo,
 				if (res.success) {
 					toggleMoreActions.set(false);
 					routerInstance.refresh();
+					selectedItems = [];
 				}
 			},
 		});
@@ -117,6 +119,7 @@ faInfo,
 				if (res.success) {
 					toggleMoreActions.set(false);
 					hasPendingJobs = true;
+					selectedItems = [];
 				}
 			},
 		});

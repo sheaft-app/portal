@@ -147,9 +147,9 @@
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.refresh();
-					selectedItems = [];
 					toggleMoreActions.set(false);
 					graphQLInstance.clearApolloCache(GET_ORDERS);
+					selectedItems = [];
 				}
 			},
 		});
