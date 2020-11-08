@@ -154,7 +154,7 @@
             bind:value={company.phone} />
           <ErrorContainer field={$companyForm.fields.phone} />
         </div>
-        <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant commandés auprès de vous peuvent voir votre mail et votre téléphone.</small>
+        <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant commandé auprès de vous peuvent voir votre mail et votre téléphone.</small>
       </div>
       <div class="px-5 py-3 bg-white lg:w-6/12 w-full">
         <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
