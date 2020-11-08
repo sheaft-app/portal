@@ -12,6 +12,7 @@ export const CREATE_DELIVERY = gql`
 				city
 				zipcode
 			}
+			available
 			openingHours {
 				day
 				from
@@ -33,6 +34,7 @@ export const UPDATE_DELIVERY = gql`
 				city
 				zipcode
 			}
+			available
 			openingHours {
 				day
 				from

@@ -33,6 +33,7 @@
         }
       }
     ],
+    available: true,
     lockOrderHoursBeforeDelivery: 0
   };
 
