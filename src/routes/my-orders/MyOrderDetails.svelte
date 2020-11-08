@@ -405,6 +405,7 @@
                 {order.vendor.name}
               </p>
               <p class="text-base mb-2">
+                <span class="text-gray-600">Mail :</span>
                 <a href="mailto:{order.vendor.email}">{order.vendor.email}</a>
               </p>
               <p class="text-base mb-2">

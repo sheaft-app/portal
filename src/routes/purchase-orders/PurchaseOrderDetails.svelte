@@ -391,10 +391,12 @@ faFileExport
                 {order.sender.name}
               </p>
               <p class="text-base mb-2">
+                <span class="text-gray-600">Mail :</span>
                 <a href="mailto:{order.sender.email}">{order.sender.email}</a>
               </p>
               <p class="text-base mb-2">
                 {#if order.sender.phone}
+                  <span class="text-gray-600">Tél :</span>
                   <a href="tel:{order.sender.phone}">{order.sender.phone}</a>
                 {/if}
               </p>
