@@ -111,7 +111,7 @@
             checked={acceptMangoCgv}
             onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
           Je reconnais avoir lu et compris
-          <a href="https://www.mangopay.com/terms/end-user-terms-and-conditions/Mangopay_Terms-FR.pdf" target="_blank">
+          <a href="https://content.sheaft.com/resources/legals/Mangopay_Terms-FR.pdf" target="_blank">
             les conditions générales d'utilisation de services de paiement de MangoPay,
           </a>
           notre tiers de paiement, et je les accepte
