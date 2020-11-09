@@ -16,6 +16,7 @@
 
   const companyForm = form(() => ({
     name: { value: company.name, validators: ['required'], enabled: true },
+    vat: { value: vat, validators: ['required'], enabled: !company.notSubjectToVat },
     kind: { value: company.legals.kind, validators: ['required'], enabled: true },
     email: { value: company.legals.email, validators: ['required', 'email'], enabled: true },
     line1: { value: company.legals.address.line1, validators: ['required'], enabled: true },
@@ -112,30 +113,33 @@
           </div>
         </div>
         <ErrorContainer field={$companyForm.fields.kind} />
-        <div class="w-full form-control">
-          <label for="vat">N° de TVA</label>
-          <div class="flex flex-wrap">
-            <input
-              id="vat"
-              type="text"
-              disabled={true}
-              value="FR"
-              class="w-3/12 disabled" />
-            <input
-              id="vat"
-              type="text"
-              maxlength="2"
-              minlength="2"
-              bind:value={vat}
-              class="w-3/12" />
-            <input
-              id="vat-siret"
-              type="text"
-              disabled={true}
-              value={company.legals.siret ? company.legals.siret.toString().substring(0, 9).toUpperCase() : 0}
-              class="w-6/12 disabled" />
+        {#if !company.notSubjectToVat}
+          <div class="w-full form-control">
+            <label for="vat">N° de TVA *</label>
+            <div class="flex flex-wrap" use:bindClass={{ form: companyForm, name: "vat" }}>
+              <input
+                id="vat"
+                type="text"
+                disabled={true}
+                value="FR"
+                class="w-3/12 disabled" />
+              <input
+                id="vat"
+                type="text"
+                maxlength="2"
+                minlength="2"
+                bind:value={vat}
+                class="w-3/12" />
+              <input
+                id="vat-siret"
+                type="text"
+                disabled={true}
+                value={company.legals.siret ? company.legals.siret.toString().substring(0, 9).toUpperCase() : 0}
+                class="w-6/12 disabled" />
+            </div>
+            <ErrorContainer field={$companyForm.fields.vat} />
           </div>
-        </div>
+        {/if}
         <div class="w-full form-control">
           <label for="company_email">Email de contact *</label>
           <input

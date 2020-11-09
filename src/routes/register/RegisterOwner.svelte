@@ -18,6 +18,7 @@
   import FormCompany from "./owner/FormCompany.svelte";
   import FormBusinessHours from "./owner/FormBusinessHours.svelte";
   import FormProductionSite from "./owner/FormProductionSite.svelte";
+	import formatISO from "date-fns/formatISO";
 
   export let params = {};
 
@@ -95,7 +96,7 @@
   };
 
   const handleSubmit = async () => {
-    if (vat) {
+    if (vat && !company.notSubjectToVat) {
       company.legals.vatIdentifier = "FR" + vat + company.legals.siret.toString().substring(0, 9);
     }
 
@@ -135,7 +136,9 @@
           },
           countryOfResidence: company.legals.owner.address.country.code,
           nationality: company.legals.owner.nationality.code,
-          birthDate: new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+          birthDate: formatISO(
+            new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
+          )
         }
       }
     }, errorsHandler.Uuid);
