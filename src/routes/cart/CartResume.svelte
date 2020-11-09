@@ -84,6 +84,10 @@
 
     hasFetchedOrder = true;
 
+    if ($cartItems.length == 0) {
+      return;
+    }
+
     await getProducerDeliveries();
     await saveOrder();
 
