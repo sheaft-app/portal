@@ -91,10 +91,7 @@
 
   window.addEventListener("beforeinstallprompt", e => {});
 
-  window.addEventListener("appinstalled", evt => {
-    notificationInstance.info(
-      "L'application a été installée sur votre apppareil avec succès !"
-    );
+  window.addEventListener("appinstalled", evt => {    
     //TODO: register user points
   });
 
@@ -133,7 +130,6 @@
     authInstance.unregister();
     routerInstance.unregister();
     guardInstance.unregister();
-    notificationInstance.unregister();
     await signalrInstance.stop();
   });
 </script>
