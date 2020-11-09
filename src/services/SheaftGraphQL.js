@@ -115,21 +115,31 @@ class SheaftGraphQL {
 
 	clearApolloCache(typename) {
 		if (!typename) return;
-
-		var type = this.findDataType(typename)[0];
-		if (!type) return;
-
 		if (!client.cache.data.data.ROOT_QUERY) return;
 
 		var cacheUpdated = false;
-		var props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
-		for (var i = 0; i < props.length; i++) {
-			if (props[i] == type || props[i].indexOf(type + "(") > -1) {
-				var queries = Object.getOwnPropertyNames(client.cache.data.data);
-				for (var j = 0; j < queries.length; j++) {
-					if (queries[j].indexOf("$ROOT_QUERY." + props[i]) > -1) {
-						client.cache.data.delete(queries[j]);
-						cacheUpdated = true;
+		const props = Object.getOwnPropertyNames(client.cache.data.data.ROOT_QUERY);
+		const queries = Object.getOwnPropertyNames(client.cache.data.data);
+
+		// on a passé un id, traitement spécifique
+		if (typeof typename == "string") {
+			const query = queries.find((q) => q == typename);
+			if (query) {
+				client.cache.data.delete(query);
+				cacheUpdated = true;
+			}
+		} else {
+			var type = this.findDataType(typename)[0];
+
+			if (!type) return;
+
+			for (var i = 0; i < props.length; i++) {
+				if (props[i] == type || props[i].indexOf(type + "(") > -1) {
+					for (var j = 0; j < queries.length; j++) {
+						if (queries[j].indexOf("$ROOT_QUERY." + props[i]) > -1) {
+							client.cache.data.delete(queries[j]);
+							cacheUpdated = true;
+						}
 					}
 				}
 			}

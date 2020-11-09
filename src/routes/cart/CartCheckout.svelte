@@ -170,6 +170,8 @@
 		legalId = res.data.id;
 		isSavingLegals = false;
 		++step;
+
+		graphQLInstance.clearApolloCache(res.data.id);
 	};
 </script>
 
