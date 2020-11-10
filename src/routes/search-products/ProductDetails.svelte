@@ -254,9 +254,11 @@
         <p class="lg:text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"} : {formatMoney(product.onSalePrice)})</p>
       {/if}
       {#if product.description}
-        <p class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
-          {product.description}
-        </p>
+        <div class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
+          {#each product.description.match(/[^\n]+/gm) as line}
+            <p>{line}</p>
+          {/each}
+        </div>
       {/if}
     </div>
     {#if product.returnable}
