@@ -195,7 +195,7 @@
         <div class="flex mt-2 lg:mt-0 items-center justify-between">
           <div
             class="text-base lg:text-lg w-3/12 lg:w-full font-semibold lg:hidden">
-            {formatMoney(product.onSalePrice)}
+            {formatMoney(product.onSalePricePerUnit)}
             <div class="text-xxs">{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</div>
           </div>
           {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
