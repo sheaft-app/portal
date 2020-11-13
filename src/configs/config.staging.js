@@ -8,7 +8,7 @@ export const config = {
 		settings: {
 			client_id: "37f6e39f-5b99-4943-b906-a033bdf2f1bb",
 			redirect_uri: "https://dev.app.sheaft.com/#/callback",
-			post_logout_redirect_uri: "https://rd.app.sheaft.com",
+			post_logout_redirect_uri: "https://dev.app.sheaft.com",
 			response_type: "code",
 			scope: "openid profile email crud role offline_access",
 			authority: "https://sheaft-identity-rd.azurewebsites.net",
