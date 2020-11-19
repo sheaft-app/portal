@@ -3,6 +3,7 @@ export const config = {
 	front: "http://localhost:4200",
 	api: "http://localhost:5002",
 	signalr: "http://localhost:5009",
+	content: "http://localhost:10000/devstoreaccount1",
 	auth: {
 		url: "http://localhost:5000",
 		settings: {

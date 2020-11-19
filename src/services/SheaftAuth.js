@@ -65,8 +65,9 @@ class SheaftAuth {
 			var content = await result.json();
 			if (content.data.me && content.data.me.id) {
 				this.setAuthStatus(user, true, true, true, true);
-			} else if (content.errors && content.errors.length > 0) {
-				throw content.errors;
+			} else if (content.errors && content.errors.length > 0) {	
+				console.error('An error occurred while retrieving user infos', content.errors);
+				this.refreshPageAsUnauthorized(user);
 			} else {
 				this.setAuthStatus(user, true, true, false, true);
 			}
@@ -77,11 +78,15 @@ class SheaftAuth {
 				return await this.login();
 			}	
 
-			this.setAuthStatus(user, false, false, false, true);			
-			if(location.hash != '/'){
-				location.hash = "/";
-				location.reload();
-			}
+			this.refreshPageAsUnauthorized(user);
+		}
+	}
+
+	refreshPageAsUnauthorized(user){	
+		this.setAuthStatus(user, false, false, false, true);			
+		if(location.hash.indexOf('/callback') > -1){
+			location.hash = "/";
+			location.reload();
 		}
 	}
 
@@ -150,6 +155,7 @@ class SheaftAuth {
 		try {
 			return await this.userManager.signinCallback();
 		} catch (exc) {
+			await this.userManager.removeUser();
 			location.hash = "";
 			location.reload();
 		}
@@ -159,8 +165,6 @@ class SheaftAuth {
 		try {
 			return await this.userManager.signinSilentCallback();
 		} catch (exc) {
-			location.hash = "";
-			location.reload();
 		}
 	}
 

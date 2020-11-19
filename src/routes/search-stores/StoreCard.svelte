@@ -4,6 +4,7 @@
   import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
+import { config } from "../../configs/config";
 
   export let store, hoveredStore = null, businessLocation = null;
 
@@ -94,7 +95,7 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 20px; right: 15px;" class="absolute">
           {#if store.tags && store.tags.find(c => c.name == 'bio') != null}
-            <img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Bio" class="mb-3" />
+            <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-3" />
           {/if}
         </div>
         <div class="pr-8">

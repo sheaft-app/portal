@@ -5,6 +5,7 @@
   import Loader from "./../../../components/Loader.svelte";
   import Icon from "svelte-awesome";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { config } from "../../../configs/config";
 
   export let company, stepper = 4, isStore, submit = () => {};
 
@@ -111,7 +112,7 @@
             checked={acceptMangoCgv}
             onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
           Je reconnais avoir lu et compris
-          <a href="https://content.sheaft.com/resources/legals/Mangopay_Terms-FR.pdf" target="_blank">
+          <a href="{config.content + '/resources/legals/Mangopay_Terms-FR.pdf'}" target="_blank">
             les conditions générales d'utilisation de services de paiement de MangoPay,
           </a>
           notre tiers de paiement, et je les accepte

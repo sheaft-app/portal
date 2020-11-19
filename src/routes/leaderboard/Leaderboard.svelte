@@ -12,6 +12,7 @@
     USER_POINTS_PER_COUNTRY,
     USER_POSITION_IN_COUNTRY
   } from "./queries.js";
+import { config } from "../../configs/config";
 
   export let params;
 
@@ -77,7 +78,7 @@
 
   const getUserPicture = (user) => {
     if (user.picture) return user.picture;
-    return "https://content.sheaft.com/pictures/users/profile.svg";
+    return config.content + "/pictures/users/profile.svg";
   }
 
   const getUserName = (user) => {

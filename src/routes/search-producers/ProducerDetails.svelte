@@ -21,6 +21,7 @@
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import AgreementRoutes from "../agreements/routes";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+import { config } from "../../configs/config";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
@@ -230,7 +231,7 @@
         <p class="text-xl lg:text-3xl font-semibold">{producer.name}</p>
         {#if producer.tags && producer.tags && producer.tags.length > 0 && producer.tags.find((t) => t.name === "Bio")}
           <div class="text-center ml-3">
-            <img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
+            <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
           </div>
         {/if}
       </div>

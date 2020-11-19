@@ -3,6 +3,7 @@ export const config = {
 	front: "http://localhost:4200",
 	api: "https://sheaft-api-rd.azurewebsites.net",
 	signalr: "https://sheaft-signalr-rd.azurewebsites.net",
+	content: "https://rd.content.sheaft.com",
 	auth: {
 		url: "https://sheaft-identity-rd.azurewebsites.net",
 		settings: {

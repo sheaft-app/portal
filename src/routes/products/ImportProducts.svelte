@@ -96,7 +96,7 @@
     <ul class="list-decimal">
       <li>
         Téléchargez le modèle de catalogue
-        <a href="https://content.sheaft.com/resources/excel/sheaft_catalogue_produits.xlsx"> en cliquant ici</a>.
+        <a href="{config.content + '/resources/excel/sheaft_catalogue_produits.xlsx'}"> en cliquant ici</a>.
       </li>
       <li>
         Complétez le fichier Excel téléchargé en veillant à bien respecter les colonnes.

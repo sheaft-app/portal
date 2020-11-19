@@ -9,6 +9,7 @@
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
   import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
+import { config } from "../../configs/config";
 
   const routerInstance = GetRouterInstance();
   export let product, hoveredProduct = null;
@@ -132,7 +133,7 @@
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 30px; right: 15px;" class="absolute">
           {#if product.tags.map(t => t.name).includes('bio')}
-            <img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Bio" class="mb-1" />
+            <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-1" />
           {/if}
           {#if product.isReturnable}
             <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />

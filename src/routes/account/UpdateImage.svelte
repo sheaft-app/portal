@@ -4,10 +4,11 @@
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+import { config } from "../../configs/config";
 
   const errorsHandler = new SheaftErrors();
 
-  export let id, mutation, close, onClose, initialSrc = "https://content.sheaft.com/pictures/users/profile.svg";
+  export let id, mutation, close, onClose, initialSrc = config.content + "/pictures/users/profile.svg";
   var graphQLInstance = GetGraphQLInstance();
   let src = initialSrc;
 

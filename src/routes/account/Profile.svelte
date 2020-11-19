@@ -15,6 +15,7 @@
   import EditConsumer from "./EditConsumer.svelte";
   import EditProducer from "./EditProducer.svelte";
   import EditStore from "./EditStore.svelte";
+  import { config } from "../../configs/config";
 
   const errorsHandler = new SheaftErrors();
   const authInstance = GetAuthInstance();
@@ -65,7 +66,7 @@
     $authUserAccount.profile &&
     $authUserAccount.profile.picture
       ? $authUserAccount.profile.picture
-      : "https://content.sheaft.com/pictures/users/profile.svg";
+      : config.content + "/pictures/users/profile.svg";
 </script>
 
 <svelte:head>

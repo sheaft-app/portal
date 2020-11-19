@@ -41,6 +41,7 @@
   import SellingPointRoutes from "./../../routes/selling-points/routes.js";
   import DeliveryRoutes from "./../../routes/deliveries/routes.js";
   import QuickOrderRoutes from "./../../routes/quick-orders/routes.js";
+import { config } from "../../configs/config";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
@@ -323,7 +324,7 @@
           {$authUserAccount.profile.given_name ? $authUserAccount.profile.given_name : $authUserAccount.profile.name}
         </span>
         <div
-          style="background-image: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : "https://content.sheaft.com/pictures/users/profile.svg"}');"
+          style="background-image: url('{$authUserAccount.profile.picture ? $authUserAccount.profile.picture : config.content + "/pictures/users/profile.svg"}');"
           class="rounded-full bg-white user-photo ml-2 w-5 h-5 lg:w-8 lg:h-8" />
       </button>
     {:else}

@@ -16,6 +16,7 @@
   import ErrorCard from "../../components/ErrorCard.svelte";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
+import { config } from "../../configs/config";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
@@ -220,7 +221,7 @@
                   checked={acceptMangoCgv}
                   onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
                 Je reconnais avoir lu et compris
-                <a href="https://content.sheaft.com/resources/legals/Mangopay_Terms-FR.pdf" target="_blank">
+                <a href="{config.content + '/resources/legals/Mangopay_Terms-FR.pdf'}" target="_blank">
                   les conditions générales d'utilisation de MangoPay,
                 </a>
                 notre tiers de paiement, et je les accepte

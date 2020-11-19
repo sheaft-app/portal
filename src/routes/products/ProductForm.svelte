@@ -21,6 +21,7 @@
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
   import GetAuthInstance from "../../services/SheaftAuth";
+import { config } from "../../configs/config";
 
 	export let submit, product, isLoading;
 
@@ -302,7 +303,7 @@
 					classNames="ml-1"
 					isChecked={isBio}
 					onChange={() => toggleBio()}>
-					<img src="https://content.sheaft.com/pictures/tags/icons/bio.png" alt="Produit bio" class="w-8" />
+					<img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Produit bio" class="w-8" />
 				</Toggle>
 			</div>
 		</div>

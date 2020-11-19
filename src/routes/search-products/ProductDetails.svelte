@@ -25,6 +25,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
   import orderBy from "lodash/orderBy";
+import { config } from "../../configs/config";
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -129,7 +130,7 @@
 
   const getUserPicture = picture => {
     if (picture) return picture;
-    return "https://content.sheaft.com/pictures/users/profile.svg";
+    return config.content + '/pictures/users/profile.svg';
   };
 
   const focus = node => {
@@ -223,7 +224,7 @@
         </div>
       {/if}
       <div
-        style="background-position: center; background-image: url({product.picture ? product.picture : 'https://content.sheaft.com/pictures/tags/images/default.jpg'}); background-size: cover;"
+        style="background-position: center; background-image: url({product.picture ? product.picture : config.content + '/pictures/tags/images/default.jpg'}); background-size: cover;"
         class:opacity-50={product.picture.includes("pictures/tags/images/")}
         class="w-full shadow-md h-40 lg:h-64" />
       <!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
@@ -237,7 +238,7 @@
         {#if product.tags && product.tags.length > 0 && product.tags.find(t => t.name.toLowerCase() === 'bio' && t.kind == TagKind.Label.Value)}
           <div class="text-center ml-3">
             <img
-              src="https://content.sheaft.com/pictures/tags/icons/bio.png"
+              src="{config.content + '/pictures/tags/icons/bio.png'}"
               alt="Bio"
               class="m-auto mb-1"
               style="max-width: 30px;" />

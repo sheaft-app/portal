@@ -114,7 +114,7 @@
       await authInstance.login();
     }
 
-    const progress = await fetch('https://content.sheaft.com/progress/departments.json');
+    const progress = await fetch(config.content + '/progress/departments.json');
     var data = await progress.json();
       
     allDepartmentsProgress.set(data);

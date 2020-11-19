@@ -3,6 +3,7 @@ export const config = {
 	front: "https://app.sheaft.com",
 	api: "https://api.sheaft.com",
 	signalr: "https://signalr.sheaft.com",
+	content: "https://content.sheaft.com",
 	auth: {
 		url: "https://auth.sheaft.com",
 		settings: {

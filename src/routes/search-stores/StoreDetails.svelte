@@ -12,6 +12,7 @@
   import { groupBy, timeSpanToFrenchHour } from "./../../helpers/app";
   import AgreementRoutes from "../agreements/routes";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+import { config } from "../../configs/config.js";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
@@ -176,7 +177,7 @@
         {#if store.tags && store.tags.length > 0 && store.tags.find(t => t.name === 'Bio')}
           <div class="text-center ml-3">
             <img
-              src="https://content.sheaft.com/pictures/tags/icons/bio.png"
+              src="{config.content + '/pictures/tags/icons/bio.png'}"
               alt="Bio"
               class="m-auto mb-1"
               style="max-width: 30px;" />

@@ -12,6 +12,7 @@
   import { GET_PRODUCT_RATINGS } from "./queries.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
+import { config } from "../../configs/config";
 
   export let params = {};
 
@@ -78,7 +79,7 @@
                   <img
                     class="absolute top-0 left-0 w-full h-full bg-cover
                     object-fit object-cover"
-                    src={rating.user.picture ? rating.user.picture : "https://content.sheaft.com/pictures/users/profile.svg"}
+                    src={rating.user.picture ? rating.user.picture : config.content + "/pictures/users/profile.svg"}
                     alt={rating.user.name} />
                   <div
                     class="absolute top-0 left-0 w-full h-full rounded-full
