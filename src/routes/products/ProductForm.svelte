@@ -267,6 +267,14 @@ import { config } from "../../configs/config";
 							class:skeleton-box={isLoading}
 							use:bindClass={{ form: productForm, name: 'vat' }}>
 							<button
+								on:click={() => selectVat(0)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 0}
+								class:skeleton-box={isLoading}>
+								0%
+							</button>
+							<button
 								on:click={() => selectVat(5.5)}
 								type="button"
 								class="text-sm md:text-base"
