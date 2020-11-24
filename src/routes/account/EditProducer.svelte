@@ -2,7 +2,7 @@
 	import { UPDATE_PRODUCER } from "./mutations.js";
 	import { GET_PRODUCER_DETAILS } from "./queries.js";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
-  import CitySearch from "./../../components/search/CitySearch.svelte";
+  	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import ProfileForm from "./ProfileForm.svelte";
@@ -10,6 +10,7 @@
 	export let errorsHandler, userId;
 
 	let producer = {
+		name: null,
 		firstName: null,
 		lastName: null,
 		email: null,
@@ -25,6 +26,7 @@
 	};
 	
 	const producerForm = form(() => ({
+    name: { value: producer.name, validators: ['required'], enabled: true },
     firstName: { value: producer.firstName, validators: ['required'], enabled: true },
     lastName: { value: producer.lastName, validators: ['required'], enabled: true },
 		email: { value: producer.email, validators: ['required', 'email'], enabled: true },
@@ -41,8 +43,18 @@
 	getQuery={GET_PRODUCER_DETAILS}
 	{errorsHandler}
 	{userId}>
-	<h3 class="font-semibold uppercase mb-0 mt-5">{producer.name || "Votre société"}</h3>
-	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
+	<h3 class="font-semibold uppercase mb-0 mt-5">Votre entreprise</h3>
+	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>	
+	<div class="form-control">
+		<div class="w-full md:w-2/2">
+			<label for="grid-line2">Nom commercial *</label>
+			<input
+				bind:value={producer.name}
+				id="grid-line"
+				type="text"
+				placeholder="Nom commercial de votre entreprise" />
+		</div>
+	</div>
 	<input hidden required name="city" bind:value={producer.address.city} />
 	<input
 		hidden

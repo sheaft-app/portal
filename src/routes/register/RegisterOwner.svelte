@@ -67,6 +67,7 @@
     picture: authInstance.user.profile.picture || null,
     sponsoringCode: sponsorshipCode || null,
     legals: {
+      name: null,
       vatIdentifier: null,
       siret: null,
       kind: null,

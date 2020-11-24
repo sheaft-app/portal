@@ -12,6 +12,7 @@
 	export let errorsHandler, userId;
 
 	let store = {
+		name: null,
 		firstName: null,
 		lastName: null,
 		email: null,
@@ -29,6 +30,7 @@
 	};
 	
 	const storeForm = form(() => ({
+    name: { value: producer.name, validators: ['required'], enabled: true },
     firstName: { value: store.firstName, validators: ['required'], enabled: true },
     lastName: { value: store.lastName, validators: ['required'], enabled: true },
     email: { value: store.email, validators: ['required', 'email'], enabled: true },
@@ -46,8 +48,18 @@
 	getQuery={GET_STORE_DETAILS}
 	{errorsHandler}
 	{userId}>
-	<h3 class="font-semibold uppercase mb-0 mt-5">{store.name || "Votre société"}</h3>
+	<h3 class="font-semibold uppercase mb-0 mt-5">Votre magasin</h3>
 	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
+	<div class="form-control">
+		<div class="w-full md:w-2/2">
+			<label for="grid-line2">Nom commercial *</label>
+			<input
+				bind:value={store.name}
+				id="grid-line"
+				type="text"
+				placeholder="Nom commercial de votre magasin" />
+		</div>
+	</div>
 	<input hidden required name="city" bind:value={store.address.city} />
 	<input
 		hidden

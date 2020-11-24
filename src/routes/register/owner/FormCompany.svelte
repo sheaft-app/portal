@@ -17,6 +17,7 @@
   const companyForm = form(() => ({
     name: { value: company.name, validators: ['required'], enabled: true },
     vat: { value: vat, validators: ['required'], enabled: !company.notSubjectToVat },
+    legalName: { value: company.legals.name, validators: ['required'], enabled: true },
     kind: { value: company.legals.kind, validators: ['required'], enabled: true },
     email: { value: company.legals.email, validators: ['required', 'email'], enabled: true },
     line1: { value: company.legals.address.line1, validators: ['required'], enabled: true },
@@ -77,18 +78,6 @@
         <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
           <p>Infos générales</p>
         </div>
-        <div class="w-full mb-2 md:mb-0 form-control">
-          <label for="name">
-            Nom {isStore ? 'du magasin' : "de l'entreprise"} *
-          </label>
-          <input
-            id="name"
-            type="text"
-            placeholder="ex : GAEC Fromages du Cantal"
-            use:bindClass={{ form: companyForm, name: "name" }}
-            bind:value={company.name} />
-          <ErrorContainer field={$companyForm.fields.name} />
-        </div>
         <div class="w-full form-control">
           <label for="grid-kind">Forme juridique *</label>
           <div class="w-full text-xs justify-center button-group" use:bindClass={{ form: companyForm, name: "kind" }}>
@@ -112,7 +101,39 @@
             </button>
           </div>
         </div>
-        <ErrorContainer field={$companyForm.fields.kind} />
+        <ErrorContainer field={$companyForm.fields.kind} />  
+        <div class="w-full form-control">
+          <label for="company_legalName">Raison sociale *</label>
+          <input
+            id="company_legalName"
+            type="text"
+            placeholder="ex : G.A.E.C des balmettes"
+            use:bindClass={{ form: companyForm, name: "legalName" }}
+            bind:value={company.legals.name} />
+          <ErrorContainer field={$companyForm.fields.legalName} />
+        </div>
+        <div class="w-full mb-2 md:mb-0 form-control">
+          <label for="name">
+            Nom commercial {isStore ? 'du magasin' : "de l'entreprise"} *
+          </label>
+          <input
+            id="name"
+            type="text"
+            placeholder="ex : La ferme des balmettes"
+            use:bindClass={{ form: companyForm, name: "name" }}
+            bind:value={company.name} />
+          <ErrorContainer field={$companyForm.fields.name} />
+        </div>
+        {#if !isStore}
+          <div class="mt-2 mb-2">
+            <label class="cursor-pointer">
+              <InputCheckbox
+                checked={company.notSubjectToVat}
+                onClick={() => (company.notSubjectToVat = !company.notSubjectToVat)} />
+              Mon entreprise n'est pas assujettie à la TVA
+            </label>
+          </div>
+        {/if}
         {#if !company.notSubjectToVat}
           <div class="w-full form-control">
             <label for="vat">N° de TVA *</label>
@@ -139,7 +160,7 @@
             </div>
             <ErrorContainer field={$companyForm.fields.vat} />
           </div>
-        {/if}
+        {/if}  
         <div class="w-full form-control">
           <label for="company_email">Email de contact *</label>
           <input
@@ -192,16 +213,6 @@
           <label for="country">Pays *</label>
           <CountrySelect bind:selectedValue={company.legals.address.country} formName={companyForm} name="country" {errorsHandler} />
         </div>
-        {#if !isStore}
-          <div class="mt-2">
-            <label class="cursor-pointer">
-              <InputCheckbox
-                checked={company.notSubjectToVat}
-                onClick={() => (company.notSubjectToVat = !company.notSubjectToVat)} />
-              Mon entreprise n'est pas assujettie à la TVA
-            </label>
-          </div>
-        {/if}
       </div> 
     </div>
   </fieldset>
