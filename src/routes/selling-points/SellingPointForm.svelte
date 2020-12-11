@@ -12,6 +12,10 @@
   export let submit, initialValues, isLoading;
   let sellingPoint = initialValues;
   let openings = denormalizeOpeningHours(sellingPoint.openingHours);
+  let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery > 0;
+  $: if(!lockOrders){
+    sellingPoint.lockOrderHoursBeforeDelivery = 0;  
+  };
 
   const selectKind = (kind) => {
      if (!isLoading)
@@ -26,6 +30,10 @@
     if ($sellingPointForm.valid && !isLoading) {
       sellingPoint.openingHours = normalizeOpeningHours(openings);
       delete sellingPoint.address['insee'];
+
+      if(sellingPoint.lockOrderHoursBeforeDelivery < 0 || !lockOrders)
+        sellingPoint.lockOrderHoursBeforeDelivery = 0;
+
       submit();
     }
   }
@@ -103,13 +111,33 @@
   </div>
   <div class="form-control" style="display: block;">
     <label>Bloquer les commandes</label>
-    <Toggle disabled={isLoading} classNames="ml-1" bind:isChecked={sellingPoint.lockOrderHoursBeforeDelivery}>
+    <Toggle disabled={isLoading} classNames="ml-1" bind:isChecked={lockOrders}>
       <div class="ml-2">
           <input type="number" style="width: 70px; display: inline-block;" bind:value={sellingPoint.lockOrderHoursBeforeDelivery}>
           <span class="ml-1">heures avant le début de la vente</span>
       </div>
     </Toggle>
   </div>
+  <h3 class="uppercase font-bold mt-4">Automatisations</h3>
+  <small>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le consommateur (par exemple, du lait frais, ou si vous avez un stock conséquent)</small>
+	<div class="form-control mt-3" style="display: block;">
+		<label>Accepter automatiquement les nouvelles commandes</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			bind:isChecked={sellingPoint.autoAcceptRelatedPurchaseOrder}>
+		</Toggle>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Marquer automatiquement les commandes acceptées comme terminées</label>
+		<Toggle
+			labelPosition="left"
+			disabled={isLoading}
+			classNames="ml-1"
+			bind:isChecked={sellingPoint.autoCompleteRelatedPurchaseOrder}>
+		</Toggle>
+	</div>
   <p class="text-sm mt-5">* champs requis</p>
   <div class="form-control mt-5">
     <button

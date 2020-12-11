@@ -17,6 +17,8 @@ export const GET_SELLING_POINTS = gql`
 				name
 				kind
 				available
+				autoAcceptRelatedPurchaseOrder
+				autoCompleteRelatedPurchaseOrder
 				lockOrderHoursBeforeDelivery
 				openingHours {
 					day
@@ -38,8 +40,10 @@ export const GET_SELLING_POINT_DETAILS = gql`
 		delivery(input: $id) {
 			id
 			name
-			available
 			kind
+			available
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
 			openingHours {
 				day

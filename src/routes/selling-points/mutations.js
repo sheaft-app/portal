@@ -7,6 +7,8 @@ export const CREATE_SELLING_POINT = gql`
 			name
 			kind
 			available
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
 			openingHours {
 				day
@@ -27,8 +29,10 @@ export const UPDATE_SELLING_POINT = gql`
 		updateDeliveryMode(input: $input) {
 			id
 			name
-			available
 			kind
+			available
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
 			openingHours {
 				day

@@ -23,6 +23,8 @@ import { GET_SELLING_POINTS } from "./queries";
     name: "",
     kind: "",
     address: null,
+    autoAcceptRelatedPurchaseOrder: false,
+    autoCompleteRelatedPurchaseOrder: false,
     openingHours: [
       {
         id: 0,
