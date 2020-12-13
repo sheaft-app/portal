@@ -105,7 +105,7 @@ export const removeKeys = (obj, keys) => {
 }
 
 export const encodeQuerySearchUrl = address => {
-	return address ? encodeURI(`${address.line1} ${address.line2 ? address.line2 : ""} ${address.zipcode}`) : '';
+	return address ? encodeURI(`${address.latitude}+${address.longitude}`) : '';
 };
 
 export const freezeBody = () => {
