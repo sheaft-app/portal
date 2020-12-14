@@ -17,6 +17,7 @@ export const GET_SELLING_POINTS = gql`
 				name
 				kind
 				available
+				maxPurchaseOrdersPerTimeSlot
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
 				lockOrderHoursBeforeDelivery
@@ -42,6 +43,7 @@ export const GET_SELLING_POINT_DETAILS = gql`
 			name
 			kind
 			available
+			maxPurchaseOrdersPerTimeSlot
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery

@@ -23,6 +23,7 @@ import { GET_SELLING_POINTS } from "./queries";
     name: "",
     kind: "",
     address: null,
+    maxPurchaseOrdersPerTimeSlot: null,
     autoAcceptRelatedPurchaseOrder: false,
     autoCompleteRelatedPurchaseOrder: false,
     openingHours: [
@@ -33,7 +34,7 @@ import { GET_SELLING_POINTS } from "./queries";
         to: null
       }
     ],
-    lockOrderHoursBeforeDelivery: 0
+    lockOrderHoursBeforeDelivery: null
   };
 
   const handleSubmit = async () => {
