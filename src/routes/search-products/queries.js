@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const SEARCH_PRODUCTS = gql`
-	query SearchProducts($input: SearchTermsInput!) {
+	query SearchProducts($input: SearchProductsInput!) {
 		searchProducts(input: $input) {
 			count
 			products {
