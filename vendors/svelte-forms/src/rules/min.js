@@ -1,6 +1,6 @@
 export function min(val, args) {
   const minValue = parseFloat(args[0]);
-  const value = isNaN(val) ? val.length : parseFloat(val);
+  const value = val != null ? parseFloat(val) : null;
 
-  return value >= minValue;
+  return !isNaN(value) ? value >= minValue : true;
 }
