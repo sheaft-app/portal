@@ -1,23 +1,18 @@
 <script>
-  import format from "date-fns/format";
-  import setHours from "date-fns/setHours";
-  import { fr } from "date-fns/locale";
   import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
   import { faCheck } from "@fortawesome/free-solid-svg-icons";
-  import { onMount } from "svelte";
-  import { getClient, query, mutate } from "svelte-apollo";
-  import { push } from "svelte-spa-router";
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import { EXPORT_PICKING_FROM_ORDERS } from "./mutations.js";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import SheaftErrors from "./../../services/SheaftErrors";
 
   const errorsHandler = new SheaftErrors();
 
   export let onClose, close, purchaseOrders;
-  const client = getClient();
   const notificationsInstance = GetNotificationsInstance();
+	const graphQLInstance = GetGraphQLInstance();
 
   let date = new Date(),
     moment = null,
@@ -67,7 +62,7 @@
       }
     };
 
-    var result = await mutate(client, mutation);
+    var result = await graphQLInstance.mutate(mutation, errorsHandler.Uuid);
     if (
       result &&
       result.data &&

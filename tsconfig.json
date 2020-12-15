@@ -1,18 +1,7 @@
 {
+    "rootDir": "src",
     "compileOnSave": true,
-    "compilerOptions": {
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "lib": [ "es6", "es5", "dom" ],
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "noEmitOnError": true,
-      "noImplicitAny": false,
-      "target": "es6"
-    },
-    "exclude": [
-      "public/*",
-      "node_modules/*"
-    ],
-    "include":["src/**/*.ts"],
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "include": ["src/**/*", "src/node_modules"],
+    "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   }

@@ -9,9 +9,9 @@ import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
 import { generateSW } from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
-import alias from 'rollup-plugin-alias';
+import alias from "rollup-plugin-alias";
+import define from 'rollup-plugin-define';
 
-const path = require('path');
 const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
 
@@ -23,7 +23,7 @@ export default {
 			dir: `${buildDir}`,
 			format: "es",
 			sourcemap: !production,
-			compact: production
+			compact: production,
 		},
 		// {
 		// 	name: "nomodule",
@@ -40,30 +40,36 @@ export default {
 	},
 	plugins: [
 		alias({
-			forms: __dirname + 'vendors/svelte-forms',
+			forms: __dirname + "vendors/svelte-forms",
 		}),
 		del({
 			targets: "public/dist/*",
 			runOnce: true,
 		}),
+		define({
+			replacements: {
+			  'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
+			  __buildDate__: () => JSON.stringify(new Date()),
+			}
+		  }),
+		// typescript({
+		// 	removeComments: production,
+		// 	sourceMap: !production,
+		// }),
 		svelte({
 			dev: !production,
 			emitCss: true,
 			preprocess: autoPreprocess({
 				postcss: {
-          plugins: [
-             require("tailwindcss"), 
-             require("autoprefixer"),
-             require("postcss-nesting")
-          ],
+					plugins: [
+						require("tailwindcss"),
+						require("autoprefixer"),
+						require("postcss-nesting"),
+					],
 				},
-				scss: true
+				scss: true,
 			}),
 		}),
-		// typescript({
-		// 	removeComments: production,
-		// 	sourceMap: !production,
-		// }),
 		svelteSVG(),
 		postcss(),
 		babel({
@@ -162,10 +168,7 @@ export default {
 				},
 				{
 					handler: "CacheFirst",
-					urlPattern: new RegExp(
-						"^https://app.sheaft.com/assets/.*",
-						"iyg"
-					),
+					urlPattern: new RegExp("^https://app.sheaft.com/assets/.*", "iyg"),
 					options: {
 						cacheName: "sheaftassets-cache",
 						cacheableResponse: {
@@ -175,10 +178,7 @@ export default {
 				},
 				{
 					handler: "CacheFirst",
-					urlPattern: new RegExp(
-						"^https://app.sheaft.com/img/.*",
-						"iyg"
-					),
+					urlPattern: new RegExp("^https://app.sheaft.com/img/.*", "iyg"),
 					options: {
 						cacheName: "sheaftimg-cache",
 						cacheableResponse: {
@@ -266,7 +266,7 @@ export default {
 		}),
 		!production &&
 			livereload({
-				watch: "public",
+				watch: "public/dist",
 			}),
 		production &&
 			terser({
