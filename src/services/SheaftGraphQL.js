@@ -288,14 +288,19 @@ class SheaftGraphQL {
 			for (var i = 0; i < error.graphQLErrors.length; i++) {
 				var graphQlError = error.graphQLErrors[i];
 				var code = null;
+				var status = null;
 				var identifier = null;
 
 				if (graphQlError.extensions && graphQlError.extensions.code) {
 					code = graphQlError.extensions.code;
 					identifier = graphQlError.extensions.RequestIdentifier;
+					status = parseInt(graphQlError.extensions.StatusCode);
 				}
 
-				if (!code) code = "Unexpected";
+				if (!code) {
+					code = "Unexpected";
+					status = 500;
+				}
 
 				var message = null;
 
@@ -312,6 +317,7 @@ class SheaftGraphQL {
 
 				errors.push({
 					code,
+					status,
 					message,
 					identifier,
 					error

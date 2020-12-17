@@ -7,13 +7,18 @@
 	import { authAuthenticated, authUserAccount } from "../stores/auth";
 
 	export let errorsHandler = null, displayIcon = true, classes = null, componentErrors = [], retry = false;
-
+	let bgColor = "bg-red-500";
 	const getErrors = () => {
 		if (!errorsHandler) {
 			return;//console.error("Prop errorsHandler cannot be null.");
 		}
 
 		componentErrors = errorsHandler.getErrors();
+		
+		if(componentErrors.filter(e => e.code == "BadRequest" || e.code == "Unexpected").length > 0)
+			bgColor = "bg-red-500";
+		else
+			bgColor = "bg-orange-500";
 	}
 
 	const refresh = () => {
@@ -39,7 +44,7 @@
 </script>
 
 {#if componentErrors.length >= 1}
-	<div use:scrollTo class="mb-10 p-4 text-white bg-red-500 lg:flex flex-row {classes}" in:slide>
+	<div use:scrollTo class="mb-10 p-4 {bgColor} text-white lg:flex flex-row {classes}" in:slide>
 		{#if displayIcon}
 			<div class="hidden lg:block">
 				<Icon data={faExclamationTriangle} class="lg:mr-2 lg:mt-2 lg:mb-0 mb-2" />
@@ -60,7 +65,7 @@
 					</p>
 				{/if}
 				{#if retry}
-					<button class="btn btn-lg btn-white m-auto lg:m-0" on:click={refresh}>Réessayer</button>
+					<button class="btn btn-lg btn-white m-auto lg:m-0" on:click={refresh}>Recharger la page</button>
 				{/if}
 		</div>
 	</div>
