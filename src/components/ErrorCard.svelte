@@ -15,7 +15,7 @@
 
 		componentErrors = errorsHandler.getErrors();
 		
-		if(componentErrors.filter(e => e.code == "BadRequest" || e.code == "Unexpected").length > 0)
+		if(componentErrors.filter(e => e.code == "BadRequest" || e.code == "Unexpected" || e.code == "EXEC_INVALID_TYPE").length > 0)
 			bgColor = "bg-red-500";
 		else
 			bgColor = "bg-orange-500";
