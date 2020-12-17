@@ -200,6 +200,7 @@ import { config } from "../../configs/config";
 			onClose: (res) => {
 				if (res.success) {
 					product.picture = res.data;
+					product.originalPicture = res.original;
 				}
 			},
 		});

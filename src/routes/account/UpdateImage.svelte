@@ -19,14 +19,22 @@ import { config } from "../../configs/config";
   let showResult = true;
   $: valid = initialSrc !== src;
   let isLoading = false;
+  let originalPicture = null;
+   
+  let reader = new FileReader();
+  reader.onloadend = function() {
+    originalPicture = reader.result;  
+  }
 
   function loadFile(e) {
-    src = URL.createObjectURL(e.target.files[0]);
+    var file = e.target.files[0];
+    src = URL.createObjectURL(file);
+    reader.readAsDataURL(file); 
   }
 
   const handleSubmit = async () => {
     isLoading = true;
-    var res = await graphQLInstance.mutate(mutation, { id: id, picture: url });
+    var res = await graphQLInstance.mutate(mutation, { id: id, picture: url, originalPicture: originalPicture });
     isLoading = false;
 
     if (!res.success) {

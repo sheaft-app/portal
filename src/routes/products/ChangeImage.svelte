@@ -17,13 +17,21 @@
   let realTime = false;
   let showResult = true;
   $: valid = initialSrc !== src;
+  let originalPicture = null;
+   
+   let reader = new FileReader();
+   reader.onload = function() {
+     originalPicture = reader.result;  
+   }
 
   function loadFile(e) {
-    src = URL.createObjectURL(e.target.files[0]);
+    var file = e.target.files[0];
+    src = URL.createObjectURL(file);
+    reader.readAsDataURL(file); 
   }
 
   const handleSubmit = async () => {    
-    await handleClose({success:true, data:url});
+    await handleClose({success:true, data:url, original: originalPicture});
   };
 
   const handleClose = async(res) => {

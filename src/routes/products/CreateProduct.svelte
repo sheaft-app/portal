@@ -52,6 +52,7 @@
       conditioning: product.conditioning,
       reference: product.reference,
       picture: product.picture ? product.picture : null,
+      originalPicture: product.originalPicture ? product.originalPicture : null,
       tags: product.tags.map(i => i.id),
       vat: product.vat,
       available: product.available,
