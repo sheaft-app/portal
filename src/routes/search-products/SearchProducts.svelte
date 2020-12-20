@@ -141,7 +141,7 @@
 			}
 		}
 
-		if (values["producerId"] && values["producerId"] <= 0){
+		if (values["producerId"] && values["producerId"] <= 0) {
 			values["producerId"] = null;
 			producer = null;
 		}
@@ -361,11 +361,21 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
+	let activeFilters = 0;
+	const GetActiveFilters = () => {
+		activeFilters = 0;
+		if ($filters.tags && $filters.tags.length > 0) activeFilters += $filters.tags.length;
+
+		if ($filters.producerId && $filters.producerId.length > 0) activeFilters++;
+	};
+
+	$: GetActiveFilters($filters);
+
 	let currentProducerId = null;
 	const GetProducerFilter = async (producerId) => {
-		if(currentProducerId == producerId) return;
+		if (currentProducerId == producerId) return;
 
-		if (!producerId || producerId.length <= 0){ 
+		if (!producerId || producerId.length <= 0) {
 			producer = null;
 			return;
 		}
@@ -381,7 +391,7 @@
 
 		producer = result.data;
 	};
-	
+
 	$: GetProducerFilter($filters.producerId);
 	$: productsCount = $cartItems.reduce((sum, product) => {
 		return sum + (product.quantity || 0);
@@ -570,16 +580,16 @@
 					<SearchInput containerClasses="ml-2" />
 					<button
 						class="filter-btn bg-white py-2 px-2 rounded shadow-md flex
-							items-center ml-2 {$filters.tags && $filters.tags.length > 0 ? 'flex-nowrap' : 'flex-wrap'}"
-						class:text-white={$filters.tags && $filters.tags.length > 0}
-						class:bg-accent={$filters.tags && $filters.tags.length > 0}
+							items-center ml-2 {activeFilters > 0 ? 'flex-nowrap' : 'flex-wrap'}"
+						class:text-white={activeFilters > 0}
+						class:bg-accent={activeFilters > 0}
 						on:click={showFiltersModal}>
 						<Icon
 							style="width: .8em;"
-							class="lg:mr-1 m-auto lg:m-0 {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+							class="lg:mr-1 m-auto lg:m-0 {activeFilters > 0 ? 'text-white' : 'text-accent'}"
 							data={faFilter} />
-						{#if $filters.tags && $filters.tags.length > 0}
-							<span class="text-white">{$filters.tags.length}</span>
+						{#if activeFilters > 0}
+							<span class="text-white">{activeFilters}</span>
 						{:else}
 							<p style="font-size: .8em;" class="text-center text-accent">
 								Filtres
@@ -604,6 +614,7 @@
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
 								items-center bg-gray-200 cursor-pointer">
 							producteur: '{producer.name}'
+
 							<Icon data={faTimesCircle} scale=".7" class="ml-2" />
 						</span>
 					{/if}
