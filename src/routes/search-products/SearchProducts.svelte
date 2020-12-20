@@ -101,7 +101,7 @@
 	};
 
 	const showFiltersModal = () => {
-		open(FiltersModal, { filters, visibleNav: true });
+		open(FiltersModal, { filters, visibleNav: true, producer });
 	};
 
 	const renderSort = (sort) => {
@@ -141,8 +141,10 @@
 			}
 		}
 
-		if (values["producerId"] && values["producerId"] <= 0)
+		if (values["producerId"] && values["producerId"] <= 0){
 			values["producerId"] = null;
+			producer = null;
+		}
 
 		if (values["maxDistance"] && values["maxDistance"].length > 0) {
 			values["maxDistance"] = parseInt(values["maxDistance"]);
@@ -360,8 +362,13 @@
 	});
 
 	let currentProducerId = null;
-	const GetProducerName = async (producerId) => {
-		if (!producerId || producerId.length <= 0 || currentProducerId == producerId) return;
+	const GetProducerFilter = async (producerId) => {
+		if(currentProducerId == producerId) return;
+
+		if (!producerId || producerId.length <= 0){ 
+			producer = null;
+			return;
+		}
 
 		currentProducerId = producerId;
 		var result = await graphQLInstance.query(
@@ -375,7 +382,7 @@
 		producer = result.data;
 	};
 	
-	$: GetProducerName($filters.producerId);
+	$: GetProducerFilter($filters.producerId);
 	$: productsCount = $cartItems.reduce((sum, product) => {
 		return sum + (product.quantity || 0);
 	}, 0);
@@ -595,7 +602,7 @@
 							on:click={() => clearProducer()}
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-								items-center bg-gray-200">
+								items-center bg-gray-200 cursor-pointer">
 							producteur: '{producer.name}'
 							<Icon data={faTimesCircle} scale=".7" class="ml-2" />
 						</span>

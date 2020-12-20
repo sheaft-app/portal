@@ -124,3 +124,16 @@ export const GET_PRODUCER_NAME = gql`
 		}
 	}
 `;
+
+export const SUGGEST_PRODUCER = gql`
+	query SuggestProducer($input: SearchTermsInput!) {
+		suggestProducers(input: $input) {
+			id
+			name
+			address{
+				zipcode
+				city
+			}
+		}
+	}
+`;
