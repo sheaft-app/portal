@@ -2,7 +2,7 @@
 	import { querystring } from "svelte-spa-router";
 	import { onMount, onDestroy, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import { SEARCH_PRODUCTS } from "./queries.js";
+	import { SEARCH_PRODUCTS, GET_PRODUCER_NAME } from "./queries.js";
 	import { isLoading, isFetchingMore, filters } from "./store";
 	import ProductMap from "./../../components/ProductMap.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
@@ -23,7 +23,11 @@
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import Icon from "svelte-awesome";
-	import { faFilter, faTimesCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+	import {
+		faFilter,
+		faTimesCircle,
+		faCircleNotch,
+	} from "@fortawesome/free-solid-svg-icons";
 	import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 	import {
 		freezeBody,
@@ -53,6 +57,7 @@
 	let departmentProgress = null;
 	let totalProducts = 0;
 	let isLoadingCitySearch = false;
+	let producer = null;
 	const QUERY_SIZE = 25;
 
 	let defaultSearchValues = {
@@ -62,6 +67,15 @@
 		latitude: null,
 		longitude: null,
 		maxDistance: null,
+		producerId: null,
+	};
+
+	const clearProducer = () => {
+		producer = null;
+		currentProducerId = null;
+		$filters.producerId = null;
+
+		routerInstance.pushQueryParams({ ["producerId"]: null });
 	};
 
 	const observer = new IntersectionObserver(async (entries) => {
@@ -127,16 +141,19 @@
 			}
 		}
 
-		if (values["maxDistance"]) {
+		if (values["producerId"] && values["producerId"] <= 0)
+			values["producerId"] = null;
+
+		if (values["maxDistance"] && values["maxDistance"].length > 0) {
 			values["maxDistance"] = parseInt(values["maxDistance"]);
 		}
 
-		if (values["category"]) {
+		if (values["category"] && values["category"].length > 0) {
 			values["category"] = values["category"];
 			tags = [...tags, values["category"]];
 		}
 
-		if (values["labels"]) {
+		if (values["labels"] && values["labels"].length > 0) {
 			values["labels"] = values["labels"].split(",");
 			tags = [...tags, ...values["labels"]];
 		}
@@ -156,6 +173,7 @@
 				maxDistance: $filters.maxDistance,
 				page: page,
 				take: QUERY_SIZE,
+				producerId: $filters.producerId,
 			},
 		};
 	};
@@ -261,10 +279,10 @@
 		);
 
 		if (department) {
-			return departmentProgress = department;
+			return (departmentProgress = department);
 		}
 
-		return departmentProgress = null;
+		return (departmentProgress = null);
 	};
 
 	const handleLocation = (location) => {
@@ -297,14 +315,14 @@
 	};
 
 	const goToCart = () => {
-    if (authManager.authenticated) {
-      return routerInstance.goTo(CartRoutes.Resume);
-    }
-    
-    loadToCart = true;
-    return authManager.login(CartRoutes.Resume.Path);
-	}
-	
+		if (authManager.authenticated) {
+			return routerInstance.goTo(CartRoutes.Resume);
+		}
+
+		loadToCart = true;
+		return authManager.login(CartRoutes.Resume.Path);
+	};
+
 	onMount(async () => {
 		var newPosition = retrieveUserLocationInQueryString();
 		if (newPosition) {
@@ -341,9 +359,27 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
+	let currentProducerId = null;
+	const GetProducerName = async (producerId) => {
+		if (!producerId || producerId.length <= 0 || currentProducerId == producerId) return;
+
+		currentProducerId = producerId;
+		var result = await graphQLInstance.query(
+			GET_PRODUCER_NAME,
+			{ id: producerId },
+			errorsHandler.Uuid
+		);
+
+		if (!result.success) return;
+
+		producer = result.data;
+	};
+	
+	$: GetProducerName($filters.producerId);
 	$: productsCount = $cartItems.reduce((sum, product) => {
 		return sum + (product.quantity || 0);
 	}, 0);
+
 	$: total = $cartItems.reduce((sum, product) => {
 		return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
 	}, 0);
@@ -362,7 +398,8 @@
 		<div class="text-lg uppercase">
 			<p class="text-sm text-gray-600">{productsCount} articles</p>
 			<p class="truncate">
-				Total: <span class="font-bold">{formatMoney(total)}</span>
+				Total:
+				<span class="font-bold">{formatMoney(total)}</span>
 			</p>
 		</div>
 		<div class="inline-flex items-center w-2/4 justify-end">
@@ -425,7 +462,9 @@
 								</p>
 								<div class="mt-1 flex flex-wrap">
 									{#if authManager.isInRole([Roles.Store.Value])}
-										<button class="btn btn-accent btn-lg" on:click={() => routerInstance.goTo(QuickOrderRoutes.Purchase)}>
+										<button
+											class="btn btn-accent btn-lg"
+											on:click={() => routerInstance.goTo(QuickOrderRoutes.Purchase)}>
 											Passer une commande
 										</button>
 									{/if}
@@ -472,25 +511,30 @@
 						<div class="flex">
 							<div>
 								<p class="uppercase font-bold leading-none">
-									{departmentProgress.Name}{#if departmentProgress.ProducersCount == 0}, on arrive bientôt !{/if}
+									{departmentProgress.Name}{#if departmentProgress.ProducersCount == 0}
+										, on arrive bientôt !
+									{/if}
 								</p>
 								<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 								<div class="mt-2 text-sm">
 									{#if departmentProgress.ProducersCount == 0}
 										<p class="mb-2">
-											Nous avons trouvé des producteurs dans les départements voisins.
+											Nous avons trouvé des producteurs dans les départements
+											voisins.
 										</p>
 									{:else if departmentProgress.ProducersCount == 1}
 										<p class="mb-2">
 											<span
 												class="font-semibold">{departmentProgress.ProducersCount}
-												producteur</span> est enregistré dans ce département.
+												producteur</span>
+											est enregistré dans ce département.
 										</p>
 									{:else}
 										<p class="mb-2">
 											<span
 												class="font-semibold">{departmentProgress.ProducersCount}
-												producteurs</span> sont enregistrés dans ce département.
+												producteurs</span>
+											sont enregistrés dans ce département.
 										</p>
 									{/if}
 									<p>
@@ -512,7 +556,8 @@
 						<div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />
 					{:else}
 						<p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
-							{totalProducts} résultat{totalProducts > 1 ? 's' : ''}
+							{totalProducts}
+							résultat{totalProducts > 1 ? 's' : ''}
 						</p>
 					{/if}
 					<SearchInput containerClasses="ml-2" />
@@ -541,7 +586,18 @@
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
 								items-center bg-gray-200">
-							tri : {renderSort($filters.sort)}
+							tri :
+							{renderSort($filters.sort)}
+						</span>
+					{/if}
+					{#if producer}
+						<span
+							on:click={() => clearProducer()}
+							style="font-size: .6rem"
+							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+								items-center bg-gray-200">
+							producteur: '{producer.name}'
+							<Icon data={faTimesCircle} scale=".7" class="ml-2" />
 						</span>
 					{/if}
 					{#if $filters.text}

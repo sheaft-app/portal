@@ -20,7 +20,8 @@ const SearchProductRoutes = {
 				sort: "producer_geolocation asc",
 				direction: OrderByDirection.ASC,
 				take: 20,
-				paginate: Paginate.First
+				paginate: Paginate.First,
+				producerId: null
 			}
 		},
 	}

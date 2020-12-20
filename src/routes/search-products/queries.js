@@ -115,3 +115,12 @@ export const GET_PRODUCER_DELIVERIES = gql`
 		}
 	}
 `;
+
+export const GET_PRODUCER_NAME = gql`
+	query GetProducerName($id: ID!) {
+		producerSummary(input: $id) {
+			id
+			name
+		}
+	}
+`;
