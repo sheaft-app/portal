@@ -41,6 +41,8 @@ export const MY_ORDERS = gql`
 							line1
 							zipcode
 							city
+							latitude
+							longitude
 						}
 					}
 					createdOn
@@ -83,6 +85,8 @@ export const GET_MY_ORDER_DETAILS = gql`
 					line1
 					zipcode
 					city
+					latitude
+					longitude
 				}
 			}
 			vendor {
