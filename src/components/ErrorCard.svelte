@@ -53,7 +53,7 @@
 		<div class="text-center lg:text-left" style="word-break: break-word;">
 				<slot />
 				{#each componentErrors as error}
-					<p>{error.message}</p>
+					<p>{@html error.message}</p>
 				{/each}
 				{#if $authAuthenticated}					
 				<p class="mt-2">

@@ -7,6 +7,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { setClient } from "svelte-apollo";
 import gql from "graphql-tag";
 import { removeKeys } from "../helpers/app";
+import {config} from "./../configs/config";
 
 let client = null;
 let errorsHandler = null;
@@ -297,14 +298,18 @@ class SheaftGraphQL {
 					status = parseInt(graphQlError.extensions.StatusCode);
 				}
 
-				if (!code) {
+				var message = null;
+				if((graphQlError.code == "EXEC_INVALID_TYPE" || graphQlError.message.indexOf('Expected type') > -1) && config.production)
+				{
+					code = "EXEC_INVALID_TYPE";
+					message = "Les fichiers de l'application contenus dans le cache de votre navigateur ne correspondent pas à la dernière version, veuillez vider le cache de votre navigateur en suivant l'aide : <a target='_blank' href='https://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur' style='color:white;font-weight:bold;'>Vider mon cache</a>"
+				}
+				else if (!code) {
 					code = "Unexpected";
 					status = 500;
 				}
 
-				var message = null;
-
-				if (
+				if (!message &&
 					graphQlError.extensions &&
 					graphQlError.extensions.hasOwnProperty(code)
 				) {
