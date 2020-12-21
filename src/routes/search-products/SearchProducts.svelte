@@ -496,7 +496,7 @@
 				</div>
 			{/if}
 			<!-- si on ne trouve pas de produits alors qu'il n'y a pas de filtre, on affiche un écran "Nous ne sommes pas encore arrivés !" -->
-			{#if !$isLoading && totalProducts < 1 && (!$filters.tags || ($filters.tags && $filters.tags.length === 0)) && !$filters.text}
+			{#if !$isLoading && totalProducts < 1 && (activeFilters <= 0) && !$filters.text}
 				<div class="text-lg">
 					{#if departmentProgress}
 						<h2 class="mt-5 mb-5 font-semibold">
