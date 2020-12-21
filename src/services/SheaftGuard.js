@@ -22,6 +22,7 @@ import SearchProducts from "./../routes/search-products/SearchProducts.svelte";
 import SearchProducers from "./../routes/search-producers/SearchProducers.svelte";
 import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
+import External from "./../routes/external/External.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -35,6 +36,7 @@ import RegisterRoutes from "./../routes/register/routes.js";
 import CartRoutes from "./../routes/cart/routes.js";
 import AccountRoutes from "./../routes/account/routes.js";
 import SearchProductRoutes from "./../routes/search-products/routes.js";
+import ExternalRoutes from "./../routes/external/routes.js";
 import PurchaseOrderRoutes from "./../routes/purchase-orders/routes.js";
 import MyOrderRoutes from "./../routes/my-orders/routes.js";
 import SellingPointRoutes from "./../routes/selling-points/routes.js";
@@ -44,9 +46,6 @@ import OidcRoutes from "./../routes/oidc/routes.js";
 import HomeRoutes from "./../routes/home/routes.js";
 import Roles from "./../enums/Roles";
 import {
-	authAuthenticated,
-	authRegistered,
-	authAuthorized,
 	authInitialized,
 } from "../stores/auth";
 
@@ -229,7 +228,19 @@ class SheaftGuard {
 					),
 			],
 		});
-
+		this.routes[`${ExternalRoutes.Prefix}/*`] = wrap({
+			component: External,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => 
+						this.authInstance.userIsAnonymous() ||
+						this.authInstance.userHasAccess(ExternalRoutes.Roles),
+						true
+					),
+			],
+		});
 		this.routes[`${SearchStoreRoutes.Prefix}`] = wrap({
 			component: SearchStores,
 			customData: null,

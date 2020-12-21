@@ -12,6 +12,7 @@
   import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "./queries.js";
   import { UPDATE_PRODUCT } from "./mutations.js";
   import ProductRoutes from "./routes.js";
+  import ExternalRoutes from "../External/routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
@@ -166,6 +167,13 @@
           class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
           on:click={showDeleteModal}>
           Supprimer
+        </button>
+        <button
+          class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white ml-2"
+          on:click={() => routerInstance.goTo(ExternalRoutes.ProductDetails, { 
+            id: params.id
+          })}>
+          Page consommateur
         </button>
       </div>
     </section>

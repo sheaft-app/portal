@@ -4,7 +4,7 @@
   import { fly } from "svelte/transition";
 	import { createEventDispatcher } from 'svelte';
 
-  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null, disabled = false;
+  export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null, disabled = false, center = true;
 
 	const dispatch = createEventDispatcher();
 
@@ -84,7 +84,7 @@
 
 <div class="m-auto {!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
   <div
-    class="flex m-auto border-gray-100 shadow border-solid rounded-full product-quantity" class:disabled>
+    class="flex {center ? 'm-auto' : ''} border-gray-100 shadow border-solid rounded-full product-quantity" class:disabled>
     <button
       disabled={(quantity === minQuantity) || disabled}
       style="height: 36px;"
