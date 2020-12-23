@@ -12,7 +12,7 @@
   import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "./queries.js";
   import { UPDATE_PRODUCT } from "./mutations.js";
   import ProductRoutes from "./routes.js";
-  import ExternalRoutes from "../External/routes.js";
+  import ExternalRoutes from "./../external/routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
