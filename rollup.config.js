@@ -72,7 +72,7 @@ export default {
 		}),
 		svelteSVG(),
 		postcss(),
-		babel({
+		production && babel({
 			extensions: [".ts", ".js", ".mjs", ".html", ".svelte"],
 			runtimeHelpers: true,
 			sourceMap: !production,
@@ -137,7 +137,7 @@ export default {
 		commonjs({
 			include: "node_modules/**",
 		}),
-		generateSW({
+		production && generateSW({
 			swDest: "public/sw.js",
 			globDirectory: "public",
 			globPatterns: ["**/*.html"],
