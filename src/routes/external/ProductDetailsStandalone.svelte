@@ -378,7 +378,7 @@
           </div>
         </div>
         <div class="lg:w-1/3 w-full">
-          <div id="map" class="rounded-r shadow lg:h-full" />
+          <div id="map" class="rounded-r shadow lg:h-full" style="z-index: 0;" />
         </div>
       </div>
       <div class="mt-5">
