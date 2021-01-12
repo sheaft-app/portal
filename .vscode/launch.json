@@ -1,0 +1,16 @@
+{
+   "version": "0.2.0",
+   "configurations": [
+        {
+            "name": "Chrome Portal",
+            "request": "launch",
+            "type": "pwa-chrome",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/public",
+            "sourceMaps": true,
+            "skipFiles": [
+                "<node_internals>/**",
+            ]
+        }
+    ]
+}
