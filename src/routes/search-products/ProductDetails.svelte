@@ -331,9 +331,9 @@ import { config } from "../../configs/config";
               <div>
                 <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
                 <p>{delivery.address.line1}</p>
-                {#if product.producer.address.line2}
+                {#if delivery.address.line2}
                   <p>
-                    {product.producer.address.line2}
+                    {delivery.address.line2}
                   </p>
                 {/if}
                 <p>{delivery.address.zipcode} {delivery.address.city}</p>
