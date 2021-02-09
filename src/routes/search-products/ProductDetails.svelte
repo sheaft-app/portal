@@ -477,7 +477,7 @@
             slidesPerView: 1,
             spaceBetween: 20
           },
-          768: {
+          375: {
             slidesPerView: 2,
             spaceBetween: 20
           }
@@ -489,7 +489,7 @@
       >
         {#each productsSuggestions as suggestion}
           <SwiperSlide let:data="{{ isNext }}">
-            <div class="border border-light rounded-lg h-full bg-white {isNext ? 'opacity-50 lg:opacity-100' : ''}">
+            <div class="border border-light rounded-lg h-full bg-white">
               <div
               class="relative pb-5/6 overflow-hidden bg-black rounded-t-md block">
                 <div
@@ -498,8 +498,8 @@
                   class:opacity-50={suggestedProductIsInCart(suggestion)}
                   class="transition duration-200 ease-in-out w-full rounded-t-md">
                     {#if suggestion.picture.includes("pictures/tags/images/") && !suggestedProductIsInCart(suggestion)}
-                      <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -86px;">
-                        <div class="text-white text-sm p-1 bg-gray-800">
+                      <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -94px;">
+                        <div class="text-white text-sm p-2 bg-gray-800">
                           Aucune image disponible
                         </div>
                       </div>
@@ -507,7 +507,7 @@
                 </div>
               </div>
               <div class="relative block p-0">
-                <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
+                <div class="bg-white rounded-lg p-0 px-2 lg:p-4 w-full pb-4">
                   <div style="width: 30px; right: 15px;" class="absolute">
                     {#if suggestion.tags.map(t => t.name).includes('bio')}
                       <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-1" />
@@ -516,7 +516,7 @@
                       <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
                     {/if}
                   </div>
-                  <div class="px-1 lg:px-0 lg:pr-8">
+                  <div class="py-2 lg:py-0 lg:pr-8">
                     <h4
                       class="font-semibold text-base lg:text-lg leading-tight mb-0">
                       {suggestion.name}
@@ -540,7 +540,7 @@
                   </div>
                   <div class="flex items-center justify-between">
                     {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
-                      <div class="w-full mt-4">
+                      <div class="w-full">
                         {#if suggestion.available}
                           <ProductCartQuantity productId={suggestion.id} />
                         {:else}
