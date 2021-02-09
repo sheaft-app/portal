@@ -4,6 +4,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 const prefix = "/details";
 
 const productDetails = "/products/:id";
+const producerDetails = "/producers/:id";
 
 const ExternalRoutes = {
 	Prefix: `${prefix}`,
@@ -13,6 +14,15 @@ const ExternalRoutes = {
 		Icon: faSearch,
 		Path: `${prefix}${productDetails}`,
 		SubPart: `${productDetails}`,
+		Params: {
+			id: null,
+		}
+	},
+	ProducerDetails: {
+		Name: "Détails du producteur",
+		Icon: faSearch,
+		Path: `${prefix}${producerDetails}`,
+		SubPart: `${producerDetails}`,
 		Params: {
 			id: null,
 		}

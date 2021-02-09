@@ -80,3 +80,22 @@ export const GET_PRODUCER_DELIVERIES = gql`
 		}
 	}
 `;
+
+export const GET_PRODUCER_DETAILS = gql` 
+query GetProducerDetails($id: ID!) {
+	producer(input: $id) {
+		id
+		name
+		description
+		picture
+		address {
+			city
+			line1
+			line2
+			zipcode
+			latitude
+			longitude
+		}
+	}
+}
+`;
