@@ -475,7 +475,7 @@
         breakpoints={{
           320: {
             slidesPerView: 1,
-            spaceBetween: 20
+            spaceBetween: 0
           },
           375: {
             slidesPerView: 2,
@@ -499,7 +499,7 @@
                   class="transition duration-200 ease-in-out w-full rounded-t-md">
                     {#if suggestion.picture.includes("pictures/tags/images/") && !suggestedProductIsInCart(suggestion)}
                       <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -94px;">
-                        <div class="text-white text-sm p-2 bg-gray-800">
+                        <div class="text-white text-sm p-2 bg-gray-800 text-center">
                           Aucune image disponible
                         </div>
                       </div>

@@ -771,4 +771,10 @@
       font-size: 1.2rem;
     }
   }
+
+
+  .swiper-button-prev, 
+  .swiper-button-next {
+    top: 30% !important;
+  }
 </style>
