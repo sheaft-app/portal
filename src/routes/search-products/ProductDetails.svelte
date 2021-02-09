@@ -15,17 +15,21 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { cartItems, selectedItem } from "./../../stores/app.js";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
-  import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
   import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import ConditioningKind from "./../../enums/ConditioningKind";
   import Roles from "./../../enums/Roles";
   import SheaftErrors from "../../services/SheaftErrors";
   import DeliveryKind from "../../enums/DeliveryKind";
-  import ErrorCard from "./../../components/ErrorCard.svelte";
   import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
   import orderBy from "lodash/orderBy";
-import { config } from "../../configs/config";
+  import { config } from "../../configs/config";
+  import { Navigation, Pagination } from 'swiper';
+  import { Swiper, SwiperSlide } from 'swiper/svelte';
+  import 'swiper/swiper.scss';
+  import 'swiper/components/navigation/navigation.scss';
+  import 'swiper/components/pagination/pagination.scss';
+  import 'swiper/components/scrollbar/scrollbar.scss';
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -39,7 +43,6 @@ import { config } from "../../configs/config";
   let comment = null;
   let isSubmittingRate = false;
   let isLoading = true;
-  let isInCart = false;
   let values = routerInstance.getQueryParams();
   let distanceInfos = null;
   let deliveries = [];
@@ -163,10 +166,34 @@ import { config } from "../../configs/config";
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
       event.preventDefault();
-
       close()
     }
   };
+
+  const handleSlideChange = (e) => {
+    const nextButton = document.getElementsByClassName('swiper-button-next')[0];
+    const prevButton = document.getElementsByClassName('swiper-button-prev')[0];
+    
+    let elem = e.detail[0];
+    // C'est une slide ?
+    if (Array.isArray(e.detail[0])) {
+      elem = elem.shift();
+    }
+
+    if (elem.isBeginning && elem.isEnd) {
+      prevButton.classList.add('hidden');
+      nextButton.classList.add('hidden');
+    } else if (elem.isBeginning) {
+      prevButton.classList.add('hidden');
+      nextButton.classList.remove('hidden');
+    } else if (elem.isEnd) {
+      prevButton.classList.remove('hidden');
+      nextButton.classList.add('hidden');
+    } else {
+      prevButton.classList.remove('hidden');
+      nextButton.classList.remove('hidden');
+    }
+  }
 
   const close = () => {
     if (timeout) {
@@ -176,8 +203,61 @@ import { config } from "../../configs/config";
     selectedItem.set(null);
   }
 
+  const productsSuggestions = [
+    {
+      id: 1,
+      name: "Pigeon bio",
+      onSalePricePerUnit: 8.91,
+      rating: 3,
+      conditioning: "BULK",
+      quantityPerUnit: 100,
+      tags: [],
+      unit: "G",
+      available: true,
+      picture: "https://content.sheaft.com/pictures/tags/images/0f3c3aa9da8f4eeeac77f41c93cbac72/0f3c3aa9da8f4eeeac77f41c93cbac72_medium.jpg"
+    },
+    {
+      id: 2,
+      name: "Pigeon bio",
+      onSalePricePerUnit: 8.91,
+      rating: 3,
+      conditioning: "BULK",
+      quantityPerUnit: 100,
+      unit: "G",
+      available: true,
+      tags: [],
+      picture: "https://content.sheaft.com/pictures/tags/images/0f3c3aa9da8f4eeeac77f41c93cbac72/0f3c3aa9da8f4eeeac77f41c93cbac72_medium.jpg"
+    },
+    {
+      id: 3,
+      name: "Pigeon bio",
+      onSalePricePerUnit: 8.91,
+      rating: 3,
+      conditioning: "BULK",
+      quantityPerUnit: 100,
+      unit: "G",
+      available: true,
+      tags: [],
+      picture: "https://content.sheaft.com/pictures/tags/images/0f3c3aa9da8f4eeeac77f41c93cbac72/0f3c3aa9da8f4eeeac77f41c93cbac72_medium.jpg"
+    },
+    {
+      id: 4,
+      name: "Pigeon bio",
+      onSalePricePerUnit: 8.91,
+      rating: 3,
+      conditioning: "BULK",
+      quantityPerUnit: 100,
+      available: true,
+      unit: "G",
+      tags: [],
+      picture: "https://content.sheaft.com/pictures/tags/images/0f3c3aa9da8f4eeeac77f41c93cbac72/0f3c3aa9da8f4eeeac77f41c93cbac72_medium.jpg"
+    }
+  ]
+
   $: if ($selectedItem) openAndLoad($selectedItem);
   $: isInCart = $cartItems.find(c => c.id === $selectedItem) || false;
+  
+  $: suggestedProductIsInCart = product => $cartItems.find(c => c.id === product.id);
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
@@ -389,6 +469,92 @@ import { config } from "../../configs/config";
             {product.producer.description}
           </div>
         {/if}
+        <p class="font-semibold pt-5 mb-3">Autres produits de {product.producer.name}</p>
+        <Swiper
+        navigation
+        breakpoints={{
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 20
+          },
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 20
+          }
+        }}
+        spaceBetween={20}
+        slidesPerView={2}
+        on:swiper={(e) => handleSlideChange(e)}
+        on:slideChange={(e) => handleSlideChange(e)}
+      >
+        {#each productsSuggestions as suggestion}
+          <SwiperSlide let:data="{{ isNext }}">
+            <div class="border border-light rounded-lg h-full bg-white {isNext ? 'opacity-50 lg:opacity-100' : ''}">
+              <div
+              class="relative pb-5/6 overflow-hidden bg-black rounded-t-md block">
+                <div
+                  style="height: 95px; background-image: url({suggestion.picture}); background-size:
+                  cover; background-position: top;"
+                  class:opacity-50={suggestedProductIsInCart(suggestion)}
+                  class="transition duration-200 ease-in-out w-full rounded-t-md">
+                    {#if suggestion.picture.includes("pictures/tags/images/") && !suggestedProductIsInCart(suggestion)}
+                      <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -86px;">
+                        <div class="text-white text-sm p-1 bg-gray-800">
+                          Aucune image disponible
+                        </div>
+                      </div>
+                    {/if}
+                </div>
+              </div>
+              <div class="relative block p-0">
+                <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
+                  <div style="width: 30px; right: 15px;" class="absolute">
+                    {#if suggestion.tags.map(t => t.name).includes('bio')}
+                      <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-1" />
+                    {/if}
+                    {#if suggestion.isReturnable}
+                      <img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
+                    {/if}
+                  </div>
+                  <div class="px-1 lg:px-0 lg:pr-8">
+                    <h4
+                      class="font-semibold text-base lg:text-lg leading-tight mb-0">
+                      {suggestion.name}
+                    </h4>
+                    <div
+                      class="mt-2 md:mt-0 inline-flex items-center w-full text-xxs
+                      lg:text-sm">
+                      <RatingStars rating={suggestion.rating} />
+                      <span class="text-gray-600 ml-2 hidden lg:block">
+                        {suggestion.rating || 'Aucun avis'}
+                      </span>
+                    </div>
+                    <div
+                      class="text-base lg:text-lg w-full font-semibold mb-2
+                      justify-between items-center block">
+                      {formatMoney(suggestion.onSalePricePerUnit)}
+                      <span class="text-xxs lg:text-sm lg:inline hidden font-normal">
+                        {formatConditioningDisplay(suggestion.conditioning, suggestion.quantityPerUnit, suggestion.unit)}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
+                      <div class="w-full mt-4">
+                        {#if suggestion.available}
+                          <ProductCartQuantity productId={suggestion.id} />
+                        {:else}
+                          <div>Non disponible</div>
+                        {/if}
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        {/each}
+      </Swiper>
       </div>
     </div>
     <div class="mt-5">

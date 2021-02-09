@@ -750,4 +750,25 @@
       background-color: rgb(255, 169, 169);
     }
   }
+
+  .swiper-button-next {
+    background-color: #ff3f80;
+    border-radius: 50px;
+    padding: 22px;
+    color: #ffffff;
+
+    &::after {
+      font-size: 1.2rem;
+    }
+  }
+  .swiper-button-prev {
+    background-color: #ff3f80;
+    border-radius: 50px;
+    padding: 22px;
+    color: #ffffff;
+
+    &::after {
+      font-size: 1.2rem;
+    }
+  }
 </style>
