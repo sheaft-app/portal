@@ -7,6 +7,8 @@ export const CREATE_DELIVERY = gql`
 			name
 			kind
 			lockOrderHoursBeforeDelivery
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			address {
 				line1
 				city
@@ -29,6 +31,8 @@ export const UPDATE_DELIVERY = gql`
 			name
 			kind
 			lockOrderHoursBeforeDelivery
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			address {
 				line1
 				city

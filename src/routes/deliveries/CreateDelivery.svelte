@@ -34,7 +34,9 @@
       }
     ],
     available: true,
-    lockOrderHoursBeforeDelivery: 0
+    lockOrderHoursBeforeDelivery: 0,
+    autoAcceptRelatedPurchaseOrder:false,
+    autoCompleteRelatedPurchaseOrder:false
   };
 
 

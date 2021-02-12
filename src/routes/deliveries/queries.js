@@ -9,6 +9,8 @@ export const GET_DELIVERIES = gql`
 				kind
 				available
 				lockOrderHoursBeforeDelivery
+				autoAcceptRelatedPurchaseOrder
+				autoCompleteRelatedPurchaseOrder
 				openingHours {
 					day
 					from
@@ -27,6 +29,8 @@ export const GET_DELIVERY_DETAILS = gql`
 			kind
 			available
 			lockOrderHoursBeforeDelivery
+			autoAcceptRelatedPurchaseOrder
+			autoCompleteRelatedPurchaseOrder
 			openingHours {
 				day
 				from
