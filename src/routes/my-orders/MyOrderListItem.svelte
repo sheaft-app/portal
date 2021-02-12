@@ -2,7 +2,7 @@
   import GetAuthInstance from "./../../services/SheaftAuth";
 	import DisplayStatusIcon from "./../../components/status/DisplayStatusIcon.svelte";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import MyOrderRoutes from "./routes";
   import OrderStatusKind from "./../../enums/OrderStatusKind";

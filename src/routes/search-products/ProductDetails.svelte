@@ -4,7 +4,7 @@
   import { faMapMarkerAlt, faCircleNotch, faTimesCircle, faChevronUp, faChevronDown, faHeart } from "@fortawesome/free-solid-svg-icons";
   import ProductCartQuantity from "./../../components/controls/ProductCartQuantity.svelte";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
   import { GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";

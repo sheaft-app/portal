@@ -4,7 +4,7 @@
   import { formatMoney } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
 	import { format } from "date-fns";
-	import { fr } from "date-fns/locale";
+	import fr from "date-fns/locale/fr";
 
   export let producer, delivery;
 

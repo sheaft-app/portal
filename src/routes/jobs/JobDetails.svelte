@@ -3,7 +3,7 @@
 	import { onMount, getContext } from "svelte";
 	import Icon from "svelte-awesome";
 	import { format } from "date-fns";
-	import { fr } from "date-fns/locale";
+	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import GetAuthInstance from "./../../services/SheaftAuth";

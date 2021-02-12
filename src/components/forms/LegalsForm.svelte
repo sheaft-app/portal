@@ -10,7 +10,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import { GET_COUNTRIES, GET_NATIONALITIES } from "../queries";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import CountrySelect from "./../../components/controls/CountrySelect.svelte";
   import NationalitySelect from "./../../components/controls/NationalitySelect.svelte";
   

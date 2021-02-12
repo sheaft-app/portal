@@ -5,7 +5,7 @@
   import Icon from "svelte-awesome";
   import { faTruck, faTruckLoading, faChevronLeft, faHourglass, faCheck, faTimesCircle, faMapMarkerAlt, faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth";
   import GetRouterInstance from "./../../services/SheaftRouter";

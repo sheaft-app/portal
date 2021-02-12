@@ -2,7 +2,7 @@
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { format } from "date-fns";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import { CREATE_BUSINESS_ORDER } from "./mutations.js";

@@ -1,7 +1,7 @@
 <script>
   import Loader from "./../../components/Loader.svelte";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import { onMount } from "svelte";
   import Icon from "svelte-awesome";

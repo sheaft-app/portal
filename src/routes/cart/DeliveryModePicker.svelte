@@ -3,7 +3,7 @@
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import DeliveryPickModal from "./DeliveryPickModal.svelte";
   import { cartItems } from "./../../stores/app.js";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";

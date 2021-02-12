@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 	import { format, formatDistance, formatRelative } from "date-fns";
-	import { fr } from "date-fns/locale";
+	import fr from "date-fns/locale/fr";
 	import Icon from "svelte-awesome";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
 	import { notifications, displayNotificationCenter, notificationsCount } from "./store.js";

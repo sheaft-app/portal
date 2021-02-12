@@ -6,7 +6,7 @@
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import { onMount, getContext } from "svelte";
 	import { format } from "date-fns";
-	import { fr } from "date-fns/locale";
+	import fr from "date-fns/locale/fr";
 	import Icon from "svelte-awesome";
 	import {
 		faCalendarAlt,

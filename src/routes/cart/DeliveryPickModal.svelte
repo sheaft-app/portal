@@ -6,7 +6,7 @@
   import Icon from "svelte-awesome";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";
   import { faTimes, faClock, faCalendar, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
   import Slider from "../../components/Slider.svelte";
   import Loader from "../../components/Loader.svelte";
   import { GetDistanceInfos } from "./../../helpers/distances.js";

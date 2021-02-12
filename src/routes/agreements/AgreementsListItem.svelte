@@ -5,7 +5,7 @@
 	import { format } from "date-fns";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import { fr } from "date-fns/locale";
+	import fr from "date-fns/locale/fr";
 	import Roles from "./../../enums/Roles";
 	import Icon from "svelte-awesome";
 	import { faChevronRight } from "@fortawesome/free-solid-svg-icons";

@@ -6,7 +6,7 @@
   import AddToCart from "./../../components/controls/AddToCart.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { format } from "date-fns";
-  import { fr } from "date-fns/locale";
+  import fr from "date-fns/locale/fr";
 	import SearchProductsRoutes from "../search-products/routes";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
