@@ -22,25 +22,6 @@ export const GET_AGREEMENTS = gql`
 	}
 `;
 
-export const GET_PRODUCER_PRODUCTS = gql`
-	query GetProducerProducts($companyId: ID!) {
-		producerProducts(input: $companyId) {
-			id
-			name
-			wholeSalePricePerUnit
-			wholeSalePrice
-			rating
-			quantityPerUnit
-			unit
-			conditioning
-			weight
-			producer {
-				id
-			}
-		}
-	}
-`;
-
 export const GET_AGREEMENT_DETAILS = gql`
 	query GetAgreement($id: ID!) {
 		agreement(input: $id) {
