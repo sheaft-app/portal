@@ -89,6 +89,25 @@ export const GET_PRODUCT_DETAILS = gql`
 	}
 `;
 
+
+export const GET_PRODUCER_PRODUCTS = gql`
+	query($id: ID!) {
+		producerProducts(input: $id) {
+	  		nodes {
+				id
+				name
+				onSalePricePerUnit
+				picture
+				rating
+				quantityPerUnit
+				conditioning
+				unit
+				available
+	  		}
+		}
+  	}
+`
+
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: SearchProducersDeliveriesInput) {
 		getDeliveriesForProducers(input: $input) {
