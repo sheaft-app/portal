@@ -74,7 +74,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			producer {
 				id
 				name
-				description
+				profileInformation{summary}
 				picture
 				address {
 					city

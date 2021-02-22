@@ -21,8 +21,7 @@
 			city: null,
 			zipcode: null,
 			country: "FR"
-		},
-		description: null
+		}
 	};
 	
 	const producerForm = form(() => ({
@@ -84,17 +83,6 @@
 				id="grid-line"
 				type="text"
 				placeholder="Bâtiment B n°113" />
-		</div>
-	</div>
-	<div class="my-6" />
-	<div class="form-control">
-		<div class="w-full md:w-2/2">
-			<label for="grid-line2">Description</label>
-			<textarea
-				bind:value={producer.description}
-				id="grid-line"
-				type="text"
-				placeholder="Cette description sera visible par tous les consommateurs (optionnel)" />
 		</div>
 	</div>
 	<div class="mt-4">

@@ -30,7 +30,6 @@ export const GET_STORE_DETAILS = gql`
 			firstName
 			name
 			openForNewBusiness
-			description
 			email
 			phone
 			picture
@@ -60,7 +59,6 @@ export const GET_PRODUCER_DETAILS = gql`
 			firstName
 			name
 			openForNewBusiness
-			description
 			email
 			phone
 			picture

@@ -24,7 +24,6 @@
 			zipcode: null,
 			country: "FR"
 		},
-		description: null,
 		openingHours: [],
 		openForNewBusiness: false
 	};
@@ -89,16 +88,6 @@
 				id="grid-line"
 				type="text"
 				placeholder="Bâtiment B n°113" />
-		</div>
-	</div>
-	<div class="form-control">
-		<div class="w-full md:w-2/2">
-			<label for="grid-line2">Description</label>
-			<textarea
-				bind:value={store.description}
-				id="grid-line"
-				type="text"
-				placeholder="Cette description sera visible par tous les producteurs (optionnel)" />
 		</div>
 	</div>
 	<div class="mt-4">

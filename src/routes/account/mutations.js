@@ -21,7 +21,6 @@ export const UPDATE_STORE = gql`
 			firstName
 			name
 			openForNewBusiness
-			description
 			email
 			phone
 			picture			
@@ -51,7 +50,6 @@ export const UPDATE_PRODUCER = gql`
 			firstName
 			name
 			openForNewBusiness
-			description
 			email
 			phone
 			picture
