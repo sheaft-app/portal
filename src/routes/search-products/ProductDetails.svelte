@@ -25,8 +25,10 @@
   import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
   import orderBy from "lodash/orderBy";
   import { config } from "../../configs/config";
-  import SwiperCore, { Navigation } from 'swiper';
+import SwiperCore, { Navigation } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/svelte';
+
+  export let displayProducerData = true;
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -63,44 +65,46 @@
       return;
     }
 
-    let deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-      input: {
-        ids: [res.data.producer.id],
-        kinds: [
-          DeliveryKind.Farm.Value,
-          DeliveryKind.Market.Value,
-          DeliveryKind.Collective.Value
-        ] 
-      }
-    }, errorsHandler.Uuid);
-
-    if (!deliveriesResult.success) {
-      isLoading = false;
-      close();
-      //TODO
-    }
-
-    if (deliveriesResult.data.length == 0) {
-      deliveries = [];
-    } else {
-      deliveries = deliveriesResult.data[0].deliveries.map((d) => {
-        return {
-          ...d,
-          distance: GetDistanceInfos(
-            values["latitude"],
-            values["longitude"],
-            d.address.latitude,
-            d.address.longitude
-          ),
-          deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-            index === self.findIndex((d) => (
-              d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-            ))
-          ))
+    if (displayProducerData) {
+      var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
+        input: {
+          ids: [res.data.producer.id],
+          kinds: [
+            DeliveryKind.Farm.Value,
+            DeliveryKind.Market.Value,
+            DeliveryKind.Collective.Value
+          ] 
         }
-      });
+      }, errorsHandler.Uuid);
 
-      deliveries = orderBy(deliveries, (d) => d.distance.distance, ['asc']);
+      if (!deliveriesResult.success) {
+        isLoading = false;
+        close();
+        //TODO
+      }
+
+      if (deliveriesResult.data.length == 0) {
+        deliveries = [];
+      } else {
+        deliveries = deliveriesResult.data[0].deliveries.map((d) => {
+          return {
+            ...d,
+            distance: GetDistanceInfos(
+              values["latitude"],
+              values["longitude"],
+              d.address.latitude,
+              d.address.longitude
+            ),
+            deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+              index === self.findIndex((d) => (
+                d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+              ))
+            ))
+          }
+        });
+
+        deliveries = orderBy(deliveries, (d) => d.distance.distance, ['asc']);
+      }
     }
 
     let result = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, { id: res.data.producer.id }, errorsHandler.Uuid);
@@ -109,12 +113,12 @@
     product = res.data;
     ratings = product.ratings.nodes.map(r => r);
 
-    distanceInfos = GetDistanceInfos(
+    distanceInfos = displayProducerData ? GetDistanceInfos(
       values["latitude"],
       values["longitude"],
       product.producer.address.latitude,
       product.producer.address.longitude
-    );
+    ) : null;
 
     isLoading = false;
   };
@@ -320,105 +324,107 @@
         <div class="text-center text-red-500">Ce produit n'est pas disponible pour le moment.</div>
       {/if}
     {/if}
-    <div class="mt-5">
-      <div
-        id="producer-card"
-        class="bg-white overflow-hidden rounded-lg p-3 lg:p-6 shadow flex
-        relative flex-wrap justify-between lg:mt-10"
-        style="transition: all .4s ease-in-out;">
-        <img
-          class="h-10 w-10 md:h-24 md:w-24 rounded-full p-1 md:mx-0 border
-          border-gray-800 border-solid"
-          src={product.producer.picture ? product.producer.picture : 'img/icons/farmer.svg'}
-          alt="Producteur" />
-        <div class="w-7/12 md:w-6/12">
-          <p class="text-base lg:text-lg">{product.producer.name}</p>
-          <div class="text-gray-600 text-sm lg:text-base">
-            {product.producer.address.line1}
-          </div>
-          {#if product.producer.address.line2}
-            <div class="text-gray-600 text-sm lg:text-base">
-              {product.producer.address.line2}
-            </div>
-          {/if}
-          <div class="text-gray-600 text-sm lg:text-base">
-            {product.producer.address.zipcode} {product.producer.address.city}
-          </div>
-        </div>
-        {#if distanceInfos}
-          <div
-            class="distance-badge-content text-sm lg:text-base
-            w-2/12 text-center rounded-full h-10 flex justify-center
-            items-center border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
-            <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
-            <p class="font-bold">{distanceInfos.label}</p>
-          </div>
-        {/if}
-        <p class="mt-3 font-semibold pt-5">Lieux et horaires de récupération</p>
-        {#each deliveries as delivery}
-          <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
-            <div class="flex flex-row justify-between items-start mb-3">
-              <div>
-                <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
-                <p>{delivery.address.line1}</p>
-                {#if delivery.address.line2}
-                  <p>
-                    {delivery.address.line2}
-                  </p>
-                {/if}
-                <p>{delivery.address.zipcode} {delivery.address.city}</p>
-                <a 
-                  class="mt-1"
-                  target="_blank"
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
-                  Voir sur Google Maps
-                </a>
-              </div>
-              <div
-                class="text-xs lg:text-base flex justify-center items-center" style="color: {delivery.distance.color}; border-color: {delivery.distance.color};">
-                <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
-                <p class="font-bold">{delivery.distance.label}</p>
-              </div>
-            </div>
-            <div class="mt-2">
-              {#each delivery.deliveryHours as deliveryHour, index}
-                <div class="flex mb-2 border-gray-300" 
-                  class:pb-2={index !== delivery.deliveryHours.length - 1}
-                  class:border-b={index !== delivery.deliveryHours.length - 1}>
-                  <p style="min-width: 100px;">
-                    {DayOfWeekKind.label(deliveryHour[0].day)}
-                  </p>
-                  <div>
-                    {#each deliveryHour as hours} 
-                      <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
-                    {/each}
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {:else}
-          <p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
-        {/each}
+    {#if displayProducerData}
+      <div class="mt-5">
         <div
-          on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
-          class:hidden={!product.producer.profileInformation.summary}
-          class="rounded-b-lg w-full py-3 bg-white
-          text-center font-semibold flex
-          justify-center items-center cursor-pointer mt-2">
-          {#if !producerDescriptionExpanded}
-            <Icon data={faChevronDown} class="mr-2" />
-            <span>En savoir plus sur le producteur</span>
+          id="producer-card"
+          class="bg-white overflow-hidden rounded-lg p-3 lg:p-6 shadow flex
+          relative flex-wrap justify-between lg:mt-10"
+          style="transition: all .4s ease-in-out;">
+          <img
+            class="h-10 w-10 md:h-24 md:w-24 rounded-full p-1 md:mx-0 border
+            border-gray-800 border-solid"
+            src={product.producer.picture ? product.producer.picture : 'img/icons/farmer.svg'}
+            alt="Producteur" />
+          <div class="w-7/12 md:w-6/12">
+            <p class="text-base lg:text-lg">{product.producer.name}</p>
+            <div class="text-gray-600 text-sm lg:text-base">
+              {product.producer.address.line1}
+            </div>
+            {#if product.producer.address.line2}
+              <div class="text-gray-600 text-sm lg:text-base">
+                {product.producer.address.line2}
+              </div>
+            {/if}
+            <div class="text-gray-600 text-sm lg:text-base">
+              {product.producer.address.zipcode} {product.producer.address.city}
+            </div>
+          </div>
+          {#if distanceInfos}
+            <div
+              class="distance-badge-content text-sm lg:text-base
+              w-2/12 text-center rounded-full h-10 flex justify-center
+              items-center border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
+              <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
+              <p class="font-bold">{distanceInfos.label}</p>
+            </div>
+          {/if}
+          <p class="mt-3 font-semibold pt-5">Lieux et horaires de récupération</p>
+          {#each deliveries as delivery}
+            <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
+              <div class="flex flex-row justify-between items-start mb-3">
+                <div>
+                  <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
+                  <p>{delivery.address.line1}</p>
+                  {#if delivery.address.line2}
+                    <p>
+                      {delivery.address.line2}
+                    </p>
+                  {/if}
+                  <p>{delivery.address.zipcode} {delivery.address.city}</p>
+                  <a 
+                    class="mt-1"
+                    target="_blank"
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
+                    Voir sur Google Maps
+                  </a>
+                </div>
+                <div
+                  class="text-xs lg:text-base flex justify-center items-center" style="color: {delivery.distance.color}; border-color: {delivery.distance.color};">
+                  <Icon data={faMapMarkerAlt} scale="1.4" class="pr-1" />
+                  <p class="font-bold">{delivery.distance.label}</p>
+                </div>
+              </div>
+              <div class="mt-2">
+                {#each delivery.deliveryHours as deliveryHour, index}
+                  <div class="flex mb-2 border-gray-300" 
+                    class:pb-2={index !== delivery.deliveryHours.length - 1}
+                    class:border-b={index !== delivery.deliveryHours.length - 1}>
+                    <p style="min-width: 100px;">
+                      {DayOfWeekKind.label(deliveryHour[0].day)}
+                    </p>
+                    <div>
+                      {#each deliveryHour as hours} 
+                        <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+                      {/each}
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
           {:else}
-            <Icon data={faChevronUp} class="mr-2" />
-            <span>Replier le bandeau</span>
+            <p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
+          {/each}
+          <div
+            on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
+            class:hidden={!product.producer.profileInformation.summary}
+            class="rounded-b-lg w-full py-3 bg-white
+            text-center font-semibold flex
+            justify-center items-center cursor-pointer mt-2">
+            {#if !producerDescriptionExpanded}
+              <Icon data={faChevronDown} class="mr-2" />
+              <span>En savoir plus sur le producteur</span>
+            {:else}
+              <Icon data={faChevronUp} class="mr-2" />
+              <span>Replier le bandeau</span>
+            {/if}
+          </div>
+          {#if producerDescriptionExpanded && product.producer.profileInformation.summary}
+            <div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5" >
+              {product.producer.profileInformation.summary}
+            </div>
           {/if}
         </div>
-        {#if producerDescriptionExpanded && product.producer.profileInformation.summary}
-          <div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5" >
-            {product.producer.profileInformation.summary}
-          </div>
-        {/if}
         {#if productsSuggestions.length > 0}
           <p class="font-semibold pt-5 mb-3">Autres produits de {product.producer.name}</p>
           <Swiper
@@ -522,7 +528,7 @@
         </Swiper>
         {/if}
       </div>
-    </div>
+    {/if}
     <div class="mt-5">
       <p class="mb-2">
         {#if product.rating}

@@ -13,7 +13,7 @@
 import { config } from "../../configs/config";
 
   const routerInstance = GetRouterInstance();
-  export let product, hoveredProduct = null;
+  export let product, hoveredProduct = null, displayProducerData = true;
 
   const observer = new IntersectionObserver(onIntersect);
   let src = "";
@@ -52,10 +52,10 @@ import { config } from "../../configs/config";
   };
 
   let values = routerInstance.getQueryParams();
-  let distanceInfos = GetDistanceInfos(values["latitude"],
+  let distanceInfos = displayProducerData ? GetDistanceInfos(values["latitude"],
       values["longitude"],
       product.producer.address.latitude,
-      product.producer.address.longitude);
+      product.producer.address.longitude) : null;
 </script>
 
 <div 
@@ -116,22 +116,24 @@ import { config } from "../../configs/config";
               </div>
             {/if}
           </div>
-          <div class="text-center">
-            <div class="w-full distance-badge inline-block text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
-              <div class="inline distance-badge-content">
-                <Icon
-                  data={faMapMarkerAlt}
-                  scale=".8"
-                  class="ml-1 mr-1 distance-icon"
-                  style="margin-top:-4px;" />
-                {distanceInfos.label}
+          {#if displayProducerData}
+            <div class="text-center">
+              <div class="w-full distance-badge inline-block text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
+                <div class="inline distance-badge-content">
+                  <Icon
+                    data={faMapMarkerAlt}
+                    scale=".8"
+                    class="ml-1 mr-1 distance-icon"
+                    style="margin-top:-4px;" />
+                  {distanceInfos.label}
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
       </div>
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 30px; right: 15px;" class="absolute">
-          {#if product.tags.map(t => t.name).includes('bio')}
+          {#if product.tags && product.tags.map(t => t.name).includes('bio')}
             <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-1" />
           {/if}
           {#if product.isReturnable}
@@ -139,14 +141,16 @@ import { config } from "../../configs/config";
           {/if}
         </div>
         <div class="pr-8">
-          <div class="hidden lg:inline-block mb-2 text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
-            <Icon
-              data={faMapMarkerAlt}
-              scale=".8"
-              class="ml-1 mr-1 distance-icon"
-              style="margin-top:-4px;" />
-            {distanceInfos.label}
-          </div>
+          {#if displayProducerData}
+            <div class="hidden lg:inline-block mb-2 text-xs font-bold px-2 py-1 rounded-full border" style="color: {distanceInfos.color}; border-color: {distanceInfos.color};">
+              <Icon
+                data={faMapMarkerAlt}
+                scale=".8"
+                class="ml-1 mr-1 distance-icon"
+                style="margin-top:-4px;" />
+              {distanceInfos.label}
+            </div>
+          {/if}
           <h4
             class="font-semibold text-base lg:text-lg leading-tight -mb-2
             lg:mb-0">
@@ -168,29 +172,31 @@ import { config } from "../../configs/config";
               {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
             </span>
           </div>
-          <div
-            class="text-gray-600 text-xxs lg:text-xs uppercase font-semibold
-            tracking-wide hidden lg:block">
-            <p>{product.producer.name}</p>
-          </div>
-          <div
-            class="text-xs text-gray-600 uppercase font-semibold hidden lg:block">
-            <p>
-              {product.producer.address.zipcode} {product.producer.address.city}
-            </p>
-          </div>
-          <div
-            class="mt-1 text-gray-600 text-xxs lg:text-xs uppercase
-            font-semibold tracking-wide lg:mr-6 block lg:hidden">
-            <p>{product.producer.name}</p>
-          </div>
-          <div
-            class="text-xxs text-gray-600 uppercase font-semibold block
-            lg:hidden">
-            <p>
-              {product.producer.address.zipcode} {product.producer.address.city}
-            </p>
-          </div>
+          {#if displayProducerData}
+            <div
+              class="text-gray-600 text-xxs lg:text-xs uppercase font-semibold
+              tracking-wide hidden lg:block">
+              <p>{product.producer.name}</p>
+            </div>
+            <div
+              class="text-xs text-gray-600 uppercase font-semibold hidden lg:block">
+              <p>
+                {product.producer.address.zipcode} {product.producer.address.city}
+              </p>
+            </div>
+            <div
+              class="mt-1 text-gray-600 text-xxs lg:text-xs uppercase
+              font-semibold tracking-wide lg:mr-6 block lg:hidden">
+              <p>{product.producer.name}</p>
+            </div>
+            <div
+              class="text-xxs text-gray-600 uppercase font-semibold block
+              lg:hidden">
+              <p>
+                {product.producer.address.zipcode} {product.producer.address.city}
+              </p>
+            </div>
+          {/if}
         </div>
         <div class="flex mt-2 lg:mt-0 items-center justify-between">
           <div
@@ -199,13 +205,13 @@ import { config } from "../../configs/config";
             <div class="text-xxs">{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</div>
           </div>
           {#if !GetAuthInstance().isInRole(["STORE", "PRODUCER"])}
-            <div class="w-7/12 lg:w-full lg:mt-4">
-              {#if product.available}
-                <ProductCartQuantity productId={product.id} />
-              {:else}
-                <div>Non disponible</div>
-              {/if}
-            </div>
+              <div class="w-7/12 lg:w-full lg:mt-4">
+                {#if !product.available}
+                  <div>Non disponible</div>
+                {:else}
+                  <ProductCartQuantity productId={product.id} />
+                {/if}
+              </div>
           {/if}
         </div>
       </div>

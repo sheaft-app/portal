@@ -81,21 +81,35 @@ export const GET_PRODUCER_DELIVERIES = gql`
 	}
 `;
 
-export const GET_PRODUCER_DETAILS = gql` 
-query GetProducerDetails($id: ID!) {
-	producer(input: $id) {
-		id
-		name
+export const GET_PRODUCER_PROFILE = gql` 
+query GetUserProfile($id: Uuid!) {
+	userProfile(input: $id) {
+		summary
 		description
-		picture
-		address {
-			city
-			line1
-			line2
-			zipcode
-			latitude
-			longitude
-		}
+		facebook
+		instagram
+		twitter
 	}
 }
 `;
+
+export const GET_PRODUCER_PRODUCTS = gql`
+	query($id: ID!) {
+		producerProducts(input: $id) {
+	  		nodes {
+				id
+				name
+				onSalePricePerUnit
+				picture
+				rating
+				quantityPerUnit
+				conditioning
+				unit
+				available
+				producer {
+					name
+				}
+	  		}
+		}
+  	}
+`

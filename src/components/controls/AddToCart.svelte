@@ -5,7 +5,7 @@
   import Icon from "svelte-awesome";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
-  export let product, disabled;
+  export let product, disabled, showIsInCartInfo = true;
 
   let state = 0;
   
@@ -24,8 +24,8 @@
   />
   <p class="text-green-500 text-sm">Dans le panier</p>
 {:else}
-  <button class="btn btn-lg btn-accent" class:disabled {disabled} on:click={addToCart}>
-    <Icon data={faShoppingCart} class="mr-2" />
+  <button class="btn btn-lg btn-accent" class:disabled {disabled} type="button" on:click={addToCart}>
+    <Icon data={faShoppingCart} class="mr-2 hidden md:inline" />
     Ajouter au panier
   </button>
 {/if}

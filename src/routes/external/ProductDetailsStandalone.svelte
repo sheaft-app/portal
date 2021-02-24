@@ -490,7 +490,6 @@
       </div>
     {/if}
   </div>
-  <!-- à intégrer très vite, pour l'instant sa présence est nécessaire pour un hack : il est responsable de la quantité du produit en son sein -->
   <div
     class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
       transition duration-300 ease-in-out cart-panel">

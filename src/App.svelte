@@ -12,9 +12,9 @@
   import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy, getContext } from "svelte";
   import "notyf/notyf.min.css";
-  import "swiper/swiper.min.css";
-  import "swiper/components/navigation/navigation.min.css";
   import Router from "svelte-spa-router";
+  import "swiper/swiper.min.css";
+  import "swiper/components/navigation/navigation.min.css";  
   import Modal from "./components/modal/Modal.svelte";
   import Nav from "./components/nav/Nav.svelte";
   import { selectedItem } from "./stores/app.js";
@@ -752,6 +752,26 @@
       background-color: rgb(255, 169, 169);
     }
   }
+  .svelte-tabs__tab-list {
+    border-top: 1px solid #cccccc;
+    text-transform: uppercase;
+    border-bottom: none !important;
+  }
+  .svelte-tabs__tab-list li.svelte-tabs__tab {
+    color: #989898;
+
+    &:focus {
+      background-color: #ffecf2;
+      outline: thin;
+    }
+  }
+
+ .svelte-tabs__tab-list li.svelte-tabs__selected {
+    border-bottom: none;
+    border-top: 2px solid #ff4081;
+    color: #ff4081;
+  }
+
 
   .swiper-button-next {
     background-color: #ff3f80;
