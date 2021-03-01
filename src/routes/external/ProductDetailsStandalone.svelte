@@ -347,7 +347,7 @@
             {/each}
             <div
               on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
-              class:hidden={!product.producer.profileInformation.summary}
+              class:hidden={!product.producer.summary}
               class="rounded-b-lg w-full py-3 bg-white
               text-center font-semibold flex
               justify-center items-center cursor-pointer mt-2">
@@ -359,9 +359,9 @@
                 <span>Replier le bandeau</span>
               {/if}
             </div>
-            {#if producerDescriptionExpanded && product.producer.profileInformation.summary}
+            {#if producerDescriptionExpanded && product.producer.summary}
               <div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5" >
-                {product.producer.profileInformation.summary}
+                {product.producer.summary}
               </div>
             {/if}
           </div>

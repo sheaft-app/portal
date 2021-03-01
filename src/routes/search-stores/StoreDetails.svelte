@@ -184,9 +184,9 @@ import { config } from "../../configs/config.js";
           </div>
         {/if}
       </div>
-      {#if store.profileInformation.summary}
+      {#if store.summary}
         <p class="text-sm lg:text-base text-justify lg:text-center">
-          {store.profileInformation.summary}
+          {store.summary}
         </p>
       {/if}
     </div>

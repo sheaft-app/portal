@@ -235,10 +235,10 @@ import { config } from "../../configs/config";
           </div>
         {/if}
       </div>
-      {#if producer.profileInformation.summary}
+      {#if producer.summary}
         <p
           class="text-sm lg:text-base text-justify lg:text-center">
-          {producer.profileInformation.summary}
+          {producer.summary}
         </p>
       {/if}
     </div>

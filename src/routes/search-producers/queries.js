@@ -37,7 +37,7 @@ export const GET_PRODUCER_DETAILS = gql`
 		producer(input: $id) {
 			id
 			name
-			profileInformation{summary}
+			summary
 			email
 			phone
 			tags {

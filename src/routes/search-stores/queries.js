@@ -37,7 +37,7 @@ export const GET_STORE_DETAILS = gql`
 				from
 				to
 			}
-			profileInformation{summary}
+			summary
 			address {
 				line1
 				line2

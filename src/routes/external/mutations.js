@@ -36,9 +36,7 @@ export const RATE_PRODUCT = gql`
 			producer {
 				id
 				name
-				profileInformation{
-					summary
-				}
+				summary
 				picture
 				address {
 					city
