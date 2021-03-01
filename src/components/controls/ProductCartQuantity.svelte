@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  import { cartItems, searchResults } from "./../../stores/app.js";
+  import { searchResults } from "./../../stores/app.js";
+  import cartStore from "./../../stores/cart";
   import { fly } from "svelte/transition";
 	import { createEventDispatcher } from 'svelte';
 
@@ -8,7 +9,7 @@
 
 	const dispatch = createEventDispatcher();
 
-  let product = $cartItems.find(c => c.id === productId);
+  let product = cartStore.getItemById(productId);
   let quantity = 0;
   let displayFeedback = false;
 
@@ -45,20 +46,9 @@
   };
 
   const updateProductQuantity = quantity => {
-    if (!product) {
-      product = $searchResults.find(p => p.id === productId);
-      $cartItems = [product, ...$cartItems];
-    }
+    cartStore.updateItem(productId, quantity);
 
-    if (!product) {
-      return;
-    }
-
-    product.quantity = quantity;
-    $cartItems = $cartItems;
-
-    if (userFeedback)
-      triggerFeedback();
+    if (userFeedback) triggerFeedback();
 
     dispatch('updateCart');
   };
@@ -77,7 +67,7 @@
   $: if (!productId) quantity = 0;
 
   $: {
-    product = $cartItems.find(c => c.id === productId);
+    product = cartStore.getItemById(productId);
     product ? (quantity = product.quantity) : (quantity = 0);
   }
 </script>

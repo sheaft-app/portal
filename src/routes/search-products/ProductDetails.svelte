@@ -13,7 +13,8 @@
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import { cartItems, selectedItem } from "./../../stores/app.js";
+  import { selectedItem } from "./../../stores/app.js";
+  import cartStore from "./../../stores/cart";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
@@ -39,7 +40,6 @@ import { config } from "../../configs/config";
   let comment = null;
   let isSubmittingRate = false;
   let isLoading = true;
-  let isInCart = false;
   let values = routerInstance.getQueryParams();
   let distanceInfos = null;
   let deliveries = [];
@@ -177,7 +177,6 @@ import { config } from "../../configs/config";
   }
 
   $: if ($selectedItem) openAndLoad($selectedItem);
-  $: isInCart = $cartItems.find(c => c.id === $selectedItem) || false;
 </script>
 
 <svelte:window on:keyup={handleKeyup} />

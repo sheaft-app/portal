@@ -1,7 +1,7 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import { cartItems } from "./../../stores/app.js";
+	import cartStore from "./../../stores/cart.js";
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import PaymentInfoForm from "./PaymentInfoForm.svelte";
@@ -62,9 +62,9 @@
 	let order = JSON.parse(localStorage.getItem("user_current_order"));
 
 	onMount(async () => {
-		if (!order || $cartItems.length == 0) {
+		if (!order || cartStore.getIsEmpty()) {
 			// todo : terminée, envoyer une notif
-			if ($cartItems.length > 0) {
+			if (!cartStore.getIsEmpty()) {
 				return routerInstance.goTo(CartRoutes.Resume);
 			} else {
 				return routerInstance.goTo(SearchProductsRoutes.Search);

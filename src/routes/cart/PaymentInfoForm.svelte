@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { cartItems } from "./../../stores/app";
+  import cartStore from "./../../stores/cart";
 	import Loader from "../../components/Loader.svelte";
   import { formatMoney } from "./../../helpers/app.js";
   import GetRouterInstance from "../../services/SheaftRouter";
@@ -127,16 +127,18 @@
           <span>Modifier</span>
         </button>
       </div>
-      {#each $cartItems as cartItem, index}
-        {#if !cartItem.disabled && !cartItem.producer.disabled}
+      {#each cartStore.getItemsWithData() as item, index}
+        {#if !item.name}
+          <div>Attends...</div>
+        {:else if !item.disabled && !item.producer.disabled}
           <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
             <div>
-              <p class="font-medium">{cartItem.name}</p>
-              <p class="text-sm">{cartItem.producer.name}</p>
+              <p class="font-medium">{item.name}</p>
+              <p class="text-sm">{item.producer.name}</p>
             </div>
             <div class="text-right">
-              <p class="font-medium">{formatMoney(cartItem.onSalePricePerUnit)}</p>
-              <p class="text-sm">qté : {cartItem.quantity}</p>
+              <p class="font-medium">{formatMoney(item.onSalePricePerUnit)}</p>
+              <p class="text-sm">qté : {item.quantity}</p>
             </div>
           </div>
         {/if}

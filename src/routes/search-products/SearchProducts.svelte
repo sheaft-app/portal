@@ -7,12 +7,12 @@
 	import ProductMap from "./../../components/ProductMap.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import {
-		cartItems,
 		cartExpanded,
 		selectedItem,
 		searchResults,
 		allDepartmentsProgress,
 	} from "./../../stores/app.js";
+	import cartStore from "./../../stores/cart";
 	import Cart from "./Cart.svelte";
 	import ProductCard from "./ProductCard.svelte";
 	import CitySearch from "./../../components/search/CitySearch.svelte";
@@ -362,17 +362,18 @@
 	});
 
 	let activeFilters = 0;
-	const GetActiveFilters = () => {
+
+	const getActiveFilters = () => {
 		activeFilters = 0;
 		if ($filters.tags && $filters.tags.length > 0) activeFilters += $filters.tags.length;
 
 		if ($filters.producerId && $filters.producerId.length > 0) activeFilters++;
 	};
 
-	$: GetActiveFilters($filters);
+	$: getActiveFilters($filters);
 
 	let currentProducerId = null;
-	const GetProducerFilter = async (producerId) => {
+	const getProducerFilter = async (producerId) => {
 		if (currentProducerId == producerId) return;
 
 		if (!producerId || producerId.length <= 0) {
@@ -392,14 +393,7 @@
 		producer = result.data;
 	};
 
-	$: GetProducerFilter($filters.producerId);
-	$: productsCount = $cartItems.reduce((sum, product) => {
-		return sum + (product.quantity || 0);
-	}, 0);
-
-	$: total = $cartItems.reduce((sum, product) => {
-		return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
-	}, 0);
+	$: getProducerFilter($filters.producerId);
 </script>
 
 <svelte:head>
@@ -407,16 +401,16 @@
 </svelte:head>
 
 <div
-	class:active={productsCount > 0}
+	class:active={cartStore.getTotalProductsCount()}
 	class="fixed bottom-0 py-2 px-4 md:px-8 border-t border-gray-400 border-solid
 		bg-white w-full left-0 block xl:hidden bottom-mobile-cta transition
 		duration-500 ease-in-out">
 	<div class="flex justify-between items-center">
 		<div class="text-lg uppercase">
-			<p class="text-sm text-gray-600">{productsCount} articles</p>
+			<p class="text-sm text-gray-600">{cartStore.getTotalProductsCount()} articles</p>
 			<p class="truncate">
 				Total:
-				<span class="font-bold">{formatMoney(total)}</span>
+				<span class="font-bold">{formatMoney(cartStore.getTotalAmount())}</span>
 			</p>
 		</div>
 		<div class="inline-flex items-center w-2/4 justify-end">
@@ -426,17 +420,17 @@
 				class="text-xs bg-white shadow font-semibold uppercase h-10 rounded-full
 					px-4 py-2 leading-none mr-2 w-3/4"
 				class:invisible={$selectedItem}
-				disabled={$cartItems.length === 0}
-				class:disabled={$cartItems.length === 0}>
+				disabled={cartStore.getIsEmpty()}
+				class:disabled={cartStore.getIsEmpty()}>
 				{$cartExpanded ? 'Fermer' : 'Aperçu'}
 			</button>
 			<button
 				on:click={goToCart}
 				type="button"
-				disabled={$cartItems.length === 0 || loadToCart}
+				disabled={cartStore.getIsEmpty() || loadToCart}
 				class="bg-accent shadow text-white font-semibold uppercase h-10
 					rounded-full leading-none flex items-center justify-center"
-				class:disabled={$cartItems.length === 0 || loadToCart}
+				class:disabled={cartStore.getIsEmpty() || loadToCart}
 				style="width: 4em;">
 				{#if loadToCart}
 					<Icon data={faCircleNotch} spin />
@@ -452,7 +446,7 @@
 	<ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />
 	{#if errors.length < 1}
 		<div
-			class:has-bottom-mobile-cta={$cartItems.length >= 1}
+			class:has-bottom-mobile-cta={!cartStore.getIsEmpty()}
 			class="search-products md:-my-4">
 			<div class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
 				<CitySearch

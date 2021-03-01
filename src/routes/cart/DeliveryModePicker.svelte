@@ -5,7 +5,7 @@
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
   import DeliveryPickModal from "./DeliveryPickModal.svelte";
-  import { cartItems } from "./../../stores/app.js";
+  import cartStore from "./../../stores/cart";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";
   import { faEdit } from "@fortawesome/free-regular-svg-icons";
   import { faMapMarkerAlt, faClock, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +19,7 @@
   export let displayLocation = true;
   export let storeDelivery = false;
   export let isLoading = false;
-  export let storeCartItems = [];
+  export let businessQuickOrderProducts = [];
   export let disabled = false;
 
   $: oneOptionOnly = data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
@@ -37,45 +37,22 @@
       onClose: (pickedDelivery, pickedDeliveryHour) => {
         selected = pickedDelivery;
         selectedDeliveryHour = pickedDeliveryHour;
-        updateCartItems();
+        updateProductsWithDeliveries();
       }
     });
   };
 
   onMount(() => { 
-    updateCartItems();
+    updateProductsWithDeliveries();
   })
 
-  const updateCartItems = () => {
-    let items = $cartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
-
-    if (storeCartItems.length > 1) {
-      items = storeCartItems.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
-    }
-
+  const updateProductsWithDeliveries = () => {
     if (data && selected && selectedDeliveryHour) {
-      // mettre à jour le lieu et l'horaire livraison dans le cartItem
-      let newCartItems = items.map(item => {
-        if (item.producer.id === data.id) {
-          return {
-            ...item,
-            producer: {
-              ...item.producer,
-              delivery: selected,
-              deliveryHour: selectedDeliveryHour
-            }
-          };
-        } else {
-          return item;
-        }
-      }).sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
-      
-      if (storeCartItems.length > 1) {
-        storeCartItems = newCartItems;
-      } else {
-        $cartItems = newCartItems;
-        localStorage.setItem("user_cart", JSON.stringify($cartItems));
-      }
+      cartStore.updateDelivery({
+        producerId: item.producer.id,
+        delivery: selected, 
+        deliveryHour: selectedDeliveryHour
+      });
     }
   };
 </script>

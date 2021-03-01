@@ -210,7 +210,7 @@
                 </p>
                 <DeliveryModePicker 
                   selected={item.producer.delivery}
-                  bind:storeCartItems={normalizedProducts}
+                  bind:businessQuickOrderProducts={normalizedProducts}
                   selectedDeliveryHour={item.producer.deliveryHour}
                   data={producerDeliveries.find(p => p.id === item.producer.id)}
                   storeDelivery={true}

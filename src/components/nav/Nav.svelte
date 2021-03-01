@@ -17,7 +17,8 @@
   } from "@fortawesome/free-solid-svg-icons";
   import NavLink from "./NavLink.svelte";
   import { slide } from "svelte/transition";
-  import { cartItems, selectedItem } from "./../../stores/app.js";
+  import { selectedItem } from "./../../stores/app.js";
+  import cartStore from "./../../stores/cart";
   import { navExpended, userMenuExpended } from "./store.js";
   import { authAuthenticated, authUserAccount, authRegistered } from "./../../stores/auth.js";
   import GetAuthInstance from "./../../services/SheaftAuth";
@@ -259,7 +260,7 @@ import { config } from "../../configs/config";
     </button>
   {/if}
   <div class="justify-end inline-flex lg:items-center">
-    {#if $cartItems.length > 0 && isInRole($authUserAccount, [
+    {#if !cartStore.getIsEmpty() && isInRole($authUserAccount, [
         Roles.Consumer.Value
       ])}
       <button
@@ -275,9 +276,7 @@ import { config } from "../../configs/config";
         <span
           class="absolute rounded-full bg-accent text-white"
           style="padding: 0px 5px; font-size: 11px; margin-top: -7px; margin-left: 10px;">
-          {$cartItems.reduce((sum, product) => {
-            return sum + (product.quantity || 0);
-          }, 0)}
+          {cartStore.getTotalProductsCount()}
         </span>
       </button>
     {/if}

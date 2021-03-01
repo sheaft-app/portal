@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { cartItems } from "../stores/app.js";
+  import cartStore from "./../stores/cart";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
 
@@ -9,7 +9,7 @@
   var map = null;
   var currentMarker = null;
   var userMarker = null;
-  var cartItemsMarkers = null;
+  var itemsMarkers = null;
   var position = {
     latitude: 0,
     longitude: 0
@@ -68,12 +68,12 @@
   });
 
   $: if (map) {
-    if (cartItemsMarkers) map.removeLayer(cartItemsMarkers);
+    if (itemsMarkers) map.removeLayer(itemsMarkers);
 
     let producerWithProductsCount = [];
 
     // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    $cartItems
+    cartStore.getItemsWithData()
       .map(cartItem => {
         let producer = producerWithProductsCount.find(
           c =>
@@ -94,7 +94,7 @@
       }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} article${producer.nbProducts > 1 ? 's' : ''}</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.address.zipcode} ${producer.address.city}</p>`) 
     );
 
-    cartItemsMarkers = L.layerGroup(coordonnates).addTo(map);
+    itemsMarkers = L.layerGroup(coordonnates).addTo(map);
   }
 
   $: if (hoveredProduct) {

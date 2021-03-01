@@ -3,7 +3,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import { cartItems } from "./../../stores/app.js";
+	import cartStore from "./../../stores/cart.js";
 	import { GET_MY_ORDERS } from "./queries.js";
 	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
@@ -13,22 +13,13 @@
 
 	let orders = [];
 
-	const resetCart = () => {
-		cartItems.set([]);
-		localStorage.setItem("user_cart", JSON.stringify($cartItems));
-		localStorage.removeItem("user_last_transaction");
-		localStorage.removeItem("user_current_order");
-	};
-
 	onMount(async () => {
 		let values = routerInstance.getQueryParams();
-
-		const transactionCartId = localStorage.getItem("user_last_transaction");
 
 		graphQLInstance.clearApolloCache(MY_ORDERS);
 		graphQLInstance.clearApolloCache(MY_VALIDATING_ORDERS);
 
-		resetCart();
+		cartStore.reset();
 
 		//TODO should retrieve purchaseOrders with transactionCartId
 
