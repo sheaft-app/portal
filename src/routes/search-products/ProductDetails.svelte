@@ -26,8 +26,6 @@
   import { config } from "../../configs/config";
   import SwiperCore, { Navigation } from 'swiper';
   import { Swiper, SwiperSlide } from 'swiper/svelte';
-  import 'swiper/swiper.scss';
-  import 'swiper/components/navigation/navigation.scss';
   
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();

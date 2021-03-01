@@ -11,6 +11,8 @@
   import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy } from "svelte";
   import "notyf/notyf.min.css";
+  import "swiper/swiper.min.css";
+  import "swiper/components/navigation/navigation.min.css";
   import Router from "svelte-spa-router";
   import Modal from "./components/modal/Modal.svelte";
   import Nav from "./components/nav/Nav.svelte";
