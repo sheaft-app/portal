@@ -20,12 +20,6 @@ const store = () => {
     const { subscribe, set, update } = writable(state);
 
     const methods = {
-        // init() {
-        //     update(state => {
-        //         state.items = []
-        //         return state
-        //     })
-        // },
         async initialize(apiInstance, errorsHandlerInstance) {
             graphQLInstance = apiInstance;
             errorsHandler = errorsHandlerInstance;
@@ -47,48 +41,53 @@ const store = () => {
             update(state => {
                 state.isInitializing = false;
                 state.items = products;
-                state.userCurrentOrder = currentOrder;
+
+                if (currentOrder)
+                    state.userCurrentOrder = currentOrder;
+
                 return state;
             });
         },
         async updateCart() {
-            update(async state => {
-                let orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
+            const orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
+            const variables = {
+                id: state.userCurrentOrder,
+                donation: "NONE",
+                products: getters.getNormalizedProducts(),
+                producersExpectedDeliveries: getters.getNormalizedSelectedDeliveries()
+            };
 
-                const variables = {
-                    id: state.userCurrentOrder,
-                    donation: "NONE",
-                    products: getters.getNormalizedProducts(),
-                    producersExpectedDeliveries: getters.getNormalizedSelectedDeliveries()
-                };
+            if (!state.userCurrentOrder) {
+                delete variables["id"];
+            }
 
-                if (!state.userCurrentOrder) {
-                    delete variables["id"];
-                }
+            let response = await graphQLInstance.mutate(orderMutation, variables);
 
-                var response = await graphQLInstance.mutate(orderMutation, variables);
+            if (!response.success) {
+                const errors = errorsHandler.getErrors();
+                const invalidProductsError = errors.find((e) => e.message.includes('produits sont invalides'));
 
-                if (!response.success) {
-                    const errors = errorsHandler.getErrors();
-                    const invalidProductsError = errors.find((e) => e.message.includes('produits sont invalides'));
+                if (invalidProductsError) {
+                    const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+                    setters.disableItems(ids);
+                }   
 
-                    if (invalidProductsError) {
-                        const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-                        setters.disableItems(ids);
-                    }   
-                }
+                return state;
+            }
 
-                state.userCurrentOrder = response.data.id;
-                localStorage.setItem("user_current_order", JSON.stringify(response.data.id));
+            state.userCurrentOrder = response.data.id;
+            localStorage.setItem("user_current_order", JSON.stringify(response.data.id));
 
-                let items = response.data.products.map((p) => ({
-                    ...p,
-                    quantity: getters.getItemQuantity(p.id)
-                }));
-
-                state.items = items;
-                console.log(state.items);
-            })
+            return setters.setItems(response.data.products);
+        },
+        addItem(itemId) {
+            localStorage.setItem("user_cart", JSON.stringify([...getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity })), {
+                id: itemId,
+                quantity: 1
+            }]));
+        },
+        updateStorage() {
+            localStorage.setItem("user_cart", JSON.stringify(getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity }))));
         }
     };
 
@@ -97,7 +96,7 @@ const store = () => {
             return state.items.find((i) => i.id == _itemId);
         },
         getItemQuantity(_itemId) {
-            let item = getItemById(_itemId);
+            let item = this.getItemById(_itemId);
 
             if (item && item.quantity) 
                 return item.quantity;
@@ -150,7 +149,7 @@ const store = () => {
         },
         getTotalAmount() {
             return state.items.reduce((sum, product) => {
-                return parseFloat(sum) + product.onSalePricePerUnit * product.quantity || 0;
+                return parseFloat(sum) + product.unitOnSalePrice * product.quantity || 0;
             }, 0);
         },
         getValidItems() {
@@ -169,7 +168,9 @@ const store = () => {
             return state.items.filter(p => p.name);
         },
         getNormalizedProducts() {
-            return state.items.map(product => ({
+            let products = JSON.parse(localStorage.getItem("user_cart"));
+
+            return products.map(product => ({
                 id: product.id,
                 quantity: product.quantity
             }));
@@ -194,18 +195,8 @@ const store = () => {
     const setters = {
         setItems(items) {
             update(state => {
-                state.items = items
-                localStorage.setItem("user_cart", JSON.stringify(state.items));
-                return state;
-            })
-        },
-        addItem(itemId) {
-            update(state => {
-                state.items = [...state.items, {
-                    id: itemId,
-                    quantity: 1
-                }];
-                localStorage.setItem("user_cart", JSON.stringify(state.items));
+                state.items = items;
+                methods.updateStorage();
                 return state;
             })
         },
@@ -218,34 +209,35 @@ const store = () => {
         removeItem(itemId) {
             update(state => {
                 state.items = state.items.filter(c => c.id !== itemId);
-                localStorage.setItem("user_cart", JSON.stringify(state.items));
+                methods.updateStorage();
                 return state;
             })
         },
         updateItem(itemId, quantity) {
             update(state => {
                 let product = getters.getItemById(itemId);
+                
                 if (!product) {
-                    this.addItem(itemId);
+                    methods.addItem(itemId);
                 } else {
                     product.quantity = quantity;
+                    methods.updateStorage();
                 }
                 return state;
             })
-
-            methods.updateCart();
+            return methods.updateCart();
         },
         removeItemsWithProducer(producerId) {
             update(state => {
                 state.items = state.items.filter(c => c.producer.id !== producerId);
-                localStorage.setItem("user_cart", JSON.stringify(state.items));
+                methods.updateStorage();
                 return state;
             })
         },
         reset() {
             update(state => {
                 state.items = [];
-                localStorage.setItem("user_cart", JSON.stringify([]));
+                methods.updateStorage();
                 localStorage.removeItem("user_last_transaction");
                 localStorage.removeItem("user_current_order");
                 return state;

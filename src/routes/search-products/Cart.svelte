@@ -53,7 +53,7 @@
   style="margin-bottom: 125px; overflow-y: auto; overflow-x: hidden;">
 
   {#if !$cartStore.isInitializing}
-    {#each cartStore.getItemsWithData() as line (line.id)}
+    {#each $cartStore.items as line (line.id)}
       <div
         transition:fly|local="{{duration: 300}}"
         animate:flip="{{duration: 300}}"
@@ -80,7 +80,7 @@
             </div>
             <div class="w-2/12 text-right">
               <p class="font-bold leading-none">
-                {formatMoney(line.onSalePricePerUnit * line.quantity)}
+                {formatMoney(line.unitOnSalePrice * line.quantity)}
               </p>
             </div>
           {/if}

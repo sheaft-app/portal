@@ -73,7 +73,7 @@
     let producerWithProductsCount = [];
 
     // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    cartStore.getItemsWithData()
+    $cartStore.items
       .map(cartItem => {
         let producer = producerWithProductsCount.find(
           c =>

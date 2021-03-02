@@ -130,8 +130,6 @@
     guardInstance.unregister();
     await signalrInstance.stop();
   });
-
-  console.log($cartStore.items);
 </script>
 
 {#if !$authInitialized || isLoading}

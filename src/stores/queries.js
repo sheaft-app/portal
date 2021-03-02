@@ -12,9 +12,15 @@ export const GET_CART = gql`
             products {
                 id
                 name
+                unitOnSalePrice
+                quantity
                 producer {
                     name
                     address {
+                        line1
+						line2
+						city
+						zipcode
                         latitude
                         longitude
                     }

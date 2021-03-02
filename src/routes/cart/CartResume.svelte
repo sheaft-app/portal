@@ -418,12 +418,12 @@
                     <div class="text-lg leading-5 font-medium">
                       <p>{item.name}</p>
                     </div>
-                    <div class="text-sm leading-5">{formatMoney(item.onSalePricePerUnit)} / unité</div>
+                    <div class="text-sm leading-5">{formatMoney(item.unitOnSalePrice)} / unité</div>
                   </div>
                   <div class="md:w-2/12 px-3 block md:hidden">
                     <p>
                       <span class="font-bold text-xl">
-                        {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
+                        {formatMoney(item.unitOnSalePrice * item.quantity || 0)}
                       </span>
                     </p>
                     <button
@@ -441,7 +441,7 @@
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
                     <p>
                       <span class="font-bold text-lg">
-                        {formatMoney(item.onSalePricePerUnit * item.quantity || 0)}
+                        {formatMoney(item.unitOnSalePrice * item.quantity || 0)}
                       </span>
                     </p>
                     <button

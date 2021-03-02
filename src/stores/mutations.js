@@ -16,12 +16,18 @@ export const CREATE_CONSUMER_ORDER = gql`
 			}
 			products {
                 id
-                name
+				name
+				quantity
+				unitOnSalePrice
                 producer {
                     name
                     address {
+						line1
+						line2
+						city
+						zipcode
                         latitude
-                        longitude
+						longitude
                     }
                 }
             }
@@ -45,10 +51,16 @@ export const UPDATE_CONSUMER_ORDER = gql`
 			}
 			products {
                 id
-                name
+				name
+				quantity
+				unitOnSalePrice
                 producer {
                     name
                     address {
+                        line1
+						line2
+						city
+						zipcode
                         latitude
                         longitude
                     }

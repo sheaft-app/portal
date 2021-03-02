@@ -90,7 +90,7 @@
     let producerWithProductsCount = [];
 
     // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    cartStore.getItemsWithData()
+    $cartStore.items
       .filter(c => c.producer.delivery && c.producer.delivery.address && c.producer.delivery.address.latitude && c.producer.delivery.address.longitude)
       .map((cartItem, i) => {
         let producer = producerWithProductsCount.find(

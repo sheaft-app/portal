@@ -127,7 +127,7 @@
           <span>Modifier</span>
         </button>
       </div>
-      {#each cartStore.getItemsWithData() as item, index}
+      {#each $cartStore.items as item, index}
         {#if !item.name}
           <div>Attends...</div>
         {:else if !item.disabled && !item.producer.disabled}
@@ -137,7 +137,7 @@
               <p class="text-sm">{item.producer.name}</p>
             </div>
             <div class="text-right">
-              <p class="font-medium">{formatMoney(item.onSalePricePerUnit)}</p>
+              <p class="font-medium">{formatMoney(item.unitOnSalePrice)}</p>
               <p class="text-sm">qté : {item.quantity}</p>
             </div>
           </div>
