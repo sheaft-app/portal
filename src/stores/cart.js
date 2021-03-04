@@ -64,7 +64,7 @@ const store = () => {
                 return state;
             });
         },
-        async updateCart() {
+        async updateCart(choosenDonation = "NONE") {
             if (state.isSaving) {
                 return;
             }
@@ -73,7 +73,7 @@ const store = () => {
             const orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
             const variables = {
                 id: state.userCurrentOrder,
-                donation: "NONE",
+                donation: choosenDonation,
                 products: getters.getNormalizedProducts(),
                 producersExpectedDeliveries: getters.getNormalizedSelectedDeliveries()
             };

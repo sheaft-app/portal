@@ -132,7 +132,7 @@
   }
 
   const handleSubmit = async () => {
-    await cartStore.updateCart();
+    await cartStore.updateCart(choosenDonation);
     
     routerInstance.goTo(CartRoutes.Checkout)
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));

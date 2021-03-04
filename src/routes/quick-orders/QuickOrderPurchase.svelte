@@ -3,7 +3,7 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import SheaftErrors from "./../../services/SheaftErrors.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
-  import DeliveryModePicker from "../cart/DeliveryModePicker.svelte";
+  import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
   import FilterProducersModal from './FilterProducersModal.svelte';
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { formatMoney } from "./../../helpers/app.js";
@@ -210,10 +210,9 @@
                 </p>
                 <DeliveryModePicker 
                   selected={item.producer.delivery}
-                  bind:businessQuickOrderProducts={normalizedProducts}
                   selectedDeliveryHour={item.producer.deliveryHour}
+                  bind:businessQuickOrderProducts={normalizedProducts}
                   data={producerDeliveries.find(p => p.id === item.producer.id)}
-                  storeDelivery={true}
                   displayLocation={false}
                   isLoading={isLoadingDeliveries}
                 />
