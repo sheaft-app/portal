@@ -12,7 +12,7 @@
   import { GetDistanceInfos } from "./../../helpers/distances.js";
   import orderBy from "lodash/orderBy";
 
-  export let close, introEnded, data, onClose, selected, selectedDeliveryHour, storeDelivery;
+  export let close, introEnded, data, onClose, selected, selectedDeliveryHour, storeDelivery = false;
 
   let isLoading = true;
   let location = null;

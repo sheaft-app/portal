@@ -115,10 +115,10 @@ const store = () => {
             }
             state.isSaving = false;
         },
-        addItem(itemId) {
+        addItem(itemId, quantity) {
             localStorage.setItem("user_cart", JSON.stringify([...getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity })), {
                 id: itemId,
-                quantity: 1
+                quantity
             }]));
         },
         updateStorage() {
@@ -271,7 +271,7 @@ const store = () => {
                 let product = getters.getItemById(itemId);
                 
                 if (!product) {
-                    methods.addItem(itemId);
+                    methods.addItem(itemId, quantity);
                 } else {
                     product.quantity = quantity;
                     methods.updateStorage();

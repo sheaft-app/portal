@@ -2,11 +2,9 @@
   import { onMount } from "svelte";
   import cartStore from "./../../stores/cart";
   import { fly } from "svelte/transition";
-	import { createEventDispatcher } from 'svelte';
+  import debounce from "lodash/debounce";
 
   export let productId, plusButtonActive = false, userFeedback = false, noMargin = false, minQuantity = 0, timeout = null, disabled = false, center = true;
-
-	const dispatch = createEventDispatcher();
 
   let quantity = 0;
   let displayFeedback = false;
@@ -45,13 +43,10 @@
     updateProductQuantity(parseInt(e.target.value));
   };
 
-  const updateProductQuantity = quantity => {
+  const updateProductQuantity = debounce((quantity) => {
     cartStore.updateItem(productId, quantity);
-
     if (userFeedback) triggerFeedback();
-
-    dispatch('updateCart');
-  };
+  }, 800);
 
   const triggerFeedback = () => {
     displayFeedback = true;
@@ -102,7 +97,7 @@
       transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
       aria-label="Ajouter 1"
       class:active={plusButtonActive}
-      on:click|stopPropagation={() => handleMore()}>
+      on:click|stopPropagation={(e) => handleMore(e)}>
       +
     </button>
   </div>

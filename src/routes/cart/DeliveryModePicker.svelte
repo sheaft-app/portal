@@ -30,7 +30,6 @@
       data,
       selected,
       selectedDeliveryHour,
-      storeDelivery,
       onClose: (pickedDelivery, pickedDeliveryHour) => {
         selected = pickedDelivery;
         selectedDeliveryHour = pickedDeliveryHour;
