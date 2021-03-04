@@ -1,6 +1,7 @@
 <script>
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
+  import Loader from "../../components/Loader.svelte";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import CartMap from "./CartMap.svelte";
   import cartStore from "./../../stores/cart";
@@ -50,8 +51,8 @@
     }
   });
 
-  $: if ($cartStore.items.length > 0 && producersDeliveries.length === 0) {
-    getProducerDeliveries($cartStore.items);
+  $: if (producersDeliveries.length === 0 && $cartStore.items.length > 0) {
+    getProducerDeliveries();
   }
   
   const showTransactionInfo = () => {
@@ -96,17 +97,16 @@
     isLoadingDeliveries = false;
   }
 
-  $: isValid = !$cartStore.items.find(c => !c.producer.disabled && !c.producer.deliveryHour);
+  $: isValid = $cartStore.items.find(c => !c.producer.disabled) && $cartStore.selectedDeliveries.length == cartStore.getProducersIds().length;
   $: productsHaveBeenRemoved = $cartStore.items.find(c => c.disabled);
   $: producersHaveBeenRemoved = $cartStore.items.find(c => c.producer.disabled);
 
   const blink = (deliveries) => {
-    if (!deliveries || deliveries.length == 0) return;
+    const elements = document.getElementsByClassName("not-ready");
 
-    deliveries.map((d, index) => {
-      const element = document.getElementById(d.producer.id);
+    let index = 0;
 
-      if (!element) return;
+    for (const element of elements) {
 
       if (index == 0) {
         var headerOffset = document.getElementById('navbar').offsetHeight;
@@ -119,9 +119,10 @@
         });   
       }
 
-      element.classList.add("blink")
+      element.classList.add("blink");
       setTimeout(() => element.classList.remove("blink"), 3000);
-    });
+      index++;
+    }
   }
   
   const validateCart = () => {
@@ -141,7 +142,6 @@
 <svelte:head>
   <title>Mon panier</title>
 </svelte:head>
-
 
 {#if validatedCart}
   <div in:fly|local={{ x: 300, duration: 300 }}>
@@ -200,7 +200,7 @@
             {/if}
             <div
               class="align-middle inline-block min-w-full overflow-hidden items">
-              {#each cartStore.getSortedItemsByProducerName() as item, i (item.id)}
+              {#each cartStore.getSortedItemsByProducerName($cartStore.items) as item, i (item.id)}
                 {#if i === 0 || cartStore.getSortedItemsByProducerName()[i - 1].producer.name !== item.producer.name}
                     <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1} class:bg-orange-200={item.producer.disabled}>
                       <span
@@ -359,6 +359,8 @@
               {/if}
             </div>
           </div>
+        {:else if $cartStore.isSaving || $cartStore.isInitializing}
+          <Loader />
         {:else}
           <div class="text-center text-2xl text-gray-600 m-auto px-6">
             <p>Votre panier est vide !</p>

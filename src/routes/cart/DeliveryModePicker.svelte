@@ -68,7 +68,7 @@
 
 
 {#if isLoading}
-  <div class="p-4 bg-gray-100 border-gray-400 border">
+  <div class="p-4 bg-gray-100 border-gray-400 border not-ready">
     <div class="flex">
         <Icon data={faCircleNotch} spin class="mr-2 w-4" />
         <p class="uppercase font-medium text-xs">
@@ -80,7 +80,7 @@
   {#if data && !selected && !selectedDeliveryHour}
     <div
       id={data.id}
-      class="cursor-pointer p-4 bg-gray-100 border border-gray-400"
+      class="cursor-pointer p-4 bg-gray-100 border border-gray-400 not-ready"
       class:disabled
       on:click={showDeliveryPickModal}>
       <div class="flex text-accent">
@@ -99,7 +99,7 @@
           {label}
       </p>
     {/if}
-    <div class="p-4 bg-red-500 text-white border">
+    <div class="p-4 bg-red-500 text-white border not-ready">
         <p>Une erreur est survenue pendant la récupération des informations de livraison du producteur.</p>
         <p>Essayez de rafraîchir la page. Si l'erreur persiste, contactez le service technique.</p>
     </div>  

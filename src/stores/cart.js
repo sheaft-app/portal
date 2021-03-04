@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 import { GET_CART } from "./queries";
 import { CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER } from "./mutations.js";
-import debounce from "lodash/debounce";
 import orderBy from "lodash/orderBy";
 
 const store = () => {
@@ -9,12 +8,10 @@ const store = () => {
     let errorsHandler = null;
 
     const state = {
-        items: [],
-        itemsOrderedByProducer: [],
-        selectedDeliveries: [],
         isInitializing: true,
         isSaving: false,
-        isLoadingNewProduct: false,
+        items: [],
+        selectedDeliveries: [],
         userCurrentOrder: null,
         totalFees: 0,
         donation: 0,
@@ -68,9 +65,9 @@ const store = () => {
             });
         },
         async updateCart() {
-            // if (!hasFetchedOrder || isLoadingPaymentInfo) {
-            //     return;
-            //   }
+            if (state.isSaving) {
+                return;
+            }
 
             state.isSaving = true;
             const orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
@@ -104,6 +101,7 @@ const store = () => {
             localStorage.setItem("user_current_order", JSON.stringify(response.data.id));
 
             setters.setItems(response.data.products);
+
             state.totalFees = response.data.totalFees;
             state.donation = response.data.donation;
             state.productsCount = response.data.productsCount;
@@ -111,6 +109,7 @@ const store = () => {
             state.totalPrice = response.data.totalPrice;
             state.totalReturnableOnSalePrice = response.data.totalReturnableOnSalePrice;
             state.returnablesCount = response.data.returnablesCount;
+
             if (response.data.deliveries.length > 0) {
                 setters.setSelectedDeliveries(this.normalizeDeliveries(response.data.deliveries));
             }
@@ -188,9 +187,6 @@ const store = () => {
         getHasSelectedDeliveryForEveryProducer() {
             return state.selectedDeliveries.length == this.getProducersIds().length;
         },
-        getItemsWithData() {
-            return state.items.filter(p => p.name);
-        },
         getNormalizedProducts() {
             let products = JSON.parse(localStorage.getItem("user_cart"));
 
@@ -200,6 +196,14 @@ const store = () => {
             }));
         },
         getNormalizedSelectedDeliveries() {
+            state.selectedDeliveries.map((d) => {
+                let hasProducerInCart = state.items.find((i) => i.producer.id == d.producerId);
+
+                if (!hasProducerInCart) {
+                    setters.resetSelectedDeliveryForProducerId(d.producerId);
+                }
+            });
+
             if (!this.getHasSelectedDeliveryForEveryProducer()) {
                 return null;
             }
@@ -279,6 +283,7 @@ const store = () => {
         removeItemsWithProducer(producerId) {
             update(state => {
                 state.items = state.items.filter(c => c.producer.id !== producerId);
+                resetSelectedDeliveryForProducerId(producerId);
                 methods.updateStorage();
                 methods.updateCart();
                 return state;
@@ -333,10 +338,6 @@ const store = () => {
             })
         }
     };
-
-    // writable(state).subscribe(value => {
-    //     debounce(methods.updateCart(), 800);
-    // });
 
     return {
         subscribe,

@@ -4,10 +4,11 @@ export const CREATE_CONSUMER_ORDER = gql`
 	mutation createOrder($input: CreateOrderInput!) {
 		createOrder(input: $input) {
 			id
-			donation
 			productsCount
 			totalOnSalePrice
 			totalPrice
+			donation
+            totalFees
 			totalReturnableOnSalePrice
 			deliveries {
                 expectedDelivery {
@@ -61,11 +62,12 @@ export const UPDATE_CONSUMER_ORDER = gql`
 	mutation updateOrder($input: UpdateOrderInput!) {
 		updateOrder(input: $input) {
 			id
-			donation
 			productsCount
-			totalFees
-			totalPrice
 			totalOnSalePrice
+			totalPrice
+			donation
+            totalFees
+			totalReturnableOnSalePrice
 			deliveries {
                 expectedDelivery {
                     day

@@ -1,6 +1,5 @@
 <script>
   import { onDestroy } from "svelte";
-  import { slide } from "svelte/transition";
   import cartStore from "./../../stores/cart";
   import BlowingButton from "./BlowingButton.svelte";
   import { formatMoney } from "./../../helpers/app.js";
@@ -13,11 +12,7 @@
   const CHOICE_ROUNDED = "ROUNDED";
   const CHOICE_NONE = "NONE";
 
-  let order = JSON.parse(
-		localStorage.getItem("user_current_order")
-  );
-
-  $: roundedValue = Math.ceil(order.totalPrice - order.donation) - (order.totalPrice - order.donation);
+  $: roundedValue = Math.ceil($cartStore.totalPrice - $cartStore.donation) - ($cartStore.totalPrice - $cartStore.donation);
   
   const choose = (_choice) => {
     choice = _choice;

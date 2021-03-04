@@ -7,6 +7,8 @@ export const GET_CART = gql`
             totalFees
             status
             totalOnSalePrice
+            totalPrice
+            donation
             productsCount
             deliveries {
                 expectedDelivery {
