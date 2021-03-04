@@ -8,6 +8,30 @@ export const GET_CART = gql`
             status
             totalOnSalePrice
             productsCount
+            deliveries {
+                expectedDelivery {
+                    day
+                    from
+                    to
+                    expectedDeliveryDate
+                }
+                id
+                deliveryMode {
+                    kind
+                    producer {
+                        id
+                        name
+                    }
+                    address {
+                        line1
+                        line2
+                        city
+                        zipcode
+                        latitude
+                        longitude
+                    }
+                }
+            }
             totalPrice
             products {
                 id
@@ -15,6 +39,7 @@ export const GET_CART = gql`
                 unitOnSalePrice
                 quantity
                 producer {
+                    id
                     name
                     address {
                         line1

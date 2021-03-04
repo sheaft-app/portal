@@ -13,8 +13,16 @@ const store = () => {
         itemsOrderedByProducer: [],
         selectedDeliveries: [],
         isInitializing: true,
+        isSaving: false,
         isLoadingNewProduct: false,
-        userCurrentOrder: null
+        userCurrentOrder: null,
+        totalFees: 0,
+        donation: 0,
+        productsCount: 0,
+        totalOnSalePrice: 0,
+        totalPrice: 0,
+        totalReturnableOnSalePrice: 0,
+        returnablesCount: 0
     }
     
     const { subscribe, set, update } = writable(state);
@@ -25,30 +33,46 @@ const store = () => {
             errorsHandler = errorsHandlerInstance;
 
             const currentOrder = JSON.parse(localStorage.getItem("user_current_order"));
-            let products = [];
-
+            const currentCart = JSON.parse(localStorage.getItem("user_cart"));
+            
             if (currentOrder) {
                 const res = await graphQLInstance.query(GET_CART, { input: currentOrder });
 
-                if (!res.success) {
-                    // todo
+                if (!res.success || res.data == null || res.data.status == "SUCCEEDED" || res.data.status == "WAITING") {
+                    this.clearStorage();
                     return;
                 }
-
-                products = res.data.products;
+                
+                update(state => { 
+                    state.items = res.data.products;
+                    state.totalFees = res.data.totalFees;
+                    state.donation = res.data.donation;
+                    state.productsCount = res.data.productsCount;
+                    state.totalOnSalePrice = res.data.totalOnSalePrice;
+                    state.totalPrice = res.data.totalPrice;
+                    state.totalReturnableOnSalePrice = res.data.totalReturnableOnSalePrice;
+                    state.returnablesCount = res.data.returnablesCount;
+                    state.userCurrentOrder = currentOrder;
+                    if (res.data.deliveries.length > 0) {
+                        setters.setSelectedDeliveries(this.normalizeDeliveries(res.data.deliveries));
+                    }
+                    return state;
+                });
+            } else if (currentCart) {
+                this.updateCart();
             }
 
             update(state => {
                 state.isInitializing = false;
-                state.items = products;
-
-                if (currentOrder)
-                    state.userCurrentOrder = currentOrder;
-
                 return state;
             });
         },
         async updateCart() {
+            // if (!hasFetchedOrder || isLoadingPaymentInfo) {
+            //     return;
+            //   }
+
+            state.isSaving = true;
             const orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
             const variables = {
                 id: state.userCurrentOrder,
@@ -72,13 +96,25 @@ const store = () => {
                     setters.disableItems(ids);
                 }   
 
+                state.isSaving = false;
                 return state;
             }
 
             state.userCurrentOrder = response.data.id;
             localStorage.setItem("user_current_order", JSON.stringify(response.data.id));
 
-            return setters.setItems(response.data.products);
+            setters.setItems(response.data.products);
+            state.totalFees = response.data.totalFees;
+            state.donation = response.data.donation;
+            state.productsCount = response.data.productsCount;
+            state.totalOnSalePrice = response.data.totalOnSalePrice;
+            state.totalPrice = response.data.totalPrice;
+            state.totalReturnableOnSalePrice = response.data.totalReturnableOnSalePrice;
+            state.returnablesCount = response.data.returnablesCount;
+            if (response.data.deliveries.length > 0) {
+                setters.setSelectedDeliveries(this.normalizeDeliveries(response.data.deliveries));
+            }
+            state.isSaving = false;
         },
         addItem(itemId) {
             localStorage.setItem("user_cart", JSON.stringify([...getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity })), {
@@ -88,6 +124,25 @@ const store = () => {
         },
         updateStorage() {
             localStorage.setItem("user_cart", JSON.stringify(getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity }))));
+        },
+        clearStorage() {
+            localStorage.removeItem("user_last_transaction");
+            localStorage.removeItem("user_current_order");
+        },
+        normalizeDeliveries(deliveries) {
+            return deliveries.map((delivery, index) => ({
+                number: index + 1,
+                delivery: {
+                    id: delivery.id,
+                    address: delivery.deliveryMode.address,
+                    kind: delivery.deliveryMode.kind
+                },
+                deliveryHour: {
+                    ...delivery.expectedDelivery
+                },
+                producerId: delivery.deliveryMode.producer.id,
+                producerName: delivery.deliveryMode.producer.name,
+            }));
         }
     };
 
@@ -95,27 +150,10 @@ const store = () => {
         getItemById(_itemId) {
             return state.items.find((i) => i.id == _itemId);
         },
-        getItemQuantity(_itemId) {
-            let item = this.getItemById(_itemId);
-
-            if (item && item.quantity) 
-                return item.quantity;
-            return 0;
-        },
-        getItemsOrderedByProducer(_itemId) {
-            // todo
-            // return state.items.find((i) => i.id == _itemId);
-        },
-        getLinesCount() {
-            return state.items.length;
-        },
-        getIsEmpty() {
-            return state.items.length == 0;
-        },
         getSortedItemsByProducerName() {
             return orderBy(state.items, i => i.producer.name, ['asc']);
         },
-        getProducersIdsInCart() {
+        getProducersIds() {
             return state.items
             .map(p => p.producer.id)
             .reduce(
@@ -125,32 +163,21 @@ const store = () => {
             );
         },
         getItemsMappedByProducer() {
-            return state.items.filter(c => c.producer.delivery && c.producer.delivery.address && c.producer.delivery.address.latitude && c.producer.delivery.address.longitude)
-            .map((cartItem, i) => {
-                let producer = state.items.find(
-                c => {
-                    return c.delivery.address.latitude === cartItem.producer.delivery.address.latitude &&
-                    c.delivery.address.longitude === cartItem.producer.delivery.address.longitude
-                }
-                );
+            return state.items.reduce((producers, cartItem) => {
+                let producer = producers.find(p => p.id == cartItem.producer.id);
 
                 producer
-                ? (producer.nbProducts += cartItem.quantity)
-                : (producerWithProductsCount = [
-                    ...producerWithProductsCount,
-                    { ...cartItem.producer, nbProducts: cartItem.quantity, index: producerWithProductsCount.length + 1 }
-                    ]);
-            });
-        },
-        getTotalProductsCount() {
-            return state.items.reduce((sum, product) => {
-                return sum + (product.quantity || 0);
-            }, 0);
-        },
-        getTotalAmount() {
-            return state.items.reduce((sum, product) => {
-                return parseFloat(sum) + product.unitOnSalePrice * product.quantity || 0;
-            }, 0);
+                    ? producer.nbProducts += cartItem.quantity
+                    : producers = [
+                        ...producers,
+                        { 
+                            ...cartItem.producer, 
+                            nbProducts: cartItem.quantity 
+                        }
+                    ];
+                
+                return producers;
+            }, []);
         },
         getValidItems() {
             return state.items.filter(p => p.quantity > 0 && !p.disabled && !p.producer.disabled);
@@ -158,11 +185,8 @@ const store = () => {
         getDeliveryByProducerId(_producerId) {
             return state.selectedDeliveries.find((d) => d.producerId == _producerId);
         },
-        getAllSelectedDeliveries() {
-            return state.selectedDeliveries;
-        },
         getHasSelectedDeliveryForEveryProducer() {
-            return state.selectedDeliveries.find((p) => !p.delivery);
+            return state.selectedDeliveries.length == this.getProducersIds().length;
         },
         getItemsWithData() {
             return state.items.filter(p => p.name);
@@ -176,7 +200,7 @@ const store = () => {
             }));
         },
         getNormalizedSelectedDeliveries() {
-            if (!getters.getHasSelectedDeliveryForEveryProducer()) {
+            if (!this.getHasSelectedDeliveryForEveryProducer()) {
                 return null;
             }
 
@@ -185,10 +209,18 @@ const store = () => {
                     producerId: d.producerId,
                     deliveryModeId: d.delivery ? d.delivery.id : null,
                     expectedDeliveryDate: d.deliveryHour ? d.deliveryHour.expectedDeliveryDate : null
-                })
+                }))
                 .filter((producer, index, self) =>
                     index === self.findIndex(t => t.producerId === producer.producerId)
-                ));
+                );
+        },
+        getSelectedDelivery(deliveries) {
+            for (const delivery of deliveries) {
+                let _delivery = state.selectedDeliveries.find((p) => p.delivery.id == delivery.id);
+                if (_delivery) return _delivery;
+            }
+            
+            return null;
         }
     }
 
@@ -206,10 +238,27 @@ const store = () => {
                 item.disabled = true;
             })
         },
+        disableProducers(producersIds) {
+            producersIds.map((i) => {
+                state.items.map((c) => {
+                    if (c.producer.id == i) {
+                        return {
+                            ...c,
+                            producer: {
+                                ...c.producer,
+                                disabled: true
+                            }
+                        }
+                    }
+                    else return c;
+                });
+            })
+        },
         removeItem(itemId) {
             update(state => {
                 state.items = state.items.filter(c => c.id !== itemId);
                 methods.updateStorage();
+                methods.updateCart();
                 return state;
             })
         },
@@ -231,6 +280,7 @@ const store = () => {
             update(state => {
                 state.items = state.items.filter(c => c.producer.id !== producerId);
                 methods.updateStorage();
+                methods.updateCart();
                 return state;
             })
         },
@@ -247,15 +297,20 @@ const store = () => {
             update(state => {
                 let deliveryMode = getters.getDeliveryByProducerId(producerId);
 
-                if (delivery) {
+                if (deliveryMode) {
                     deliveryMode.delivery = delivery;
                     deliveryMode.deliveryHour = deliveryHour;
+                    state.selectedDeliveries = state.selectedDeliveries;
                 } else {
                     state.selectedDeliveries = [...state.selectedDeliveries, {
-                        producerId, delivery, deliveryHour
+                        number: state.selectedDeliveries.length + 1, 
+                        producerId, 
+                        delivery, 
+                        deliveryHour
                     }];
                 }
                 
+                methods.updateCart();
                 return state;
             })
         },
@@ -264,6 +319,18 @@ const store = () => {
                 state.products = products;
                 return state;
             });
+        },
+        setSelectedDeliveries(deliveries) {
+            update(state => {
+                state.selectedDeliveries = deliveries;
+                return state;
+            });
+        },
+        resetSelectedDeliveryForProducerId(producerId) {
+            update(state => {
+                state.selectedDeliveries = state.selectedDeliveries.filter((d) => d.producerId !== producerId);
+                return state;
+            })
         }
     };
 

@@ -14,10 +14,7 @@
 
   export let close, introEnded, data, onClose, selected, selectedDeliveryHour, storeDelivery;
 
-  const routerInstance = GetRouterInstance();
-
   let isLoading = true;
-  let scrolledBottom = true;
   let location = null;
   let slides = [];
 

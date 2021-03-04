@@ -37,20 +37,29 @@
       onClose: (pickedDelivery, pickedDeliveryHour) => {
         selected = pickedDelivery;
         selectedDeliveryHour = pickedDeliveryHour;
-        updateProductsWithDeliveries();
+        selectDelivery();
       }
     });
   };
+  
+  $: if (!isLoading) {
+    getSelectedDeliveryInformation();
+  }
 
-  onMount(() => { 
-    updateProductsWithDeliveries();
-  })
+  const getSelectedDeliveryInformation = () => {
+    const selectedDelivery = cartStore.getSelectedDelivery(data.deliveries);
 
-  const updateProductsWithDeliveries = () => {
+    if (selectedDelivery) {
+      selected = selectedDelivery.delivery;
+      selectedDeliveryHour = selectedDelivery.deliveryHour
+    }
+  }
+
+  const selectDelivery = () => {
     if (data && selected && selectedDeliveryHour) {
       cartStore.updateDelivery({
-        producerId: item.producer.id,
-        delivery: selected, 
+        producerId: data.id,
+        delivery: selected,
         deliveryHour: selectedDeliveryHour
       });
     }

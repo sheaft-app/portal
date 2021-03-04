@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-  import { cartItemsOrderedByProducer } from "../../stores/app.js";
   import cartStore from "../../stores/cart";
   import { querystring } from "svelte-spa-router";
   import "leaflet/dist/leaflet.css";
@@ -87,34 +86,10 @@
   $: if (map) {
     if (itemsMarkers) map.removeLayer(itemsMarkers);
 
-    let producerWithProductsCount = [];
-
-    // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    $cartStore.items
-      .filter(c => c.producer.delivery && c.producer.delivery.address && c.producer.delivery.address.latitude && c.producer.delivery.address.longitude)
-      .map((cartItem, i) => {
-        let producer = producerWithProductsCount.find(
-          c => {
-            return c.delivery.address.latitude === cartItem.producer.delivery.address.latitude &&
-            c.delivery.address.longitude === cartItem.producer.delivery.address.longitude
-          }
-        );
-
-        producer
-          ? (producer.nbProducts += cartItem.quantity)
-          : (producerWithProductsCount = [
-              ...producerWithProductsCount,
-              { ...cartItem.producer, nbProducts: cartItem.quantity, index: producerWithProductsCount.length + 1 }
-            ]);
-      });
-
-  
-    cartItemsOrderedByProducer.set(producerWithProductsCount);
-
-    const coordonnates = producerWithProductsCount.map((producer, i) =>
+    const coordonnates = $cartStore.selectedDeliveries.map((producer) =>
       L.marker([producer.delivery.address.latitude, producer.delivery.address.longitude], {
-        icon: renderMarkerWithNumber(i + 1)
-      }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} articles</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.delivery.address.zipcode} ${producer.delivery.address.city}</p>`)
+        icon: renderMarkerWithNumber(producer.number)
+      }).bindPopup(`<p style="margin: 0">${producer.producerName}</p><p style="margin: 0">${producer.delivery.address.zipcode} ${producer.delivery.address.city}</p>`)
     );
 
     itemsMarkers = L.featureGroup(coordonnates);

@@ -4,10 +4,8 @@
 	import { fly } from "svelte/transition";
 	import { SEARCH_PRODUCTS, GET_PRODUCER_NAME } from "./queries.js";
 	import { isLoading, isFetchingMore, filters } from "./store";
-	import ProductMap from "./../../components/ProductMap.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import {
-		cartExpanded,
 		selectedItem,
 		searchResults,
 		allDepartmentsProgress,
@@ -25,16 +23,8 @@
 	import Icon from "svelte-awesome";
 	import {
 		faFilter,
-		faTimesCircle,
-		faCircleNotch,
+		faTimesCircle
 	} from "@fortawesome/free-solid-svg-icons";
-	import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-	import {
-		freezeBody,
-		unfreezeBody,
-		formatMoney,
-	} from "./../../helpers/app.js";
-	import Loader from "./../../components/Loader.svelte";
 	import SkeletonCard from "./SkeletonCard.svelte";
 	import Roles from "./../../enums/Roles";
 	import CartRoutes from "../cart/routes";
@@ -214,20 +204,6 @@
 		isLoading.set(false);
 	};
 
-	const expendCart = () => {
-		if ($cartExpanded) {
-			return hideCart();
-		}
-
-		cartExpanded.set(!$cartExpanded);
-		freezeBody();
-	};
-
-	const hideCart = () => {
-		unfreezeBody();
-		cartExpanded.set(false);
-	};
-
 	const retrieveUserLocationInStorage = () => {
 		var position = localStorage.getItem("user_location");
 		if (position) {
@@ -400,53 +376,11 @@
 	<title>Explorer</title>
 </svelte:head>
 
-<div
-	class:active={cartStore.getTotalProductsCount()}
-	class="fixed bottom-0 py-2 px-4 md:px-8 border-t border-gray-400 border-solid
-		bg-white w-full left-0 block xl:hidden bottom-mobile-cta transition
-		duration-500 ease-in-out">
-	<div class="flex justify-between items-center">
-		<div class="text-lg uppercase">
-			<p class="text-sm text-gray-600">{cartStore.getTotalProductsCount()} articles</p>
-			<p class="truncate">
-				Total:
-				<span class="font-bold">{formatMoney(cartStore.getTotalAmount())}</span>
-			</p>
-		</div>
-		<div class="inline-flex items-center w-2/4 justify-end">
-			<button
-				type="button"
-				on:click={() => expendCart()}
-				class="text-xs bg-white shadow font-semibold uppercase h-10 rounded-full
-					px-4 py-2 leading-none mr-2 w-3/4"
-				class:invisible={$selectedItem}
-				disabled={cartStore.getIsEmpty()}
-				class:disabled={cartStore.getIsEmpty()}>
-				{$cartExpanded ? 'Fermer' : 'Aperçu'}
-			</button>
-			<button
-				on:click={goToCart}
-				type="button"
-				disabled={cartStore.getIsEmpty() || loadToCart}
-				class="bg-accent shadow text-white font-semibold uppercase h-10
-					rounded-full leading-none flex items-center justify-center"
-				class:disabled={cartStore.getIsEmpty() || loadToCart}
-				style="width: 4em;">
-				{#if loadToCart}
-					<Icon data={faCircleNotch} spin />
-				{:else}
-					<Icon data={faShoppingCart} />
-				{/if}
-			</button>
-		</div>
-	</div>
-</div>
-
 <TransitionWrapper hasRightPanel style="margin:0;">
 	<ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />
 	{#if errors.length < 1}
 		<div
-			class:has-bottom-mobile-cta={!cartStore.getIsEmpty()}
+			class:has-bottom-mobile-cta={$cartStore.items.length > 0}
 			class="search-products md:-my-4">
 			<div class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
 				<CitySearch
@@ -690,17 +624,7 @@
 	{/if}
 </TransitionWrapper>
 
-<div
-	class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
-		transition duration-300 ease-in-out cart-panel"
-	class:active={$cartExpanded}>
-	<ProductMap
-		id="products-map"
-		height="200px"
-		userPosition={selectedLocation}
-		{hoveredProduct} />
-	<Cart />
-</div>
+<Cart userPosition={selectedLocation} {hoveredProduct} />
 
 {#if $selectedItem}
 	<div
@@ -724,7 +648,6 @@
 		}
 	}
 
-	$cart-panel-size: 350px;
 	$product-details-panel-size: 600px;
 
 	.filter-bar {
@@ -738,16 +661,6 @@
 
 		@media (max-width: 768px) {
 			margin-top: -16px;
-		}
-	}
-
-	.cart-panel {
-		top: 64px;
-		z-index: 3;
-		width: $cart-panel-size;
-
-		.bottom-items {
-			width: $cart-panel-size;
 		}
 	}
 
@@ -766,20 +679,6 @@
 
 		.search-products {
 			margin-top: -25px;
-		}
-
-		.cart-panel {
-			top: 45px;
-			transform: translateY(100%);
-
-			&.active {
-				width: 100%;
-				transform: translateY(0px);
-
-				.bottom-items {
-					width: 100%;
-				}
-			}
 		}
 	}
 

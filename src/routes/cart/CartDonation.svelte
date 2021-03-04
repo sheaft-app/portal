@@ -1,12 +1,13 @@
 <script>
   import { onDestroy } from "svelte";
   import { slide } from "svelte/transition";
+  import cartStore from "./../../stores/cart";
   import BlowingButton from "./BlowingButton.svelte";
   import { formatMoney } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
-  export let choice = null, submit = () => {}, isLoadingPaymentInfo = false, choosenDonation = CHOICE_NONE;
+  export let choice = null, submit = () => {}, choosenDonation = CHOICE_NONE;
 
   const CHOICE_EURO = "EURO";
   const CHOICE_ROUNDED = "ROUNDED";
@@ -66,8 +67,8 @@
       <div class="mt-5 mb-5 m-auto w-full">
         <button 
           type="button"
-          class:disabled={isLoadingPaymentInfo}
-          disabled={isLoadingPaymentInfo}
+          class:disabled={$cartStore.isSaving}
+          disabled={$cartStore.isSaving}
           on:click={handleSubmit}
           class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
           {#if choice === CHOICE_EURO}
@@ -79,7 +80,7 @@
           {#if choice === CHOICE_NONE}
              Poursuivre sans donner à Sheaft
           {/if}
-          {#if isLoadingPaymentInfo}
+          {#if $cartStore.isSaving}
             <Icon data={faCircleNotch} spin class="ml-2" />
           {/if}
         </button>

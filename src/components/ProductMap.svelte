@@ -3,6 +3,7 @@
   import cartStore from "./../stores/cart";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
+  import { get } from "svelte/store";
 
   export let id, height, hoveredProduct, userPosition;
 
@@ -67,28 +68,9 @@
     ).addTo(map);
   });
 
-  $: if (map) {
+  $: if (map && $cartStore.items.length > 0) {
     if (itemsMarkers) map.removeLayer(itemsMarkers);
-
-    let producerWithProductsCount = [];
-
-    // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    $cartStore.items
-      .map(cartItem => {
-        let producer = producerWithProductsCount.find(
-          c =>
-            c.latitude === cartItem.producer.address.latitude &&
-            c.longitude === cartItem.producer.address.longitude
-        );
-        producer
-          ? (producer.nbProducts += cartItem.quantity)
-          : (producerWithProductsCount = [
-              ...producerWithProductsCount,
-              { ...cartItem.producer, nbProducts: cartItem.quantity }
-            ]);
-      });
-
-    const coordonnates = producerWithProductsCount.map(producer => 
+    const coordonnates = cartStore.getItemsMappedByProducer().map(producer => 
       L.marker([producer.address.latitude, producer.address.longitude], {
         icon: renderMarker()
       }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} article${producer.nbProducts > 1 ? 's' : ''}</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.address.zipcode} ${producer.address.city}</p>`) 

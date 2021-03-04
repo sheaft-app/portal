@@ -14,7 +14,7 @@
     cartStore.addItem(product.id);
   }
 
-  $: state = cartStore.getItemById(product.id) ? 1 : 0;
+  $: state = $cartStore.items.find((i) => i.id == product.id) ? 1 : 0;
 </script>
 
 {#if state == 1}

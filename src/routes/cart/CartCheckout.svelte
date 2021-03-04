@@ -62,9 +62,9 @@
 	let order = JSON.parse(localStorage.getItem("user_current_order"));
 
 	onMount(async () => {
-		if (!order || cartStore.getIsEmpty()) {
+		if (!order || $cartStore.items.length > 0) {
 			// todo : terminée, envoyer une notif
-			if (!cartStore.getIsEmpty()) {
+			if ($cartStore.items.length > 0) {
 				return routerInstance.goTo(CartRoutes.Resume);
 			} else {
 				return routerInstance.goTo(SearchProductsRoutes.Search);

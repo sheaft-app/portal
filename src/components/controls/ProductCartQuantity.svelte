@@ -1,6 +1,5 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
-  import { searchResults } from "./../../stores/app.js";
+  import { onMount } from "svelte";
   import cartStore from "./../../stores/cart";
   import { fly } from "svelte/transition";
 	import { createEventDispatcher } from 'svelte';
@@ -9,9 +8,10 @@
 
 	const dispatch = createEventDispatcher();
 
-  let product = cartStore.getItemById(productId);
   let quantity = 0;
   let displayFeedback = false;
+  $: isDisabled = disabled || $cartStore.isSaving;
+  $: product = $cartStore.items.find((i) => i.id == productId);
 
   onMount(() => {
     displayFeedback = false;
@@ -65,22 +65,18 @@
 
   // reset de la quantité
   $: if (!productId) quantity = 0;
-
-  $: {
-    product = cartStore.getItemById(productId);
-    product ? (quantity = product.quantity) : (quantity = 0);
-  }
+  $: product ? (quantity = product.quantity) : (quantity = 0);
 </script>
 
 <div class="m-auto {!noMargin ? "lg:mt-4 lg:mb-4" : ""}">
   <div
-    class="flex {center ? 'm-auto' : ''} border-gray-100 shadow border-solid rounded-full product-quantity" class:disabled>
+    class="flex {center ? 'm-auto' : ''} border-gray-100 shadow border-solid rounded-full product-quantity" class:disabled={isDisabled}>
     <button
-      disabled={(quantity === minQuantity) || disabled}
+      disabled={(quantity === minQuantity) || isDisabled}
       style="height: 36px;"
       type="button"
       aria-label="Retirer 1"
-      class:disabled
+      class:disabled={isDisabled}
       class="font-bold
       transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  {quantity > minQuantity ? 'hover:bg-accent hover:text-white' : ''} text-accent"
       on:click|stopPropagation={() => handleLess()}>
@@ -90,7 +86,7 @@
       min="0"
       max="999"
       type="number"
-      {disabled}
+      disabled={isDisabled}
       on:click|stopPropagation
       on:input={e => handleInput(e)}
       maxLength="3"
@@ -100,8 +96,8 @@
     <button
       type="button"
       style="height: 36px;"
-      class:disabled
-      {disabled}
+      class:disabled={isDisabled}
+      disabled={isDisabled}
       class="font-bold
       transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
       aria-label="Ajouter 1"

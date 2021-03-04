@@ -9,17 +9,39 @@ export const CREATE_CONSUMER_ORDER = gql`
 			totalOnSalePrice
 			totalPrice
 			totalReturnableOnSalePrice
+			deliveries {
+                expectedDelivery {
+                    day
+                    from
+                    to
+                    expectedDeliveryDate
+                }
+                id
+                deliveryMode {
+					kind
+					producer {
+						id
+						name
+					}
+					address {
+						line1
+						line2
+						city
+						zipcode
+						latitude
+						longitude
+					}
+                }
+            }
 			totalFees
 			returnablesCount
-			user {
-				id
-			}
 			products {
                 id
 				name
 				quantity
 				unitOnSalePrice
                 producer {
+					id
                     name
                     address {
 						line1
@@ -44,17 +66,39 @@ export const UPDATE_CONSUMER_ORDER = gql`
 			totalFees
 			totalPrice
 			totalOnSalePrice
+			deliveries {
+                expectedDelivery {
+                    day
+                    from
+                    to
+                    expectedDeliveryDate
+                }
+                id
+                deliveryMode {
+					kind
+					producer {
+						id
+						name
+					}
+					address {
+						line1
+						line2
+						city
+						zipcode
+						latitude
+						longitude
+					}
+                }
+            }
 			totalReturnableOnSalePrice
 			returnablesCount
-			user {
-				id
-			}
 			products {
                 id
 				name
 				quantity
 				unitOnSalePrice
                 producer {
+					id
                     name
                     address {
                         line1

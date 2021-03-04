@@ -71,7 +71,7 @@ import { config } from "../../configs/config";
     <div
       class="relative pb-5/6 overflow-hidden bg-black rounded-t-md lg:block
       hidden">
-      {#if cartStore.getItemById(product.id)}
+      {#if $cartStore.items.find((i) => i.id == product.id)}
         <TransitionWrapper
           classNames="absolute w-full h-full"
           style="z-index: 1; top: 40%;">
@@ -81,10 +81,10 @@ import { config } from "../../configs/config";
       <div
         style="height: 150px; background-image: url({src}); background-size:
         cover; background-position: top;"
-        class:opacity-50={cartStore.getItemById(product.id)}
+        class:opacity-50={$cartStore.items.find((i) => i.id == product.id)}
         class:skeleton-box={!src}
         class="transition duration-200 ease-in-out w-full rounded-t-md">
-          {#if src.includes("pictures/tags/images/") && !cartStore.getItemById(product.id)}
+          {#if src.includes("pictures/tags/images/") && !$cartStore.items.find((i) => i.id == product.id)}
             <div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
               <div class="text-white text-lg p-1 bg-gray-800">
                 Aucune image disponible
@@ -100,7 +100,7 @@ import { config } from "../../configs/config";
           background-position: top;"
           class:skeleton-box={!src}
           class="h-20 mt-1 rounded-lg flex items-center justify-center mb-2 relative">
-            {#if cartStore.getItemById(product.id)}
+            {#if $cartStore.items.find((i) => i.id == product.id)}
               <div class="rounded-full p-1 w-6 h-6 text-center bg-white text-normal" style="
                 line-height: 0;
                 z-index: 1;
@@ -108,7 +108,7 @@ import { config } from "../../configs/config";
                 <Icon data={faShoppingCart} style="width: 14px;" />
               </div>
             {/if}
-            {#if src.includes("pictures/tags/images/") && !cartStore.getItemById(product.id)}
+            {#if src.includes("pictures/tags/images/") && !$cartStore.items.find((i) => i.id == product.id)}
               <div class="absolute" style="bottom: 10%; font-size: .50rem;">
                 <div class="text-white p-1 bg-gray-800">
                   Aucune image

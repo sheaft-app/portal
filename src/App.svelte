@@ -61,7 +61,10 @@
   );
 
   const initSubscription = authInitialized.subscribe(async initialized => {
-      isLoading = false;
+      if (initialized) {
+        await cartStore.initialize(apiInstance, errorsHandlers);
+        isLoading = false;
+      }
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
@@ -96,8 +99,6 @@
 
   onMount(async () => {
     isLoading = true;
-    
-    await cartStore.initialize(apiInstance, errorsHandlers);
 
     let sponsoring = routerInstance.getQueryParam("user_sponsoring");
     if (sponsoring) {
@@ -116,6 +117,7 @@
     let data = await progress.json();
       
     allDepartmentsProgress.set(data);
+
     isLoading = false;
   });
 
