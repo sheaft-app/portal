@@ -50,6 +50,7 @@
     "svelte-awesome": "^2.3.0",
     "svelte-image-encoder": "^1.2.5",
     "svelte-spa-router": "^3.1.0",
+    "swiper": "^6.4.11",
     "timeUtils": "^2.0.0"
   },
   "devDependencies": {

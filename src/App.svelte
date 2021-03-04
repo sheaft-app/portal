@@ -11,6 +11,8 @@
   import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy } from "svelte";
   import "notyf/notyf.min.css";
+  import "swiper/swiper.min.css";
+  import "swiper/components/navigation/navigation.min.css";
   import Router from "svelte-spa-router";
   import Modal from "./components/modal/Modal.svelte";
   import Nav from "./components/nav/Nav.svelte";
@@ -749,5 +751,32 @@
     50% {
       background-color: rgb(255, 169, 169);
     }
+  }
+
+  .swiper-button-next {
+    background-color: #ff3f80;
+    border-radius: 50px;
+    padding: 22px;
+    color: #ffffff;
+
+    &::after {
+      font-size: 1.2rem;
+    }
+  }
+  .swiper-button-prev {
+    background-color: #ff3f80;
+    border-radius: 50px;
+    padding: 22px;
+    color: #ffffff;
+
+    &::after {
+      font-size: 1.2rem;
+    }
+  }
+
+
+  .swiper-button-prev, 
+  .swiper-button-next {
+    top: 30% !important;
   }
 </style>
