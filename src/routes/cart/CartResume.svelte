@@ -3,7 +3,6 @@
   import Icon from "svelte-awesome";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import CartMap from "./CartMap.svelte";
-  import { cartItems } from "./../../stores/app.js";
   import cartStore from "./../../stores/cart";
   import { formatMoney } from "./../../helpers/app.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
@@ -19,7 +18,6 @@
   import CartDonation from "./CartDonation.svelte";
   import MangoPayInfo from "./MangoPayInfo.svelte";
   import { fly } from "svelte/transition";
-  import orderBy from "lodash/orderBy";
 
   const errorsHandler = new SheaftErrors();
   const graphQLInstance = GetGraphQLInstance();
