@@ -10,7 +10,7 @@
   import { allDepartmentsProgress } from "./stores/app";
   import cartStore from "./stores/cart";
   import { authRegistered } from "./stores/auth";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, getContext } from "svelte";
   import "notyf/notyf.min.css";
   import Router from "svelte-spa-router";
   import Modal from "./components/modal/Modal.svelte";
@@ -62,16 +62,16 @@
 
   const initSubscription = authInitialized.subscribe(async initialized => {
       if (initialized) {
-        await cartStore.initialize(apiInstance, errorsHandlers);
         isLoading = false;
       }
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
+    await cartStore.initialize(apiInstance, errorsHandlers, authenticated);
+
     if (!authenticated) {
       await logoutFreshdesk();
       signalrInstance.stop();
-      return;
     }
 
     if (authenticated) {
@@ -84,7 +84,7 @@
       }      
     }
     
-    if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
+    if(authenticated && (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path))
       routerInstance.goTo("/", null, true);
   });
 

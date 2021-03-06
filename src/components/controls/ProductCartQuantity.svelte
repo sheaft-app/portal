@@ -8,7 +8,7 @@
 
   let quantity = 0;
   let displayFeedback = false;
-  $: isDisabled = disabled || $cartStore.isSaving;
+  $: isDisabled = disabled || $cartStore.isSaving || $cartStore.conflicts.length > 0;
   $: product = $cartStore.items.find((i) => i.id == productId);
 
   onMount(() => {

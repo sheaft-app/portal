@@ -15,6 +15,7 @@
   import ProductCartQuantity from "./../../components/controls/ProductCartQuantity.svelte";
   import DeliveryKind from "../../enums/DeliveryKind";
   import CartRoutes from "./routes";
+	import SearchProductsRoutes from "../search-products/routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import CartDonation from "./CartDonation.svelte";
   import MangoPayInfo from "./MangoPayInfo.svelte";
@@ -35,6 +36,10 @@
   let validatedCart = false;
 
   onMount(async () => {
+    if ($cartStore.conflicts.length > 0) {
+				return routerInstance.goTo(SearchProductsRoutes.Search);
+    }
+
     const values = routerInstance.getQueryParams();
 
     var firstTimeOnCartCookie = JSON.parse(

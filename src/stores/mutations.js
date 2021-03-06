@@ -4,21 +4,23 @@ export const CREATE_CONSUMER_ORDER = gql`
 	mutation createOrder($input: CreateOrderInput!) {
 		createOrder(input: $input) {
 			id
-			productsCount
+			totalFees
 			totalOnSalePrice
-			totalPrice
-			donation
-            totalFees
 			totalReturnableOnSalePrice
+			totalPrice
+			status
+			returnablesCount
+			donation
+			productsCount
 			deliveries {
-                expectedDelivery {
-                    day
-                    from
-                    to
-                    expectedDeliveryDate
-                }
-                id
-                deliveryMode {
+				expectedDelivery {
+					day
+					from
+					to
+					expectedDeliveryDate
+				}
+				id
+				deliveryMode {
 					kind
 					producer {
 						id
@@ -32,28 +34,26 @@ export const CREATE_CONSUMER_ORDER = gql`
 						latitude
 						longitude
 					}
-                }
-            }
-			totalFees
-			returnablesCount
+				}
+			}
 			products {
-                id
+				id
 				name
-				quantity
 				unitOnSalePrice
-                producer {
+				quantity
+				producer {
 					id
-                    name
-                    address {
+					name
+					address {
 						line1
 						line2
 						city
 						zipcode
-                        latitude
+						latitude
 						longitude
-                    }
-                }
-            }
+					}
+				}
+			}
 		}
 	}
 `;
@@ -62,21 +62,23 @@ export const UPDATE_CONSUMER_ORDER = gql`
 	mutation updateOrder($input: UpdateOrderInput!) {
 		updateOrder(input: $input) {
 			id
-			productsCount
+			totalFees
 			totalOnSalePrice
-			totalPrice
-			donation
-            totalFees
 			totalReturnableOnSalePrice
+			totalPrice
+			status
+			returnablesCount
+			donation
+			productsCount
 			deliveries {
-                expectedDelivery {
-                    day
-                    from
-                    to
-                    expectedDeliveryDate
-                }
-                id
-                deliveryMode {
+				expectedDelivery {
+					day
+					from
+					to
+					expectedDeliveryDate
+				}
+				id
+				deliveryMode {
 					kind
 					producer {
 						id
@@ -90,28 +92,26 @@ export const UPDATE_CONSUMER_ORDER = gql`
 						latitude
 						longitude
 					}
-                }
-            }
-			totalReturnableOnSalePrice
-			returnablesCount
+				}
+			}
 			products {
-                id
+				id
 				name
-				quantity
 				unitOnSalePrice
-                producer {
+				quantity
+				producer {
 					id
-                    name
-                    address {
-                        line1
+					name
+					address {
+						line1
 						line2
 						city
 						zipcode
-                        latitude
-                        longitude
-                    }
-                }
-            }
+						latitude
+						longitude
+					}
+				}
+			}
 		}
 	}
 `;

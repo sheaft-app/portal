@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, getContext } from "svelte";
   import { flip } from 'svelte/animate';
   import { slide, fly } from "svelte/transition";
   import GetRouterInstance from "../../services/SheaftRouter";
@@ -12,9 +12,11 @@
   import { freezeBody, unfreezeBody } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
   import { faChevronRight, faCircleNotch, faSpinner, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+  import CartConflictResolveModal from "./CartConflictResolveModal.svelte";
 
   const routerInstance = GetRouterInstance();
   const authInstance = GetAuthInstance();
+  const { open } = getContext("modal");
 
   export let userPosition, hoveredProduct;
 
@@ -50,6 +52,10 @@
   }
 
   $: if ($cartExpanded) { history.pushState({ cartExpanded: $cartExpanded }, "Aperçu du panier"); }
+
+  const openCartConflictResolveModal = () => {
+    open(CartConflictResolveModal);
+  }
 
   onMount(() => {
     window.addEventListener("popstate", popStateListener, false);
@@ -102,7 +108,6 @@
 		</div>
 	</div>
 </div>
-
 <div
 	class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
 		transition duration-300 ease-in-out cart-panel"
@@ -123,37 +128,47 @@
       </div>
     {/if}
     {#if !$cartStore.isInitializing}
-      {#each $cartStore.items as line (line.id)}
-        <div
-          transition:fly|local="{{duration: 300}}"
-          animate:flip="{{duration: 300}}"
-          class={`py-2 justify-between px-2 flex border-b border-gray-200 border-solid`}>
-          <div
-            class="w-1/12 h-12 text-right leading-none"
-            style="margin-right: 12px; max-width: 26px;">
-            <span>{line.quantity}</span>
-          </div>
-          <div class="w-9/12">
-            <p class="font-semibold mb-0 leading-none">{line.name}</p>
-            <p class="text-sm">{line.producer.name}</p>
-            <button class="btn-link text-xs uppercase" on:click={() => { 
-              cartStore.removeItem(line.id)
-              if ($cartStore.items.length <= 1) { 
-                hideCart();
-              }
-            }} aria-label="Retirer cet article">
-              Retirer
-            </button>
-          </div>
-          <div class="w-2/12 text-right">
-            <p class="font-bold leading-none">
-              {formatMoney(line.unitOnSalePrice * line.quantity)}
-            </p>
-          </div>
+      {#if $cartStore.conflicts.length > 0}
+        <div class="m-auto text-center p-3">
+          <p class="text-orange-500 font-semibold text-xl">Des paniers s'entremêlent</p>
+          <span class="bg-orange-500 m-auto h-1 w-20 block mt-2 mb-4"></span>
+          <p>Il semblerait que vous ayez plusieurs paniers en cours. Pas de panique, il vous suffit d'en choisir un des deux pour continuer vos achats.</p>
+          <button class="btn btn-lg btn-accent m-auto mt-5" on:click={openCartConflictResolveModal}>Choisir un panier</button>
         </div>
       {:else}
-        <div class="text-gray-600 text-center px-3 text-sm">Les produits de votre panier s'affichent ici à mesure que vous les ajoutez.</div>
-      {/each}
+        {#each $cartStore.items as line (line.id)}
+          <div
+            transition:fly|local="{{duration: 300}}"
+            animate:flip="{{duration: 300}}"
+            class="py-2 justify-between px-2 flex border-b border-gray-200 border-solid">
+            <div
+              class="w-1/12 h-12 text-right leading-none"
+              class:skeleton-box={$cartStore.isSaving}
+              style="margin-right: 12px; max-width: 26px;">
+              <span>{line.quantity}</span>
+            </div>
+            <div class="w-9/12">
+              <p class="font-semibold mb-0 leading-none">{line.name}</p>
+              <p class="text-sm">{line.producer.name}</p>
+              <button class="btn-link text-xs uppercase" on:click={() => { 
+                cartStore.removeItem(line.id)
+                if ($cartStore.items.length <= 1) { 
+                  hideCart();
+                }
+              }} aria-label="Retirer cet article">
+                Retirer
+              </button>
+            </div>
+            <div class="w-2/12 text-right">
+              <p class="font-bold leading-none" class:skeleton-box={$cartStore.isSaving}>
+                {formatMoney(line.unitOnSalePrice * line.quantity)}
+              </p>
+            </div>
+          </div>
+        {:else}
+          <div class="text-gray-600 text-center px-3 text-sm">Les produits de votre panier s'affichent ici à mesure que vous les ajoutez.</div>
+        {/each}
+      {/if}
     {/if}
   </section>
   <div
@@ -174,8 +189,8 @@
           aria-label="Suivant"
           on:click={goToCart}
           class="btn btn-primary w-full py-3 px-3 leading-none justify-center text-lg font-semibold"
-          disabled={$cartStore.items.length == 0 || loadToCart}
-          class:disabled={$cartStore.items.length == 0 || loadToCart}>
+          disabled={$cartStore.items.length == 0 || $cartStore.isSaving || $cartStore.conflicts.length > 0 || loadToCart}
+          class:disabled={$cartStore.items.length == 0 || $cartStore.isSaving || $cartStore.conflicts.length > 0 || loadToCart}>
           Suivant
           {#if loadToCart}
             <Icon class="ml-2" data={faCircleNotch} spin />

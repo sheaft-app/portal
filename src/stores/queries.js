@@ -5,9 +5,11 @@ export const GET_CART = gql`
         order(input: $input) {
             id
             totalFees
-            status
             totalOnSalePrice
+            totalReturnableOnSalePrice
             totalPrice
+            status
+            returnablesCount
             donation
             productsCount
             deliveries {
@@ -34,7 +36,6 @@ export const GET_CART = gql`
                     }
                 }
             }
-            totalPrice
             products {
                 id
                 name
@@ -45,9 +46,67 @@ export const GET_CART = gql`
                     name
                     address {
                         line1
-						line2
-						city
-						zipcode
+                        line2
+                        city
+                        zipcode
+                        latitude
+                        longitude
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const GET_MOST_RECENT_CART = gql`
+    query GetMostRecentCart {
+        currentOrder {
+            id
+            totalFees
+            totalOnSalePrice
+            totalReturnableOnSalePrice
+            totalPrice
+            status
+            returnablesCount
+            donation
+            productsCount
+            deliveries {
+                expectedDelivery {
+                    day
+                    from
+                    to
+                    expectedDeliveryDate
+                }
+                id
+                deliveryMode {
+                    kind
+                    producer {
+                        id
+                        name
+                    }
+                    address {
+                        line1
+                        line2
+                        city
+                        zipcode
+                        latitude
+                        longitude
+                    }
+                }
+            }
+            products {
+                id
+                name
+                unitOnSalePrice
+                quantity
+                producer {
+                    id
+                    name
+                    address {
+                        line1
+                        line2
+                        city
+                        zipcode
                         latitude
                         longitude
                     }
