@@ -25,5 +25,3 @@ steps:
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-sprint.zip'
       artifactName: 'sheaft-portal-sprint'
-  - script: |
-      npm run production
