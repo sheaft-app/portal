@@ -36,4 +36,4 @@ steps:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-production.zip'
-      artifactName: 'sheaft-portal-production'
+      artifactName: 'sheaft-portal'
