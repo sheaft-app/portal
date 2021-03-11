@@ -20,10 +20,10 @@ steps:
     inputs:
       rootFolderOrFile: "$(System.DefaultWorkingDirectory)/public/"
       includeRootFolder: false
-      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip"
+      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip"
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip'
+      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip'
       artifactName: 'sheaft-portal-staging'
   - script: |
       npm run production
@@ -32,8 +32,8 @@ steps:
     inputs:
       rootFolderOrFile: "$(System.DefaultWorkingDirectory)/public/"
       includeRootFolder: false
-      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip"
+      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-production.zip"
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip'
+      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-production.zip'
       artifactName: 'sheaft-portal-production'
