@@ -7,7 +7,7 @@ export const config = {
 	auth: {
 		url: "https://staging.auth.sheaft.com",
 		settings: {
-			client_id: "37f6e39f-5b99-4943-b906-a033bdf2f1bb",
+			client_id: "eec657c2718742208bf0a5a965f04eca",
 			redirect_uri: "http://localhost:4200/#/callback",
 			post_logout_redirect_uri: "http://localhost:4200",
 			response_type: "code",

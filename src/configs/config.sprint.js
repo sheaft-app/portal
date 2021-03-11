@@ -7,7 +7,7 @@ export const config = {
 	auth: {
 		url: "https://sprint.auth.sheaft.com",
 		settings: {
-			client_id: "37f6e39f-5b99-4943-b906-a033bdf2f1bb",
+			client_id: "853edeeac58c440a9140cca350ab8bf8",
 			redirect_uri: "https://sprint.app.sheaft.com/#/callback",
 			post_logout_redirect_uri: "https://sprint.app.sheaft.com",
 			response_type: "code",
