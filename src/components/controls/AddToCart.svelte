@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import ProductCartQuantity from "./ProductCartQuantity.svelte";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import Icon from "svelte-awesome";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,12 +9,12 @@
 
   let state = 0;
   
-  const addToCart = () => { 
+  const addToCart = () => {
     if (disabled) return;
-    cartStore.addItem(product.id);
+    cart.addProduct(product.id);
   }
 
-  $: state = $cartStore.items.find((i) => i.id == product.id) ? 1 : 0;
+  $: state = $cart.products.find((i) => i.id == product.id) ? 1 : 0;
 </script>
 
 {#if state == 1}

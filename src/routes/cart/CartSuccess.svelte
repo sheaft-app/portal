@@ -3,7 +3,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import cartStore from "./../../stores/cart.js";
+	import cart from "./../../stores/cart.js";
 	import { GET_MY_ORDERS } from "./queries.js";
 	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
@@ -19,7 +19,7 @@
 		graphQLInstance.clearApolloCache(MY_ORDERS);
 		graphQLInstance.clearApolloCache(MY_VALIDATING_ORDERS);
 
-		cartStore.reset();
+		cart.reset();
 
 		//TODO should retrieve purchaseOrders with transactionCartId
 

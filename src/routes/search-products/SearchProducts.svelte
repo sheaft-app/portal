@@ -10,7 +10,7 @@
 		searchResults,
 		allDepartmentsProgress,
 	} from "./../../stores/app.js";
-	import cartStore from "./../../stores/cart";
+	import cart from "./../../stores/cart";
 	import Cart from "./Cart.svelte";
 	import ProductCard from "./ProductCard.svelte";
 	import CitySearch from "./../../components/search/CitySearch.svelte";
@@ -380,7 +380,7 @@
 	<ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />
 	{#if errors.length < 1}
 		<div
-			class:has-bottom-mobile-cta={$cartStore.items.length > 0}
+			class:has-bottom-mobile-cta={$cart.products.length > 0}
 			class="search-products md:-my-4">
 			<div class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
 				<CitySearch

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import { fly } from "svelte/transition";
   import debounce from "lodash/debounce";
 
@@ -8,8 +8,8 @@
 
   let quantity = 0;
   let displayFeedback = false;
-  $: isDisabled = disabled || $cartStore.isSaving || $cartStore.conflicts.length > 0;
-  $: product = $cartStore.items.find((i) => i.id == productId);
+  $: isDisabled = disabled || $cart.isSaving || $cart.conflicts.length > 0;
+  $: product = $cart.products.find((i) => i.id == productId);
 
   onMount(() => {
     displayFeedback = false;
@@ -44,7 +44,7 @@
   };
 
   const updateProductQuantity = debounce((quantity) => {
-    cartStore.updateItem(productId, quantity);
+    cart.updateProduct(productId, quantity);
     if (userFeedback) triggerFeedback();
   }, 800);
 

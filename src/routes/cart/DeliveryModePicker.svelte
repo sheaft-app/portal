@@ -5,7 +5,7 @@
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
   import DeliveryPickModal from "./DeliveryPickModal.svelte";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import { timeSpanToFrenchHour } from "./../../helpers/app.js";
   import { faEdit } from "@fortawesome/free-regular-svg-icons";
   import { faMapMarkerAlt, faClock, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -43,7 +43,7 @@
   }
 
   const getSelectedDeliveryInformation = () => {
-    const selectedDelivery = cartStore.getSelectedDelivery(data.deliveries);
+    const selectedDelivery = cart.getSelectedDelivery(data.deliveries);
 
     if (selectedDelivery) {
       selected = selectedDelivery.delivery;
@@ -53,7 +53,7 @@
 
   const selectDelivery = () => {
     if (data && selected && selectedDeliveryHour) {
-      cartStore.updateDelivery({
+      cart.updateDelivery({
         producerId: data.id,
         delivery: selected,
         deliveryHour: selectedDeliveryHour

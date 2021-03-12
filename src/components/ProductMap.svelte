@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import cartStore from "./../stores/cart";
+  import cart from "./../stores/cart";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
   import { get } from "svelte/store";
@@ -10,7 +10,7 @@
   var map = null;
   var currentMarker = null;
   var userMarker = null;
-  var itemsMarkers = null;
+  var productMarkers = null;
   var position = {
     latitude: 0,
     longitude: 0
@@ -68,15 +68,15 @@
     ).addTo(map);
   });
 
-  $: if (map && $cartStore.items.length > 0) {
-    if (itemsMarkers) map.removeLayer(itemsMarkers);
-    const coordonnates = cartStore.getItemsMappedByProducer().map(producer => 
+  $: if (map && $cart.products.length > 0) {
+    if (productMarkers) map.removeLayer(productMarkers);
+    const coordonnates = cart.getProductsMappedByProducer().map(producer => 
       L.marker([producer.address.latitude, producer.address.longitude], {
         icon: renderMarker()
       }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} article${producer.nbProducts > 1 ? 's' : ''}</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.address.zipcode} ${producer.address.city}</p>`) 
     );
 
-    itemsMarkers = L.layerGroup(coordonnates).addTo(map);
+    productMarkers = L.layerGroup(coordonnates).addTo(map);
   }
 
   $: if (hoveredProduct) {

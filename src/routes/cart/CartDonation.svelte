@@ -1,6 +1,6 @@
 <script>
   import { onDestroy } from "svelte";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import BlowingButton from "./BlowingButton.svelte";
   import { formatMoney } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
@@ -12,7 +12,7 @@
   const CHOICE_ROUNDED = "ROUNDED";
   const CHOICE_NONE = "NONE";
 
-  $: roundedValue = Math.ceil($cartStore.totalPrice - $cartStore.donation) - ($cartStore.totalPrice - $cartStore.donation);
+  $: roundedValue = Math.ceil($cart.totalPrice - $cart.donation) - ($cart.totalPrice - $cart.donation);
   
   const choose = (_choice) => {
     choice = _choice;
@@ -62,8 +62,8 @@
       <div class="mt-5 mb-5 m-auto w-full">
         <button 
           type="button"
-          class:disabled={$cartStore.isSaving}
-          disabled={$cartStore.isSaving}
+          class:disabled={$cart.isSaving}
+          disabled={$cart.isSaving}
           on:click={handleSubmit}
           class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
           {#if choice === CHOICE_EURO}
@@ -75,7 +75,7 @@
           {#if choice === CHOICE_NONE}
              Poursuivre sans donner à Sheaft
           {/if}
-          {#if $cartStore.isSaving}
+          {#if $cart.isSaving}
             <Icon data={faCircleNotch} spin class="ml-2" />
           {/if}
         </button>

@@ -18,7 +18,7 @@
   import NavLink from "./NavLink.svelte";
   import { slide } from "svelte/transition";
   import { selectedItem } from "./../../stores/app.js";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import { navExpended, userMenuExpended } from "./store.js";
   import { authAuthenticated, authUserAccount, authRegistered } from "./../../stores/auth.js";
   import GetAuthInstance from "./../../services/SheaftAuth";
@@ -260,7 +260,7 @@ import { config } from "../../configs/config";
     </button>
   {/if}
   <div class="justify-end inline-flex lg:items-center">
-    {#if $cartStore.items.length > 0 && isInRole($authUserAccount, [
+    {#if $cart.products.length > 0 && isInRole($authUserAccount, [
         Roles.Consumer.Value
       ])}
       <button
@@ -276,7 +276,7 @@ import { config } from "../../configs/config";
         <span
           class="absolute rounded-full bg-accent text-white"
           style="padding: 0px 5px; font-size: 11px; margin-top: -7px; margin-left: 10px;">
-          {$cartStore.productsCount}
+          {$cart.productsCount}
         </span>
       </button>
     {/if}

@@ -8,7 +8,7 @@
   import SheaftErrors from "./services/SheaftErrors.js";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
   import { allDepartmentsProgress } from "./stores/app";
-  import cartStore from "./stores/cart";
+  import cart from "./stores/cart";
   import { authRegistered } from "./stores/auth";
   import { onMount, onDestroy, getContext } from "svelte";
   import "notyf/notyf.min.css";
@@ -69,7 +69,7 @@
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
-    await cartStore.initialize(apiInstance, errorsHandlers, authenticated);
+    await cart.initialize(apiInstance, errorsHandlers, authenticated);
 
     if (!authenticated) {
       await logoutFreshdesk();

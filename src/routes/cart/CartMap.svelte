@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import cartStore from "../../stores/cart";
+  import cart from "../../stores/cart";
   import { querystring } from "svelte-spa-router";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
@@ -11,7 +11,7 @@
 
   var map = null;
   var userMarker = null;
-  var itemsMarkers = null;
+  var productMarkers = null;
   var position = {
     latitude: 0,
     longitude: 0
@@ -84,19 +84,19 @@
   });
 
   $: if (map) {
-    if (itemsMarkers) map.removeLayer(itemsMarkers);
+    if (productMarkers) map.removeLayer(productMarkers);
 
-    const coordonnates = $cartStore.selectedDeliveries.map((producer) =>
+    const coordonnates = $cart.selectedDeliveries.map((producer) =>
       L.marker([producer.delivery.address.latitude, producer.delivery.address.longitude], {
         icon: renderMarkerWithNumber(producer.number)
       }).bindPopup(`<p style="margin: 0">${producer.producerName}</p><p style="margin: 0">${producer.delivery.address.zipcode} ${producer.delivery.address.city}</p>`)
     );
 
-    itemsMarkers = L.featureGroup(coordonnates);
+    productMarkers = L.featureGroup(coordonnates);
 
-    itemsMarkers.addTo(map);
+    productMarkers.addTo(map);
     if (coordonnates.length > 0) {
-      map.fitBounds(itemsMarkers.getBounds(), { maxZoom: 10});
+      map.fitBounds(productMarkers.getBounds(), { maxZoom: 10});
     }
   }
 </script>

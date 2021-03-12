@@ -1,11 +1,11 @@
 <script>
-  import cartStore from "../../stores/cart";
+  import cart from "../../stores/cart";
   import { formatMoney } from "./../../helpers/app.js";
 
   export let onClose, close;
 
   const handleSubmit = async (selectedId) => {
-    cartStore.chooseCart(selectedId);
+    cart.chooseCart(selectedId);
     close();
   };
 </script>
@@ -16,7 +16,7 @@
       Choisir un panier
     </h3>
   </div>
-  {#each $cartStore.conflicts as conflict, index}
+  {#each $cart.conflicts as conflict, index}
     <p class="bg-gray-300 -mx-6 px-6 py-2 mb-3 font-semibold">Panier {index + 1}</p>
     {#each conflict.products as product}
         <div class="py-2 justify-between px-2 flex border-b border-gray-200 border-solid">

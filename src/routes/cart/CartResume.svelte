@@ -4,7 +4,7 @@
   import Loader from "../../components/Loader.svelte";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
   import CartMap from "./CartMap.svelte";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import { formatMoney } from "./../../helpers/app.js";
   import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import GetRouterInstance from "../../services/SheaftRouter";
@@ -36,7 +36,7 @@
   let validatedCart = false;
 
   onMount(async () => {
-    if ($cartStore.conflicts.length > 0) {
+    if ($cart.conflicts.length > 0) {
 				return routerInstance.goTo(SearchProductsRoutes.Search);
     }
 
@@ -56,7 +56,7 @@
     }
   });
 
-  $: if (producersDeliveries.length === 0 && $cartStore.items.length > 0) {
+  $: if (producersDeliveries.length === 0 && $cart.products.length > 0) {
     getProducerDeliveries();
   }
   
@@ -67,7 +67,7 @@
   const getProducerDeliveries = async () => {
     isLoadingDeliveries = true;
 
-    const ids = cartStore.getProducersIds();
+    const ids = cart.getProducersIds();
 
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
       input: {
@@ -88,23 +88,23 @@
     // l'utilisateur avait déjà choisi un lieu de récup pour le prod
     // mais entre temps le prod a supprimé ce lieu
     const deliveriesIds = res.data.map((r) => r.deliveries).flat().map((d) => d.id);
-    const cartItemWithProducerDeliveryNotFound = $cartStore.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
+    const cartItemWithProducerDeliveryNotFound = $cart.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
     
     if (cartItemWithProducerDeliveryNotFound) {
-      cartStore.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producer.id);
+      cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producer.id);
     }
 
     if (res.data.length !== ids.length) {
-      cartStore.disableProducers(ids.filter((i) => !res.data.map((r) => r.id).includes(i)));
+      cart.disableProducers(ids.filter((i) => !res.data.map((r) => r.id).includes(i)));
     }
 
     producersDeliveries = res.data;
     isLoadingDeliveries = false;
   }
 
-  $: isValid = $cartStore.items.find(c => !c.producer.disabled) && $cartStore.selectedDeliveries.length == cartStore.getProducersIds().length;
-  $: productsHaveBeenRemoved = $cartStore.items.find(c => c.disabled);
-  $: producersHaveBeenRemoved = $cartStore.items.find(c => c.producer.disabled);
+  $: isValid = $cart.products.find(c => !c.producer.disabled) && $cart.selectedDeliveries.length == cart.getProducersIds().length;
+  $: productsHaveBeenRemoved = $cart.products.find(c => c.disabled);
+  $: producersHaveBeenRemoved = $cart.products.find(c => c.producer.disabled);
 
   const blink = (deliveries) => {
     const elements = document.getElementsByClassName("not-ready");
@@ -132,12 +132,12 @@
   
   const validateCart = () => {
     if (!isValid)
-      return blink($cartStore.items.filter(c => !c.producer.deliveryHour));
+      return blink($cart.products.filter(c => !c.producer.deliveryHour));
     return validatedCart = true
   }
 
   const handleSubmit = async () => {
-    await cartStore.updateCart(choosenDonation);
+    await cart.updateCart(choosenDonation);
     
     routerInstance.goTo(CartRoutes.Checkout)
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
@@ -180,7 +180,7 @@
               </ul>
             </div>
         {/if}
-        {#if $cartStore.items.length > 0}
+        {#if $cart.products.length > 0}
           {#if firstTimeOnCart}
             <div class="py-5 px-3 md:px-6 overflow-x-auto bg-green-100 shadow
             rounded w-full mb-2 mt-2">
@@ -196,7 +196,7 @@
         {/if}
       </div>
       <div class="lg:flex lg:flex-row lg:mb-5">
-        {#if $cartStore.items.length > 0}
+        {#if $cart.products.length > 0}
           <div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
             {#if window.screen.width <= 1024}
               <div class="block lg:hidden mb-2">
@@ -205,14 +205,14 @@
             {/if}
             <div
               class="align-middle inline-block min-w-full overflow-hidden items">
-              {#each cartStore.getSortedItemsByProducerName($cartStore.items) as item, i (item.id)}
-                {#if i === 0 || cartStore.getSortedItemsByProducerName()[i - 1].producer.name !== item.producer.name}
+              {#each cart.getSortedProductsByProducerName($cart.products) as item, i (item.id)}
+                {#if i === 0 || cart.getSortedProductsByProducerName()[i - 1].producer.name !== item.producer.name}
                     <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1} class:bg-orange-200={item.producer.disabled}>
                       <span
                         class="rounded-full inline-flex w-6 h-6 items-center
                         justify-center bg-primary mr-2 text-white font-semibold"
                         class:hidden={item.producer.disabled}>
-                        {$cartStore.selectedDeliveries.find((d) => d.producerId == item.producer.id) ? $cartStore.selectedDeliveries.find((d) => d.producerId == item.producer.id).number : '-'}
+                        {$cart.selectedDeliveries.find((d) => d.producerId == item.producer.id) ? $cart.selectedDeliveries.find((d) => d.producerId == item.producer.id).number : '-'}
                       </span>
                       {item.producer.name}
                     </p>
@@ -222,7 +222,7 @@
                         <button 
                           type="button"
                           class="btn-link text-sm"
-                          on:click={() => cartStore.removeItemsWithProducer(item.producer.id)}>
+                          on:click={() => cart.removeProductsWithProducer(item.producer.id)}>
                           Supprimer ce producteur
                         </button>
                       </div>
@@ -254,7 +254,7 @@
                     <button
                       type="button"
                       class="btn-link text-sm"
-                      on:click={() => cartStore.removeItem(item.id)}>
+                      on:click={() => cart.removeProduct(item.id)}>
                       Retirer
                     </button>
                   </div>
@@ -272,7 +272,7 @@
                     <button
                       type="button"
                       class="btn-link text-sm"
-                      on:click={() => cartStore.removeItem(item.id)}>
+                      on:click={() => cart.removeProduct(item.id)}>
                       Retirer
                     </button>
                   </div>
@@ -292,51 +292,51 @@
               style="height: fit-content;">
               <div>
                 <div class="flex justify-between w-full lg:px-3 pb-2">
-                  <div class="text-left" class:skeleton-box={$cartStore.isSaving}>
-                    <p class:invisible={$cartStore.isSaving}>Panier</p>
-                    <p class="text-sm text-gray-600" class:invisible={$cartStore.isSaving}>
-                      {$cartStore.productsCount} articles
-                      {#if $cartStore.returnablesCount >= 1}
-                      dont {$cartStore.returnablesCount} consigné{$cartStore.returnablesCount > 1 ? 's' : ''}
+                  <div class="text-left" class:skeleton-box={$cart.isSaving}>
+                    <p class:invisible={$cart.isSaving}>Panier</p>
+                    <p class="text-sm text-gray-600" class:invisible={$cart.isSaving}>
+                      {$cart.productsCount} articles
+                      {#if $cart.returnablesCount >= 1}
+                      dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
                       {/if}
                     </p>
                   </div>
-                  <div class="text-right" class:skeleton-box={$cartStore.isSaving}>
-                    <p class="font-medium" class:invisible={$cartStore.isSaving}>{formatMoney($cartStore.totalOnSalePrice)}</p>
-                    {#if $cartStore.returnablesCount >= 1}
-                      <p class="text-blue-500 font-medium text-sm" class:invisible={$cartStore.isSaving}>
+                  <div class="text-right" class:skeleton-box={$cart.isSaving}>
+                    <p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.totalOnSalePrice)}</p>
+                    {#if $cart.returnablesCount >= 1}
+                      <p class="text-blue-500 font-medium text-sm" class:invisible={$cart.isSaving}>
                         dont 
                         <img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
-                        {formatMoney($cartStore.totalReturnableOnSalePrice)}
+                        {formatMoney($cart.totalReturnableOnSalePrice)}
                       </p>
                     {/if}
                   </div>
                 </div>
-                {#if $cartStore.donation > 0}
+                {#if $cart.donation > 0}
                   <div class="flex justify-between w-full lg:px-3 pb-2">
-                    <div class="text-left" class:skeleton-box={$cartStore.isSaving}>
-                      <p class:invisible={$cartStore.isSaving}>Don</p>
+                    <div class="text-left" class:skeleton-box={$cart.isSaving}>
+                      <p class:invisible={$cart.isSaving}>Don</p>
                     </div>
-                    <div class:skeleton-box={$cartStore.isSaving}>
-                      <p class="font-medium" class:invisible={$cartStore.isSaving}>{formatMoney($cartStore.donation)}</p>
+                    <div class:skeleton-box={$cart.isSaving}>
+                      <p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.donation)}</p>
                     </div>
                   </div>
                 {/if}
                 <div class="flex justify-between w-full lg:px-3 pb-2">
-                  <div class="text-left" class:skeleton-box={$cartStore.isSaving}>
-                    <p class:invisible={$cartStore.isSaving}>Frais bancaires</p>
-                    <button class:invisible={$cartStore.isSaving} class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button>
+                  <div class="text-left" class:skeleton-box={$cart.isSaving}>
+                    <p class:invisible={$cart.isSaving}>Frais bancaires</p>
+                    <button class:invisible={$cart.isSaving} class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button>
                   </div>
-                  <div class:skeleton-box={$cartStore.isSaving}>
-                    <p class="font-medium" class:invisible={$cartStore.isSaving}>{formatMoney($cartStore.totalFees)}</p>
+                  <div class:skeleton-box={$cart.isSaving}>
+                    <p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.totalFees)}</p>
                   </div>
                 </div>
                 <div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
-                  <div class="text-left" class:skeleton-box={$cartStore.isSaving}>
-                    <p class="uppercase font-semibold" class:invisible={$cartStore.isSaving}>Total</p>
+                  <div class="text-left" class:skeleton-box={$cart.isSaving}>
+                    <p class="uppercase font-semibold" class:invisible={$cart.isSaving}>Total</p>
                   </div>
-                  <div class:skeleton-box={$cartStore.isSaving}>
-                    <p class="font-bold text-lg" class:invisible={$cartStore.isSaving}>{formatMoney($cartStore.totalPrice)}</p>
+                  <div class:skeleton-box={$cart.isSaving}>
+                    <p class="font-bold text-lg" class:invisible={$cart.isSaving}>{formatMoney($cart.totalPrice)}</p>
                   </div>
                 </div>
               </div>
@@ -344,12 +344,12 @@
                 <button
                   type="button"
                   on:click={validateCart}
-                  class:disabled={$cartStore.productsCount === 0 || $cartStore.isSaving}
+                  class:disabled={$cart.productsCount === 0 || $cart.isSaving}
                   class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
                   justify-center m-auto"
-                  disabled={$cartStore.productsCount === 0 || $cartStore.isSaving}
+                  disabled={$cart.productsCount === 0 || $cart.isSaving}
                   style="padding-left: 50px; padding-right: 50px;">
-                  {#if $cartStore.isSaving}
+                  {#if $cart.isSaving}
                     <Icon data={faCircleNotch} spin />
                   {:else}Suivant{/if}
                 </button>
@@ -364,7 +364,7 @@
               {/if}
             </div>
           </div>
-        {:else if $cartStore.isSaving || $cartStore.isInitializing}
+        {:else if $cart.isSaving || $cart.isInitializing}
           <Loader />
         {:else}
           <div class="text-center text-2xl text-gray-600 m-auto px-6">

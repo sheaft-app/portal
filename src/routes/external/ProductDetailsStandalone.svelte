@@ -15,7 +15,6 @@
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import cartStore from "./../../stores/cart.js";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";

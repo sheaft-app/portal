@@ -14,7 +14,7 @@
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { selectedItem } from "./../../stores/app.js";
-  import cartStore from "./../../stores/cart";
+  import cart from "./../../stores/cart";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
   import TagKind from "./../../enums/TagKind";
   import DayOfWeekKind from "./../../enums/DayOfWeekKind";
@@ -207,7 +207,7 @@
   }
 
   $: if ($selectedItem) openAndLoad($selectedItem);
-  $: suggestedProductIsInCart = product => $cartStore.items.find(c => c.id === product.id);
+  $: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
 </script>
 
 <svelte:window on:keyup={handleKeyup} />

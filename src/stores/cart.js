@@ -10,7 +10,7 @@ const store = () => {
     const state = {
         isInitializing: true,
         isSaving: false,
-        items: [],
+        products: [],
         selectedDeliveries: [],
         userCurrentOrder: null,
         totalFees: 0,
@@ -99,7 +99,7 @@ const store = () => {
 
                 if (invalidProductsError) {
                     const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-                    setters.disableItems(ids);
+                    setters.disableProducts(ids);
                 }   
 
                 state.isSaving = false;
@@ -119,14 +119,14 @@ const store = () => {
 
             setters.updateWholeCart(res.data);
         },
-        addItem(itemId, quantity) {
-            localStorage.setItem("user_cart", JSON.stringify([...getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity })), {
-                id: itemId,
+        addProduct(productId, quantity) {
+            localStorage.setItem("user_cart", JSON.stringify([...getters.getValidProducts().map((i) => ({ id: i.id, quantity: i.quantity })), {
+                id: productId,
                 quantity
             }]));
         },
         updateCartInStorage() {
-            localStorage.setItem("user_cart", JSON.stringify(getters.getValidItems().map((i) => ({ id: i.id, quantity: i.quantity }))));
+            localStorage.setItem("user_cart", JSON.stringify(getters.getValidProducts().map((i) => ({ id: i.id, quantity: i.quantity }))));
         },
         clearStorage() {
             localStorage.removeItem("user_last_transaction");
@@ -150,14 +150,14 @@ const store = () => {
     };
 
     const getters = {
-        getItemById(_itemId) {
-            return state.items.find((i) => i.id == _itemId);
+        getProductById(productId) {
+            return state.products.find((i) => i.id == productId);
         },
-        getSortedItemsByProducerName() {
-            return orderBy(state.items, i => i.producer.name, ['asc']);
+        getSortedProductsByProducerName() {
+            return orderBy(state.products, i => i.producer.name, ['asc']);
         },
         getProducersIds() {
-            return state.items
+            return state.products
             .map(p => p.producer.id)
             .reduce(
               (unique, item) =>
@@ -165,25 +165,25 @@ const store = () => {
               []
             );
         },
-        getItemsMappedByProducer() {
-            return state.items.reduce((producers, cartItem) => {
-                let producer = producers.find(p => p.id == cartItem.producer.id);
+        getProductsMappedByProducer() {
+            return state.products.reduce((producers, product) => {
+                let producer = producers.find(p => p.id == product.producer.id);
 
                 producer
-                    ? producer.nbProducts += cartItem.quantity
+                    ? producer.nbProducts += product.quantity
                     : producers = [
                         ...producers,
                         { 
-                            ...cartItem.producer, 
-                            nbProducts: cartItem.quantity 
+                            ...product.producer, 
+                            nbProducts: product.quantity 
                         }
                     ];
                 
                 return producers;
             }, []);
         },
-        getValidItems() {
-            return state.items.filter(p => p.quantity > 0 && !p.disabled && !p.producer.disabled);
+        getValidProducts() {
+            return state.products.filter(p => p.quantity > 0 && !p.disabled && !p.producer.disabled);
         },
         getDeliveryByProducerId(_producerId) {
             return state.selectedDeliveries.find((d) => d.producerId == _producerId);
@@ -201,7 +201,7 @@ const store = () => {
         },
         getNormalizedSelectedDeliveries() {
             state.selectedDeliveries.map((d) => {
-                let hasProducerInCart = state.items.find((i) => i.producer.id == d.producerId);
+                let hasProducerInCart = state.products.find((i) => i.producer.id == d.producerId);
 
                 if (!hasProducerInCart) {
                     setters.resetSelectedDeliveryForProducerId(d.producerId);
@@ -233,22 +233,22 @@ const store = () => {
     }
 
     const setters = {
-        setItems(items) {
+        setProducts(products) {
             update(state => {
-                state.items = items;
+                state.products = products;
                 methods.updateCartInStorage();
                 return state;
             })
         },
-        disableItems(itemIds) {
-            itemIds.map((i) => {
-                let item = getters.getItemById(i);
-                item.disabled = true;
+        disableProducts(productIds) {
+            productIds.map((i) => {
+                let product = getters.getProductById(i);
+                product.disabled = true;
             })
         },
         disableProducers(producersIds) {
             producersIds.map((i) => {
-                state.items.map((c) => {
+                state.products.map((c) => {
                     if (c.producer.id == i) {
                         return {
                             ...c,
@@ -262,20 +262,20 @@ const store = () => {
                 });
             })
         },
-        removeItem(itemId) {
+        removeProduct(productId) {
             update(state => {
-                state.items = state.items.filter(c => c.id !== itemId);
+                state.products = state.products.filter(c => c.id !== productId);
                 methods.updateCartInStorage();
                 methods.updateCart();
                 return state;
             })
         },
-        updateItem(itemId, quantity) {
+        updateProduct(productId, quantity) {
             update(state => {
-                let product = getters.getItemById(itemId);
+                let product = getters.getProductById(productId);
                 
                 if (!product) {
-                    methods.addItem(itemId, quantity);
+                    methods.addProduct(productId, quantity);
                 } else {
                     product.quantity = quantity;
                     methods.updateCartInStorage();
@@ -284,9 +284,9 @@ const store = () => {
             })
             return methods.updateCart();
         },
-        removeItemsWithProducer(producerId) {
+        removeProductsWithProducer(producerId) {
             update(state => {
-                state.items = state.items.filter(c => c.producer.id !== producerId);
+                state.products = state.products.filter(c => c.producer.id !== producerId);
                 resetSelectedDeliveryForProducerId(producerId);
                 methods.updateCartInStorage();
                 methods.updateCart();
@@ -295,7 +295,7 @@ const store = () => {
         },
         reset() {
             update(state => {
-                state.items = [];
+                state.products = [];
                 methods.updateCartInStorage();
                 localStorage.removeItem("user_last_transaction");
                 localStorage.removeItem("user_current_order");
@@ -344,7 +344,7 @@ const store = () => {
         updateWholeCart(selectedCart) {
             localStorage.setItem("user_current_order", JSON.stringify(selectedCart.id));
             update(state => { 
-                state.items = selectedCart.products;
+                state.products = selectedCart.products;
                 state.totalFees = selectedCart.totalFees;
                 state.donation = selectedCart.donation;
                 state.productsCount = selectedCart.productsCount;

@@ -1,7 +1,7 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import cartStore from "./../../stores/cart.js";
+	import cart from "./../../stores/cart.js";
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import PaymentInfoForm from "./PaymentInfoForm.svelte";
@@ -60,9 +60,9 @@
 	};
 
 	onMount(async () => {
-		if (!$cartStore.userCurrentOrder || $cartStore.items.length <= 0) {
+		if (!$cart.userCurrentOrder || $cart.products.length <= 0) {
 			// todo : terminée, envoyer une notif
-			if ($cartStore.items.length > 0) {
+			if ($cart.products.length > 0) {
 				return routerInstance.goTo(CartRoutes.Resume);
 			} else {
 				return routerInstance.goTo(SearchProductsRoutes.Search);
@@ -96,7 +96,7 @@
 		isPaying = true;
 		var res = await graphQLInstance.mutate(
 			PAY_ORDER,
-			{ id: $cartStore.id },
+			{ id: $cart.id },
 			errorsHandler.Uuid
 		);
 
@@ -208,19 +208,19 @@
 						<div class="text-left">
 							<p>Panier</p>
 							<p class="text-sm text-gray-600">
-								{$cartStore.productsCount} articles
-								{#if $cartStore.returnablesCount >= 1}
-									dont {$cartStore.returnablesCount} consigné{$cartStore.returnablesCount > 1 ? 's' : ''}
+								{$cart.productsCount} articles
+								{#if $cart.returnablesCount >= 1}
+									dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
 								{/if}
 							</p>
 						</div>
 						<div class="text-right">
-							<p class="font-medium">{formatMoney($cartStore.totalOnSalePrice)}</p>
-							{#if $cartStore.returnablesCount >= 1}
+							<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
+							{#if $cart.returnablesCount >= 1}
 								<p class="text-blue-500 font-medium text-sm">
 									dont 
 									<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
-									{formatMoney($cartStore.totalReturnableOnSalePrice)}
+									{formatMoney($cart.totalReturnableOnSalePrice)}
 								</p>
 							{/if}
 						</div>
@@ -234,16 +234,16 @@
 							</p>
 						</div>
 						<div>
-							<p class="font-medium">{formatMoney($cartStore.totalFees)}</p>
+							<p class="font-medium">{formatMoney($cart.totalFees)}</p>
 						</div>
 					</div>
-					{#if $cartStore.donation > 0}
+					{#if $cart.donation > 0}
 						<div class="flex justify-between w-full lg:px-3 pb-2">
 							<div class="text-left">
 								<p>Don</p>
 							</div>
 							<div>
-								<p class="font-medium">{formatMoney($cartStore.donation)}</p>
+								<p class="font-medium">{formatMoney($cart.donation)}</p>
 							</div>
 						</div>
 					{/if}
@@ -254,7 +254,7 @@
 							<p class="uppercase font-semibold">Total</p>
 						</div>
 						<div>
-							<p class="font-bold text-lg">{formatMoney($cartStore.totalPrice)}</p>
+							<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
 						</div>
 					</div>
 					<div class="mt-3">

@@ -31,14 +31,14 @@
       onClose: (pickedDelivery, pickedDeliveryHour) => {
         selected = pickedDelivery;
         selectedDeliveryHour = pickedDeliveryHour;
-        updateCartItems();
+        updateCartProducts();
       }
     });
   };
   onMount(() => { 
-    updateCartItems();
+    updateCartProducts();
   })
-  const updateCartItems = () => {
+  const updateCartProducts = () => {
     let items = businessQuickOrderProducts.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
 
     if (data && selected && selectedDeliveryHour) {
