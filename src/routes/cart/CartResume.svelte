@@ -205,30 +205,30 @@
             {/if}
             <div
               class="align-middle inline-block min-w-full overflow-hidden items">
-              {#each cart.getSortedProductsByProducerName($cart.products) as item, i (item.id)}
-                {#if i === 0 || cart.getSortedProductsByProducerName()[i - 1].producer.name !== item.producer.name}
-                    <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1} class:bg-orange-200={item.producer.disabled}>
+              {#each cart.getSortedProductsByProducerName($cart.products) as product, i (product.id)}
+                {#if i === 0 || cart.getSortedProductsByProducerName()[i - 1].producer.name !== product.producer.name}
+                    <p style="border-bottom: 0;" class="font-semibold uppercase text-sm border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1} class:bg-orange-200={product.producer.disabled}>
                       <span
                         class="rounded-full inline-flex w-6 h-6 items-center
                         justify-center bg-primary mr-2 text-white font-semibold"
-                        class:hidden={item.producer.disabled}>
-                        {$cart.selectedDeliveries.find((d) => d.producerId == item.producer.id) ? $cart.selectedDeliveries.find((d) => d.producerId == item.producer.id).number : '-'}
+                        class:hidden={product.producer.disabled}>
+                        {$cart.selectedDeliveries.find((d) => d.producerId == product.producer.id) ? $cart.selectedDeliveries.find((d) => d.producerId == product.producer.id).number : '-'}
                       </span>
-                      {item.producer.name}
+                      {product.producer.name}
                     </p>
-                    {#if item.producer.disabled}
+                    {#if product.producer.disabled}
                       <div class="bg-orange-200 py-2 pl-3 border-gray-400 border">
                         <p>Le producteur a désactivé ses points de vente.</p>
                         <button 
                           type="button"
                           class="btn-link text-sm"
-                          on:click={() => cart.removeProductsWithProducer(item.producer.id)}>
+                          on:click={() => cart.removeProducerProducts(product.producer.id)}>
                           Supprimer ce producteur
                         </button>
                       </div>
                     {:else}
                       <DeliveryModePicker
-                        data={producersDeliveries.find(p => p.id === item.producer.id)} 
+                        data={producersDeliveries.find(p => p.id === product.producer.id)} 
                         isLoading={isLoadingDeliveries}
                       />
                     {/if}
@@ -236,43 +236,43 @@
                 <div
                   class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
                   border-gray-400 border-solid items-center" 
-                  class:bg-orange-200={item.disabled || item.producer.disabled} 
-                  class:text-gray-500={item.disabled || item.producer.disabled}
-                  class:line-through={item.disabled || item.producer.disabled}>
+                  class:bg-orange-200={product.disabled || product.producer.disabled} 
+                  class:text-gray-500={product.disabled || product.producer.disabled}
+                  class:line-through={product.disabled || product.producer.disabled}>
                   <div class="md:w-6/12 px-3">
                     <div class="text-lg leading-5 font-medium">
-                      <p>{item.name}</p>
+                      <p>{product.name}</p>
                     </div>
-                    <div class="text-sm leading-5">{formatMoney(item.unitOnSalePrice)} / unité</div>
+                    <div class="text-sm leading-5">{formatMoney(product.unitOnSalePrice)} / unité</div>
                   </div>
                   <div class="md:w-2/12 px-3 block md:hidden">
                     <p>
                       <span class="font-bold text-xl">
-                        {formatMoney(item.unitOnSalePrice * item.quantity || 0)}
+                        {formatMoney(product.unitOnSalePrice * product.quantity || 0)}
                       </span>
                     </p>
                     <button
                       type="button"
                       class="btn-link text-sm"
-                      on:click={() => cart.removeProduct(item.id)}>
+                      on:click={() => cart.removeProduct(product.id)}>
                       Retirer
                     </button>
                   </div>
                     <div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
-                      {#if !item.disabled && !item.producer.disabled}
-                        <ProductCartQuantity productId={item.id} noMargin={true} minQuantity={1} />
+                      {#if !product.disabled && !product.producer.disabled}
+                        <ProductCartQuantity productId={product.id} noMargin={true} minQuantity={1} />
                       {/if}
                     </div>
                   <div class="md:w-3/12 px-3 text-right hidden md:block">
                     <p>
                       <span class="font-bold text-lg">
-                        {formatMoney(item.unitOnSalePrice * item.quantity || 0)}
+                        {formatMoney(product.unitOnSalePrice * product.quantity || 0)}
                       </span>
                     </p>
                     <button
                       type="button"
                       class="btn-link text-sm"
-                      on:click={() => cart.removeProduct(item.id)}>
+                      on:click={() => cart.removeProduct(product.id)}>
                       Retirer
                     </button>
                   </div>

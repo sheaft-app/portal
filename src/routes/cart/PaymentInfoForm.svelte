@@ -127,18 +127,18 @@
           <span>Modifier</span>
         </button>
       </div>
-      {#each $cart.products as item, index}
-        {#if !item.name}
-          <div>Attends...</div>
-        {:else if !item.disabled && !item.producer.disabled}
+      {#each $cart.products as product, index}
+        {#if !product.name}
+          <div>Chargement...</div>
+        {:else if !product.disabled && !product.producer.disabled}
           <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
             <div>
-              <p class="font-medium">{item.name}</p>
-              <p class="text-sm">{item.producer.name}</p>
+              <p class="font-medium">{product.name}</p>
+              <p class="text-sm">{product.producer.name}</p>
             </div>
             <div class="text-right">
-              <p class="font-medium">{formatMoney(item.unitOnSalePrice)}</p>
-              <p class="text-sm">qté : {item.quantity}</p>
+              <p class="font-medium">{formatMoney(product.unitOnSalePrice)}</p>
+              <p class="text-sm">qté : {product.quantity}</p>
             </div>
           </div>
         {/if}

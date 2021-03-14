@@ -284,7 +284,7 @@ const store = () => {
             })
             return methods.updateCart();
         },
-        removeProductsWithProducer(producerId) {
+        removeProducerProducts(producerId) {
             update(state => {
                 state.products = state.products.filter(c => c.producer.id !== producerId);
                 resetSelectedDeliveryForProducerId(producerId);
