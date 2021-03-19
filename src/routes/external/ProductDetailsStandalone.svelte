@@ -15,7 +15,6 @@
   import RatingStars from "./../../components/rating/RatingStars.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import { cartItems } from "./../../stores/app.js";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
   import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
@@ -48,7 +47,6 @@
   let comment = null;
   let isSubmittingRate = false;
   let isLoading = true;
-  let isInCart = false;
   let deliveries = [];
   let map = null;
   let deliveriesMarkers = [];
@@ -174,8 +172,6 @@
     rating = null;
     comment = null;
   };
-
-  $: isInCart = $cartItems.find(c => c.id === params.id) || false;
 </script>
 
 <TransitionWrapper hasRightPanel style="margin: 0">

@@ -1,14 +1,14 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import { cartItems } from "./../../stores/app.js";
+	import cart from "./../../stores/cart.js";
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import PaymentInfoForm from "./PaymentInfoForm.svelte";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { GET_MY_CONSUMER_LEGALS, GET_ORDER } from "./queries";
+	import { GET_MY_CONSUMER_LEGALS } from "./queries";
 	import {
 		PAY_ORDER,
 		CREATE_CONSUMER_LEGALS,
@@ -59,12 +59,10 @@
 		open(MangoPayInfo, {});
 	};
 
-	let order = JSON.parse(localStorage.getItem("user_current_order"));
-
 	onMount(async () => {
-		if (!order || $cartItems.length == 0) {
+		if (!$cart.userCurrentOrder || $cart.products.length <= 0) {
 			// todo : terminée, envoyer une notif
-			if ($cartItems.length > 0) {
+			if ($cart.products.length > 0) {
 				return routerInstance.goTo(CartRoutes.Resume);
 			} else {
 				return routerInstance.goTo(SearchProductsRoutes.Search);
@@ -74,19 +72,6 @@
 		const values = routerInstance.getQueryParams();
 
 		paymentError = values["message"] || null;
-
-		var resOrder = await graphQLInstance.query(
-			GET_ORDER,
-			{ input: order.id },
-			errorsHandler.Uuid
-		);
-
-		if (!resOrder.success) {
-			isLoading = false;
-			return;
-		}
-
-		order = resOrder.data;
 
 		var resLegals = await graphQLInstance.query(
 			GET_MY_CONSUMER_LEGALS,
@@ -111,7 +96,7 @@
 		isPaying = true;
 		var res = await graphQLInstance.mutate(
 			PAY_ORDER,
-			{ id: order.id },
+			{ id: $cart.id },
 			errorsHandler.Uuid
 		);
 
@@ -207,7 +192,6 @@
 				<div in:fly|local={{ x: 300, duration: 300 }}>
 					<PaymentInfoForm
 						bind:user
-						{order}
 						bind:step
 						{isSavingLegals}
 						{errorsHandler} />
@@ -224,19 +208,19 @@
 						<div class="text-left">
 							<p>Panier</p>
 							<p class="text-sm text-gray-600">
-								{order.productsCount} articles
-								{#if order.returnablesCount >= 1}
-									dont {order.returnablesCount} consigné{order.returnablesCount > 1 ? 's' : ''}
+								{$cart.productsCount} articles
+								{#if $cart.returnablesCount >= 1}
+									dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
 								{/if}
 							</p>
 						</div>
 						<div class="text-right">
-							<p class="font-medium">{formatMoney(order.totalOnSalePrice)}</p>
-							{#if order.returnablesCount >= 1}
+							<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
+							{#if $cart.returnablesCount >= 1}
 								<p class="text-blue-500 font-medium text-sm">
 									dont 
 									<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
-									{formatMoney(order.totalReturnableOnSalePrice)}
+									{formatMoney($cart.totalReturnableOnSalePrice)}
 								</p>
 							{/if}
 						</div>
@@ -250,16 +234,16 @@
 							</p>
 						</div>
 						<div>
-							<p class="font-medium">{formatMoney(order.totalFees)}</p>
+							<p class="font-medium">{formatMoney($cart.totalFees)}</p>
 						</div>
 					</div>
-					{#if order.donation > 0}
+					{#if $cart.donation > 0}
 						<div class="flex justify-between w-full lg:px-3 pb-2">
 							<div class="text-left">
 								<p>Don</p>
 							</div>
 							<div>
-								<p class="font-medium">{formatMoney(order.donation)}</p>
+								<p class="font-medium">{formatMoney($cart.donation)}</p>
 							</div>
 						</div>
 					{/if}
@@ -270,7 +254,7 @@
 							<p class="uppercase font-semibold">Total</p>
 						</div>
 						<div>
-							<p class="font-bold text-lg">{formatMoney(order.totalPrice)}</p>
+							<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
 						</div>
 					</div>
 					<div class="mt-3">

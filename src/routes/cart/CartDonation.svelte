@@ -1,22 +1,18 @@
 <script>
   import { onDestroy } from "svelte";
-  import { slide } from "svelte/transition";
+  import cart from "./../../stores/cart";
   import BlowingButton from "./BlowingButton.svelte";
   import { formatMoney } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
-  export let choice = null, submit = () => {}, isLoadingPaymentInfo = false, choosenDonation = CHOICE_NONE;
+  export let choice = null, submit = () => {}, choosenDonation = CHOICE_NONE;
 
   const CHOICE_EURO = "EURO";
   const CHOICE_ROUNDED = "ROUNDED";
   const CHOICE_NONE = "NONE";
 
-  let order = JSON.parse(
-		localStorage.getItem("user_current_order")
-  );
-
-  $: roundedValue = Math.ceil(order.totalPrice - order.donation) - (order.totalPrice - order.donation);
+  $: roundedValue = Math.ceil($cart.totalPrice - $cart.donation) - ($cart.totalPrice - $cart.donation);
   
   const choose = (_choice) => {
     choice = _choice;
@@ -66,8 +62,8 @@
       <div class="mt-5 mb-5 m-auto w-full">
         <button 
           type="button"
-          class:disabled={isLoadingPaymentInfo}
-          disabled={isLoadingPaymentInfo}
+          class:disabled={$cart.isSaving}
+          disabled={$cart.isSaving}
           on:click={handleSubmit}
           class="btn btn-lg btn-primary w-full justify-center" style="padding: 1em 2em;">
           {#if choice === CHOICE_EURO}
@@ -79,7 +75,7 @@
           {#if choice === CHOICE_NONE}
              Poursuivre sans donner à Sheaft
           {/if}
-          {#if isLoadingPaymentInfo}
+          {#if $cart.isSaving}
             <Icon data={faCircleNotch} spin class="ml-2" />
           {/if}
         </button>

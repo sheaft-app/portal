@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { cartItems } from "./../../stores/app";
+  import cart from "./../../stores/cart";
 	import Loader from "../../components/Loader.svelte";
   import { formatMoney } from "./../../helpers/app.js";
   import GetRouterInstance from "../../services/SheaftRouter";
@@ -13,7 +13,7 @@
 
   const routerInstance = GetRouterInstance();
 
-  export let step = 2, user, order;
+  export let step = 2, user;
   
   // si la date n'est pas un objet date
   if (user.birthDate && user.birthDate.includes("/")) {
@@ -27,7 +27,7 @@
   })
 </script>
 
-{#if !user || !order}
+{#if !user}
   <Loader />
 {:else}
   <div in:fly|local={{ x: 300, duration: 300 }}>
@@ -36,19 +36,19 @@
       <span class="bg-primary h-1 w-20 block mt-2"></span>
     </div>
     <div class="bg-white shadow px-5 py-3 lg:rounded">
-      {#if order.donation !== 0}
+      {#if $cart.donation !== 0}
         <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-accent lg:rounded-t font-semibold items-center flex">
           <Icon data={faHeart} class="mr-3" />
-          {#if order.donation == 1}
+          {#if $cart.donation == 1}
             <span>Vous êtes extraordinaire !</span>
           {:else}
             <span>Merci beaucoup !</span>
           {/if}
         </div>
-        {#if order.donation == 1}
-          <p>Merci beaucoup, votre contribution de {formatMoney(order.donation || 0)} est un très gros coup de pouce et représente beaucoup pour nous ! 😍</p>
+        {#if $cart.donation == 1}
+          <p>Merci beaucoup, votre contribution de {formatMoney($cart.donation || 0)} est un très gros coup de pouce et représente beaucoup pour nous ! 😍</p>
         {:else}
-          <p>Votre contribution de {formatMoney(order.donation || 0)} représente beaucoup pour nous 😊</p>
+          <p>Votre contribution de {formatMoney($cart.donation || 0)} représente beaucoup pour nous 😊</p>
         {/if}
         <p>Sheaft vit grâce aux personnes comme vous qui contribuent à son fonctionnement.</p>
         <button class="btn btn-link mt-2" on:click={() => routerInstance.goTo({ 
@@ -127,16 +127,18 @@
           <span>Modifier</span>
         </button>
       </div>
-      {#each $cartItems as cartItem, index}
-        {#if !cartItem.disabled && !cartItem.producer.disabled}
+      {#each $cart.products as product, index}
+        {#if !product.name}
+          <div>Chargement...</div>
+        {:else if !product.disabled && !product.producer.disabled}
           <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
             <div>
-              <p class="font-medium">{cartItem.name}</p>
-              <p class="text-sm">{cartItem.producer.name}</p>
+              <p class="font-medium">{product.name}</p>
+              <p class="text-sm">{product.producer.name}</p>
             </div>
             <div class="text-right">
-              <p class="font-medium">{formatMoney(cartItem.onSalePricePerUnit)}</p>
-              <p class="text-sm">qté : {cartItem.quantity}</p>
+              <p class="font-medium">{formatMoney(product.unitOnSalePrice)}</p>
+              <p class="text-sm">qté : {product.quantity}</p>
             </div>
           </div>
         {/if}

@@ -7,9 +7,10 @@
   import { InitGraphQL } from "./services/SheaftGraphQL.js";
   import SheaftErrors from "./services/SheaftErrors.js";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
-  import { cartItems, allDepartmentsProgress } from "./stores/app";
+  import { allDepartmentsProgress } from "./stores/app";
+  import cart from "./stores/cart";
   import { authRegistered } from "./stores/auth";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, getContext } from "svelte";
   import "notyf/notyf.min.css";
   import "swiper/swiper.min.css";
   import "swiper/components/navigation/navigation.min.css";
@@ -62,14 +63,17 @@
   );
 
   const initSubscription = authInitialized.subscribe(async initialized => {
-      isLoading = false;
+      if (initialized) {
+        isLoading = false;
+      }
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
+    await cart.initialize(apiInstance, errorsHandlers, authenticated);
+
     if (!authenticated) {
       await logoutFreshdesk();
       signalrInstance.stop();
-      return;
     }
 
     if (authenticated) {
@@ -82,14 +86,9 @@
       }      
     }
     
-    if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
+    if(authenticated && (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path))
       routerInstance.goTo("/", null, true);
   });
-
-  const localStorageCartItems = JSON.parse(localStorage.getItem("user_cart"));
-  if (localStorageCartItems) {
-    cartItems.set(localStorageCartItems);
-  }
 
   window.addEventListener("beforeinstallprompt", e => {});
 
@@ -103,23 +102,24 @@
   onMount(async () => {
     isLoading = true;
 
-    var sponsoring = routerInstance.getQueryParam("user_sponsoring");
+    let sponsoring = routerInstance.getQueryParam("user_sponsoring");
     if (sponsoring) {
       localStorage.setItem("user_sponsoring", JSON.stringify(sponsoring));
     } else {
       localStorage.removeItem("user_sponsoring");
     }
 
-    var role = routerInstance.getQueryParam("role");
+    let role = routerInstance.getQueryParam("role");
     if (role) {
       localStorage.setItem("user_choosen_role", JSON.stringify(role.toUpperCase()));
       await authInstance.login();
     }
 
     const progress = await fetch(config.content + '/progress/departments.json');
-    var data = await progress.json();
+    let data = await progress.json();
       
     allDepartmentsProgress.set(data);
+
     isLoading = false;
   });
 

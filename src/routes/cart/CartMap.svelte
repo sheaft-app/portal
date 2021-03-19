@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { cartItems, cartItemsOrderedByProducer } from "../../stores/app.js";
+  import cart from "../../stores/cart";
   import { querystring } from "svelte-spa-router";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
@@ -11,7 +11,7 @@
 
   var map = null;
   var userMarker = null;
-  var cartItemsMarkers = null;
+  var productMarkers = null;
   var position = {
     latitude: 0,
     longitude: 0
@@ -84,42 +84,19 @@
   });
 
   $: if (map) {
-    if (cartItemsMarkers) map.removeLayer(cartItemsMarkers);
+    if (productMarkers) map.removeLayer(productMarkers);
 
-    let producerWithProductsCount = [];
-
-    // on regroupe tous les produits par producteur pour afficher des marqueurs avec un nombre d'articles
-    $cartItems
-      .filter(c => c.producer.delivery && c.producer.delivery.address && c.producer.delivery.address.latitude && c.producer.delivery.address.longitude)
-      .map((cartItem, i) => {
-        let producer = producerWithProductsCount.find(
-          c => {
-            return c.delivery.address.latitude === cartItem.producer.delivery.address.latitude &&
-            c.delivery.address.longitude === cartItem.producer.delivery.address.longitude
-          }
-        );
-
-        producer
-          ? (producer.nbProducts += cartItem.quantity)
-          : (producerWithProductsCount = [
-              ...producerWithProductsCount,
-              { ...cartItem.producer, nbProducts: cartItem.quantity, index: producerWithProductsCount.length + 1 }
-            ]);
-      });
-
-    cartItemsOrderedByProducer.set(producerWithProductsCount);
-
-    const coordonnates = producerWithProductsCount.map((producer, i) =>
+    const coordonnates = $cart.selectedDeliveries.map((producer) =>
       L.marker([producer.delivery.address.latitude, producer.delivery.address.longitude], {
-        icon: renderMarkerWithNumber(i + 1)
-      }).bindPopup(`<p style="margin: 0"><b>${producer.nbProducts} articles</b></p><p style="margin: 0">${producer.name}</p><p style="margin: 0">${producer.delivery.address.zipcode} ${producer.delivery.address.city}</p>`)
+        icon: renderMarkerWithNumber(producer.number)
+      }).bindPopup(`<p style="margin: 0">${producer.producerName}</p><p style="margin: 0">${producer.delivery.address.zipcode} ${producer.delivery.address.city}</p>`)
     );
 
-    cartItemsMarkers = L.featureGroup(coordonnates);
+    productMarkers = L.featureGroup(coordonnates);
 
-    cartItemsMarkers.addTo(map);
+    productMarkers.addTo(map);
     if (coordonnates.length > 0) {
-      map.fitBounds(cartItemsMarkers.getBounds(), { maxZoom: 10});
+      map.fitBounds(productMarkers.getBounds(), { maxZoom: 10});
     }
   }
 </script>

@@ -12,12 +12,9 @@
   import { GetDistanceInfos } from "./../../helpers/distances.js";
   import orderBy from "lodash/orderBy";
 
-  export let close, introEnded, data, onClose, selected, selectedDeliveryHour, storeDelivery;
-
-  const routerInstance = GetRouterInstance();
+  export let close, introEnded, data, onClose, selected, selectedDeliveryHour, storeDelivery = false;
 
   let isLoading = true;
-  let scrolledBottom = true;
   let location = null;
   let slides = [];
 

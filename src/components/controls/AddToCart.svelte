@@ -1,35 +1,20 @@
 <script>
   import { onMount } from "svelte";
   import ProductCartQuantity from "./ProductCartQuantity.svelte";
-  import { cartItems } from "./../../stores/app";
+  import cart from "./../../stores/cart";
   import Icon from "svelte-awesome";
   import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
   export let product, disabled;
 
   let state = 0;
-
-  onMount(() => {
-    if ($cartItems.find((c) => c.id == product.id)) {
-      state = 1;
-    }
-  })
-
-  const addToCart = () => { 
+  
+  const addToCart = () => {
     if (disabled) return;
-    
-    $cartItems = [product, ...$cartItems];
-    product.quantity = 1;
-    $cartItems = $cartItems;
-
-    localStorage.setItem("user_cart", JSON.stringify($cartItems));
-
-    state = 1;
+    cart.addProduct(product.id);
   }
 
-  $: if (!$cartItems.find((c) => c.id == product.id)) {
-    state = 0;
-  }
+  $: state = $cart.products.find((i) => i.id == product.id) ? 1 : 0;
 </script>
 
 {#if state == 1}
@@ -37,9 +22,7 @@
     center={false}
     productId={product.id}
   />
-  {#if product.quantity !== 0}
-    <p class="text-green-500 text-sm">Dans le panier</p>
-  {/if}
+  <p class="text-green-500 text-sm">Dans le panier</p>
 {:else}
   <button class="btn btn-lg btn-accent" class:disabled {disabled} on:click={addToCart}>
     <Icon data={faShoppingCart} class="mr-2" />
