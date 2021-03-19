@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const CANCEL_AGREEMENT = gql`
-	mutation cancelAgreements($input: IdsWithReasonInput) {
+	mutation cancelAgreements($input: ResourceIdsWithReasonInput) {
 		cancelAgreements(input: $input) {
 			nodes {
 				id
@@ -12,7 +12,7 @@ export const CANCEL_AGREEMENT = gql`
 `
 
 export const ACCEPT_AGREEMENT = gql`
-	mutation acceptAgreement($input: IdTimeSlotGroupInput) {
+	mutation acceptAgreement($input: ResourceIdTimeSlotsInput) {
 		acceptAgreement(input: $input) {
 			id
 			status
@@ -26,7 +26,7 @@ export const ACCEPT_AGREEMENT = gql`
 `
 
 export const REFUSE_AGREEMENTS = gql`
-	mutation refuseAgreements($input: IdsWithReasonInput) {
+	mutation refuseAgreements($input: ResourceIdsWithReasonInput) {
 		refuseAgreements(input: $input) {
 			nodes {
 				id

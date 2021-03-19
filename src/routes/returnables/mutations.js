@@ -25,7 +25,7 @@ export const UPDATE_RETURNABLE = gql`
 `;
 
 export const DELETE_RETURNABLE = gql`
-	mutation DeleteReturnable($input: IdInput!) {
+	mutation DeleteReturnable($input: ResourceIdInput!) {
 		deleteReturnable(input: $input)
 	}
 `;

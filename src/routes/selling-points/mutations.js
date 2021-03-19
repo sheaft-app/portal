@@ -51,7 +51,7 @@ export const UPDATE_SELLING_POINT = gql`
 `;
 
 export const DELETE_SELLING_POINT = gql`
-	mutation DeleteSellingPoint($input: IdInput!) {
+	mutation DeleteSellingPoint($input: ResourceIdInput!) {
 		deleteDeliveryMode(input: $input)
 	}
 `;

@@ -84,7 +84,7 @@ export const DELETE_ACCOUNT = gql`
 `;
 
 export const EXPORT_DATA = gql`
-	mutation ExportRGPD($input: IdInput) {
+	mutation ExportRGPD($input: ResourceIdInput) {
 		exportRGPD(input: $input) {
 			id
 		}
