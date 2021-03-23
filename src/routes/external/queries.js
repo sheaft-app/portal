@@ -82,8 +82,8 @@ export const GET_PRODUCER_DELIVERIES = gql`
 `;
 
 export const GET_PRODUCER_PROFILE = gql` 
-query GetUserProfile($id: Uuid!) {
-	userProfile(input: $id) {
+query GetUserProfile($id: ID!) {
+	producer(input: $id) {
 		summary
 		description
 		facebook
@@ -100,7 +100,8 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				id
 				name
 				onSalePricePerUnit
-				picture
+				imageMedium
+				imageSmall
 				rating
 				quantityPerUnit
 				conditioning
