@@ -84,7 +84,16 @@ export const GET_PRODUCER_DELIVERIES = gql`
 export const GET_PRODUCER_PROFILE = gql` 
 query GetUserProfile($id: ID!) {
 	producer(input: $id) {
+		name
 		summary
+		address {
+			line1
+			line2
+			city
+			latitude
+			longitude
+			zipcode
+		}
 		description
 		facebook
 		instagram
@@ -107,9 +116,6 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				conditioning
 				unit
 				available
-				producer {
-					name
-				}
 	  		}
 		}
   	}
