@@ -32,7 +32,6 @@ import { config } from "../../configs/config";
   let sub = null;
 
   let user = {
-    id: authInstance.user.profile.sub || null,
     firstName: authInstance.user.profile.given_name || null,
     lastName: authInstance.user.profile.family_name || null,
     email: authInstance.user.profile.email || null,
