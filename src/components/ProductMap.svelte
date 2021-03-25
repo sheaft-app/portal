@@ -5,7 +5,7 @@
   import L from "leaflet";
   import { get } from "svelte/store";
 
-  export let id, height, hoveredProduct, userPosition;
+  export let id, height, hoveredProduct = null, userPosition = null;
 
   var map = null;
   var currentMarker = null;

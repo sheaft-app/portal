@@ -143,7 +143,7 @@
             border-gray-800 border-solid"
             src={producer.picture ? producer.picture : 'img/icons/farmer.svg'}
             alt="Photo du producteur" />
-          <div class="w-full xl:w-10/12 xl:pl-8 pl-3 text-center xl:text-left mt-3 xl:mt-0">
+          <div class="w-full xl:w-10/12 xl:pl-3 text-center xl:text-left mt-3 xl:mt-0">
             <h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">{producer.name}</h3>
             <div class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2" class:xl:-mt-6={producer.summary} style="align-items: baseline;">
               {#if producer.summary}
@@ -277,11 +277,7 @@
     </div>
   {/if}
 
-  <div
-    class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
-      transition duration-300 ease-in-out cart-panel">
-      <Cart />
-  </div>
+  <Cart />
 </TransitionWrapper>
 
 <style lang="scss">
