@@ -190,9 +190,6 @@
             {/if}
           </div>
         </div>
-        <div class="mb-5 flex">
-          
-        </div>
         <Tabs>
           <TabList>
             {#each tabs as tab}
@@ -290,6 +287,7 @@
   }
 
   .products-grid {
+    padding-bottom: 65px;
 		@media (min-width: 1650px) {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
