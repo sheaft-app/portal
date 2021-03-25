@@ -55,19 +55,17 @@
   async function submit() {
     isLoading = true;
 
-    const mutation = {
-      mutation: EXPORT_PICKING_FROM_ORDERS,
-      variables: {
-        input: { purchaseOrderIds, name }
-      }
-    };
+    var result = await graphQLInstance.mutate(
+      EXPORT_PICKING_FROM_ORDERS, 
+      {
+        purchaseOrderIds, name 
+      }, 
+      errorsHandler.Uuid);
 
-    var result = await graphQLInstance.mutate(mutation, errorsHandler.Uuid);
     if (
       result &&
-      result.data &&
-      result.data.exportPickingFromOrders &&
-      result.data.exportPickingFromOrders.id
+      result.exportPickingFromOrders &&
+      result.exportPickingFromOrders.id
     ) {
       notificationsInstance.success(
         "Votre demande de création d'un bon de préparation a bien été prise en compte, vous pouvez continuer à utiliser notre plateforme en attendant !"

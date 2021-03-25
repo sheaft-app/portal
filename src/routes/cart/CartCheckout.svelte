@@ -96,7 +96,7 @@
 		isPaying = true;
 		var res = await graphQLInstance.mutate(
 			PAY_ORDER,
-			{ id: $cart.id },
+			{ id: $cart.userCurrentOrder },
 			errorsHandler.Uuid
 		);
 

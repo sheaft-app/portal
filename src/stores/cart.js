@@ -45,7 +45,7 @@ const store = () => {
             if (currentOrder && (!selectedCart || currentOrder !== selectedCart.id)) {
                 const res = await graphQLInstance.query(GET_CART, { input: currentOrder });
 
-                if (!res.success || res.data == null || res.data.status == "SUCCEEDED" || res.data.status == "WAITING") {
+                if (!res.success || res.data == null || res.data.status == "SUCCEEDED" || res.data.status == "WAITING" || res.data.status == "VALIDATED") {
                     this.clearStorage();
                 } else if (selectedCart) {
                     return update(state => {
@@ -131,6 +131,7 @@ const store = () => {
         clearStorage() {
             localStorage.removeItem("user_last_transaction");
             localStorage.removeItem("user_current_order");
+            localStorage.removeItem("user_cart");
         },
         normalizeDeliveries(deliveries) {
             return deliveries.map((delivery, index) => ({
