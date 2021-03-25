@@ -1,5 +1,6 @@
 <script>
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
+  import ProducerReadMoreModal from "./ProducerReadMoreModal.svelte";
   import Icon from "svelte-awesome";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import { fly } from "svelte/transition";
@@ -27,6 +28,7 @@
   const routerInstance = GetRouterInstance();
   const authInstance = GetAuthInstance();
   const graphQLInstance = GetGraphQLInstance();
+  const { open } = getContext('modal');
 
   export let params = {};
 
@@ -34,9 +36,6 @@
   let producerProducts = [];
   let isLoading = true;
   let deliveries = [];
-  let productionSite = null;
-  let map = null;
-  let deliveriesMarkers = [];
 
   const tabs = [
 	{ id: 'data', icon: '', label: 'Produits' },
@@ -45,39 +44,6 @@
 
   onMount(async () => {
     await getProducerDetails(params.id);
-
-    // map = L.map("map").setView([45.77166358, 2.9666628], 4);
-
-    // L.tileLayer(
-    //   "https://api.maptiler.com/maps/positron/{z}/{x}/{y}.png?key=xdycAkqlmra0OjZw2dPy",
-    //   {
-    //     attribution:
-    //       'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    //     maxZoom: 18,
-    //     tileSize: 512,
-    //     zoomOffset: -1
-    //   }
-    // ).addTo(map);
-
-    // const renderMarker = () => {
-    //   return L.divIcon({
-    //     className: "custom-marker",
-    //     html: `<svg xmlns="http://www.w3.org/2000/svg" height="25px" viewBox="-46 0 512 512" width="25px" class="hovered-paths"><g><path d="m177.128906 232.5h64.609375l25.210938-55h-101.953125zm0 0" data-original="#000000" class="hovered-path active-path" data-old_color="#000000" fill="#205164"/><path d="m210 0c-115.792969 0-210 94.207031-210 210 0 93.359375 61.519531 175.210938 150.441406 201.429688l46.140625 92.277343c2.539063 5.082031 7.734375 8.292969 13.417969 8.292969 5.679688 0 10.875-3.210938 13.414062-8.292969l46.140626-92.277343c88.925781-26.214844 150.445312-108.070313 150.445312-201.429688 0-115.792969-94.207031-210-210-210zm-39.671875 304.5c-8.261719 0-15-6.738281-15-15s6.738281-15 15-15 15 6.738281 15 15-6.738281 15-15 15zm75 0c-8.261719 0-15-6.738281-15-15s6.738281-15 15-15 15 6.738281 15 15-6.738281 15-15 15zm58.636719-135.75-38.96875 85c-2.441406 5.332031-7.769532 8.75-13.632813 8.75h-86.289062c-7.039063 0-13.132813-4.894531-14.648438-11.769531l-23.867187-108.230469h-8.835938c-8.285156 0-15-6.714844-15-15s6.714844-15 15-15h20.886719c7.042969 0 13.132813 4.894531 14.648437 11.769531l5.125 23.230469h131.945313c5.109375 0 9.867187 2.601562 12.625 6.898438 2.761719 4.300781 3.140625 9.707031 1.011719 14.351562zm0 0" data-original="#000000" class="hovered-path active-path" data-old_color="#000000" fill="#205164"/></g> </svg>`      
-    //   });
-    // };
-    
-    // const coordonnates = deliveries.map((delivery, i) =>
-    //   L.marker([delivery.address.latitude, delivery.address.longitude], {
-    //     icon: renderMarker()
-    //   }).bindPopup(`<p style="margin: 0"><b>${DeliveryKind.label(delivery.kind)}</b></p><p style="margin: 0">${delivery.address.line1}</p><p style="margin: 0">${delivery.address.zipcode} ${delivery.address.city}</p>`)
-    // );
-
-    // deliveriesMarkers = L.featureGroup(coordonnates);
-
-    // deliveriesMarkers.addTo(map);
-    // if (coordonnates.length > 0) {
-    //   map.fitBounds(deliveriesMarkers.getBounds(), { maxZoom: 10});
-    // }
   })
 
   const getProducerDetails = async id => {
@@ -108,7 +74,6 @@
 
     if (deliveriesResult.data.length == 0) {
       deliveries = [];
-      productionSite = null;
     } else {
       deliveries = deliveriesResult.data[0].deliveries.map((d) => {
         return {
@@ -120,8 +85,6 @@
           ))
         }
       });
-
-      productionSite = deliveries.find((d) => d.kind == "FARM");
     }
 
     let productsResult = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
@@ -136,6 +99,12 @@
     producer = res.data;
     isLoading = false;
   };
+
+  const openReadMoreModal = () => {
+    open(ProducerReadMoreModal, {
+      producer
+    })
+  }
 </script>
 
 <TransitionWrapper style="margin: 0" hasRightPanel>
@@ -181,7 +150,7 @@
                 <div class="w-full xl:w-7/12">
                     <p class="text-sm">{producer.summary}</p>
                   {#if producer.description}
-                    <button class="btn btn-link mt-2 m-auto xl:mx-0">Lire plus</button>
+                    <button on:click={openReadMoreModal} class="btn btn-link mt-2 m-auto xl:mx-0">Lire plus</button>
                   {/if}
                 </div>
               {/if}
