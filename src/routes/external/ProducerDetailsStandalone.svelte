@@ -118,7 +118,10 @@
         Retourner à la recherche
       </button>
     {/if}
-    {#if !producer || isLoading}
+    {#if !producer && !isLoading}
+      <h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Mince !</h3>
+      <p>Nous n'avons pas réussi à trouver ce producteur.</p>
+    {:else if !producer || isLoading}
       <div class="flex flex-wrap mt-5 mb-5 justify-center xl:justify-between">
         <div
           class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 skeleton-box" />
