@@ -53,6 +53,10 @@ export const UPDATE_PRODUCER = gql`
 			email
 			phone
 			picture
+			description
+			summary
+			facebook
+			instagram
 			address {
 				line1
 				line2

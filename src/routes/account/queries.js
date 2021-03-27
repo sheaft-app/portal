@@ -62,6 +62,10 @@ export const GET_PRODUCER_DETAILS = gql`
 			email
 			phone
 			picture
+			description
+			summary
+			facebook
+			instagram
 		}
 	}
 `;
