@@ -122,7 +122,7 @@ import { config } from "../../configs/config";
   <div
     class="hidden lg:flex items-center justify-center -ml-8"
     style="min-width: 200px;">
-    <a href="javascript:void(0)"
+    <button class="btn-link"
     on:click={() => goToHome(authInstance, routerInstance)}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +167,7 @@ import { config } from "../../configs/config";
             }
           </style>
         </defs>
-        <title>LOGO_SHEAFT_V6_white</title>
+        <title>SHEAFT</title>
         <g id="FEUILLES_V3" data-name="FEUILLES V3">
           <g id="FRAISE">
             <path
@@ -234,7 +234,7 @@ import { config } from "../../configs/config";
             transform="translate(-42.35)" />
         </g>
       </svg>
-    </a>
+    </button>
   </div>
   {#if $selectedItem || $navExpended}
     <button

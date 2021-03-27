@@ -69,7 +69,9 @@
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
-    await cart.initialize(apiInstance, errorsHandlers, authenticated);
+    if (!authenticated || (authenticated && !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value]))) {
+      await cart.initialize(apiInstance, errorsHandlers, authenticated);
+    }
 
     if (!authenticated) {
       await logoutFreshdesk();
