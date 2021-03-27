@@ -1,6 +1,7 @@
 <script>
   import ExternalRoutes from "./routes.js";
   import ProductDetailsStandalone from "./ProductDetailsStandalone.svelte";
+  import ProducerDetailsStandalone from "./ProducerDetailsStandalone.svelte";
   
   import Router from "svelte-spa-router";
 
@@ -10,6 +11,7 @@
 
   const routes = {};
   routes[ExternalRoutes.ProductDetails.SubPart] = ProductDetailsStandalone;
+  routes[ExternalRoutes.ProducerDetails.SubPart] = ProducerDetailsStandalone;
 
 </script>
 

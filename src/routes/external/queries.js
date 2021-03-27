@@ -39,7 +39,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			producer {
 				id
 				name
-				description
+				summary
 				picture
 				address {
 					city
@@ -80,3 +80,43 @@ export const GET_PRODUCER_DELIVERIES = gql`
 		}
 	}
 `;
+
+export const GET_PRODUCER_PROFILE = gql` 
+query GetUserProfile($id: ID!) {
+	producer(input: $id) {
+		name
+		summary
+		address {
+			line1
+			line2
+			city
+			latitude
+			longitude
+			zipcode
+		}
+		description
+		facebook
+		instagram
+		twitter
+	}
+}
+`;
+
+export const GET_PRODUCER_PRODUCTS = gql`
+	query($id: ID!) {
+		producerProducts(input: $id) {
+	  		nodes {
+				id
+				name
+				onSalePricePerUnit
+				imageMedium
+				imageSmall
+				rating
+				quantityPerUnit
+				conditioning
+				unit
+				available
+	  		}
+		}
+  	}
+`

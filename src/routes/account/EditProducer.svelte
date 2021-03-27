@@ -25,8 +25,7 @@
 			city: null,
 			zipcode: null,
 			country: "FR"
-		},
-		description: null
+		}
 	};
 	
 	const producerForm = form(() => ({
@@ -136,7 +135,7 @@
 				type="text"
 				placeholder="Adresse vers votre page Instagram" />
 		</div>
-	</div>
+  </div>
 	<div class="mt-4">
 		<Toggle classNames="ml-1" bind:isChecked={producer.openForNewBusiness}>
 			<div class="ml-2">

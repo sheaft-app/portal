@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import Icon from "svelte-awesome";
-  import { faMapMarkerAlt, faCircleNotch, faTimesCircle, faChevronUp, faChevronDown, faHeart, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { faCircleNotch, faChevronUp, faChevronDown, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import AddToCart from "./../../components/controls/AddToCart.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { format } from "date-fns";
@@ -16,16 +16,13 @@
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app.js";
-  import UnitKind from "./../../enums/UnitKind";
   import TagKind from "./../../enums/TagKind";
   import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import ConditioningKind from "./../../enums/ConditioningKind";
   import Roles from "./../../enums/Roles";
   import SheaftErrors from "../../services/SheaftErrors";
   import DeliveryKind from "../../enums/DeliveryKind";
-  import ErrorCard from "./../../components/ErrorCard.svelte";
   import { groupBy, encodeQuerySearchUrl, formatConditioningDisplay } from "./../../helpers/app";
-  import orderBy from "lodash/orderBy";
   import { config } from "../../configs/config";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
@@ -35,8 +32,6 @@
   const routerInstance = GetRouterInstance();
   const authInstance = GetAuthInstance();
   const graphQLInstance = GetGraphQLInstance();
-  
-  const values = routerInstance.getQueryParams();
 
   export let params = {};
 
@@ -94,7 +89,6 @@
 
     if (!res.success) {
       isLoading = false;
-      close();
       //TODO
       return;
     }
@@ -112,7 +106,6 @@
 
     if (!deliveriesResult.success) {
       isLoading = false;
-      close();
       //TODO
     }
 
@@ -318,9 +311,9 @@
                   <div>
                     <p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
                     <p>{delivery.address.line1}</p>
-                    {#if product.producer.address.line2}
+                    {#if delivery.address.line2}
                       <p>
-                        {product.producer.address.line2}
+                        {delivery.address.line2}
                       </p>
                     {/if}
                     <p>{delivery.address.zipcode} {delivery.address.city}</p>
@@ -354,7 +347,7 @@
             {/each}
             <div
               on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
-              class:hidden={!product.producer.description}
+              class:hidden={!product.producer.summary}
               class="rounded-b-lg w-full py-3 bg-white
               text-center font-semibold flex
               justify-center items-center cursor-pointer mt-2">
@@ -366,9 +359,9 @@
                 <span>Replier le bandeau</span>
               {/if}
             </div>
-            {#if producerDescriptionExpanded && product.producer.description}
+            {#if producerDescriptionExpanded && product.producer.summary}
               <div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5" >
-                {product.producer.description}
+                {product.producer.summary}
               </div>
             {/if}
           </div>
@@ -497,7 +490,6 @@
       </div>
     {/if}
   </div>
-  <!-- à intégrer très vite, pour l'instant sa présence est nécessaire pour un hack : il est responsable de la quantité du produit en son sein -->
   <div
     class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
       transition duration-300 ease-in-out cart-panel">
