@@ -20,7 +20,7 @@
       quantity = (quantity || 1) - 1;
     }
 
-    updateProductQuantity(quantity);
+    updateProductQuantity(quantity, productId);
   };
 
   const handleMore = () => {
@@ -28,7 +28,7 @@
 
     quantity = (quantity || 0) + 1;
 
-    updateProductQuantity(quantity);
+    updateProductQuantity(quantity, productId);
   };
 
   const handleInput = e => {
@@ -40,11 +40,14 @@
       e.target.value = minQuantity;
     }
 
-    updateProductQuantity(parseInt(e.target.value));
+    updateProductQuantity(parseInt(e.target.value), productId);
   };
 
-  const updateProductQuantity = debounce((quantity) => {
-    cart.updateProduct(productId, quantity);
+  // si l'utilisateur appuie sur + ou -, le debounce va provoquer l'attente. Or, si ProductCartQuantity se démonte
+  // avant l'exécution de la fonction, alors productId n'est plus défini. On passe donc directement la valeur de productId
+  // à la fonction comme paramètre pour éviter un problème lié à un unmount triggered "trop tôt"
+  const updateProductQuantity = debounce((quantity, _productId) => {
+    cart.updateProduct(_productId, quantity);
     if (userFeedback) triggerFeedback();
   }, 800);
 
