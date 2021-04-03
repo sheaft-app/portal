@@ -3,10 +3,10 @@ import gql from "graphql-tag";
 export const GET_RETURNABLES = gql`
 	query Returnables(
 		$first: PaginationAmount
-		$after: String		
+		$after: String
 		$last: PaginationAmount
 		$before: String
-		$orderBy: ReturnableDtoSort
+		$orderBy: ReturnableSort
 	) {
 		returnables(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
 			edges {

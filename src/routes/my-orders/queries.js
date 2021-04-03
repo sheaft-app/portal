@@ -6,7 +6,7 @@ export const MY_ORDERS = gql`
 		$last: PaginationAmount
 		$after: String
 		$before: String
-		$orderBy: PurchaseOrderDtoSort
+		$orderBy: PurchaseOrderSort
 	) {
 		myOrders(
 			first: $first

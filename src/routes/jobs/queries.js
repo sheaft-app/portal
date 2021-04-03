@@ -3,10 +3,10 @@ import gql from "graphql-tag";
 export const GET_JOBS = gql`
 	query GetJobs(
 		$first: PaginationAmount
-		$after: String		
+		$after: String
 		$last: PaginationAmount
 		$before: String
-		$orderBy:JobDtoSort
+		$orderBy:JobSort
 	) {
 		jobs(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
 			pageInfo {

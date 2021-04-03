@@ -3,10 +3,10 @@ import gql from "graphql-tag";
 export const GET_PRODUCTS = gql`
 	query GetProducts(
 		$first: PaginationAmount
-		$after: String		
+		$after: String
 		$last: PaginationAmount
 		$before: String
-		$orderBy: ProductDtoSort
+		$orderBy: ProductSort
 	) {
 		products(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
 			pageInfo {
