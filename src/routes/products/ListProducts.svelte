@@ -298,10 +298,10 @@ faInfo,
 		</td>
 		<td class="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 			<div class="text-sm leading-5 font-medium">
-				{formatMoney(product.wholeSalePricePerUnit)}
+				{product.wholeSalePricePerUnit ? formatMoney(product.wholeSalePricePerUnit) : 'N/A'}
 			</div>
 			<div class="text-sm leading-5 text-gray-600">
-				+{formatMoney(product.vatPricePerUnit)} TVA
+				{product.wholeSalePricePerUnit ? `+${formatMoney(product.vatPricePerUnit)} TVA` : '' }
 			</div>
 		</td>
 		<td

@@ -71,7 +71,7 @@ export const GET_AGREEMENTS = gql`
 
 export const GET_MY_BUSINESS_LOCATION = gql`
 	query GetMyBusinessLocation {
-		myBusiness {
+		me {
 			address {
 				latitude
 				longitude

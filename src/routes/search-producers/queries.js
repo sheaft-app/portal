@@ -23,7 +23,7 @@ export const SEARCH_PRODUCERS = gql`
 
 export const GET_MY_BUSINESS_LOCATION = gql`
 	query GetMyBusinessLocation {
-		myBusiness {
+		me {
 			address {
 				latitude
 				longitude
@@ -66,7 +66,7 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				wholeSalePrice
 				rating
 				quantityPerUnit
-				unit				
+				unit
 				conditioning
 				producer {
 					id

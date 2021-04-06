@@ -7,13 +7,13 @@
     faPhone,
     faEnvelope,
     faTimesCircle,
-    faHandshake, 
+    faHandshake,
     faEye
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
   import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
-  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS } from "./queries.js";
+  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS, GET_PRODUCER_PRODUCTS } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
