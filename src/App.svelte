@@ -69,9 +69,15 @@
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
-    if (!authenticated || (authenticated && !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value]))) {
-      await cart.initialize(apiInstance, errorsHandlers, authenticated);
-    }
+		if(authenticated && (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path))
+			routerInstance.goTo("/", null, true);
+
+		if(isLoading === undefined || isLoading === null || isLoading === true)
+			return;
+
+		if (authInstance.isInRole([Roles.Consumer.Value])){
+			await cart.initialize(apiInstance, errorsHandlers, authenticated);
+		}
 
     if (!authenticated) {
       await logoutFreshdesk();
@@ -85,16 +91,13 @@
       var res = await apiInstance.query(GET_UNREAD_NOTIFICATIONS_COUNT);
       if (res.success) {
         notificationsCount.set(res.data);
-      }      
+      }
     }
-    
-    if(authenticated && (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path))
-      routerInstance.goTo("/", null, true);
   });
 
   window.addEventListener("beforeinstallprompt", e => {});
 
-  window.addEventListener("appinstalled", evt => {    
+  window.addEventListener("appinstalled", evt => {
     //TODO: register user points
   });
 

@@ -11,9 +11,14 @@ import { clearLocalStorage } from "./../helpers/storage";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
+		this.user = { profile: { role: "ANONYMOUS" } };
+		this.registered = false;
+		this.initialized = false;
+		this.authorized = false;
+		this.authenticated = false;
+
 		this.userManager = new Oidc.UserManager(oidcSettings);
 		this.userManager.clearStaleState();
-		this.setAuthStatus({ profile: { role: "ANONYMOUS" } }, false, false, false, false);
 
 		this.userSub = authUserAccount.subscribe((value) => {
 			this.user = value;
@@ -65,7 +70,7 @@ class SheaftAuth {
 			var content = await result.json();
 			if (content.data.me && content.data.me.id) {
 				this.setAuthStatus(user, true, true, true, true);
-			} else if (content.errors && content.errors.length > 0) {	
+			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
 				this.refreshPageAsUnauthorized(user);
 			} else {
@@ -76,14 +81,14 @@ class SheaftAuth {
 			if(onInit){
 				this.userManager.removeUser();
 				return await this.login();
-			}	
+			}
 
 			this.refreshPageAsUnauthorized(user);
 		}
 	}
 
-	refreshPageAsUnauthorized(user){	
-		this.setAuthStatus(user, false, false, false, true);			
+	refreshPageAsUnauthorized(user){
+		this.setAuthStatus(user, false, false, false, true);
 		if(location.hash.indexOf('/callback') > -1){
 			location.hash = "/";
 			location.reload();
@@ -91,11 +96,16 @@ class SheaftAuth {
 	}
 
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
-		authUserAccount.set(user);
-		authAuthenticated.set(authenticated);
-		authAuthorized.set(authorized);
-		authRegistered.set(registered);
-		authInitialized.set(initialized);
+		if(this.user != user)
+			authUserAccount.set(user);
+		if(this.initialized != initialized)
+			authInitialized.set(initialized);
+		if(this.authorized != authorized)
+			authAuthorized.set(authorized);
+		if(this.registered != registered)
+			authRegistered.set(registered);
+		if(this.authenticated != authenticated)
+			authAuthenticated.set(authenticated);
 	}
 
 	userIsAnonymous() {
