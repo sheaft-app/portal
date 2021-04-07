@@ -1,14 +1,14 @@
 <script>
-	import { onMount } from "svelte";
+	import {onMount} from "svelte";
 	import Loader from "./../../components/Loader.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-	import { formatMoney } from "./../../helpers/app";
+	import {formatMoney} from "./../../helpers/app";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import GetAuthInstance from "./../../services/SheaftAuth";
-	import { isLoading, items } from "./store";
+	import {isLoading, items} from "./store";
 	import MyOrderListItem from "./MyOrderListItem.svelte";
-	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./queries.js";
+	import {MY_ORDERS, MY_VALIDATING_ORDERS} from "./queries.js";
 	import OrderByDirection from "./../../enums/OrderByDirection";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import SearchProductRoutes from "./../search-products/routes";
@@ -16,8 +16,9 @@
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-  import Icon from "svelte-awesome";
-  import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+	import Icon from "svelte-awesome";
+	import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
+	import OrderStatus from "../../enums/OrderStatusKind";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
@@ -33,10 +34,10 @@
 		var res = await graphQLInstance.query(
 			MY_ORDERS,
 			{
-				orderBy: { createdOn: OrderByDirection.DESC },
+				orderBy: {createdOn: OrderByDirection.DESC},
 			},
 			errorsHandler.Uuid
-    );
+		);
 
 		isLoading.set(false);
 
@@ -124,9 +125,9 @@
 </svelte:head>
 
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
+	<ErrorCard {errorsHandler}/>
 	{#if $isLoading}
-		<Loader />
+		<Loader/>
 	{:else if $items.length > 0 || validatingOrders.length > 0}
 		<h1 class="font-semibold uppercase">Vos Commandes</h1>
 		<span class="bg-primary h-1 w-20 block mt-2 mb-6"></span>
@@ -151,24 +152,37 @@
 		{/if}
 		<div class="mb-5">
 			{#each validatingOrders as validatingOrder}
-				<div class="bg-white shadow px-4 py-3 mb-3">
-					<div class="flex items-center mb-2">
-						<Icon data={faCircleNotch} class="text-green-500 mr-3" spin />
-						<p class="font-semibold text-green-500">Un paiement est en cours de traitement</p>
+				{#if validatingOrder.status == OrderStatus.Waiting.value}
+					<div class="bg-white shadow px-4 py-3 mb-3">
+						<div class="flex items-center mb-2">
+							<Icon data={faCircleNotch} class="text-green-500 mr-3" spin/>
+							<p class="font-semibold text-green-500">Un paiement est en cours de traitement</p>
+						</div>
+						<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de
+							traitement. Dès que le paiement aura été traité, la commande apparaîtra ici.</p>
+						<p>Vous n'avez rien à faire. On vous fait signe dès qu'il arrive quoi que ce soit !</p>
 					</div>
-					<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de traitement. Dès que le paiement aura été traité, la commande apparaîtra ici.</p>
-					<p>Vous n'avez rien à faire. On vous fait signe dès qu'il arrive quoi que ce soit !</p>
-				</div>
+				{:else}
+					<div class="bg-white shadow px-4 py-3 mb-3">
+						<div class="flex items-center mb-2">
+							<Icon data={faCircleNotch} class="text-green-500 mr-3" spin/>
+							<p class="font-semibold text-green-500">Votre paiement a été validé</p>
+						</div>
+						<p>Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> a bien été traité. La commande correspondante est en cours d'envoi au producteur et apparaîtra d'ici quelques instants.</p>
+						<p>Vous n'avez rien à faire. On vous fait signe dès que c'est envoyé !</p>
+					</div>
+				{/if}
 			{/each}
 		</div>
 		<div class="-mx-4 md:mx-0 md:overflow-x-auto md:w-full">
 			<div
-				class="align-middle inline-block min-w-full overflow-hidden items" style="padding-left: 1px; padding-right: 1px;">
+				class="align-middle inline-block min-w-full overflow-hidden items"
+				style="padding-left: 1px; padding-right: 1px;">
 				<div
 					class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 md:gap-3 -mx-4
 					md:mx-0 mb-10">
 					{#each orders as order, index}
-						<MyOrderListItem {order} />
+						<MyOrderListItem {order}/>
 					{/each}
 				</div>
 			</div>
