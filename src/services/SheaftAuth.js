@@ -1,5 +1,5 @@
 import Oidc from "oidc-client";
-import { config } from "./../configs/config.js";
+import {config} from "./../configs/config.js";
 import {
 	authAuthenticated,
 	authUserAccount,
@@ -7,11 +7,11 @@ import {
 	authRegistered,
 	authAuthorized,
 } from "./../stores/auth.js";
-import { clearLocalStorage } from "./../helpers/storage";
+import {clearLocalStorage} from "./../helpers/storage";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
-		this.user = { profile: { role: "ANONYMOUS" } };
+		this.user = {profile: {role: "ANONYMOUS"}};
 		this.registered = false;
 		this.initialized = false;
 		this.authorized = false;
@@ -42,14 +42,15 @@ class SheaftAuth {
 				return;
 			}
 
-			this.setAuthStatus({ profile: { role: "ANONYMOUS" } }, false, false, false, true);
+			this.setAuthStatus({profile: {role: "ANONYMOUS"}}, false, false, false, true);
 		});
 
 		this.userManager.events.addUserLoaded(async (user) => {
 			await this.retrieveUser(user, false);
 		});
 
-		this.userManager.events.addUserUnloaded((e) => {});
+		this.userManager.events.addUserUnloaded((e) => {
+		});
 
 		this.userManager.events.addAccessTokenExpiring(async () => {
 			await this.loginSilent();
@@ -78,7 +79,7 @@ class SheaftAuth {
 			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
-			if(onInit){
+			if (onInit) {
 				this.userManager.removeUser();
 				return await this.login();
 			}
@@ -87,24 +88,24 @@ class SheaftAuth {
 		}
 	}
 
-	refreshPageAsUnauthorized(user){
+	refreshPageAsUnauthorized(user) {
 		this.setAuthStatus(user, false, false, false, true);
-		if(location.hash.indexOf('/callback') > -1){
+		if (location.hash.indexOf('/callback') > -1) {
 			location.hash = "/";
 			location.reload();
 		}
 	}
 
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
-		if(this.user != user)
+		if (this.user != user)
 			authUserAccount.set(user);
-		if(this.initialized != initialized)
+		if (this.initialized != initialized)
 			authInitialized.set(initialized);
-		if(this.authorized != authorized)
+		if (this.authorized != authorized)
 			authAuthorized.set(authorized);
-		if(this.registered != registered)
+		if (this.registered != registered)
 			authRegistered.set(registered);
-		if(this.authenticated != authenticated)
+		if (this.authenticated != authenticated)
 			authAuthenticated.set(authenticated);
 	}
 
@@ -140,6 +141,9 @@ class SheaftAuth {
 
 	async login(redirectUrl) {
 		try {
+			if (this.authenticated)
+				return;
+
 			if (redirectUrl && redirectUrl.length > 0) {
 				if (redirectUrl.indexOf("/") == 0) {
 					redirectUrl = `#${redirectUrl}`;
@@ -150,7 +154,7 @@ class SheaftAuth {
 				}
 
 				return await this.userManager.signinRedirect({
-					state: { redirectTo: redirectUrl },
+					state: {redirectTo: redirectUrl},
 				});
 			}
 
