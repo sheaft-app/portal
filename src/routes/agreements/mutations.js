@@ -12,7 +12,7 @@ export const CANCEL_AGREEMENT = gql`
 `
 
 export const ACCEPT_AGREEMENT = gql`
-	mutation acceptAgreement($input: ResourceIdTimeSlotsInput) {
+	mutation acceptAgreement($input: AcceptAgreementInput) {
 		acceptAgreement(input: $input) {
 			id
 			status
