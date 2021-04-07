@@ -115,11 +115,12 @@ export const GET_MY_ORDER_DETAILS = gql`
 
 export const MY_VALIDATING_ORDERS = gql`
 	query {
-		orders(where: { status_in: WAITING }) {
+		orders(where: { OR: [{ status_in: WAITING }, { AND:[{status_in: VALIDATED}, {purchaseOrdersCount: 0}]}] }) {
 			nodes {
 				id
 				status
 				totalPrice
+				purchaseOrdersCount
 			}
 		}
 	}
