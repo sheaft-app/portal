@@ -32,7 +32,13 @@ const store = () => {
             graphQLInstance = apiInstance;
             errorsHandler = errorsHandlerInstance;
 
-            const currentOrder = JSON.parse(localStorage.getItem("user_current_order"));
+            let currentOrder = null;
+            
+            try {
+                currentOrder = JSON.parse(localStorage.getItem("user_current_order"));
+            } catch (e) {
+                currentOrder = null;
+            }
 
             if (authenticated) {
                 const mostRecentCartResponse = await graphQLInstance.query(GET_MOST_RECENT_CART);
