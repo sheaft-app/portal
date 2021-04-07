@@ -10,7 +10,7 @@
 	import MyOrderListItem from "./MyOrderListItem.svelte";
 	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./queries.js";
 	import OrderByDirection from "./../../enums/OrderByDirection";
-	import OrderStatusKind from "./../../enums/OrderStatusKind";
+	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import SearchProductRoutes from "./../search-products/routes";
 	import QuickOrderRoutes from "./../quick-orders/routes";
 	import Roles from "./../../enums/Roles";
@@ -37,7 +37,7 @@
 			},
 			errorsHandler.Uuid
     );
-    
+
 		isLoading.set(false);
 
 		if (!res.success) {
@@ -50,9 +50,9 @@
 				return {
 					...p,
 					active:
-						p.status !== OrderStatusKind.Cancelled.Value &&
-						p.status !== OrderStatusKind.Refused.Value &&
-						p.status !== OrderStatusKind.Delivered.Value,
+						p.status !== PurchaseOrderStatusKind.Cancelled.Value &&
+						p.status !== PurchaseOrderStatusKind.Refused.Value &&
+						p.status !== PurchaseOrderStatusKind.Delivered.Value,
 				};
 			})
 		);

@@ -10,7 +10,7 @@
   import GetAuthInstance from "./../../services/SheaftAuth";
   import GetRouterInstance from "./../../services/SheaftRouter";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-  import OrderStatusKind from "./../../enums/OrderStatusKind";
+  import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
   import Roles from "./../../enums/Roles";
   import MyOrderRoutes from "./routes";
   import { GET_MY_ORDER_DETAILS } from "./queries.js";
@@ -31,16 +31,16 @@
 
   const getProcessStep = status => {
     switch (status) {
-      case OrderStatusKind.Waiting.Value:
-      case OrderStatusKind.Accepted.Value:
-      case OrderStatusKind.Refused.Value:
+      case PurchaseOrderStatusKind.Waiting.Value:
+      case PurchaseOrderStatusKind.Accepted.Value:
+      case PurchaseOrderStatusKind.Refused.Value:
         return 1;
-      case OrderStatusKind.Processing.Value:
+      case PurchaseOrderStatusKind.Processing.Value:
         return 2;
-      case OrderStatusKind.Completed.Value:
+      case PurchaseOrderStatusKind.Completed.Value:
         return 3;
-      case OrderStatusKind.Shipping.Value:
-      case OrderStatusKind.Delivered.Value:
+      case PurchaseOrderStatusKind.Shipping.Value:
+      case PurchaseOrderStatusKind.Delivered.Value:
         return 4;
       default:
         return 0;
@@ -78,12 +78,12 @@
 
   $: canCancelOrder =
     order &&
-    order.status != OrderStatusKind.Completed.Value &&
-    order.status != OrderStatusKind.Cancelled.Value &&
-    order.status != OrderStatusKind.Delivered.Value &&
-    order.status != OrderStatusKind.Shipping.Value &&
-    order.status != OrderStatusKind.Processing.Value &&
-    order.status != OrderStatusKind.Refused.Value;
+    order.status != PurchaseOrderStatusKind.Completed.Value &&
+    order.status != PurchaseOrderStatusKind.Cancelled.Value &&
+    order.status != PurchaseOrderStatusKind.Delivered.Value &&
+    order.status != PurchaseOrderStatusKind.Shipping.Value &&
+    order.status != PurchaseOrderStatusKind.Processing.Value &&
+    order.status != PurchaseOrderStatusKind.Refused.Value;
 </script>
 
 <svelte:head>
@@ -108,7 +108,7 @@
       <h4 class="text-gray-600">#{order.reference}</h4>
       <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
-    {#if order.status == OrderStatusKind.Cancelled.Value}
+    {#if order.status == PurchaseOrderStatusKind.Cancelled.Value}
       <div
         class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3">
@@ -121,7 +121,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Refused.Value}
+    {#if order.status == PurchaseOrderStatusKind.Refused.Value}
       <div
         class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-red-100
         shadow rounded mb-3">
@@ -134,7 +134,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status === OrderStatusKind.Waiting.Value}
+    {#if order.status === PurchaseOrderStatusKind.Waiting.Value}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
         rounded mb-3">
@@ -154,7 +154,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Shipping.Value}
+    {#if order.status == PurchaseOrderStatusKind.Shipping.Value}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3">
@@ -166,7 +166,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Delivered.Value}
+    {#if order.status == PurchaseOrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3">
@@ -183,7 +183,7 @@
         {/if}
       </div>
     {/if}
-    {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
+    {#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3 border-t md:border-none border-gray-400">
@@ -196,7 +196,7 @@
               </p>
               <div class="mt-2">
                 <p class="leading-none">
-                  {#if order.status !== OrderStatusKind.Accepted.Value}
+                  {#if order.status !== PurchaseOrderStatusKind.Accepted.Value}
                     Si votre commande est acceptée, la livraison aura lieu
                   {:else}Votre commande sera livrée le{/if}
                   <b>
@@ -225,7 +225,7 @@
                   <Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;" />
                   <div>
                     <p>{order.expectedDelivery.address.line1}</p>
-                    {#if order.expectedDelivery.address.line2}  
+                    {#if order.expectedDelivery.address.line2}
                       <p>{order.expectedDelivery.address.line2}</p>
                     {/if}
                     <p>{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
@@ -263,7 +263,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status !== OrderStatusKind.Cancelled.Value && order.status !== OrderStatusKind.Refused.Value}
+    {#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Refused.Value}
       <div
         class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
         border-t md:border-l md:border-r border-gray-400">
@@ -279,7 +279,7 @@
               {/if}
             </div>
             <div class="md-step-title text-xs md:text-base">
-              {#if order.status == OrderStatusKind.Waiting.Value}En attente{:else}Acceptée{/if}
+              {#if order.status == PurchaseOrderStatusKind.Waiting.Value}En attente{:else}Acceptée{/if}
             </div>
             <div class="md-step-bar-left hidden md:block" />
             <div class="md-step-bar-right hidden md:block" />
@@ -317,7 +317,7 @@
             class="md-step p-0 md:p-6"
             class:active={getProcessStep(order.status) >= 4}>
             <div class="md-step-circle">
-              {#if getProcessStep(order.status) <= 4 && order.status !== OrderStatusKind.Delivered.Value}
+              {#if getProcessStep(order.status) <= 4 && order.status !== PurchaseOrderStatusKind.Delivered.Value}
                 <span>4</span>
               {:else}
                 <Icon data={faCheck} class="mb-1" />
@@ -354,7 +354,7 @@
                 {format(new Date(order.createdOn), 'PPPPp', { locale: fr })}
               </p>
             </div>
-            {#if order.status == OrderStatusKind.Delivered.Value}
+            {#if order.status == PurchaseOrderStatusKind.Delivered.Value}
               <div class="flex items-center mb-2">
                 <p>
                   <span class="text-gray-600">Livrée le :</span>
@@ -534,7 +534,7 @@
             on:click={cancelOrder}
             class="btn btn-lg btn-accent shadow mt-3 font-semibold">
             Annuler ma commande
-          </button> 
+          </button>
         </div>
       </div>
     </div>

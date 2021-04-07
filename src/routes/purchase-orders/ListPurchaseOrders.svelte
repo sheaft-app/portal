@@ -10,7 +10,7 @@
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import PurchaseOrderRoutes from "./routes";
-	import OrderStatusKind from "./../../enums/OrderStatusKind";
+	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";
 	import CreatePickingOrders from "./CreatePickingOrders.svelte";
 	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
@@ -81,15 +81,15 @@
 		whereValues: selectedStatus ? selectedStatus.map((s) => s.value) : null
 	});
 
-	const filterStatus = Object.entries(OrderStatusKind).map(([key, value]) => {
+	const filterStatus = Object.entries(PurchaseOrderStatusKind).map(([key, value]) => {
 		if (value.Value && value.Label) {
-			return { 
+			return {
 				value: value.Value,
 				label: value.Label
 			}
 		}
 	}).filter((o) => o && o.value && o.value !== "NONE");
-		
+
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
 			HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
@@ -102,7 +102,7 @@
 
 		hasPendingJobs = res.data;
 	};
-	
+
 	onMount(async () => {
 		const values = routerInstance.getQueryParams();
 		if (values["where"] && values["whereValues"] && filterStatus.length >= 1) {
@@ -220,7 +220,7 @@
 			click: () => createPickingOrder(),
 			disabled: !canCreatePickingOrders(selectedItems),
 			icon: faFileExport,
-			text: selectedItems.filter((o) => o.status == OrderStatusKind.Waiting.Value).length >= 1 ? "Accepter et faire un bon de préparation" : "Faire un bon de préparation",
+			text: selectedItems.filter((o) => o.status == PurchaseOrderStatusKind.Waiting.Value).length >= 1 ? "Accepter et faire un bon de préparation" : "Faire un bon de préparation",
 			color: "indigo",
 			hideIfDisabled: true,
 
@@ -285,12 +285,12 @@
 		{errorsHandler}
 		defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
 		bind:selectedItems
-		disableRowSelection={(order) => order && (order.status == OrderStatusKind.Cancelled.Value || order.status == OrderStatusKind.Refused.Value || order.status == OrderStatusKind.Delivered.Value)}
+		disableRowSelection={(order) => order && (order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Refused.Value || order.status == PurchaseOrderStatusKind.Delivered.Value)}
 		{getRowBackgroundColor}
 		{onRowClick}>
 		<section slot="filters">
 			<div class="themed">
-				<Select 
+				<Select
 					isMulti={true}
 					bind:selectedValue={selectedStatus}
 					optionIdentifier="value"
@@ -300,8 +300,8 @@
 			</div>
 		</section>
 		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-xs leading-5 font-semibold text-{OrderStatusKind.color(order.status)} block md:hidden">
-				{OrderStatusKind.label(order.status)}
+			<div class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(order.status)} block md:hidden">
+				{PurchaseOrderStatusKind.label(order.status)}
 			</div>
 			<div
 				class="text-sm leading-5 font-medium text-gray-900 truncate"
@@ -341,9 +341,9 @@
 		</td>
 		<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
-				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full 
-				{order.status == OrderStatusKind.Delivered.Value ? `bg-white border border-green-500 text-green-500` : `bg-${OrderStatusKind.color(order.status)} text-white`}">
-				{OrderStatusKind.label(order.status)}
+				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full
+				{order.status == PurchaseOrderStatusKind.Delivered.Value ? `bg-white border border-green-500 text-green-500` : `bg-${PurchaseOrderStatusKind.color(order.status)} text-white`}">
+				{PurchaseOrderStatusKind.label(order.status)}
 			</span>
 		</td>
 		<td

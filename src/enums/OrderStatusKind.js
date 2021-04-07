@@ -1,85 +1,60 @@
 import {
-	faQuestion,
 	faThumbsUp,
-	faCircleNotch,
-	faCheck,
 	faTimes,
 	faSpinner,
-	faTruck,
-	faTruckLoading
+	faArchive
 } from "@fortawesome/free-solid-svg-icons";
 import GetEnumObjectFor from './helpers.js';
 
-export const PurchaseOrderStatus = {
+export const OrderStatus = {
+	CREATED: "CREATED",
 	WAITING: "WAITING",
-	ACCEPTED: "ACCEPTED",
-	PROCESSING: "PROCESSING",
-	COMPLETED: "COMPLETED",
-	SHIPPING: "SHIPPING",
-	DELIVERED: "DELIVERED",
+	VALIDATED: "VALIDATED",
 	REFUSED: "REFUSED",
-	CANCELLED: "CANCELLED",
-	NONE: "NONE",
+	EXPIRED: "EXPIRED",
+	ARCHIVED: "ARCHIVED"
 };
 
 let enums = {
+	Created: {
+		Value: "CREATED",
+		Label: "Pannier en cours",
+		Icon: faSpinner,
+		Color: "blue-400",
+	},
 	Waiting: {
 		Value: "WAITING",
-		Label: "En attente",
+		Label: "Validation du paiement",
 		Icon: faSpinner,
-		Color: "blue-400",		
+		Color: "blue-400",
 	},
-	Accepted: {
-		Value: "ACCEPTED",
-		Label: "Acceptée",
+	Validated: {
+		Value: "VALIDATED",
+		Label: "Paiement accepté",
 		Icon: faThumbsUp,
-		Color: "green-500",
-	},
-	Processing: {
-		Value: "PROCESSING",
-		Label: "En préparation",
-		Icon: faCircleNotch,
-		Color: "green-500",
-	},
-	Completed: {
-		Value: "COMPLETED",
-		Label: "Prête",
-		Icon: faCheck,
-		Color: "green-500",
-	},
-	Shipping: {
-		Value: "SHIPPING",
-		Label: "En livraison",
-		Icon: faTruck,
-		Color: "green-500",
-	},
-	Delivered: {
-		Value: "DELIVERED",
-		Label: "Livrée",
-		Icon: faTruckLoading,
 		Color: "green-500",
 	},
 	Refused: {
 		Value: "REFUSED",
-		Label: "Refusée",
+		Label: "Paiement refusé",
 		Icon: faTimes,
 		Color: "red-500",
 	},
-	Cancelled: {
-		Value: "CANCELLED",
-		Label: "Annulée",
+	Expired: {
+		Value: "EXPIRED",
+		Label: "Expirée",
 		Icon: faTimes,
-		Color: "gray-600",
+		Color: "orange-500",
 	},
-	None: {
-		Value: "NONE",
-		Label: "Inconnue",
-		Icon: faQuestion,
+	Archived: {
+		Value: "ARCHIVED",
+		Label: "Archivée",
+		Icon: faArchive,
 		Color: "black-400",
 	}
 };
 
-let OrderStatusKind = {	
+let OrderStatusKind = {
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

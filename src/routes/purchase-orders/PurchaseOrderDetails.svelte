@@ -16,7 +16,7 @@
   import GetRouterInstance from "./../../services/SheaftRouter";``
   import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app";
   import { GET_ORDERS, GET_ORDER_DETAILS } from "./queries.js";
-  import { 
+  import {
     canCreatePickingOrder,
     canCancelOrder,
     canAcceptOrder,
@@ -42,7 +42,7 @@
 faFileExport
   } from "@fortawesome/free-solid-svg-icons";
   import PurchaseOrderRoutes from "./routes";
-  import OrderStatusKind from "./../../enums/OrderStatusKind";
+  import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
   import DeliveryKind from "./../../enums/DeliveryKind";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
@@ -142,7 +142,7 @@ faFileExport
       <h1 class="font-semibold uppercase mb-0">Détails de la commande</h1>
       <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
-    {#if order.status === OrderStatusKind.Waiting.Value}
+    {#if order.status === PurchaseOrderStatusKind.Waiting.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
         md:rounded mb-3">
@@ -151,7 +151,7 @@ faFileExport
         </p>
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Cancelled.Value}
+    {#if order.status == PurchaseOrderStatusKind.Cancelled.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3">
@@ -165,7 +165,7 @@ faFileExport
         {/if}
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Refused.Value}
+    {#if order.status == PurchaseOrderStatusKind.Refused.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100 shadow
         md:rounded mb-3">
@@ -179,7 +179,7 @@ faFileExport
         {/if}
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Shipping.Value}
+    {#if order.status == PurchaseOrderStatusKind.Shipping.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded mb-3">
@@ -196,7 +196,7 @@ faFileExport
         </div>
       </div>
     {/if}
-    {#if order.status == OrderStatusKind.Delivered.Value}
+    {#if order.status == PurchaseOrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         md:rounded mb-3">
@@ -205,7 +205,7 @@ faFileExport
         </p>
       </div>
     {/if}
-    {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status != OrderStatusKind.Delivered.Value}
+    {#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status != PurchaseOrderStatusKind.Delivered.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3">
@@ -219,7 +219,7 @@ faFileExport
             <div>
               <p class="leading-none">
                 {#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
-                  À livrer le : 
+                  À livrer le :
                 {:else}
                   Le client récupérera la commande le :
                 {/if}
@@ -255,7 +255,7 @@ faFileExport
         </div>
       </div>
     {/if}
-    {#if order.status !== OrderStatusKind.Refused.Value && order.status !== OrderStatusKind.Cancelled.Value}
+    {#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value}
       <div
         class="bg-white md:mt-3 px-0
         md:px-5 py-5 overflow-x-auto -mx-4 md:mx-0 border border-gray-400" style="border-bottom: 0;">
@@ -266,7 +266,7 @@ faFileExport
             class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-indigo-500 w-full lg:w-auto">
             <Icon data={faFileExport} class="mr-2 hidden lg:inline w-4 h-4" />
-            {#if order.status === OrderStatusKind.Waiting.Value}
+            {#if order.status === PurchaseOrderStatusKind.Waiting.Value}
               <span>Accepter et faire un bon de préparation</span>
             {:else}
               <span>Faire un bon de préparation</span>
@@ -344,7 +344,7 @@ faFileExport
                 {format(new Date(order.createdOn), 'PPPPp', { locale: fr })}
               </p>
             </div>
-            {#if order.status == OrderStatusKind.Delivered.Value}
+            {#if order.status == PurchaseOrderStatusKind.Delivered.Value}
               <div class="flex items-center mb-2">
                 <p>
                   <span class="text-gray-600">Livrée le :</span>

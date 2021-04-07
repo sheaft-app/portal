@@ -1,21 +1,21 @@
-import OrderStatusKind from "./../../enums/OrderStatusKind";
+import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 
-export const canCreatePickingOrders = (selectedItems) => 
+export const canCreatePickingOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canCreatePickingOrder(o)).length == selectedItems.length;
 
-export const canCancelOrders = (selectedItems) => 
+export const canCancelOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canCancelOrder(o)).length == selectedItems.length;
 
-export const canAcceptOrders = (selectedItems) => 
+export const canAcceptOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canAcceptOrder(o)).length == selectedItems.length;
 
-export const canRefuseOrders = (selectedItems) => 
+export const canRefuseOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canRefuseOrder(o)).length == selectedItems.length;
 
-export const canProcessOrders = (selectedItems) => 
+export const canProcessOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canProcessOrder(o)).length == selectedItems.length;
 
-export const canCompleteOrders = (selectedItems) => 
+export const canCompleteOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canCompleteOrder(o)).length == selectedItems.length;
 
 export const canDeliverOrders = (selectedItems) =>
@@ -24,33 +24,33 @@ export const canDeliverOrders = (selectedItems) =>
 export const canShipOrders = (selectedItems) =>
   selectedItems.length > 0 && selectedItems.filter(o => canShipOrder(o)).length == selectedItems.length;
 
-export const canCreatePickingOrder = o => o && 
-  o.status == OrderStatusKind.Waiting.Value ||
-  o.status == OrderStatusKind.Accepted.Value ||
-  o.status == OrderStatusKind.Processing.Value;
+export const canCreatePickingOrder = o => o &&
+  o.status == PurchaseOrderStatusKind.Waiting.Value ||
+  o.status == PurchaseOrderStatusKind.Accepted.Value ||
+  o.status == PurchaseOrderStatusKind.Processing.Value;
 
 export const canCancelOrder = o => o &&
-  o.status != OrderStatusKind.Completed.Value &&
-  o.status != OrderStatusKind.Shipping.Value &&
-  o.status != OrderStatusKind.Delivered.Value &&
-  o.status != OrderStatusKind.Cancelled.Value &&
-  o.status != OrderStatusKind.Refused.Value &&
-  o.status != OrderStatusKind.Waiting.Value;
+  o.status != PurchaseOrderStatusKind.Completed.Value &&
+  o.status != PurchaseOrderStatusKind.Shipping.Value &&
+  o.status != PurchaseOrderStatusKind.Delivered.Value &&
+  o.status != PurchaseOrderStatusKind.Cancelled.Value &&
+  o.status != PurchaseOrderStatusKind.Refused.Value &&
+  o.status != PurchaseOrderStatusKind.Waiting.Value;
 
 export const canAcceptOrder = o => o &&
-  o.status == OrderStatusKind.Waiting.Value;
+  o.status == PurchaseOrderStatusKind.Waiting.Value;
 
 export const canRefuseOrder = o => o &&
-  o.status == OrderStatusKind.Waiting.Value;
+  o.status == PurchaseOrderStatusKind.Waiting.Value;
 
 export const canProcessOrder = o => o &&
-  o.status == OrderStatusKind.Accepted.Value;
+  o.status == PurchaseOrderStatusKind.Accepted.Value;
 
 export const canCompleteOrder = o => o &&
-  o.status == OrderStatusKind.Processing.Value;
+  o.status == PurchaseOrderStatusKind.Processing.Value;
 
 export const canDeliverOrder = o => o &&
-  o.status == OrderStatusKind.Completed.Value || o.status == OrderStatusKind.Shipping.Value;
+  o.status == PurchaseOrderStatusKind.Completed.Value || o.status == PurchaseOrderStatusKind.Shipping.Value;
 
 export const canShipOrder = o => o &&
-  o.status == OrderStatusKind.Completed.Value;
+  o.status == PurchaseOrderStatusKind.Completed.Value;

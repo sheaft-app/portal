@@ -1,7 +1,7 @@
 <script>
 	import Paginate from "./../../enums/Paginate";
 	import OrderByDirection from "./../../enums/OrderByDirection";
-	import { PurchaseOrderStatus } from "./../../enums/OrderStatusKind";
+	import { PurchaseOrderStatus } from "../../enums/PurchaseOrderStatusKind";
 	import Loader from "./../Loader.svelte";
 	import Icon from "svelte-awesome";
 	import { querystring } from "svelte-spa-router";
@@ -56,9 +56,9 @@
 	};
 
 	const toggleSelectAll = () => {
-		if (selectedItems && selectedItems.length > 0) 
+		if (selectedItems && selectedItems.length > 0)
 			selectedItems = [];
-		else 
+		else
 			selectedItems = items.filter((i) => !disableRowSelection(i));
 	};
 
@@ -410,7 +410,7 @@
 			cursor: not-allowed;
 		}
 	}
-	
+
 	button {
 		&.active {
 			color: #ff4081;
