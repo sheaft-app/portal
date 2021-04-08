@@ -46,7 +46,7 @@ import { config } from "../../configs/config";
 			},
 			wholeSalePricePerUnit: {
 				value: product.wholeSalePricePerUnit,
-				validators: ["required", "min:0.01"],
+				validators: ["required", "min:0"],
 				enabled: true,
 			},
 			vat: { value: product.vat, validators: ["required"], enabled: !notSubjectToVat },
@@ -59,7 +59,7 @@ import { config } from "../../configs/config";
 			quantityPerUnit: {
 				value: product.quantityPerUnit,
 				validators: ["required", "min:0.01"],
-				enabled: product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value,
+				enabled: product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value,
 			},
 			selectedCategory: {
 				value: selectedCategory,
@@ -81,7 +81,7 @@ import { config } from "../../configs/config";
       if (product.conditioning != ConditioningKind.Bulk.Value) {
 		  	product.unit = UnitKind.NotSpecified.Value;
 			}
-		
+
 			if (isBasketType) {
 				console.log("passed");
 				product.conditioning = ConditioningKind.Basket.Value
@@ -209,8 +209,8 @@ import { config } from "../../configs/config";
 	$: getQuantityPerUnitLabel = () => {
 		if (isBasketType) {
 			return "Nombre de personnes (adultes)*";
-		} 	
-		
+		}
+
 		return product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *";
 	}
 </script>
@@ -465,7 +465,7 @@ import { config } from "../../configs/config";
 				Créer une nouvelle consigne
 			</button>
 		{/if}
-	</div>	
+	</div>
 	<div class="form-control">
 		<div class="w-full md:w-2/2">
 			<label for="grid-description">Description</label>
