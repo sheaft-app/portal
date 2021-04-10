@@ -44,6 +44,7 @@
   ];
 
   onMount(async () => {
+    window.scrollTo(0,0);
     await getProducerDetails(params.id);
   })
 

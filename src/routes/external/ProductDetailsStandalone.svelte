@@ -2,12 +2,13 @@
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import Icon from "svelte-awesome";
-  import { faCircleNotch, faChevronUp, faChevronDown, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { faCircleNotch, faChevronUp, faChevronDown, faChevronLeft, faEye } from "@fortawesome/free-solid-svg-icons";
   import AddToCart from "./../../components/controls/AddToCart.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
 	import SearchProductsRoutes from "../search-products/routes";
+	import ExternalRoutes from "../external/routes";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import { RATE_PRODUCT } from "./mutations.js";
@@ -27,6 +28,7 @@
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
   import Cart from "../search-products/Cart.svelte";
+  import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -276,6 +278,7 @@
             </button> -->
         </div>  
       </div>
+      <ProducerOtherProducts productParentId={product.id} producerName={product.producer.name} producerId={product.producer.id} {errorsHandler} />
       <div class="flex flex-wrap justify-between mt-5">
         <div class="lg:w-2/3 w-full">
           <div
@@ -289,7 +292,7 @@
                 border-gray-800 border-solid"
                 src={product.producer.picture ? product.producer.picture : 'img/icons/farmer.svg'}
                 alt="Producteur" />
-              <div class="w-7/12 md:w-6/12 lg:pl-5 pl-3">
+              <div class="w-8/12 lg:pl-5 pl-3">
                 <p class="text-base lg:text-lg">{product.producer.name}</p>
                 <div class="text-gray-600 text-sm lg:text-base">
                   {product.producer.address.line1}
@@ -302,6 +305,10 @@
                 <div class="text-gray-600 text-sm lg:text-base">
                   {product.producer.address.zipcode} {product.producer.address.city}
                 </div>
+                <button type="button" on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, { id: product.producer.id })} class="btn btn-link mt-1 items-center">
+                  <Icon data={faEye} class="mr-1" />
+                  Voir sa page
+                </button>
               </div>
             </div>
             <p class="mt-3 font-semibold pt-5">Lieux et horaires de récupération</p>

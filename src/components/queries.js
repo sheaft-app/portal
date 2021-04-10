@@ -30,3 +30,21 @@ query GetNationalities {
   }
 }
 `;
+
+export const GET_PRODUCER_PRODUCTS = gql`
+	query GetProducerProducts($id: ID!) {
+		producerProducts(input: $id) {
+			nodes {
+				id
+				name
+				onSalePricePerUnit
+				picture
+				rating
+				quantityPerUnit
+				conditioning
+				unit
+				available
+			}
+		}
+	}
+`;
