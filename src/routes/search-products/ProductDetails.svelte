@@ -1,11 +1,12 @@
 <script>
   import { slide } from "svelte/transition";
   import Icon from "svelte-awesome";
-  import { faMapMarkerAlt, faCircleNotch, faTimesCircle, faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+  import { faMapMarkerAlt, faCircleNotch, faTimesCircle, faChevronUp, faChevronDown, faEye } from "@fortawesome/free-solid-svg-icons";
   import ProductCartQuantity from "./../../components/controls/ProductCartQuantity.svelte";
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
   import GetRouterInstance from "../../services/SheaftRouter.js";
+	import ExternalRoutes from "../external/routes";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
   import { GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import { RATE_PRODUCT } from "./mutations.js";
@@ -315,6 +316,10 @@
             <div class="text-gray-600 text-sm lg:text-base">
               {product.producer.address.zipcode} {product.producer.address.city}
             </div>
+            <button type="button" on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, { id: product.producer.id })} class="btn btn-link mt-1 items-center">
+              <Icon data={faEye} class="mr-1" />
+              Voir sa page
+            </button>
           </div>
           {#if distanceInfos}
             <div
