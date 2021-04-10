@@ -57,16 +57,17 @@
       
       isLoading = false;
   
-      return await closeModal(result);
+      return await closeModal(result.data);
   }
 
-  async function closeModal(obj) {
-    close();
+  async function closeModal(res) {
+    graphQLInstance.clearApolloCache(GET_BUSINESS_CLOSINGS); 
 
-    graphQLInstance.clearApolloCache(GET_BUSINESS_CLOSINGS);
+    if (onClose) {
+      onClose(res);
+    }
     
-    if (obj && onClose)
-      await onClose(obj);
+    close();
   }
 </script>
   
