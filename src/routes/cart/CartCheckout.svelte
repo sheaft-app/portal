@@ -269,7 +269,7 @@
 								style="padding-left: 50px; padding-right: 50px;">
 								{#if isPaying}
 									<Icon data={faCircleNotch} spin />
-								{:else}Passer la commande{/if}
+								{:else}Commander{/if}
 							</button>
 						{:else}
 							<button

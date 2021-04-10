@@ -1,4 +1,6 @@
 <script>
+  import { format } from "date-fns";
+  import fr from "date-fns/locale/fr";
   import { onMount } from "svelte";
   import cart from "./../../stores/cart";
 	import Loader from "../../components/Loader.svelte";
@@ -8,8 +10,7 @@
   import CartRoutes from "./routes";
   import { faUser, faMapMarkerAlt, faEdit, faFlag, faHeart } from "@fortawesome/free-solid-svg-icons";
   import { fly } from "svelte/transition";
-  import { format } from "date-fns";
-  import fr from "date-fns/locale/fr";
+  import DeliveryAddress from "./DeliveryAddress.svelte";
 
   const routerInstance = GetRouterInstance();
 
@@ -105,7 +106,7 @@
         <div>
           <p>{user.address.line1}</p>
           {#if user.address.line2}
-            <p class="line-height: 1.8;">{user.address.line2}</p>
+            <p style="line-height: 1.8;">{user.address.line2}</p>
           {/if}
           <p style="line-height: 1.8;">{user.address.zipcode} {user.address.city}</p>
         </div>
@@ -119,29 +120,49 @@
       </div>
     </div>
 
-    <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5 lg:mb-5">
-      <div class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
+    <div class="bg-white shadow lg:rounded lg:mt-5 lg:mb-5">
+      <div class="p-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
         <p>Panier</p>
         <button class="btn btn-link items-center" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
           <Icon data={faEdit} class="mr-1" />
           <span>Modifier</span>
         </button>
       </div>
-      {#each $cart.products as product, index}
-        {#if !product.name}
-          <div>Chargement...</div>
-        {:else if !product.disabled && !product.producer.disabled}
-          <div class:bg-gray-100={index % 2 == 1} class="-mx-5 -my-3 px-5 py-3 flex justify-between">
-            <div>
-              <p class="font-medium">{product.name}</p>
-              <p class="text-sm">{product.producer.name}</p>
+
+      {#each cart.getSortedProductsByProducerName($cart.products) as product, i (product.id)}
+        <div>
+          {#if i === 0 || cart.getSortedProductsByProducerName()[i - 1].producer.name !== product.producer.name}
+            <DeliveryAddress producerName={product.producer.name} producerId={product.producer.id} />
+          {/if}
+          {#if !product.disabled && !product.producer.disabled}
+            <div
+            class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
+            border-gray-400 border-solid items-center" >
+              <div class="md:w-6/12 px-3">
+                <div class="text-lg leading-5 font-medium">
+                  <p>{product.name}</p>
+                </div>
+                <div class="text-sm leading-5">{formatMoney(product.unitOnSalePrice)} / unité</div>
+              </div>
+              <div class="px-3 block md:hidden">
+                <p>
+                  <span>x{product.quantity} : </span>
+                  <span class="font-bold text-lg">
+                    {formatMoney(product.unitOnSalePrice * product.quantity || 0)}
+                  </span>
+                </p>
+              </div>
+              <div class="md:w-6/12 px-3 text-right hidden md:block">
+                <p>
+                  <span class="text-sm">x{product.quantity} : </span>
+                  <span class="font-bold">
+                    {formatMoney(product.unitOnSalePrice * product.quantity || 0)}
+                  </span>
+                </p>
+              </div>
             </div>
-            <div class="text-right">
-              <p class="font-medium">{formatMoney(product.unitOnSalePrice)}</p>
-              <p class="text-sm">qté : {product.quantity}</p>
-            </div>
-          </div>
-        {/if}
+          {/if}
+        </div>
       {/each}
     </div>
   </div>
