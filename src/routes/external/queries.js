@@ -62,6 +62,12 @@ export const GET_PRODUCER_DELIVERIES = gql`
 			deliveries {
 				id
 				kind
+				closings {
+					id
+					from
+					to
+					reason
+				}
 				address {
 					city
 					line1
@@ -86,6 +92,12 @@ query GetUserProfile($id: ID!) {
 	producer(input: $id) {
 		name
 		summary
+		closings {
+			id
+			from
+			to
+			reason
+		}
 		address {
 			line1
 			line2

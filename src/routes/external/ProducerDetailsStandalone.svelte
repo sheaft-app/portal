@@ -23,7 +23,9 @@
   import L from "leaflet";
   import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';	
   import { selectedItem } from "../../stores/app.js";
-	import SkeletonCard from "../search-products/SkeletonCard.svelte";
+  import SkeletonCard from "../search-products/SkeletonCard.svelte";
+  import { format } from "date-fns";
+  import fr from "date-fns/locale/fr";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -39,8 +41,8 @@
   let deliveries = [];
 
   const tabs = [
-	{ id: 'data', icon: '', label: 'Produits' },
-  { id: 'layout', icon: 'fas fa-arrows-alt', label: 'Lieux de récupération' }
+    { id: 'data', icon: '', label: 'Produits' },
+    { id: 'layout', icon: 'fas fa-arrows-alt', label: 'Points de retrait' }
   ];
 
   onMount(async () => {
@@ -218,9 +220,16 @@
         <TabPanel>
           <div class="lg:w-2/3 w-full">
             <div
-              id="producer-card"
               class="bg-white overflow-hidden rounded-l p-3 lg:p-6 shadow
               relative">
+              {#if producer.closings.length > 0}
+                <p class="text-orange-500 font-semibold">Tous les points de retrait seront fermés aux dates suivantes : </p>
+                <ul style="list-style: circle;padding: revert;">
+                  {#each producer.closings as closing}
+                    <li>du {format(new Date(closing.from), 'PPPP', {locale: fr })} au {format(new Date(closing.to), 'PPPP', {locale: fr })}</li>
+                  {/each}
+                </ul>
+              {/if}
               {#each deliveries as delivery}
                 <div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
                   <div class="flex flex-row justify-between items-start mb-3">
@@ -257,6 +266,18 @@
                       </div>
                     {/each}
                   </div>
+                  {#if delivery.closings.length > 0}
+                    {#if producer.closings.length > 0}
+                      <p class="font-semibold text-orange-500">En plus des dates de fermeture citées plus haut, ce point sera fermé aux dates suivantes :</p>
+                    {:else}
+                      <p class="font-semibold text-orange-500">Ce point sera fermé aux dates suivantes :</p>
+                    {/if}
+                    <ul style="list-style: circle;padding: revert;">
+                      {#each delivery.closings as closing}
+                        <li>du {format(new Date(closing.from), 'PPPP', {locale: fr })} au {format(new Date(closing.to), 'PPPP', {locale: fr })}</li>
+                      {/each}
+                    </ul>
+                  {/if}
                 </div>
               {:else}
                 <p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
