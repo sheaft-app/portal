@@ -48,7 +48,7 @@
   
       if (!result)
           notificationsInstance.error(
-              "Une erreur est survenue pendant la demande de création du bon de préparation."
+              "Une erreur est survenue pendant la création de la fermeture."
               );
       else notificationsInstance.success(
               "Vos fermetures annuelles ont bien été mises à jour !"
