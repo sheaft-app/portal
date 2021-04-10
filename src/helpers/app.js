@@ -83,6 +83,29 @@ export const normalizeOpeningHours = (openingHours) =>
 	});
 ;
 
+export const normalizeClosingDates = (closings) => closings ? closings.map((c) => {
+	let data = {
+		id: c.id,
+		from: c.from,
+		to: c.isInterval ? c.to : c.from,
+		reason: c.reason
+	};
+	
+	// les ids locaux sont générés par le composant ClosingDates et ne servent qu'au front
+	if (c.id.includes('local-')) delete data['id'];
+	return data;
+}) : [];
+
+
+export const denormalizeClosingDates = (closings) => closings.map((c) => ({
+	...c,
+	from: new Date(c.from),
+	to: new Date(c.to),
+	isInterval: c.to !== c.from,
+	dirtyFrom: true,
+	dirtyTo: c.to !== c.from
+}))
+
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {
 		if(obj.hasOwnProperty(prop)) {

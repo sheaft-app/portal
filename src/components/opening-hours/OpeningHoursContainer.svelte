@@ -73,6 +73,6 @@
 		</div>	
 	{/each}
 	<div>
-		<button type="button" class="btn px-3 py-2 btn-accent my-2" on:click={addOpeningHour}>+ Ajouter un horaire</button>
+		<button type="button" class="btn px-3 py-2 btn-outline my-2" on:click={addOpeningHour}>+ Ajouter un horaire</button>
 	</div>
 {/if}

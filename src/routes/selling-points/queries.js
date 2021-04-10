@@ -47,6 +47,12 @@ export const GET_SELLING_POINT_DETAILS = gql`
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
+			closings {
+				id
+				from
+				to
+				reason
+			}
 			openingHours {
 				day
 				from
@@ -62,3 +68,17 @@ export const GET_SELLING_POINT_DETAILS = gql`
 		}
 	}
 `;
+
+export const GET_BUSINESS_CLOSINGS = gql`
+	query GetBusinessClosings {
+		businessClosings
+		{
+			nodes {	
+				id
+				from
+				to
+				reason
+			}
+		}
+	}
+`

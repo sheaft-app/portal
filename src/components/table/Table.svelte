@@ -251,6 +251,7 @@
 	{/if}
 	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0 table-container">
 		<slot name="filters"></slot>
+		<slot name="globalActions"></slot>
 		<table class={classes}>
 			<thead>
 				<tr class="bg-white">

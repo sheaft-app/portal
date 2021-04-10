@@ -32,11 +32,11 @@
 
   async function handleSubmit(event) {
     event.preventDefault();
-    var result = await submit();
+    await submit();
   }
 
   async function handleClose() {
-    var result = await close();
+    await close();
   }
 
   onMount(() => {
@@ -55,7 +55,7 @@
     </div>
   </div>
 </div>
-<div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+<div class="bg-gray-50 px-2 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
   <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
     <button
       on:click={handleSubmit}

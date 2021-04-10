@@ -10,30 +10,26 @@
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import {
-		timeToTimeSpan,
 		normalizeOpeningHours,
 		denormalizeOpeningHours,
+		normalizeClosingDates,
+		denormalizeClosingDates
 	} from "./../../helpers/app";
 	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
+	import ClosingDates from "./../../components/ClosingDates.svelte";
 
 	export let submit, initialValues, isLoading;
 	let sellingPoint = initialValues;
+	let closings = sellingPoint.closings ? denormalizeClosingDates(sellingPoint.closings) : [];
 	let openings = denormalizeOpeningHours(sellingPoint.openingHours);
-	let limitOrders =
-		sellingPoint.lockOrderHoursBeforeDelivery != null ||
-    sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
+	let limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
     
-  let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
-  let maxOrders = sellingPoint.maxPurchaseOrdersPerTimeSlot != null || sellingPoint.id != null ? sellingPoint.maxPurchaseOrdersPerTimeSlot : 10;
+	let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
+	let maxOrders = sellingPoint.maxPurchaseOrdersPerTimeSlot != null || sellingPoint.id != null ? sellingPoint.maxPurchaseOrdersPerTimeSlot : 10;
 
-  $:if(limitOrders && lockOrders == null){
-    lockOrders = 24;
-  }
-  
-  $:if(limitOrders && maxOrders == null){
-    maxOrders = 5;
-  }
+	$: if(limitOrders && lockOrders == null) lockOrders = 24;
+	$: if(limitOrders && maxOrders == null) maxOrders = 5;
 
 	const selectKind = (kind) => {
 		if (!isLoading) return (sellingPoint.kind = kind);
@@ -48,6 +44,7 @@
 
 		if ($sellingPointForm.valid && !isLoading) {
 			sellingPoint.openingHours = normalizeOpeningHours(openings);
+			sellingPoint.closings = normalizeClosingDates(closings);
 			delete sellingPoint.address["insee"];
 
 			if (!limitOrders) {
@@ -85,12 +82,12 @@
 			maxPurchaseOrders: {
 				value: maxOrders,
 				validators: ["min:1"],
-				enabled: true,
+				enabled: limitOrders,
 			},
 			lockPurchaseOrders: {
 				value: lockOrders,
 				validators: ["min:0"],
-				enabled: true,
+				enabled: limitOrders,
 			},
 		}),
 		{
@@ -99,6 +96,7 @@
 	);
 </script>
 
+<!-- svelte-ignore component-name-lowercase -->
 <form class="w-full pb-5" on:submit|preventDefault={handleSubmit}>
 	<div class="flex flex-wrap mb-6 lg:mb-0">
 		<div class="w-full lg:w-1/2">
@@ -165,6 +163,13 @@
 					<ErrorContainer field={$sellingPointForm.fields.openings} />
 				</div>
 			</div>
+			<hr class="my-5" />
+			<div class="form-control">
+				<label>Plages de fermeture</label>
+				<p class="text-gray-600 mb-2">Si ce point de vente est fermé durant certaines périodes de l'année, renseignez les dates pour que vos clients ne puissent pas placer de commandes avec retrait sur ces périodes.</p>
+				<ClosingDates bind:closings />
+			</div>
+			<hr class="my-5" />
       <div class="form-control mt-6" style="display: block;">
 				<label>Limiter les commandes</label>
 				<Toggle

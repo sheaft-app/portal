@@ -519,7 +519,13 @@
       background: #009688;
       @apply text-white;
     }
-
+    &-outline {
+      @apply border;
+      border-color: #ff4081;
+      color: #ff4081;
+      background-color: transparent;
+      box-shadow: none;
+    }
     &.disabled {
       border: none;
     }
@@ -803,5 +809,9 @@
   .swiper-button-prev, 
   .swiper-button-next {
     top: 30% !important;
+  }
+
+  .scal-trigger {
+    width: fit-content;
   }
 </style>

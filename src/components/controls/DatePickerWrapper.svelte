@@ -6,12 +6,14 @@
   export let placeholder = null;
   export let selected = new Date();
   export let dateChosen = false;
+  export let props = {};
 
   let formattedSelected;
 </script>
 
 <SvelteDatePicker
   format={date => format(new Date(selected), 'PPPP', { locale: fr })}
+  {...props}
   bind:selected
   bind:dateChosen
   bind:formattedSelected
@@ -19,8 +21,7 @@
   <button
     type="button"
     class="btn btn-white btn-lg"
-    aria-label="Sélectionner une date"
-    class:active={dateChosen}>
+    aria-label="Sélectionner une date">
     {#if dateChosen}
       {formattedSelected}
     {:else}
@@ -32,8 +33,8 @@
 <style lang="scss">
   button {
     &.active {
-      background-color: #ff4081; 
-      @apply text-white;
+      @apply bg-white;
+      color: #ff4081;
     }
   }
 </style>

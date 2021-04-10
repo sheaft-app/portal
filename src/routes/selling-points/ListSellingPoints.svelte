@@ -3,6 +3,8 @@
 	import { GET_SELLING_POINTS } from "./queries";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
+	import Icon from "svelte-awesome";
+	import { faEdit } from "@fortawesome/free-solid-svg-icons";
 	import Loader from './../../components/Loader.svelte';
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
@@ -13,10 +15,13 @@
 	import { 
 		faPlus
 	} from "@fortawesome/free-solid-svg-icons";
+	import { getContext } from 'svelte';
+	import ManageYearlyClosingsModal from "./ManageYearlyClosingsModal.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
+	const { open } = getContext('modal');
 
 	let isLoading = true;
 	let items = [];
@@ -29,7 +34,7 @@
 			text: "Ajouter un point de vente",
 			icon: faPlus,
 			color: "green",
-		},
+		}
 	];
 
 	const onRowClick = (item) => {
@@ -47,7 +52,6 @@
 	{#if !noResults}
 		<Actions {actions} />
 	{/if}
-	
 	<Table
 		bind:items
 		bind:isLoading
@@ -58,6 +62,12 @@
 		headers={[{ name: 'Nom' }, { name: 'Adresse' }, { name: 'Type' }]}
 		let:rowItem={sellingPoint}
 	>
+			<div slot="globalActions" class="px-2 md:px-6 py-3 border-b border-gray-200">
+				<button on:click={() => open(ManageYearlyClosingsModal)} class="btn-link">
+					<Icon data={faEdit} class="mr-2" />
+					Gérer fermetures annuelles
+				</button>
+			</div> 
 			<td
 				class="px-2 md:px-6 py-4 whitespace-no-wrap border-b
 				border-gray-200">

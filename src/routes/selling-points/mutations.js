@@ -11,6 +11,11 @@ export const CREATE_SELLING_POINT = gql`
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
+			closings {
+				from
+				to
+				reason
+			}
 			openingHours {
 				day
 				from
@@ -36,6 +41,11 @@ export const UPDATE_SELLING_POINT = gql`
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
 			lockOrderHoursBeforeDelivery
+			closings {
+				from
+				to
+				reason
+			}
 			openingHours {
 				day
 				from
@@ -66,3 +76,16 @@ export const SET_SELLING_POINT_AVAILABILITY = gql`
 		}
 	}
 `;
+
+export const UPDATE_BUSINESS_CLOSINGS = gql`
+	mutation UpdateBusinessClosings($input: UpdateOrCreateResourceIdClosingsInput) {
+		updateOrCreateBusinessClosings(input: $input) {
+			nodes {
+				id
+				from
+				to
+				reason
+			}
+		}
+	}
+`
