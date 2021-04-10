@@ -9,7 +9,7 @@ const AccountRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Store.Value, Roles.Producer.Value, Roles.Consumer.Value],
 	Profile: {
-		Name: "Profil",
+		Name: "Mon profil",
 		Icon: faUser,
 		Path: `${prefix}${profile}`,
 		SubPart: `${profile}`,

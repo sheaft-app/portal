@@ -222,7 +222,7 @@
   {/if}
   <Nav />
   <AcceptCookiePlaceholder />
-  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered}>
+  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
     <Modal>
       <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content" class:noNav={!$authRegistered}>
         <Router routes={guardInstance.routes} />
