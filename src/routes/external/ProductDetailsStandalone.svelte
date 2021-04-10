@@ -27,6 +27,7 @@
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
   import Cart from "../search-products/Cart.svelte";
+  import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -276,6 +277,7 @@
             </button> -->
         </div>  
       </div>
+      <ProducerOtherProducts productParentId={product.id} producerName={product.producer.name} producerId={product.producer.id} {errorsHandler} />
       <div class="flex flex-wrap justify-between mt-5">
         <div class="lg:w-2/3 w-full">
           <div
