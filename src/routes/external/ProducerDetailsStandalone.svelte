@@ -20,12 +20,12 @@
 	import DeliveryKind from "../../enums/DeliveryKind";
 	import {groupBy, encodeQuerySearchUrl} from "../../helpers/app";
 	import "leaflet/dist/leaflet.css";
-	import L from "leaflet";
 	import {Tabs, Tab, TabList, TabPanel} from 'svelte-tabs';
 	import {selectedItem} from "../../stores/app.js";
 	import SkeletonCard from "../search-products/SkeletonCard.svelte";
 	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
+	import AccountRoutes from "../account/routes";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -55,7 +55,6 @@
 		let res = await graphQLInstance.query(GET_PRODUCER_PROFILE, {id: id}, errorsHandler.Uuid);
 		if (!res.success) {
 			isLoading = false;
-			//TODO
 			return;
 		}
 
@@ -72,7 +71,7 @@
 			}
 		}, errorsHandler.Uuid);
 
-		if (deliveriesResult.data.length == 0) {
+		if (!deliveriesResult.success || deliveriesResult.data.length == 0) {
 			deliveries = [];
 		} else {
 			deliveries = deliveriesResult.data[0].deliveries.map((d) => {
@@ -91,7 +90,14 @@
 			id: params.id
 		}, errorsHandler.Uuid);
 
-		producerProducts = productsResult.data;
+		if(!productsResult.success)
+		{
+			productsResult = [];
+		}
+		else {
+			producerProducts = productsResult.data;
+		}
+
 		isLoading = false;
 	};
 
@@ -155,6 +161,11 @@
 				<Icon data={faChevronLeft} scale=".8" class="mr-2 inline"/>
 				Retourner à la recherche
 			</button>
+		{:else if authInstance.isInRole([Roles.Producer.Value])}
+			<div class="mb-3 p-4 text-white bg-blue-500 rounded">
+				<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour avoir une référence directe vers votre boutique.</p>
+				<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a href="javascript:void(0)" on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant ici</a>.</p>
+			</div>
 		{/if}
 		{#if !producer && !isLoading}
 			<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Mince !</h3>

@@ -1,5 +1,5 @@
 import Roles from "../../enums/Roles";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faStore} from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/details";
 
@@ -19,8 +19,8 @@ const ExternalRoutes = {
 		}
 	},
 	ProducerDetails: {
-		Name: "Détails du producteur",
-		Icon: faSearch,
+		Name: "Ma boutique",
+		Icon: faStore,
 		Path: `${prefix}${producerDetails}`,
 		SubPart: `${producerDetails}`,
 		Params: {

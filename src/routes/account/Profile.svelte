@@ -90,15 +90,6 @@
             </div>
         </div>
         <h1 class="text-2xl mb-0">Mon profil</h1>
-				<div class="flex mt-2">
-					<button
-						class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white ml-2"
-						on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, {
-            id: userId
-          })}>
-						Voir votre boutique
-					</button>
-				</div>
       </div>
     </div>
   </section>
