@@ -73,24 +73,19 @@ class SheaftAuth {
 				this.setAuthStatus(user, true, true, true, true);
 			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
-				this.refreshPageAsUnauthorized(user);
+				this.refreshPageAsUnauthorized();
 			} else {
 				this.setAuthStatus(user, true, true, false, true);
 			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
-			if (onInit) {
-				this.userManager.removeUser();
-				return await this.login();
-			}
-
-			this.refreshPageAsUnauthorized(user);
+			this.refreshPageAsUnauthorized();
 		}
 	}
 
-	refreshPageAsUnauthorized(user) {
-		this.setAuthStatus(user, false, false, false, true);
+	refreshPageAsUnauthorized() {
 		if (location.hash.indexOf('/callback') > -1) {
+			this.userManager.removeUser();
 			location.hash = "/";
 			location.reload();
 		}
