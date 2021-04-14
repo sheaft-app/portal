@@ -1,11 +1,11 @@
 <script>
-  import Loader from "./../../components/Loader.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
   import { faCircleNotch, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+	import GetRouterInstance from "./../../services/SheaftRouter.js";
   import UpdateImage from "./UpdateImage.svelte";
   import { UPDATE_USER_PICTURE, EXPORT_DATA } from "./mutations.js";
   import { authUserAccount } from "./../../stores/auth.js";
@@ -16,10 +16,12 @@
   import EditProducer from "./EditProducer.svelte";
   import EditStore from "./EditStore.svelte";
   import { config } from "../../configs/config";
+	import ExternalRoutes from "../external/routes";
 
-  const errorsHandler = new SheaftErrors();
+	const errorsHandler = new SheaftErrors();
   const authInstance = GetAuthInstance();
   const graphQLInstance = GetGraphQLInstance();
+	const routerInstance = GetRouterInstance();
   const { open } = getContext("modal");
 
   let isLoading = false;
@@ -88,6 +90,15 @@
             </div>
         </div>
         <h1 class="text-2xl mb-0">Mon profil</h1>
+				<div class="flex mt-2">
+					<button
+						class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white ml-2"
+						on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, {
+            id: userId
+          })}>
+						Voir votre boutique
+					</button>
+				</div>
       </div>
     </div>
   </section>
