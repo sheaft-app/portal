@@ -102,8 +102,9 @@
 	}
 </script>
 
-{#if producer}
-	<svelte:head>
+<svelte:head>
+
+	{#if producer}
 		<!-- Google / Search Engine Tags -->
 		<meta itemprop="name" content="La boutique {producer.name}"/>
 		<meta
@@ -142,8 +143,8 @@
 		<meta name="twitter:image" content="{producer.picture ? producer.picture : 'img/icons/farmer.svg'}"/>
 
 		<title>La boutique {producer.name}</title>
-	</svelte:head>
-{/if}
+	{/if}
+</svelte:head>
 
 <TransitionWrapper style="margin: 0" hasRightPanel>
 	<div class="details-container">
