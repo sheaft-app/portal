@@ -211,7 +211,7 @@
 			click: () => completeOrders(),
 			disabled: !canCompleteOrders(selectedItems),
 			icon: faClipboardCheck,
-			text: "Terminer la préparation",
+			text: "Marquer comme prêtes",
 			color: "green",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true

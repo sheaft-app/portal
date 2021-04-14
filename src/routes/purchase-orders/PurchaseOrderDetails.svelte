@@ -310,7 +310,7 @@ faFileExport
             class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-green-500 w-full lg:w-auto">
             <Icon data={faClipboardCheck} class="mr-2 hidden lg:inline w-4 h-4" />
-            <span>Terminer la préparation</span>
+            <span>Marquer comme prête</span>
           </button>
           <button
             class:hidden={!canDeliverOrder(order)}

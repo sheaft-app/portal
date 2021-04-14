@@ -1,10 +1,10 @@
 <script>
-	import { faCheck } from "@fortawesome/free-solid-svg-icons";
+	import {faCheck} from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import { COMPLETE_PURCHASE_ORDERS } from "./mutations.js";
+	import {COMPLETE_PURCHASE_ORDERS} from "./mutations.js";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import SheaftErrors from "./../../services/SheaftErrors";
-import { GET_ORDERS } from "./queries";
+	import {GET_ORDERS} from "./queries";
 
 	export let onClose, close, purchaseOrders;
 
@@ -42,7 +42,7 @@ import { GET_ORDERS } from "./queries";
 
 <ActionConfirm
 	{errorsHandler}
-	title={purchaseOrders.length > 1 ? 'Terminer ces commandes' : 'Terminer cette commande'}
+	title={purchaseOrders.length > 1 ? 'Marquer ces commandes comme prêtes' : 'Marquer cette commande comme prête'}
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"
@@ -50,7 +50,12 @@ import { GET_ORDERS } from "./queries";
 	{isLoading}
 	close={() => handleClose({ success: false, data: null })}>
 	<p class="leading-5">
-		Compléter {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
-		alertera automatiquement votre client que tout est prêt.
+		{#if purchaseOrders.length > 1}
+			Marquer ces commandes comme prêtes alertera automatiquement leur client que tout est prêt pour venir la récupérer
+			aux heures choisies.
+		{:else}
+			Marquer cette commande comme prête alertera automatiquement votre client que tout est prêt pour venir la récupérer
+			à l'heure choisie.
+		{/if}
 	</p>
 </ActionConfirm>
