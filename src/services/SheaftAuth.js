@@ -94,14 +94,14 @@ class SheaftAuth {
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
 		if (this.user != user)
 			authUserAccount.set(user);
-		if (this.initialized != initialized)
-			authInitialized.set(initialized);
 		if (this.authorized != authorized)
 			authAuthorized.set(authorized);
 		if (this.registered != registered)
 			authRegistered.set(registered);
 		if (this.authenticated != authenticated)
 			authAuthenticated.set(authenticated);
+		if (this.initialized != initialized)
+			authInitialized.set(initialized);
 	}
 
 	userIsAnonymous() {

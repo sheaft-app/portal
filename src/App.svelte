@@ -14,7 +14,7 @@
   import "notyf/notyf.min.css";
   import Router from "svelte-spa-router";
   import "swiper/swiper.min.css";
-  import "swiper/components/navigation/navigation.min.css";  
+  import "swiper/components/navigation/navigation.min.css";
   import Modal from "./components/modal/Modal.svelte";
   import Nav from "./components/nav/Nav.svelte";
   import { selectedItem } from "./stores/app.js";
@@ -31,7 +31,7 @@
   import OidcRoutes from "./routes/oidc/routes";
   import { notificationsCount } from "./components/notifications/store";
   import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
-  
+
   $: isLoading = true;
 
   if ("serviceWorker" in navigator) {
@@ -65,26 +65,19 @@
   const initSubscription = authInitialized.subscribe(async initialized => {
       if (initialized) {
         isLoading = false;
+
+				if (!authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])){
+					await cart.initialize(apiInstance, errorsHandlers, authInstance.authenticated);
+				}
       }
   });
 
   const authSubscription = authAuthenticated.subscribe(async authenticated => {
-		if(authenticated && (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path))
-			routerInstance.goTo("/", null, true);
-
-		if(isLoading === undefined || isLoading === null || isLoading === true)
-			return;
-
-		if (authInstance.isInRole([Roles.Consumer.Value])){
-			await cart.initialize(apiInstance, errorsHandlers, authenticated);
-		}
-
     if (!authenticated) {
       await logoutFreshdesk();
       signalrInstance.stop();
     }
-
-    if (authenticated) {
+    else {
       signalrInstance.start();
       await loginFreshdesk();
 
@@ -92,6 +85,9 @@
       if (res.success) {
         notificationsCount.set(res.data);
       }
+
+			if(routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
+				routerInstance.goTo("/", null, true);
     }
   });
 
@@ -122,7 +118,7 @@
 
     const progress = await fetch(config.content + '/progress/departments.json');
     let data = await progress.json();
-      
+
     allDepartmentsProgress.set(data);
 
     isLoading = false;
@@ -424,13 +420,13 @@
   .notyf {
     padding-top: 85px;
   }
-  
+
   @media (max-width: 1023px) {
     .notyf {
       padding-top: 45px;
     }
   }
- 
+
 
   .material-icons {
     margin-top: 0;
@@ -806,7 +802,7 @@
   }
 
 
-  .swiper-button-prev, 
+  .swiper-button-prev,
   .swiper-button-next {
     top: 30% !important;
   }
