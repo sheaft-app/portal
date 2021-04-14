@@ -163,9 +163,48 @@
   };
 </script>
 
-<svelte:head>
-	<title>{product ? product.name : 'Produit'}</title>
-</svelte:head>
+{#if product}
+	<svelte:head>
+		<!-- Google / Search Engine Tags -->
+		<meta itemprop="name" content="{product.name}"/>
+		<meta
+			itemprop="description"
+			content="{product.description}"
+		/>
+		<!--Insert url for image to be used in search results-->
+		<meta itemprop="image" content="{product.picture}"/>
+
+		<!-- Facebook Meta Tags -->
+		<!--Insert url of site-->
+		<meta property="og:url" content="https://app.sheaft.com"/>
+		<meta property="og:type" content="website"/>
+		<meta
+			property="og:title"
+			content="{product.name}"
+		/>
+		<meta
+			property="og:description"
+			content="{product.description}"
+		/>
+		<!--Insert url for image to be used in facebook share post-->
+		<meta property="og:image" content="{product.picture}"/>
+
+		<!-- Twitter Meta Tags -->
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta
+			name="twitter:title"
+			content="La boutique {product.name}"
+		/>
+		<meta
+			name="twitter:description"
+			content="{product.description}"
+		/>
+		<!--Insert url for image to be used in twitter share post-->
+		<meta name="twitter:image" content="{product.picture}"/>
+
+		<title>{product.name}</title>
+	</svelte:head>
+{/if}
 
 <TransitionWrapper hasRightPanel style="margin: 0">
   <div class="details-container">
