@@ -21,7 +21,7 @@
   import { groupBy, encodeQuerySearchUrl } from "../../helpers/app";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
-  import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';	
+  import { Tabs, Tab, TabList, TabPanel } from 'svelte-tabs';
   import { selectedItem } from "../../stores/app.js";
   import SkeletonCard from "../search-products/SkeletonCard.svelte";
   import { format } from "date-fns";
@@ -53,12 +53,13 @@
   const getProducerDetails = async id => {
     isLoading = true;
     let res = await graphQLInstance.query(GET_PRODUCER_PROFILE, { id: id }, errorsHandler.Uuid);
-
     if (!res.success) {
       isLoading = false;
       //TODO
       return;
     }
+
+		producer = res.data;
 
     let deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
       input: {
@@ -67,14 +68,9 @@
           DeliveryKind.Farm.Value,
           DeliveryKind.Market.Value,
           DeliveryKind.Collective.Value
-        ] 
+        ]
       }
     }, errorsHandler.Uuid);
-
-    if (!deliveriesResult.success) {
-      isLoading = false;
-      //TODO
-    }
 
     if (deliveriesResult.data.length == 0) {
       deliveries = [];
@@ -95,12 +91,7 @@
       id: params.id
     }, errorsHandler.Uuid);
 
-    if (!productsResult.success) {
-      isLoading = false;
-    }
-
     producerProducts = productsResult.data;
-    producer = res.data;
     isLoading = false;
   };
 
@@ -110,6 +101,10 @@
     })
   }
 </script>
+
+<svelte:head>
+	<title>La boutique {producer ? producer.name : 'du producteur'}</title>
+</svelte:head>
 
 <TransitionWrapper style="margin: 0" hasRightPanel>
   <div class="details-container">
@@ -177,7 +172,7 @@
                       <p>{producer.address.line2}</p>
                     {/if}
                     <p>{producer.address.zipcode} {producer.address.city}</p>
-                    <a 
+                    <a
                       class="mt-1"
                       target="_blank"
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(producer.address)}`}>
@@ -242,7 +237,7 @@
                         </p>
                       {/if}
                       <p>{delivery.address.zipcode} {delivery.address.city}</p>
-                      <a 
+                      <a
                         class="mt-1"
                         target="_blank"
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
@@ -252,14 +247,14 @@
                   </div>
                   <div class="mt-2">
                     {#each delivery.deliveryHours as deliveryHour, index}
-                      <div class="flex mb-2 border-gray-300" 
+                      <div class="flex mb-2 border-gray-300"
                         class:pb-2={index !== delivery.deliveryHours.length - 1}
                         class:border-b={index !== delivery.deliveryHours.length - 1}>
                         <p style="min-width: 100px;">
                           {DayOfWeekKind.label(deliveryHour[0].day)}
                         </p>
                         <div>
-                          {#each deliveryHour as hours} 
+                          {#each deliveryHour as hours}
                             <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
                           {/each}
                         </div>
@@ -335,7 +330,7 @@
 	}
 
 	@media (max-width: 1024px) {
-		.cart-panel { 
+		.cart-panel {
 			top: 45px;
 			transform: translateY(100%);
 

@@ -26,14 +26,14 @@
   const routerInstance = GetRouterInstance();
   const errorsHandler = new SheaftErrors();
   const notificationsInstance = new GetNotificationsInstance();
-  
+
   let product = null;
   let isLoading = false;
 
   onMount(async () => {
     await getProduct();
   });
-  
+
 	const showDeleteModal = () => {
 		open(DeleteProducts, {
 			selectedItems: [product],
@@ -45,7 +45,7 @@
 			},
 		});
   };
-  
+
   const showSetAvailabilityModal = (status) => {
 		open(SetProductsAvailability, {
 			selectedItems: [product],
@@ -58,7 +58,7 @@
 			},
 		});
   };
-  
+
   const getProduct = async () => {
     isLoading = true;
     var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, {
@@ -159,8 +159,8 @@
               font-semibold text-xs text-white my-2 h-6">
               Masqué aux magasins
             </span>
-          {/if}  
-        </div>      
+          {/if}
+        </div>
       </div>
       <div class="flex mt-2">
         <button
@@ -170,10 +170,10 @@
         </button>
         <button
           class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white ml-2"
-          on:click={() => routerInstance.goTo(ExternalRoutes.ProductDetails, { 
+          on:click={() => routerInstance.goTo(ExternalRoutes.ProductDetails, {
             id: params.id
           })}>
-          Page consommateur
+          Voir dans votre boutique
         </button>
       </div>
     </section>
