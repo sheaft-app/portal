@@ -10,7 +10,7 @@ import {
   } from "@fortawesome/free-solid-svg-icons";
   import Guid from "./../../helpers/Guid.js";
   import {GET_PRODUCTS} from "./../../routes/products/queries";
-  
+
 
 export const getFormattedNotification = (graphql, notification, local, display) => {
 	if(notification.content && typeof(notification.content) == "string" && notification.content.length > 0){
@@ -252,8 +252,27 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`Votre commande a été annulée par le producteur.`,
+				`${notification.content.VendorName} a annulé votre commande.`,
 				`#/my-orders/${notification.content.PurchaseOrderId}`,
+				true,
+				true,
+				local
+			);
+		case "PurchaseOrderWithdrawnedEvent":
+			return getNotification(
+				notification,
+				"error",
+				`${notification.content.SenderName} a annulé sa commande.`,
+				`#/my-orders/${notification.content.PurchaseOrderId}`,
+				true,
+				true,
+				local
+			);
+		case "PurchaseOrderExpiredEvent":
+			return getNotification(
+				notification,
+				"error",
+				`La commande a expirée.`,
 				true,
 				true,
 				local
@@ -299,6 +318,26 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				local
 			);
 		case "PayinFailedEvent":
+			return getNotification(
+				notification,
+				"warning",
+				`Le paiement de votre commande a échoué.`,
+				`#/my-orders/`,
+				true,
+				true,
+				local
+			);
+		case "PreAuthorizationSucceededEvent":
+			return getNotification(
+				notification,
+				"success",
+				`Le paiement de votre commande a été accepté.`,
+				`#/my-orders/`,
+				true,
+				true,
+				local
+			);
+		case "PreAuthorizationFailedEvent":
 			return getNotification(
 				notification,
 				"warning",

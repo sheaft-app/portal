@@ -19,6 +19,8 @@ export const PurchaseOrderStatus = {
 	DELIVERED: "DELIVERED",
 	REFUSED: "REFUSED",
 	CANCELLED: "CANCELLED",
+	WITHDRAWNED: "WITHDRAWNED",
+	EXPIRED: "EXPIRED",
 	NONE: "NONE",
 };
 
@@ -68,6 +70,18 @@ let enums = {
 	Cancelled: {
 		Value: "CANCELLED",
 		Label: "Annulée",
+		Icon: faTimes,
+		Color: "gray-600",
+	},
+	Withdrawned: {
+		Value: "WITHDRAWNED",
+		Label: "Annulée",
+		Icon: faTimes,
+		Color: "gray-600",
+	},
+	Expired: {
+		Value: "EXPIRED",
+		Label: "Expirée",
 		Icon: faTimes,
 		Color: "gray-600",
 	},
