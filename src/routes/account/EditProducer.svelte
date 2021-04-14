@@ -27,15 +27,15 @@
 			country: "FR"
 		}
 	};
-	
+
 	const producerForm = form(() => ({
 		name: { value: producer.name, validators: ['required'], enabled: true },
 		firstName: { value: producer.firstName, validators: ['required'], enabled: true },
 		lastName: { value: producer.lastName, validators: ['required'], enabled: true },
 		email: { value: producer.email, validators: ['required', 'email'], enabled: true },
 		address: { value: producer.address, validators: ['required'], enabled: true },
-		summary: { value: producer.summary, validators: ['maxLength:300'], enabled: producer.summary.length > 0 },
-		description: { value: producer.description, validators: ['maxLength:1500'], enabled: producer.description.length > 0 },
+		summary: { value: producer.summary, validators: ['maxLength:300'], enabled: producer.summary && producer.summary.length > 0 },
+		description: { value: producer.description, validators: ['maxLength:1500'], enabled: producer.description && producer.description.length > 0 },
 	}), {
     	initCheck: false
 	});
@@ -49,7 +49,7 @@
 	{errorsHandler}
 	{userId}>
 	<h3 class="font-semibold uppercase mb-0 mt-5">Votre entreprise</h3>
-	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>	
+	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	<div class="form-control">
 		<div class="w-full md:w-2/2">
 			<label for="grid-line2">Nom commercial *</label>
@@ -97,10 +97,10 @@
 			<textarea
 				bind:value={producer.summary}
 				id="grid-line"
-				class:invalid={producer.summary.length > 300}
+				class:invalid={producer.summary && producer.summary.length > 300}
 				placeholder="Une description courte qui s'affichera sur votre page de présentation."
 				type="textarea" />
-			<p class="text-sm text-gray-600" class:font-semibold={producer.summary.length > 300} class:text-red-500={producer.summary.length > 300}>{producer.summary.length} / 300 caractères max</p>
+			<p class="text-sm text-gray-600" class:font-semibold={producer.summary && producer.summary.length > 300} class:text-red-500={producer.summary && producer.summary.length > 300}>{producer.summary ? producer.summary.length : 0} / 300 caractères max</p>
 		</div>
 	</div>
 	<div class="form-control">
@@ -109,10 +109,10 @@
 			<textarea
 				bind:value={producer.description}
 				id="grid-line"
-				class:invalid={producer.description.length > 1500}
+				class:invalid={producer.description && producer.description.length > 1500}
 				placeholder="Si vous souhaitez entrer plus dans le détail, n'hésitez pas à compléter cette zone."
 				type="textarea" />
-			<p class="text-sm text-gray-600" class:font-semibold={producer.description.length > 1500} class:text-red-500={producer.description.length > 1500}>{producer.description.length} / 1500 caractères max</p>
+			<p class="text-sm text-gray-600" class:font-semibold={producer.description && producer.description.length > 1500} class:text-red-500={producer.description && producer.description.length > 1500}>{producer.description ? producer.description.length : 0} / 1500 caractères max</p>
 		</div>
 	</div>
 	<div class="form-control">
