@@ -1,6 +1,6 @@
 <script>
-	import { onMount, getContext } from "svelte";
-	import { fly, slide } from "svelte/transition";
+	import {onMount, getContext} from "svelte";
+	import {fly, slide} from "svelte/transition";
 	import Icon from "svelte-awesome";
 	import {
 		faPaperPlane,
@@ -15,17 +15,17 @@
 	import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
 	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
 	import TagKind from "./../../enums/TagKind.js";
-	import { GET_RETURNABLES, GET_TAGS, GET_PRODUCER_DETAILS } from "./queries.js";
+	import {GET_RETURNABLES, GET_TAGS, GET_PRODUCER_DETAILS} from "./queries.js";
 	import ChangeImage from "./ChangeImage.svelte";
-	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
+	import {form, bindClass} from "../../../vendors/svelte-forms/src/index";
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
-  import GetAuthInstance from "../../services/SheaftAuth";
-import { config } from "../../configs/config";
+	import GetAuthInstance from "../../services/SheaftAuth";
+	import {config} from "../../configs/config";
 
 	export let submit, product, isLoading;
 
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
 	const authInstance = GetAuthInstance();
 
@@ -49,8 +49,12 @@ import { config } from "../../configs/config";
 				validators: ["required", "min:0"],
 				enabled: true,
 			},
-			vat: { value: product.vat, validators: ["required"], enabled: !notSubjectToVat },
-			unit: { value: product.unit, validators: ["required"], enabled: product.conditioning == ConditioningKind.Bulk.Value},
+			vat: {value: product.vat, validators: ["required"], enabled: !notSubjectToVat},
+			unit: {
+				value: product.unit,
+				validators: ["required"],
+				enabled: product.conditioning == ConditioningKind.Bulk.Value
+			},
 			conditioning: {
 				value: product.conditioning,
 				validators: ["required"],
@@ -75,11 +79,11 @@ import { config } from "../../configs/config";
 	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
 
 	const handleSubmit = async () => {
-    productForm.validate();
+		productForm.validate();
 
-    if ($productForm.valid && !isLoading) {
-      if (product.conditioning != ConditioningKind.Bulk.Value) {
-		  	product.unit = UnitKind.NotSpecified.Value;
+		if ($productForm.valid && !isLoading) {
+			if (product.conditioning != ConditioningKind.Bulk.Value) {
+				product.unit = UnitKind.NotSpecified.Value;
 			}
 
 			if (isBasketType) {
@@ -149,6 +153,8 @@ import { config } from "../../configs/config";
 		}
 
 		notSubjectToVat = res.data.notSubjectToVat;
+		if(notSubjectToVat)
+			selectVat(0);
 	}
 
 	const getReturnables = async () => {
@@ -227,7 +233,7 @@ import { config } from "../../configs/config";
 						disabled={isLoading}
 						id="grid-reference"
 						type="text"
-						placeholder="Auto-générée si non renseignée" />
+						placeholder="Auto-générée si non renseignée"/>
 				</div>
 			</div>
 			<div class="form-control">
@@ -241,8 +247,8 @@ import { config } from "../../configs/config";
 						name="name"
 						id="grid-product"
 						type="text"
-						placeholder="ex : Tomate ancienne" />
-					<ErrorContainer field={$productForm.fields.name} />
+						placeholder="ex : Tomate ancienne"/>
+					<ErrorContainer field={$productForm.fields.name}/>
 				</div>
 			</div>
 			<div class="form-control">
@@ -258,8 +264,8 @@ import { config } from "../../configs/config";
 							type="number"
 							step=".01"
 							name="wholeSalePricePerUnit"
-							placeholder="ex : 2.49" />
-						<ErrorContainer field={$productForm.fields.wholeSalePricePerUnit} />
+							placeholder="ex : 2.49"/>
+						<ErrorContainer field={$productForm.fields.wholeSalePricePerUnit}/>
 					</div>
 					<div class="w-full" class:hidden={notSubjectToVat}>
 						<label for="grid-vat">TVA *</label>
@@ -267,40 +273,32 @@ import { config } from "../../configs/config";
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={isLoading}
 							use:bindClass={{ form: productForm, name: 'vat' }}>
-							<button
-								on:click={() => selectVat(0)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 0}
-								class:skeleton-box={isLoading}>
-								0%
-							</button>
-							<button
-								on:click={() => selectVat(5.5)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 5.5}
-								class:skeleton-box={isLoading}>
-								5,5%
-							</button>
-							<button
-								on:click={() => selectVat(10)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 10}
-								class:skeleton-box={isLoading}>
-								10%
-							</button>
-							<button
-								on:click={() => selectVat(20)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 20}
-								class:skeleton-box={isLoading}>
-								20%
-							</button>
+								<button
+									on:click={() => selectVat(5.5)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 5.5}
+									class:skeleton-box={isLoading}>
+									5,5%
+								</button>
+								<button
+									on:click={() => selectVat(10)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 10}
+									class:skeleton-box={isLoading}>
+									10%
+								</button>
+								<button
+									on:click={() => selectVat(20)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 20}
+									class:skeleton-box={isLoading}>
+									20%
+								</button>
 						</div>
-						<ErrorContainer field={$productForm.fields.vat} />
+						<ErrorContainer field={$productForm.fields.vat}/>
 					</div>
 				</div>
 			</div>
@@ -312,7 +310,7 @@ import { config } from "../../configs/config";
 					classNames="ml-1"
 					isChecked={isBio}
 					onChange={() => toggleBio()}>
-					<img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Produit bio" class="w-8" />
+					<img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Produit bio" class="w-8"/>
 				</Toggle>
 			</div>
 		</div>
@@ -325,21 +323,21 @@ import { config } from "../../configs/config";
 							<div
 								class="h-full product-picture relative"
 								style="background: url('{product.picture}'); margin:auto;">
-								  {#if product.picture.includes("pictures/tags/images/")}
-										<div class="absolute" style="bottom: 0%; z-index: 1;">
-											<div class="text-white text-lg p-1 bg-gray-800">
-												Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.
-											</div>
+								{#if product.picture.includes("pictures/tags/images/")}
+									<div class="absolute" style="bottom: 0%; z-index: 1;">
+										<div class="text-white text-lg p-1 bg-gray-800">
+											Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.
 										</div>
-									{/if}
-								</div>
+									</div>
+								{/if}
+							</div>
 						{:else}
 							<Icon
 								data={faImage}
 								class="mr-2 inline"
 								scale={2}
-								style="margin:105px;" />
-								<p class="text-gray-600">Cliquez dans la zone pour ajouter une image</p>
+								style="margin:105px;"/>
+							<p class="text-gray-600">Cliquez dans la zone pour ajouter une image</p>
 						{/if}
 					</div>
 				</div>
@@ -354,8 +352,8 @@ import { config } from "../../configs/config";
 			bindClassData={{ form: productForm, name: 'selectedCategory' }}
 			{selectedCategory}
 			displayOptionAllProducts={false}
-			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3" />
-		<ErrorContainer field={$productForm.fields.selectedCategory} />
+			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"/>
+		<ErrorContainer field={$productForm.fields.selectedCategory}/>
 	</div>
 	{#if !isBasketType}
 		<div class="form-control">
@@ -385,13 +383,13 @@ import { config } from "../../configs/config";
 								{ConditioningKind.Piece.Label}
 							</option>
 						</select>
-						<ErrorContainer field={$productForm.fields.conditioning} />
+						<ErrorContainer field={$productForm.fields.conditioning}/>
 					</div>
 				</div>
 			</div>
 		</div>
 	{/if}
-	{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
+	{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
 		<div class="form-control">
 			<div class="w-full">
 				<label for="grid-quantityPerUnit">{getQuantityPerUnitLabel()}</label>
@@ -405,8 +403,8 @@ import { config } from "../../configs/config";
 							id="grid-quantityPerUnit"
 							placeholder="ex : 5"
 							class:skeleton-box={isLoading}
-							disabled={isLoading} />
-						<ErrorContainer field={$productForm.fields.quantityPerUnit} />
+							disabled={isLoading}/>
+						<ErrorContainer field={$productForm.fields.quantityPerUnit}/>
 					</div>
 					{#if product.conditioning == ConditioningKind.Bulk.Value && !isBasketType}
 						<div>
@@ -422,7 +420,7 @@ import { config } from "../../configs/config";
 								<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
 								<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
 							</select>
-							<ErrorContainer field={$productForm.fields.unit} />
+							<ErrorContainer field={$productForm.fields.unit}/>
 						</div>
 					{/if}
 				</div>
@@ -446,7 +444,7 @@ import { config } from "../../configs/config";
 				bind:selectedValue={product.returnable}
 				isSearchable={true}
 				isClearable={false}
-				containerStyles="font-weight: 600; color: #4a5568;" />
+				containerStyles="font-weight: 600; color: #4a5568;"/>
 		</div>
 		{#if returnables.length > 0 && product.returnable}
 			<button
@@ -476,7 +474,7 @@ import { config } from "../../configs/config";
 				disabled={isLoading}
 				type="text"
 				style="min-height:150px;"
-				placeholder="Tomate ancienne d'une variété très particulière" />
+				placeholder="Tomate ancienne d'une variété très particulière"/>
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
@@ -515,7 +513,7 @@ import { config } from "../../configs/config";
 			<Icon
 				data={isLoading ? faCircleNotch : faPaperPlane}
 				class="mr-2 inline"
-				spin={isLoading} />
+				spin={isLoading}/>
 			Valider
 		</button>
 	</div>
@@ -527,6 +525,7 @@ import { config } from "../../configs/config";
 		background-position: center !important;
 		background-repeat: no-repeat !important;
 	}
+
 	.themed {
 		display: contents;
 		--cursor: text;
