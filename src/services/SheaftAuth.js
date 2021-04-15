@@ -73,18 +73,18 @@ class SheaftAuth {
 				this.setAuthStatus(user, true, true, true, true);
 			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
-				this.refreshPageAsUnauthorized();
+				this.refreshPageAsUnauthorized(false);
 			} else {
 				this.setAuthStatus(user, true, true, false, true);
 			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
-			this.refreshPageAsUnauthorized();
+			this.refreshPageAsUnauthorized(true);
 		}
 	}
 
-	refreshPageAsUnauthorized() {
-		if (location.hash.indexOf('/callback') > -1) {
+	refreshPageAsUnauthorized(hasError) {
+		if (location.hash.indexOf('/callback') > -1 || hasError) {
 			this.userManager.removeUser();
 			location.hash = "/";
 			location.reload();
@@ -136,9 +136,6 @@ class SheaftAuth {
 
 	async login(redirectUrl) {
 		try {
-			if (this.authenticated)
-				return;
-
 			if (redirectUrl && redirectUrl.length > 0) {
 				if (redirectUrl.indexOf("/") == 0) {
 					redirectUrl = `#${redirectUrl}`;
@@ -154,26 +151,24 @@ class SheaftAuth {
 			}
 
 			return await this.userManager.signinRedirect();
-		} catch (exc) {
-			location.hash = "";
-			location.reload();
+		} catch (ex) {
+			console.log(ex);
 		}
 	}
 
 	async loginCallback() {
 		try {
 			return await this.userManager.signinCallback();
-		} catch (exc) {
-			await this.userManager.removeUser();
-			location.hash = "";
-			location.reload();
+		} catch (ex) {
+			console.log(ex);
 		}
 	}
 
 	async loginSilentCallback() {
 		try {
 			return await this.userManager.signinSilentCallback();
-		} catch (exc) {
+		} catch (ex) {
+			console.log(ex);
 		}
 	}
 
@@ -181,8 +176,8 @@ class SheaftAuth {
 		try {
 			clearLocalStorage();
 			await this.userManager.signoutRedirect();
-			await this.userManager.removeUser();
 		} catch (exc) {
+			await this.userManager.removeUser();
 			location.hash = "";
 			location.reload();
 		}
@@ -190,12 +185,18 @@ class SheaftAuth {
 
 	async loginSilent() {
 		try {
-			await this.userManager.removeUser();
-			var user = await this.userManager.signinSilent();
-			return user;
+			return await this.userManager.signinSilent();
 		} catch (ex) {
-			location.hash = "";
-			location.reload();
+			console.log(ex);
+		}
+	}
+
+	async refreshLogin() {
+		try {
+			await this.userManager.removeUser();
+			return await this.login(window.location.hash);
+		} catch (ex) {
+			console.log(ex);
 		}
 	}
 

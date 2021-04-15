@@ -170,7 +170,7 @@
 		style="min-width: 200px;">
 		<button class="btn-link"
 						on:click={() => goToHome(authInstance, routerInstance)}>
-			<SheaftSvg width=150/>
+			<SheaftSvg width="150"/>
 		</button>
 	</div>
 	{#if $selectedItem || $navExpended}
@@ -197,7 +197,7 @@
 		</button>
 	{:else}
 		<button class="btn-link lg:hidden ml-5" on:click={() => goToHome(authInstance, routerInstance)}>
-			<SheaftSvg width=100/>
+			<SheaftSvg width="100"/>
 		</button>
 	{/if}
 	<div class="justify-end inline-flex lg:items-center">

@@ -150,13 +150,13 @@
       return;
     }
 
-    await authInstance.loginSilent();
+    await authInstance.refreshLogin();
     localStorage.removeItem("user_choosen_role");
     localStorage.removeItem("user_sponsoring");
 
     sub = authRegistered.subscribe(registered => {
       if(registered)
-        {    
+        {
           routerInstance.goTo("/");
         }
         else{
@@ -193,7 +193,7 @@
         {:else if stepper == 2}
           <FormOwner bind:company {errorsHandler} bind:stepper />
         {:else if stepper == 3}
-          <FormBusinessHours bind:company {isStore} bind:openings bind:stepper /> 
+          <FormBusinessHours bind:company {isStore} bind:openings bind:stepper />
         {:else if stepper == 4}
           <FormProductionSite bind:company {isStore} bind:stepper submit={handleSubmit} />
         {/if}

@@ -46,7 +46,7 @@
       initialSrc: $authUserAccount.profile.picture,
       mutation: UPDATE_USER_PICTURE,
       onClose: async res => {
-        if (res.success) await authInstance.loginSilent();
+        if (res.success) await authInstance.refreshLogin();
       }
     });
   };

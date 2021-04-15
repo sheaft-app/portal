@@ -60,17 +60,17 @@ import { config } from "../../configs/config";
       var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
 
       if (!res.success) {
-        isRegistering = false;      
+        isRegistering = false;
         //TODO
         return;
       }
 
-      await authInstance.loginSilent();      
+			await authInstance.refreshLogin();
       localStorage.removeItem("user_choosen_role");
       localStorage.removeItem("user_sponsoring");
       sub = authRegistered.subscribe(registered => {
         if(registered)
-          {    
+          {
             routerInstance.goTo("/");
           }
           else{
@@ -226,7 +226,7 @@ import { config } from "../../configs/config";
                 notre tiers de paiement, et je les accepte
               </label>
             </div>
-            
+
             <!-- <div class="flex flex-wrap justify-center">
               <div>
                 <label

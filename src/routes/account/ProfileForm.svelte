@@ -31,7 +31,7 @@
 		}
 
     user = res.data;
-    
+
     if (user.openingHours) {
       if (user.openingHours.length == 0) {
         user.openingHours = denormalizeOpeningHours([
@@ -60,7 +60,7 @@
 		if ($form.valid) {
       isLoading = true;
       let variables = user;
-      
+
       if (user.openingHours) {
         let openingHours = normalizeOpeningHours(user.openingHours);
         variables = {
@@ -76,12 +76,12 @@
 				//TODO
 				return;
       }
-      
+
       notificationsInstance.success(
         "Vos modifications ont bien été appliquées."
       );
 
-      await authInstance.loginSilent();
+      await authInstance.refreshLogin();
       await loginFreshdesk();
 		}
   };
@@ -92,7 +92,7 @@
       phoneRegionCode: "fr"
     });
   }
-  
+
 	onMount(async () => {
 		await handleGet();
 	});
@@ -140,12 +140,12 @@
       </div>
       <div class="w-full md:w-1/2">
         <label for="grid-phone">Téléphone</label>
-        <input 
-          bind:value={user.phone} 
-          disabled={isLoading} 
-          class:skeleton-box={isLoading} 
+        <input
+          bind:value={user.phone}
+          disabled={isLoading}
+          class:skeleton-box={isLoading}
           placeholder="ex : 06 01 02 03 04"
-          id="grid-phone" 
+          id="grid-phone"
           type="tel"
           class="input-phone"
           use:initializeCleave />
