@@ -1,166 +1,167 @@
 <script>
-  import { onMount, onDestroy, getContext } from "svelte";
+	import {onMount, onDestroy, getContext} from "svelte";
 	import AgreementStatusKind from './../../enums/AgreementStatusKind.js';
-  import { fly } from "svelte/transition";
-  import { SEARCH_STORES, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION } from "./queries.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-  import { isLoading, isFetchingMore, filters, items } from "./store";
-  import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import { selectedItem } from "./../../stores/app.js";
-  import StoreCard from "./StoreCard.svelte";
-  import FiltersModal from "./FiltersModal.svelte";
-  import StoreDetails from "./StoreDetails.svelte";
-  import Icon from "svelte-awesome";
-  import { faFilter } from "@fortawesome/free-solid-svg-icons";
-  import { querystring } from "svelte-spa-router";
-  import { parse } from "qs";
-  import GetRouterInstance from "../../services/SheaftRouter.js";
-  import Loader from "./../../components/Loader.svelte";
-  import SearchInput from "./../../components/controls/SearchInput.svelte";
-  import SkeletonStoreCard from "./SkeletonStoreCard.svelte";
-  import SheaftErrors from "../../services/SheaftErrors";
-  import ErrorCard from "./../../components/ErrorCard.svelte";
-  
-  const errorsHandler = new SheaftErrors();
-  const routerInstance = GetRouterInstance();
-  const graphQLInstance = GetGraphQLInstance();
-  const { open } = getContext("modal");
-  const observer = new IntersectionObserver(onIntersect);
-  const defaultSearchValues = {
-    text: null,
-    tags: [],
-    sort: "store_geolocation asc",
-    maxDistance: null
-  };
+	import {fly} from "svelte/transition";
+	import {SEARCH_STORES, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION} from "./queries.js";
+	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
+	import {isLoading, isFetchingMore, filters, items} from "./store";
+	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
+	import {selectedItem} from "./../../stores/app.js";
+	import StoreCard from "./StoreCard.svelte";
+	import FiltersModal from "./FiltersModal.svelte";
+	import StoreDetails from "./StoreDetails.svelte";
+	import Icon from "svelte-awesome";
+	import {faFilter} from "@fortawesome/free-solid-svg-icons";
+	import {querystring} from "svelte-spa-router";
+	import {parse} from "qs";
+	import GetRouterInstance from "../../services/SheaftRouter.js";
+	import Loader from "./../../components/Loader.svelte";
+	import SearchInput from "./../../components/controls/SearchInput.svelte";
+	import SkeletonStoreCard from "./SkeletonStoreCard.svelte";
+	import SheaftErrors from "../../services/SheaftErrors";
+	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import Meta from "../../components/Meta.svelte";
 
-  let totalStores = 0;
-  let hoveredStore = null;
-  let prevFeed = [];
-  let currentPage = 0;
-  let lastFetchLength = 0;
-  const QUERY_SIZE = 20;
-  let businessLocation = null;
+	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
+	const graphQLInstance = GetGraphQLInstance();
+	const {open} = getContext("modal");
+	const observer = new IntersectionObserver(onIntersect);
+	const defaultSearchValues = {
+		text: null,
+		tags: [],
+		sort: "store_geolocation asc",
+		maxDistance: null
+	};
 
-  function fetchMoreOnIntersect(node, params) {
-    observer.observe(node);
-    return {
-      destroy() {
-        observer.unobserve(node);
-      }
-    };
-  }
+	let totalStores = 0;
+	let hoveredStore = null;
+	let prevFeed = [];
+	let currentPage = 0;
+	let lastFetchLength = 0;
+	const QUERY_SIZE = 20;
+	let businessLocation = null;
 
-  async function onIntersect(entries) {
-    if (lastFetchLength >= QUERY_SIZE && !$isFetchingMore && entries[0].isIntersecting) {
-      isFetchingMore.set(false);
-      await searchStores(currentPage);
-      isFetchingMore.set(true);
-    }
-  }
+	function fetchMoreOnIntersect(node, params) {
+		observer.observe(node);
+		return {
+			destroy() {
+				observer.unobserve(node);
+			}
+		};
+	}
 
-  const showFiltersModal = () => {
-    open(FiltersModal, { filters, visibleNav: true });
-  };
+	async function onIntersect(entries) {
+		if (lastFetchLength >= QUERY_SIZE && !$isFetchingMore && entries[0].isIntersecting) {
+			isFetchingMore.set(false);
+			await searchStores(currentPage);
+			isFetchingMore.set(true);
+		}
+	}
 
-  const createVariables = (page = 1) => {
-    let values = routerInstance.getQueryParams();
-    let tags = [];
+	const showFiltersModal = () => {
+		open(FiltersModal, {filters, visibleNav: true});
+	};
 
-    if (Object.keys(values).length == 0) {
-      values = defaultSearchValues;
-    }
+	const createVariables = (page = 1) => {
+		let values = routerInstance.getQueryParams();
+		let tags = [];
 
-    if (!values["sort"]) {
-      values["sort"] = defaultSearchValues.sort;
-    }
+		if (Object.keys(values).length == 0) {
+			values = defaultSearchValues;
+		}
 
-    if (values["maxDistance"]) {
-      values["maxDistance"] = parseInt(values["maxDistance"]);
-    }
+		if (!values["sort"]) {
+			values["sort"] = defaultSearchValues.sort;
+		}
 
-    if (values["category"]) {
-      values["category"] = values["category"];
-      tags = [...tags, values["category"]];
-    }
+		if (values["maxDistance"]) {
+			values["maxDistance"] = parseInt(values["maxDistance"]);
+		}
 
-    if (values["labels"]) {
-      values["labels"] = values["labels"].split(",");
-      tags = [...tags, ...values["labels"]];
-    }
+		if (values["category"]) {
+			values["category"] = values["category"];
+			tags = [...tags, values["category"]];
+		}
 
-    filters.set({
-      ...values,
-      tags
-    });
+		if (values["labels"]) {
+			values["labels"] = values["labels"].split(",");
+			tags = [...tags, ...values["labels"]];
+		}
 
-    return {
-      input: {
-        text: $filters.text,
-        tags: $filters.tags,
-        sort: $filters.sort,
-        maxDistance: $filters.maxDistance,
-        page: page,
-        take: 20
-      }
-    };
-  };
+		filters.set({
+			...values,
+			tags
+		});
 
-  async function refetch() {
-    isLoading.set(true);
-    await searchStores(0);
-    await getAndSetAgreements();
-    
-    isLoading.set(false);
-  }
+		return {
+			input: {
+				text: $filters.text,
+				tags: $filters.tags,
+				sort: $filters.sort,
+				maxDistance: $filters.maxDistance,
+				page: page,
+				take: 20
+			}
+		};
+	};
 
-  const getAndSetAgreements = async () => {
-    var response = await graphQLInstance.query(GET_AGREEMENTS, null, errorsHandler.Uuid);
+	async function refetch() {
+		isLoading.set(true);
+		await searchStores(0);
+		await getAndSetAgreements();
 
-    if (!response.success) {
-      // todo
-      return;
-    }
+		isLoading.set(false);
+	}
 
-    response.data.map((a) => {
-      let store = prevFeed.find((p) => p.id === a.store.id);
-      if (store) {
-        if (a.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
-         a.status == AgreementStatusKind.WaitingForStoreApproval.Value) {
-          store.hasPendingAgreement = true;
-        } else if (a.status == AgreementStatusKind.Accepted.Value) {
-          store.hasAgreement = true;
-        }
-      }
-    });
-  }
+	const getAndSetAgreements = async () => {
+		var response = await graphQLInstance.query(GET_AGREEMENTS, null, errorsHandler.Uuid);
 
-  const searchStores = async (page) => {
-    currentPage = ++page;
-    var variables = createVariables(currentPage);
-
-    var response = await graphQLInstance.query(SEARCH_STORES, variables, errorsHandler.Uuid);   
 		if (!response.success) {
-      //TODO 
-      return;
-    }
-    
-    totalStores = response.data.count;
-      prevFeed = response.data.stores;
-      lastFetchLength = prevFeed.length;
-      items.set(prevFeed);
-    
-  }
+			// todo
+			return;
+		}
 
-  var popStateListener = (event) => {
-    if ($selectedItem) {
-      return selectedItem.set(null);
-    }
-  }
+		response.data.map((a) => {
+			let store = prevFeed.find((p) => p.id === a.store.id);
+			if (store) {
+				if (a.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
+					a.status == AgreementStatusKind.WaitingForStoreApproval.Value) {
+					store.hasPendingAgreement = true;
+				} else if (a.status == AgreementStatusKind.Accepted.Value) {
+					store.hasAgreement = true;
+				}
+			}
+		});
+	}
 
-  onMount(async () => {
-    items.set([]);
+	const searchStores = async (page) => {
+		currentPage = ++page;
+		var variables = createVariables(currentPage);
 
-    var response = await graphQLInstance.query(
+		var response = await graphQLInstance.query(SEARCH_STORES, variables, errorsHandler.Uuid);
+		if (!response.success) {
+			//TODO
+			return;
+		}
+
+		totalStores = response.data.count;
+		prevFeed = response.data.stores;
+		lastFetchLength = prevFeed.length;
+		items.set(prevFeed);
+
+	}
+
+	var popStateListener = (event) => {
+		if ($selectedItem) {
+			return selectedItem.set(null);
+		}
+	}
+
+	onMount(async () => {
+		items.set([]);
+
+		var response = await graphQLInstance.query(
 			GET_MY_BUSINESS_LOCATION,
 			null,
 			errorsHandler.Uuid
@@ -173,20 +174,18 @@
 
 		businessLocation = response.data.address;
 
-    window.addEventListener("popstate", popStateListener, false);
-  });
+		window.addEventListener("popstate", popStateListener, false);
+	});
 
-  onDestroy(() => {
-    window.removeEventListener("popstate", popStateListener, false);
-  });
+	onDestroy(() => {
+		window.removeEventListener("popstate", popStateListener, false);
+	});
 
-  $: history.pushState({ selected: $selectedItem}, "Trouver des producteurs");
-  $: refetch($querystring);
+	$: history.pushState({selected: $selectedItem}, "Trouver des producteurs");
+	$: refetch($querystring);
 </script>
 
-<svelte:head>
-  <title>Trouver des magasins</title>
-</svelte:head>
+<Meta/>
 
 <TransitionWrapper style="margin:0;">
   <div class="search-stores">
@@ -287,7 +286,7 @@
   }
 
   @media (max-width: 1024px) {
-    
+
     .filter-btn {
       max-width:55px;
     }

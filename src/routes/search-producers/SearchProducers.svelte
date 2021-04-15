@@ -1,28 +1,29 @@
 <script>
-	import { onMount, onDestroy, getContext } from "svelte";
+	import {onMount, onDestroy, getContext} from "svelte";
 	import AgreementStatusKind from "./../../enums/AgreementStatusKind.js";
-	import { fly } from "svelte/transition";
+	import {fly} from "svelte/transition";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import { SEARCH_PRODUCERS, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION } from "./queries.js";
-	import { isLoading, filters, isFetchingMore, items } from "./store";
+	import {SEARCH_PRODUCERS, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION} from "./queries.js";
+	import {isLoading, filters, isFetchingMore, items} from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import { selectedItem } from "./../../stores/app.js";
+	import {selectedItem} from "./../../stores/app.js";
 	import ProducerCard from "./ProducerCard.svelte";
 	import FiltersModal from "./FiltersModal.svelte";
 	import ProducerDetails from "./ProducerDetails.svelte";
 	import Icon from "svelte-awesome";
-	import { faFilter } from "@fortawesome/free-solid-svg-icons";
-	import { querystring } from "svelte-spa-router";
+	import {faFilter} from "@fortawesome/free-solid-svg-icons";
+	import {querystring} from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import Loader from "./../../components/Loader.svelte";
 	import SearchInput from "./../../components/controls/SearchInput.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import Meta from "../../components/Meta.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const graphQLInstance = GetGraphQLInstance();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const observer = new IntersectionObserver(onIntersect);
 	const defaultSearchValues = {
 		text: null,
@@ -32,7 +33,7 @@
 	};
 	const QUERY_SIZE = 20;
 
-  let totalProducers = 0;
+	let totalProducers = 0;
 	let hoveredProducer = null;
 	let prevFeed = [];
 	let currentPage = 0;
@@ -61,7 +62,7 @@
 	}
 
 	const showFiltersModal = () => {
-		open(FiltersModal, { filters, visibleNav: true });
+		open(FiltersModal, {filters, visibleNav: true});
 	};
 
 	const createVariables = (page = 1) => {
@@ -150,11 +151,11 @@
 			SEARCH_PRODUCERS,
 			variables,
 			errorsHandler.Uuid
-    );
-    
+		);
+
 		if (!response.success) {
-      //TODO 
-      return;
+			//TODO
+			return;
 		}
 
 		totalProducers = response.data.count;
@@ -192,13 +193,11 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	$: history.pushState({ selected: $selectedItem }, "Trouver des producteurs");
+	$: history.pushState({selected: $selectedItem}, "Trouver des producteurs");
 	$: refetch($querystring);
 </script>
 
-<svelte:head>
-	<title>Trouver des producteurs</title>
-</svelte:head>
+<Meta/>
 
 <TransitionWrapper style="margin:0;">
 	<div class="search-producers">

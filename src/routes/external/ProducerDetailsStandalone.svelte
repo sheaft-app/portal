@@ -26,6 +26,7 @@
 	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import AccountRoutes from "../account/routes";
+	import Meta from "../../components/Meta.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -90,11 +91,9 @@
 			id: params.id
 		}, errorsHandler.Uuid);
 
-		if(!productsResult.success)
-		{
-			productsResult = [];
-		}
-		else {
+		if (!productsResult.success) {
+			producerProducts = [];
+		} else {
 			producerProducts = productsResult.data;
 		}
 
@@ -106,51 +105,15 @@
 			producer
 		})
 	}
+
+	$: metadata = {
+			title: producer ? producer.name : null,
+			description: producer && producer.summary ? producer.summary : null,
+			image: producer && producer.picture ? producer.picture : null,
+	};
 </script>
 
-<svelte:head>
-
-	{#if producer}
-		<!-- Google / Search Engine Tags -->
-		<meta itemprop="name" content="La boutique {producer.name}"/>
-		<meta
-			itemprop="description"
-			content="{producer.summary}"
-		/>
-		<!--Insert url for image to be used in search results-->
-		<meta itemprop="image" content="{producer.picture ? producer.picture : 'img/icons/farmer.svg'}"/>
-
-		<!-- Facebook Meta Tags -->
-		<!--Insert url of site-->
-		<meta property="og:url" content="https://app.sheaft.com"/>
-		<meta property="og:type" content="website"/>
-		<meta
-			property="og:title"
-			content="La boutique {producer.name}"
-		/>
-		<meta
-			property="og:description"
-			content="{producer.summary}"
-		/>
-		<!--Insert url for image to be used in facebook share post-->
-		<meta property="og:image" content="{producer.picture ? producer.picture : 'img/icons/farmer.svg'}"/>
-
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image"/>
-		<meta
-			name="twitter:title"
-			content="La boutique {producer.name}"
-		/>
-		<meta
-			name="twitter:description"
-			content="{producer.summary}"
-		/>
-		<!--Insert url for image to be used in twitter share post-->
-		<meta name="twitter:image" content="{producer.picture ? producer.picture : 'img/icons/farmer.svg'}"/>
-
-		<title>La boutique {producer.name}</title>
-	{/if}
-</svelte:head>
+<Meta metadata={metadata}/>
 
 <TransitionWrapper style="margin: 0" hasRightPanel>
 	<div class="details-container">

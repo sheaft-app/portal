@@ -32,35 +32,35 @@
   import { notificationsCount } from "./components/notifications/store";
   import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
 
-  $: isLoading = true;
+	$: isLoading = true;
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js", { scope: "./" });
-  }
+	if ("serviceWorker" in navigator) {
+		navigator.serviceWorker.register("./sw.js", {scope: "./"});
+	}
 
-  var authSettings = config.auth.settings;
-  authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
+	var authSettings = config.auth.settings;
+	authSettings.userStore = new Oidc.WebStorageStateStore({store: window.localStorage});
 
-  const authInstance = InitAuth(authSettings);
-  const routerInstance = InitRouter();
-  const guardInstance = InitGuard(authInstance, routerInstance);
+	const authInstance = InitAuth(authSettings);
+	const routerInstance = InitRouter();
+	const guardInstance = InitGuard(authInstance, routerInstance);
 
-  const notificationsInstance = InitNotifications({
-    duration: 6000,
-    ripple: true,
-    dismissible: true,
-    position: { x: "right", y: "top" }
-  });
+	const notificationsInstance = InitNotifications({
+		duration: 6000,
+		ripple: true,
+		dismissible: true,
+		position: {x: "right", y: "top"}
+	});
 
-  const errorsHandlers = new SheaftErrors(notificationsInstance);
-  const apiInstance = InitGraphQL(authInstance, config.api, errorsHandlers);
+	const errorsHandlers = new SheaftErrors(notificationsInstance);
+	const apiInstance = InitGraphQL(authInstance, config.api, errorsHandlers);
 
-  const signalrInstance = InitSignalr(
-    config.signalr + "/hubs/sheaft",
-    authInstance,
-    notificationsInstance,
-    apiInstance
-  );
+	const signalrInstance = InitSignalr(
+		config.signalr + "/hubs/sheaft",
+		authInstance,
+		notificationsInstance,
+		apiInstance
+	);
 
   const initSubscription = authInitialized.subscribe(async initialized => {
       if (initialized) {
@@ -91,50 +91,52 @@
     }
   });
 
-  window.addEventListener("beforeinstallprompt", e => {});
+	window.addEventListener("beforeinstallprompt", e => {
+	});
 
-  window.addEventListener("appinstalled", evt => {
-    //TODO: register user points
-  });
+	window.addEventListener("appinstalled", evt => {
+		//TODO: register user points
+	});
 
-  window.addEventListener("load", () => {
-  });
+	window.addEventListener("load", () => {
+	});
 
-  onMount(async () => {
-    isLoading = true;
+	onMount(async () => {
+		isLoading = true;
 
-    let sponsoring = routerInstance.getQueryParam("user_sponsoring");
-    if (sponsoring) {
-      localStorage.setItem("user_sponsoring", JSON.stringify(sponsoring));
-    } else {
-      localStorage.removeItem("user_sponsoring");
-    }
+		let sponsoring = routerInstance.getQueryParam("user_sponsoring");
+		if (sponsoring) {
+			localStorage.setItem("user_sponsoring", JSON.stringify(sponsoring));
+		} else {
+			localStorage.removeItem("user_sponsoring");
+		}
 
-    let role = routerInstance.getQueryParam("role");
-    if (role) {
-      localStorage.setItem("user_choosen_role", JSON.stringify(role.toUpperCase()));
-      await authInstance.login();
-    }
+		let role = routerInstance.getQueryParam("role");
+		if (role) {
+			localStorage.setItem("user_choosen_role", JSON.stringify(role.toUpperCase()));
+			await authInstance.login();
+		}
 
-    const progress = await fetch(config.content + '/progress/departments.json');
-    let data = await progress.json();
+		const progress = await fetch(config.content + '/progress/departments.json');
+		let data = await progress.json();
 
-    allDepartmentsProgress.set(data);
+		allDepartmentsProgress.set(data);
 
-    isLoading = false;
-  });
+		isLoading = false;
+	});
 
-  onDestroy(async () => {
-    window.removeEventListener("beforeinstallprompt");
-    window.removeEventListener("load");
-    window.removeEventListener("appinstalled");
-    authSubscription.unsubscribe();
-    initSubscription.unsubscribe();
-    authInstance.unregister();
-    routerInstance.unregister();
-    guardInstance.unregister();
-    await signalrInstance.stop();
-  });
+	onDestroy(async () => {
+		window.removeEventListener("beforeinstallprompt");
+		window.removeEventListener("load");
+		window.removeEventListener("appinstalled");
+		authSubscription.unsubscribe();
+		initSubscription.unsubscribe();
+		authInstance.unregister();
+		routerInstance.unregister();
+		guardInstance.unregister();
+		await signalrInstance.stop();
+	});
+
 </script>
 
 {#if !$authInitialized || isLoading}

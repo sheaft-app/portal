@@ -1,18 +1,21 @@
 <script>
-  import Router from "svelte-spa-router";
+	import Router from "svelte-spa-router";
 
-  import Profile from "./Profile.svelte";
-  import GetAuthInstance from "./../../services/SheaftAuth.js";
-  import AccountRoutes from "./routes.js";
+	import Profile from "./Profile.svelte";
+	import GetAuthInstance from "./../../services/SheaftAuth.js";
+	import AccountRoutes from "./routes.js";
+	import Meta from "../../components/Meta.svelte";
 
-  export let params = {};
+	export let params = {};
 
-  export const prefix = AccountRoutes.Prefix;
+	export const prefix = AccountRoutes.Prefix;
 
-  const routes = {};
-  routes[AccountRoutes.Profile.SubPart] = Profile;
+	const routes = {};
+	routes[AccountRoutes.Profile.SubPart] = Profile;
 
 </script>
+
+<Meta/>
 
 <Router {routes} {prefix} />
 

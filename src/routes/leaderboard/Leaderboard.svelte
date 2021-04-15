@@ -1,104 +1,103 @@
 <script>
-  import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-  import Loader from "./../../components/Loader.svelte";
-  import { onMount } from "svelte";
-  import GetAuthInstance from "./../../services/SheaftAuth";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-  import Icon from "svelte-awesome";
-  import { faCrown } from "@fortawesome/free-solid-svg-icons";
-  import {
-    POINTS_PER_COUNTRY,
-    POINTS_PER_REGION,
-    USER_POINTS_PER_COUNTRY,
-    USER_POSITION_IN_COUNTRY
-  } from "./queries.js";
-import { config } from "../../configs/config";
+	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
+	import Loader from "./../../components/Loader.svelte";
+	import {onMount} from "svelte";
+	import GetAuthInstance from "./../../services/SheaftAuth";
+	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
+	import Icon from "svelte-awesome";
+	import {faCrown} from "@fortawesome/free-solid-svg-icons";
+	import {
+		POINTS_PER_COUNTRY,
+		POINTS_PER_REGION,
+		USER_POINTS_PER_COUNTRY,
+		USER_POSITION_IN_COUNTRY
+	} from "./queries.js";
+	import {config} from "../../configs/config";
+	import Meta from "../../components/Meta.svelte";
 
-  export let params;
+	export let params;
 
-  const authInstance = GetAuthInstance();
-  const graphQLInstance = GetGraphQLInstance();
+	const authInstance = GetAuthInstance();
+	const graphQLInstance = GetGraphQLInstance();
 
-  $: country = null;
-  $: groups = [];
-  $: users = [];
+	$: country = null;
+	$: groups = [];
+	$: users = [];
 
-  let userPosition = null;
-  let isLoading = false;
-  let showUserPosition = false;
+	let userPosition = null;
+	let isLoading = false;
+	let showUserPosition = false;
 
-  const getPointsPerCountry = async () => {
-    var res = await graphQLInstance.query(POINTS_PER_COUNTRY);
-    if(!res.success){
-      //TODO
-      return;
-    }
+	const getPointsPerCountry = async () => {
+		var res = await graphQLInstance.query(POINTS_PER_COUNTRY);
+		if (!res.success) {
+			//TODO
+			return;
+		}
 
-    country = res.data[0];
-  }
+		country = res.data[0];
+	}
 
-  const getPointsPerRegion = async () => {
-    var res = await graphQLInstance.query(POINTS_PER_REGION);
-    if(!res.success){
-      //TODO
-      return;
-    }
-    groups = res.data;
-  }
+	const getPointsPerRegion = async () => {
+		var res = await graphQLInstance.query(POINTS_PER_REGION);
+		if (!res.success) {
+			//TODO
+			return;
+		}
+		groups = res.data;
+	}
 
-  const getUserPointsPerCountry  = async () => {
-    var res = await graphQLInstance.query(USER_POINTS_PER_COUNTRY);
-    if(!res.success){
-      //TODO
-      return;
-    }
-    users = res.data;
-  }
+	const getUserPointsPerCountry = async () => {
+		var res = await graphQLInstance.query(USER_POINTS_PER_COUNTRY);
+		if (!res.success) {
+			//TODO
+			return;
+		}
+		users = res.data;
+	}
 
-  const getUserPositionInCountry  = async () => {
-    if (!authInstance.authenticated) return;
-    
-    userPosition = {
-        userId: authInstance.user.profile.sub,
-        name: authInstance.user.profile.given_name,
-        points: null,
-        position: null
-      };
-      
-    var res = await graphQLInstance.query(USER_POSITION_IN_COUNTRY);
-    if(!res.success){
-      showUserPosition = false;
-      return;
-    }
+	const getUserPositionInCountry = async () => {
+		if (!authInstance.authenticated) return;
 
-    userPosition.points = res.data.points;
-    userPosition.position = res.data.position;
-    showUserPosition = users.filter(c => c.userId == authInstance.user.profile.sub).length == 0;
-  }
+		userPosition = {
+			userId: authInstance.user.profile.sub,
+			name: authInstance.user.profile.given_name,
+			points: null,
+			position: null
+		};
 
-  const getUserPicture = (user) => {
-    if (user.picture) return user.picture;
-    return config.content + "/pictures/users/profile.svg";
-  }
+		var res = await graphQLInstance.query(USER_POSITION_IN_COUNTRY);
+		if (!res.success) {
+			showUserPosition = false;
+			return;
+		}
 
-  const getUserName = (user) => {
-    if (user.name) return user.name;
-    return "Anonyme";
-  }
+		userPosition.points = res.data.points;
+		userPosition.position = res.data.position;
+		showUserPosition = users.filter(c => c.userId == authInstance.user.profile.sub).length == 0;
+	}
 
-  onMount(async () => {
-    isLoading = true;
-    await getPointsPerCountry();
-    await getPointsPerRegion();
-    await getUserPointsPerCountry();
-    await getUserPositionInCountry();
-    isLoading = true;
-  });
+	const getUserPicture = (user) => {
+		if (user.picture) return user.picture;
+		return config.content + "/pictures/users/profile.svg";
+	}
+
+	const getUserName = (user) => {
+		if (user.name) return user.name;
+		return "Anonyme";
+	}
+
+	onMount(async () => {
+		isLoading = true;
+		await getPointsPerCountry();
+		await getPointsPerRegion();
+		await getUserPointsPerCountry();
+		await getUserPositionInCountry();
+		isLoading = true;
+	});
 </script>
 
-<svelte:head>
-  <title>Classement national</title>
-</svelte:head>
+<Meta/>
 
 <TransitionWrapper>
   {#if !country}

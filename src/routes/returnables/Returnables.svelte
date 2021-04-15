@@ -1,18 +1,20 @@
 <script>
-  import CreateReturnable from "./CreateReturnable.svelte";
-  import EditReturnable from "./EditReturnable.svelte";
-  import ListReturnables from "./ListReturnables.svelte";
-  import Router from "svelte-spa-router";
+	import CreateReturnable from "./CreateReturnable.svelte";
+	import EditReturnable from "./EditReturnable.svelte";
+	import ListReturnables from "./ListReturnables.svelte";
+	import Router from "svelte-spa-router";
 
-  import { onMount } from "svelte";
+	import {onMount} from "svelte";
+	import Meta from "../../components/Meta.svelte";
 
-  export let params;
-  export const prefix = "/returnables";
-  const routes = {
-    "/": ListReturnables,
-    "/create": CreateReturnable,
-    "/:id": EditReturnable
-  };
+	export let params;
+	export const prefix = "/returnables";
+	const routes = {
+		"/": ListReturnables,
+		"/create": CreateReturnable,
+		"/:id": EditReturnable
+	};
 </script>
 
+<Meta/>
 <Router {routes} {prefix} />

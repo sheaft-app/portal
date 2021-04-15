@@ -1,9 +1,9 @@
 <script>
-	import { querystring } from "svelte-spa-router";
-	import { onMount, onDestroy, getContext } from "svelte";
-	import { fly } from "svelte/transition";
-	import { SEARCH_PRODUCTS, GET_PRODUCER_NAME } from "./queries.js";
-	import { isLoading, isFetchingMore, filters } from "./store";
+	import {querystring} from "svelte-spa-router";
+	import {onMount, onDestroy, getContext} from "svelte";
+	import {fly} from "svelte/transition";
+	import {SEARCH_PRODUCTS, GET_PRODUCER_NAME} from "./queries.js";
+	import {isLoading, isFetchingMore, filters} from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import {
 		selectedItem,
@@ -31,9 +31,10 @@
 	import QuickOrderRoutes from "../quick-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import Meta from "../../components/Meta.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const authManager = GetAuthInstance();
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
@@ -65,7 +66,7 @@
 		currentProducerId = null;
 		$filters.producerId = null;
 
-		routerInstance.pushQueryParams({ ["producerId"]: null });
+		routerInstance.pushQueryParams({["producerId"]: null});
 	};
 
 	const observer = new IntersectionObserver(async (entries) => {
@@ -91,7 +92,7 @@
 	};
 
 	const showFiltersModal = () => {
-		open(FiltersModal, { filters, visibleNav: true, producer });
+		open(FiltersModal, {filters, visibleNav: true, producer});
 	};
 
 	const renderSort = (sort) => {
@@ -289,7 +290,7 @@
 		if (tag == "bio") queryParam = "labels";
 		else queryParam = "category";
 
-		return routerInstance.pushQueryParams({ [queryParam]: "" });
+		return routerInstance.pushQueryParams({[queryParam]: ""});
 	};
 
 	const goToCart = () => {
@@ -360,7 +361,7 @@
 		currentProducerId = producerId;
 		var result = await graphQLInstance.query(
 			GET_PRODUCER_NAME,
-			{ id: producerId },
+			{id: producerId},
 			errorsHandler.Uuid
 		);
 
@@ -370,11 +371,10 @@
 	};
 
 	$: getProducerFilter($filters.producerId);
+	let metadata = {title: "Explorer"};
 </script>
 
-<svelte:head>
-	<title>Explorer</title>
-</svelte:head>
+<Meta metadata={metadata}/>
 
 <TransitionWrapper hasRightPanel style="margin:0;">
 	<ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />

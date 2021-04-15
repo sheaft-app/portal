@@ -29,6 +29,7 @@
 	import L from "leaflet";
 	import Cart from "../search-products/Cart.svelte";
 	import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
+	import Meta from "../../components/Meta.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -161,50 +162,16 @@
 		rating = null;
 		comment = null;
 	};
+
+	$: metadata = {
+			title: product ? product.name : null,
+			description: product && product.description ? product.description : null,
+			image: product && product.picture ? product.picture : null,
+		};
+
 </script>
 
-<svelte:head>
-	{#if product}
-		<!-- Google / Search Engine Tags -->
-		<meta itemprop="name" content="{product.name}"/>
-		<meta
-			itemprop="description"
-			content="{product.description}"
-		/>
-		<!--Insert url for image to be used in search results-->
-		<meta itemprop="image" content="{product.picture}"/>
-
-		<!-- Facebook Meta Tags -->
-		<!--Insert url of site-->
-		<meta property="og:url" content="https://app.sheaft.com"/>
-		<meta property="og:type" content="website"/>
-		<meta
-			property="og:title"
-			content="{product.name}"
-		/>
-		<meta
-			property="og:description"
-			content="{product.description}"
-		/>
-		<!--Insert url for image to be used in facebook share post-->
-		<meta property="og:image" content="{product.picture}"/>
-
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image"/>
-		<meta
-			name="twitter:title"
-			content="La boutique {product.name}"
-		/>
-		<meta
-			name="twitter:description"
-			content="{product.description}"
-		/>
-		<!--Insert url for image to be used in twitter share post-->
-		<meta name="twitter:image" content="{product.picture}"/>
-
-		<title>{product.name}</title>
-	{/if}
-</svelte:head>
+<Meta metadata={metadata}/>
 
 <TransitionWrapper hasRightPanel style="margin: 0">
 	<div class="details-container">
