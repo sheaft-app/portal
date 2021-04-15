@@ -11,11 +11,12 @@
   import { faUser, faMapMarkerAlt, faEdit, faFlag, faHeart } from "@fortawesome/free-solid-svg-icons";
   import { fly } from "svelte/transition";
   import DeliveryAddress from "./DeliveryAddress.svelte";
+  import PaymentForm from "./PaymentForm.svelte";
 
   const routerInstance = GetRouterInstance();
 
-  export let step = 2, user;
-  
+  export let step = 2, user, card = null, invalidPaymentForm = false;
+
   // si la date n'est pas un objet date
   if (user.birthDate && user.birthDate.includes("/")) {
     const dateParts = user.birthDate.trim().split("/");
@@ -65,7 +66,7 @@
           <Icon data={faHeart} class="mr-3 text-red-500" />
           <span>Sheaft ne vit que par les dons</span>
         </div>
-        <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui propose un outil gratuit pour vous permettre de bien manger plus facilement.</p>
+        <p>Sheaft ne gagne pas d'argent. Nous sommes une association qui propose un outil gratuit pour les consommateurs ET les producteurs.</p>
         <p>Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit projet de devenir grand.</p>
         <button class="btn btn-accent btn-lg mt-2" on:click={() => routerInstance.goTo({ 
           Path: CartRoutes.Resume.Path, 
@@ -121,7 +122,7 @@
     </div>
 
     <div class="bg-white shadow lg:rounded lg:mt-5 lg:mb-5">
-      <div class="p-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
+      <div class="px-5 py-3 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center">
         <p>Panier</p>
         <button class="btn btn-link items-center" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
           <Icon data={faEdit} class="mr-1" />
@@ -136,7 +137,7 @@
           {/if}
           {#if !product.disabled && !product.producer.disabled}
             <div
-            class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
+            class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b
             border-gray-400 border-solid items-center" >
               <div class="md:w-6/12 px-3">
                 <div class="text-lg leading-5 font-medium">
@@ -165,5 +166,6 @@
         </div>
       {/each}
     </div>
+    <PaymentForm bind:invalidPaymentForm />
   </div>
 {/if}

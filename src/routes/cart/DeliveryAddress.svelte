@@ -30,7 +30,7 @@
 </script>
 
 {#if delivery}
-    <div class="px-5 py-2 bg-gray-200 border-gray-400 border">
+    <div class="px-5 py-2 bg-gray-200">
         <p class="font-semibold uppercase text-sm mb-2 pb-2 border-b border-gray-300">
             {producerName}
         </p>

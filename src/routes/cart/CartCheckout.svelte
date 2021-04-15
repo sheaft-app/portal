@@ -1,10 +1,10 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import cart from "./../../stores/cart.js";
+	import cart, { card } from "./../../stores/cart.js";
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
-	import PaymentInfoForm from "./PaymentInfoForm.svelte";
+	import SummaryForm from "./SummaryForm.svelte";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -13,6 +13,8 @@
 		PAY_ORDER,
 		CREATE_CONSUMER_LEGALS,
 		UPDATE_CONSUMER_LEGALS,
+		CREATE_CARD_REGISTRATION,
+		CREATE_PRE_AUTHORIZATION
 	} from "./mutations";
 	import Loader from "../../components/Loader.svelte";
 	import { authUserAccount } from "./../../stores/auth.js";
@@ -23,6 +25,8 @@
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import formatISO from "date-fns/formatISO";
+	import PreAuthorizationStatus from "../../enums/PreAuthorizationStatus";
+  	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.js';
 
 	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
@@ -38,6 +42,7 @@
 	let legalId = null;
 	let isPaying = false;
 	let paymentError = null;
+	let invalidPaymentForm = false;
 
 	let user = {
 		firstName: $authUserAccount.profile.given_name,
@@ -93,12 +98,51 @@
 	});
 
 	const handleSubmit = async () => {
+		if (invalidPaymentForm) {
+			return;
+		}
+
 		isPaying = true;
-		var res = await graphQLInstance.mutate(
-			PAY_ORDER,
-			{ id: $cart.userCurrentOrder },
-			errorsHandler.Uuid
-		);
+
+		await createCardRegistration($authUserAccount.profile.sub);
+
+		$card.data.cardExpirationDate = `${$card.month}${$card.year}`;
+		$card.data.cardCvx = $card.data.cardCvx.toString();
+
+		console.log(mangoPay);
+
+		mangoPay.cardRegistration.registerCard($card.data, async (res) => {
+			let preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
+				orderId: $cart.userCurrentOrder,
+				cardIdentifier: res.CardId,
+			}, errorsHandler.Uuid);
+
+			if (!preAuthorizationResult.success) {
+				isPaying = false;
+				//TODO handle server error
+				return;
+			}
+			if(preAuthorizationResult.status == PreAuthorizationStatus.Failed){
+				isPaying = false;
+				//TODO handle authorization error
+				return;
+			}
+			if (preAuthorizationResult.data.secureModeRedirectURL &&
+				preAuthorizationResult.data.secureModeRedirectURL.length > 0) {
+				isPaying = false;
+				window.location = preAuthorizationResult.data.secureModeRedirectURL;
+				return;
+			}
+		}, async (response) => {
+			console.log(response.ResultCode);
+			console.log(response.ResultMessage);
+		});
+
+		let res = await graphQLInstance.mutate(
+				PAY_ORDER,
+				{ id: $cart.userCurrentOrder },
+				errorsHandler.Uuid
+			);
 
 		if (!res.success) {
 			// todo
@@ -109,6 +153,23 @@
 		localStorage.setItem("user_last_transaction", res.data.identifier);
 		window.location = res.data.redirectUrl;
 	};
+
+	const createCardRegistration = async (userId) => {
+		var cardRegistrationResult = await graphQLInstance.mutate(CREATE_CARD_REGISTRATION, { userId }, errorsHandler.Uuid);
+		if (!cardRegistrationResult.success) {
+			//TODO handle error
+			return;
+		}
+
+		await mangoPay.cardRegistration.init({
+			cardRegistrationURL: cardRegistrationResult.data.url,
+			preregistrationData: cardRegistrationResult.data.preRegistrationData,
+			accessKey: cardRegistrationResult.data.accessKey,
+			Id: cardRegistrationResult.data.identifier,
+		});
+
+		console.log(mangoPay);
+  	}
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
@@ -190,9 +251,10 @@
 				</div>
 			{:else if step == 2}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<PaymentInfoForm
+					<SummaryForm
 						bind:user
 						bind:step
+						bind:invalidPaymentForm
 						{isSavingLegals}
 						{errorsHandler} />
 				</div>
@@ -201,7 +263,7 @@
 		<div class="w-full lg:w-4/12">
 			<div
 				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:py-8 static lg:block bg-white
-					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
+					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
 				style="height: fit-content;">
 				<div>
 					<div class="flex justify-between w-full lg:px-3 pb-2">
@@ -262,16 +324,16 @@
 							<button
 								type="button"
 								on:click={handleSubmit}
-								disabled={isPaying}
-								class:disabled={isPaying}
 								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
 									justify-center m-auto"
+								class:disabled={isPaying || invalidPaymentForm}
+								disabled={isPaying || invalidPaymentForm}
 								style="padding-left: 50px; padding-right: 50px;">
 								{#if isPaying}
 									<Icon data={faCircleNotch} spin />
 								{:else}Commander{/if}
 							</button>
-						{:else}
+						{:else if step !== 2}
 							<button
 								type="button"
 								on:click={handleSubmitLegals}
@@ -290,3 +352,12 @@
 		</div>
 	</div>
 {/if}
+
+<style lang="scss">
+	.follow-screen {
+		@media(min-width: 1024px) {
+			position: fixed;
+			width: inherit;
+		}
+	}
+</style>
