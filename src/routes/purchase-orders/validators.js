@@ -35,7 +35,9 @@ export const canCancelOrder = o => o &&
   o.status != PurchaseOrderStatusKind.Delivered.Value &&
   o.status != PurchaseOrderStatusKind.Cancelled.Value &&
   o.status != PurchaseOrderStatusKind.Refused.Value &&
-  o.status != PurchaseOrderStatusKind.Waiting.Value;
+  o.status != PurchaseOrderStatusKind.Waiting.Value &&
+	o.status != PurchaseOrderStatusKind.Expired.Value &&
+	o.status != PurchaseOrderStatusKind.Withdrawned.Value;
 
 export const canAcceptOrder = o => o &&
   o.status == PurchaseOrderStatusKind.Waiting.Value;

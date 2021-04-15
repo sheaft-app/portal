@@ -156,7 +156,7 @@ faFileExport
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3">
         <p class="font-semibold leading-none">
-          Commande annulée.
+          Commande annulée par vous même.
         </p>
         {#if order.reason}
           <div class="mt-2">
@@ -165,6 +165,34 @@ faFileExport
         {/if}
       </div>
     {/if}
+		{#if order.status == PurchaseOrderStatusKind.Expired.Value}
+			<div
+				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
+        md:rounded mb-3">
+				<p class="font-semibold leading-none">
+					Commande expirée.
+				</p>
+				{#if order.reason}
+					<div class="mt-2">
+						<p>Raison : {order.reason}</p>
+					</div>
+				{/if}
+			</div>
+		{/if}
+		{#if order.status == PurchaseOrderStatusKind.Withdrawned.Value}
+			<div
+				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
+        md:rounded mb-3">
+				<p class="font-semibold leading-none">
+					Commande annulée par le client.
+				</p>
+				{#if order.reason}
+					<div class="mt-2">
+						<p>Raison : {order.reason}</p>
+					</div>
+				{/if}
+			</div>
+		{/if}
     {#if order.status == PurchaseOrderStatusKind.Refused.Value}
       <div
         class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100 shadow
