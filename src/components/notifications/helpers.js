@@ -238,12 +238,12 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				true,
 				local
 			);
-		case "PurchaseOrderWithdrawnEvent":
+		case "PurchaseOrderWithdrawnedEvent":
 			return getNotification(
 				notification,
 				"warning",
-				`Une de vos commandes a été annulée.`,
-				`#/purchase-orders/${notification.content.PurchaseOrderId}`,
+				`La commande a été annulée.`,
+				null,
 				true,
 				true,
 				local
@@ -252,18 +252,8 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 			return getNotification(
 				notification,
 				"error",
-				`${notification.content.VendorName} a annulé votre commande.`,
-				`#/my-orders/${notification.content.PurchaseOrderId}`,
-				true,
-				true,
-				local
-			);
-		case "PurchaseOrderWithdrawnedEvent":
-			return getNotification(
-				notification,
-				"error",
-				`${notification.content.SenderName} a annulé sa commande.`,
-				`#/my-orders/${notification.content.PurchaseOrderId}`,
+				`La commande a été annulée.`,
+				null,
 				true,
 				true,
 				local
@@ -273,7 +263,7 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				notification,
 				"error",
 				`La commande a expirée.`,
-				true,
+				null,
 				true,
 				local
 			);
