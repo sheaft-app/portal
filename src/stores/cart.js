@@ -106,8 +106,7 @@ const store = () => {
 			let response = await graphQLInstance.mutate(orderMutation, variables);
 
 			if (!response.success) {
-				const errors = errorsHandler.getErrors();
-				const invalidProductsError = errors.find((e) => e.message.includes('produits sont invalides'));
+				const invalidProductsError = response.errors.find((e) => e.message.includes('produits sont invalides'));
 
 				if (invalidProductsError) {
 					const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
