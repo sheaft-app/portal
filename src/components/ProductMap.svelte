@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import cart from "./../stores/cart";
   import "leaflet/dist/leaflet.css";
   import L from "leaflet";
@@ -67,6 +67,10 @@
       }
     ).addTo(map);
   });
+
+	onDestroy(() => {
+		map = null;
+	});
 
   $: if (map && $cart.products.length > 0) {
     if (productMarkers) map.removeLayer(productMarkers);

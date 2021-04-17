@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import cart from "../../stores/cart";
   import { querystring } from "svelte-spa-router";
   import "leaflet/dist/leaflet.css";
@@ -82,6 +82,10 @@
 
     determineLocation();
   });
+  
+	onDestroy(() => {
+		map = null;
+	});
 
   $: if (map) {
     if (productMarkers) map.removeLayer(productMarkers);

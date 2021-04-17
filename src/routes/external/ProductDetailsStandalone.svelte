@@ -1,5 +1,5 @@
 <script>
-	import {onMount} from "svelte";
+	import {onDestroy, onMount} from "svelte";
 	import {slide} from "svelte/transition";
 	import Icon from "svelte-awesome";
 	import {faCircleNotch, faChevronUp, faChevronDown, faChevronLeft, faEye} from "@fortawesome/free-solid-svg-icons";
@@ -84,7 +84,11 @@
 		if (coordonnates.length > 0) {
 			map.fitBounds(deliveriesMarkers.getBounds(), {maxZoom: 10});
 		}
-	})
+	});
+
+	onDestroy(() => {
+		map = null;
+	});
 
 	const getProductDetails = async id => {
 		isLoading = true;
