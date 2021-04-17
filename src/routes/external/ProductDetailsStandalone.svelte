@@ -164,10 +164,10 @@
 	};
 
 	$: metadata = {
-			title: product ? product.name : null,
-			description: product && product.description ? product.description : null,
-			image: product && product.picture ? product.picture : null,
-		};
+		title: product ? product.name : null,
+		description: product && product.description ? product.description : null,
+		image: product && product.picture ? product.picture : null,
+	};
 
 </script>
 
@@ -184,7 +184,8 @@
 			</button>
 		{:else if authInstance.isInRole([Roles.Producer.Value])}
 			<div class="mb-3 p-4 text-white bg-blue-500 rounded">
-				<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour avoir une référence directe vers ce
+				<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
+					avoir une référence directe vers ce
 					produit.</p>
 				<p>Le bouton "Ajouter au panier" se dégrisera automatiquement pour les consommateurs.</p>
 			</div>
@@ -225,13 +226,15 @@
 								</div>
 							{/if}
 						</div>
-						<p class="text-xl lg:text-2xl font-bold">
-							{formatMoney(product.onSalePricePerUnit)}
-							<span class="font-normal">
+						{#if product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
+							<p class="text-xl lg:text-2xl font-bold">
+								{formatMoney(product.onSalePricePerUnit)}
+								<span class="font-normal">
                 {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
               </span>
-						</p>
-						{#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePrice}
+							</p>
+						{/if}
+						{#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePrice && product.onSalePrice > 0}
 							<p>(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"}
 								: {formatMoney(product.onSalePrice)})</p>
 						{/if}
@@ -260,7 +263,7 @@
 							</div>
 						</div>
 					{/if}
-					{#if product.available}
+					{#if product.available && product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
 						<AddToCart {product} disabled={authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}/>
 					{:else}
 						<div class="text-red-500">Ce produit n'est pas disponible pour le moment.</div>
