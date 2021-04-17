@@ -86,9 +86,8 @@ class SheaftGraphQL {
 	updateApolloCache(res, dataType, input, typename) {
 		if (!res || !res.data || dataType.length < 2) return;
 
-		if (dataType.length > 1 && !this.findIdInDataType(dataType)) {
-			throw "ID is mandatory to update the cache.";
-		}
+		if (dataType.length > 1 && !this.findIdInDataType(dataType)) 
+			return;
 
 		var hasInputIds = input.id || input.ids;
 		if (Array.isArray(res.data)) {

@@ -102,7 +102,7 @@
           <p>{user.email}</p>
         </div>
       </div>
-      <div class="flex leading-none mb-5">
+      <div class="flex leading-none">
         <Icon data={faMapMarkerAlt} class="mr-4 rounded-full bg-primary py-2 w-8 h-8"/>
         <div>
           <p>{user.address.line1}</p>
@@ -110,13 +110,6 @@
             <p style="line-height: 1.8;">{user.address.line2}</p>
           {/if}
           <p style="line-height: 1.8;">{user.address.zipcode} {user.address.city}</p>
-        </div>
-      </div>
-      <div class="flex leading-none">
-        <Icon data={faFlag} class="mr-4 rounded-full bg-primary py-2 w-8 h-8"/>
-        <div>
-          <p>Nationalité : {user.nationality}</p>
-          <p style="line-height: 1.8;">Pays de résidence : {user.countryOfResidence}</p>
         </div>
       </div>
     </div>
@@ -166,6 +159,5 @@
         </div>
       {/each}
     </div>
-    <PaymentForm bind:invalidPaymentForm />
   </div>
 {/if}

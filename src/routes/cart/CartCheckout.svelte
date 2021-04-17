@@ -26,7 +26,8 @@
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import formatISO from "date-fns/formatISO";
 	import PreAuthorizationStatus from "../../enums/PreAuthorizationStatus";
-  	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.js';
+	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
+	import CreditCard from "./CreditCard.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
@@ -109,12 +110,22 @@
 		$card.data.cardExpirationDate = `${$card.month}${$card.year}`;
 		$card.data.cardCvx = $card.data.cardCvx.toString();
 
-		console.log(mangoPay);
-
 		mangoPay.cardRegistration.registerCard($card.data, async (res) => {
 			let preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
 				orderId: $cart.userCurrentOrder,
 				cardIdentifier: res.CardId,
+				ipAddress: "ipaddress",
+				browserInfo: {
+					acceptHeader: "",
+					colorDepth: screen.colorDepth,
+					javaEnabled: navigator.javaEnabled(),
+					javascriptEnabled: true,
+					language: "FR",
+					screenHeight: window.screen.height,
+					screenWidth: window.screen.width,
+					timeZoneOffset: new Date().getTimezoneOffset(),
+					userAgent: navigator.userAgent
+				}
 			}, errorsHandler.Uuid);
 
 			if (!preAuthorizationResult.success) {
@@ -130,6 +141,7 @@
 			if (preAuthorizationResult.data.secureModeRedirectURL &&
 				preAuthorizationResult.data.secureModeRedirectURL.length > 0) {
 				isPaying = false;
+				localStorage.setItem("user_last_transaction", res.data.identifier);
 				window.location = preAuthorizationResult.data.secureModeRedirectURL;
 				return;
 			}
@@ -137,21 +149,6 @@
 			console.log(response.ResultCode);
 			console.log(response.ResultMessage);
 		});
-
-		let res = await graphQLInstance.mutate(
-				PAY_ORDER,
-				{ id: $cart.userCurrentOrder },
-				errorsHandler.Uuid
-			);
-
-		if (!res.success) {
-			// todo
-			isPaying = false;
-			return;
-		}
-
-		localStorage.setItem("user_last_transaction", res.data.identifier);
-		window.location = res.data.redirectUrl;
 	};
 
 	const createCardRegistration = async (userId) => {
@@ -241,7 +238,7 @@
 	<div
 		class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0"
 		in:fly|local={{ x: 300, duration: 300 }}>
-		<div class="w-full lg:w-7/12">
+		<div class="w-full lg:w-8/12">
 			{#if step == 1}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
 					<FacturationForm
@@ -254,7 +251,6 @@
 					<SummaryForm
 						bind:user
 						bind:step
-						bind:invalidPaymentForm
 						{isSavingLegals}
 						{errorsHandler} />
 				</div>
@@ -262,92 +258,92 @@
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
-				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:py-8 static lg:block bg-white
-					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
+				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
 				style="height: fit-content;">
-				<div>
-					<div class="flex justify-between w-full lg:px-3 pb-2">
-						<div class="text-left">
-							<p>Panier</p>
-							<p class="text-sm text-gray-600">
-								{$cart.productsCount} articles
-								{#if $cart.returnablesCount >= 1}
-									dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
-								{/if}
-							</p>
-						</div>
-						<div class="text-right">
-							<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
-							{#if $cart.returnablesCount >= 1}
-								<p class="text-blue-500 font-medium text-sm">
-									dont 
-									<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
-									{formatMoney($cart.totalReturnableOnSalePrice)}
+				<CreditCard bind:invalidPaymentForm>
+					<div>
+						<div class="flex justify-between w-full pb-2">
+							<div class="text-left">
+								<p>Panier</p>
+								<p class="text-sm text-gray-600">
+									{$cart.productsCount} articles
+									{#if $cart.returnablesCount >= 1}
+										dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
+									{/if}
 								</p>
+							</div>
+							<div class="text-right">
+								<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
+								{#if $cart.returnablesCount >= 1}
+									<p class="text-blue-500 font-medium text-sm">
+										dont 
+										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
+										{formatMoney($cart.totalReturnableOnSalePrice)}
+									</p>
+								{/if}
+							</div>
+						</div>
+						<div class="flex justify-between w-full pb-2">
+							<div class="text-left">
+								<p>Frais bancaires</p>
+								<p class="leading-none text-gray-600 text-sm">
+									<button class="btn-link" on:click={showTransactionInfo}>C'est
+										quoi ?</button>
+								</p>
+							</div>
+							<div>
+								<p class="font-medium">{formatMoney($cart.totalFees)}</p>
+							</div>
+						</div>
+						{#if $cart.donation > 0}
+							<div class="flex justify-between w-full pb-2">
+								<div class="text-left">
+									<p>Don</p>
+								</div>
+								<div>
+									<p class="font-medium">{formatMoney($cart.donation)}</p>
+								</div>
+							</div>
+						{/if}
+						<div
+							class="flex justify-between w-full border-b border-gray-400 pb-2 text-lg">
+							<div class="text-left">
+								<p class="uppercase font-semibold">Total</p>
+							</div>
+							<div>
+								<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
+							</div>
+						</div>
+						<div class="mt-3">
+							{#if step == 2}
+								<!-- <button
+									type="button"
+									on:click={handleSubmit}
+									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+										justify-center m-auto"
+									class:disabled={isPaying || invalidPaymentForm}
+									disabled={isPaying || invalidPaymentForm}
+									style="padding-left: 50px; padding-right: 50px;">
+									{#if isPaying}
+										<Icon data={faCircleNotch} spin />
+									{:else}Commander{/if}
+								</button> -->
+							{:else if step !== 2}
+								<button
+									type="button"
+									on:click={handleSubmitLegals}
+									class:disabled={isSavingLegals || facturationFormInvalid}
+									class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
+										justify-center m-auto"
+									style="padding-left: 50px; padding-right: 50px;">
+									Suivant {#if isSavingLegals}
+										<Icon data={faCircleNotch} spin class="ml-2" />
+									{/if}
+								</button>
 							{/if}
 						</div>
 					</div>
-					<div class="flex justify-between w-full lg:px-3 pb-2">
-						<div class="text-left">
-							<p>Frais bancaires</p>
-							<p class="leading-none text-gray-600 text-sm">
-								<button class="btn-link" on:click={showTransactionInfo}>C'est
-									quoi ?</button>
-							</p>
-						</div>
-						<div>
-							<p class="font-medium">{formatMoney($cart.totalFees)}</p>
-						</div>
-					</div>
-					{#if $cart.donation > 0}
-						<div class="flex justify-between w-full lg:px-3 pb-2">
-							<div class="text-left">
-								<p>Don</p>
-							</div>
-							<div>
-								<p class="font-medium">{formatMoney($cart.donation)}</p>
-							</div>
-						</div>
-					{/if}
-					<div
-						class="flex justify-between w-full lg:px-3 border-t border-gray-400
-							pt-2">
-						<div class="text-left">
-							<p class="uppercase font-semibold">Total</p>
-						</div>
-						<div>
-							<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
-						</div>
-					</div>
-					<div class="mt-3">
-						{#if step == 2}
-							<button
-								type="button"
-								on:click={handleSubmit}
-								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-								class:disabled={isPaying || invalidPaymentForm}
-								disabled={isPaying || invalidPaymentForm}
-								style="padding-left: 50px; padding-right: 50px;">
-								{#if isPaying}
-									<Icon data={faCircleNotch} spin />
-								{:else}Commander{/if}
-							</button>
-						{:else if step !== 2}
-							<button
-								type="button"
-								on:click={handleSubmitLegals}
-								class:disabled={isSavingLegals || facturationFormInvalid}
-								class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-								style="padding-left: 50px; padding-right: 50px;">
-								Suivant {#if isSavingLegals}
-									<Icon data={faCircleNotch} spin class="ml-2" />
-								{/if}
-							</button>
-						{/if}
-					</div>
-				</div>
+				</CreditCard>
 			</div>
 		</div>
 	</div>

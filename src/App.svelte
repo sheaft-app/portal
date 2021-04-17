@@ -31,7 +31,7 @@
   import OidcRoutes from "./routes/oidc/routes";
   import { notificationsCount } from "./components/notifications/store";
   import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
-  import mangoPay from './../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.js';
+  import mangoPay from './../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
   
   
   mangoPay.cardRegistration.baseURL = config.psp.url;
