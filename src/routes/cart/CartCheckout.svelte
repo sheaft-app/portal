@@ -10,7 +10,6 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_MY_CONSUMER_LEGALS } from "./queries";
 	import {
-		PAY_ORDER,
 		CREATE_CONSUMER_LEGALS,
 		UPDATE_CONSUMER_LEGALS,
 		CREATE_CARD_REGISTRATION,
@@ -43,7 +42,6 @@
 	let legalId = null;
 	let isPaying = false;
 	let paymentError = null;
-	let invalidPaymentForm = false;
 
 	let user = {
 		firstName: $authUserAccount.profile.given_name,
@@ -65,16 +63,16 @@
 		open(MangoPayInfo, {});
 	};
 
-	onMount(async () => {
-		if (!$cart.userCurrentOrder || $cart.products.length <= 0) {
-			// todo : terminée, envoyer une notif
-			if ($cart.products.length > 0) {
-				return routerInstance.goTo(CartRoutes.Resume);
-			} else {
-				return routerInstance.goTo(SearchProductsRoutes.Search);
-			}
+	$: if (!$cart.isInitializing && (!$cart.userCurrentOrder || $cart.products.length <= 0)) {
+		// todo : terminée, envoyer une notif
+		if ($cart.products.length > 0) {
+			 routerInstance.goTo(CartRoutes.Resume);
+		} else {
+			 routerInstance.goTo(SearchProductsRoutes.Search);
 		}
+	}
 
+	onMount(async () => {
 		const values = routerInstance.getQueryParams();
 
 		paymentError = values["message"] || null;
@@ -99,28 +97,25 @@
 	});
 
 	const handleSubmit = async () => {
-		if (invalidPaymentForm) {
-			return;
-		}
-
 		isPaying = true;
 
 		await createCardRegistration($authUserAccount.profile.sub);
 
-		$card.data.cardExpirationDate = `${$card.month}${$card.year}`;
+		$card.data.cardExpirationDate = `${$card.month.toString()}${$card.year.toString().substring(2)}`;
 		$card.data.cardCvx = $card.data.cardCvx.toString();
 
-		mangoPay.cardRegistration.registerCard($card.data, async (res) => {
-			let preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
+		mangoPay.cardRegistration.registerCard({
+			...$card.data,
+			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
+		}, async (res) => {
+			const preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
 				orderId: $cart.userCurrentOrder,
 				cardIdentifier: res.CardId,
-				ipAddress: "ipaddress",
 				browserInfo: {
-					acceptHeader: "",
 					colorDepth: screen.colorDepth,
 					javaEnabled: navigator.javaEnabled(),
 					javascriptEnabled: true,
-					language: "FR",
+					language: navigator.language,
 					screenHeight: window.screen.height,
 					screenWidth: window.screen.width,
 					timeZoneOffset: new Date().getTimezoneOffset(),
@@ -234,11 +229,11 @@
 				on:click={handleSubmit}>Réessayer</button>
 		</div>
 	{/if}
-	<ErrorCard {errorsHandler} />
 	<div
 		class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0"
 		in:fly|local={{ x: 300, duration: 300 }}>
 		<div class="w-full lg:w-8/12">
+			<ErrorCard {errorsHandler} />
 			{#if step == 1}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
 					<FacturationForm
@@ -258,9 +253,9 @@
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
-				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
+				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 xl:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
 				style="height: fit-content;">
-				<CreditCard bind:invalidPaymentForm>
+				<CreditCard on:submit={handleSubmit} {isPaying} showCard={step == 2}>
 					<div>
 						<div class="flex justify-between w-full pb-2">
 							<div class="text-left">

@@ -6,8 +6,16 @@
     TODO Geoffrey : when we'll be using his credit card with CSS, send money as thanks
     */
     
-    import { onMount } from 'svelte';
-    import { fly } from 'svelte/transition';
+    import { onMount, createEventDispatcher } from 'svelte';
+    import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+    import { card } from "../../stores/cart";
+    import ErrorContainer from "./../../components/ErrorContainer.svelte";
+    import Icon from "svelte-awesome";
+    import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+
+    export let isPaying = false, showCard = true;
+
+    const dispatch = createEventDispatcher();
     
     let currentCardBackground = Math.floor(Math.random()* 25 + 1) // just for fun :D
     let cardName = ""
@@ -26,51 +34,205 @@
     let cardNumberMask;
     let hasRemovedCardPreview = false;
     
+    let paymentForm = form(() => ({
+      number: { value: $card.data.cardNumber, validators: ['required'], enabled: true },
+      month: { value: $card.month, validators: ['required'], enabled: true },
+      year: { value: $card.year, validators: ['required'], enabled: true },
+      cvx: { value: $card.data.cardCvx, validators: ['required', 'maxLength:3'], enabled: true },
+      name: { value: $card.data.cardName, validators: ['required'], enabled: true }
+    }), {
+      initCheck: false
+    });
+    
     onMount(function() {
         document.getElementById("cardNumber").focus();
     })
+
+    const handleSubmit = () => {
+      paymentForm.validate();
+
+      if ($paymentForm.valid)
+        dispatch('submit');
+    }
     
     $: cardMonth = cardMonth < minCardMonth ? '' : cardMonth
     $: minCardMonth = cardYear === minCardYear ? new Date().getMonth() + 1 : 1
     
     $: {
-      if (cardNumber.match(new RegExp("^(34|37)")) != null) cardType = "amex";
-        else if (cardNumber.match(new RegExp("^5[1-5]")) != null) cardType = "mastercard";
-        else if (cardNumber.match(new RegExp("^6011")) != null) cardType = "discover";
-      else cardType = "visa"; // default type
+      // if ($card.data.cardNumber.match(new RegExp("^(34|37)")) != null) cardType = "amex";
+      //   else if ($card.data.cardNumber.match(new RegExp("^5[1-5]")) != null) cardType = "mastercard";
+      //   else if ($card.data.cardNumber.match(new RegExp("^6011")) != null) cardType = "discover";
+      // else cardType = "visa"; // default type
     
       cardNumberMask = cardType === "amex" ? amexCardMask : otherCardMask;
     
       // Credit card input masking
-        
-      for (let index = 0; index < cardNumber.length; index++) {
-            if (cardNumberMask[index] == ' ' && cardNumber[index] !== ' ') cardNumber = cardNumber.substr(0, index) + ' ' + cardNumber.substr(index, cardNumber.length-index)
-        }
-      if (cardNumber.substr('-1') == ' ') cardNumber = cardNumber.substr(0, cardNumber.length-1)
-      cardNumber = cardNumber.substr(0, cardNumberMask.length).replace(/[^0-9 ]/g, '')
+      if ($card.data.cardNumber) {
+        for (let index = 0; index < $card.data.cardNumber.length; index++) {
+              if (cardNumberMask[index] == ' ' && $card.data.cardNumber[index] !== ' ') $card.data.cardNumber = $card.data.cardNumber.substr(0, index) + ' ' + $card.data.cardNumber.substr(index, $card.data.cardNumber.length-index)
+          }
+        if ($card.data.cardNumber.substr('-1') == ' ') $card.data.cardNumber = $card.data.cardNumber.substr(0, $card.data.cardNumber.length-1)
+        $card.data.cardNumber = $card.data.cardNumber.substr(0, cardNumberMask.length).replace(/[^0-9 ]/g, '')
+      }
     }
     
-    function focusInput(e) {
-        isInputFocused = true;
-      let targetRef = e.target.dataset.ref;
-        let target = refs[targetRef];
-        focusElementStyle = `opacity: 1;width: ${target.offsetWidth}px;height: ${target.offsetHeight}px;transform: translateX(${target.offsetLeft}px) translateY(${target.offsetTop}px)`
-    }
+    // function focusInput(e) {
+    //     isInputFocused = true;
+    //   let targetRef = e.target.dataset.ref;
+    //     let target = refs[targetRef];
+    //     focusElementStyle = `opacity: 1;width: ${target.offsetWidth}px;height: ${target.offsetHeight}px;transform: translateX(${target.offsetLeft}px) translateY(${target.offsetTop}px)`
+    // }
     
-    function blurInput() {
-        setTimeout(() => {
-            if (!isInputFocused) {
-                focusElementStyle = null;
-            }
-        }, 300);
-        isInputFocused = false;
-    }
-    
-    
+    // function blurInput() {
+    //     setTimeout(() => {
+    //         if (!isInputFocused) {
+    //             focusElementStyle = null;
+    //         }
+    //     }, 300);
+    //     isInputFocused = false;
+    // }
 </script>
     
+<div class="wrapper" id="app">
+  <div class="card-form">
+    <!-- <div class="card-list">
+      <div class="card-item" class:active={isCardFlipped}>
+        <div class="card-item__side front">
+          <div class="card-item__focus" class:active={focusElementStyle} style={focusElementStyle} bind:this={refs.focusElement}></div>
+          <div class="card-item__cover">
+            <img alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'} class="card-item__bg">
+          </div>
+          <div class="card-item__wrapper">
+            <div class="card-item__top">
+              <img alt="card" src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" class="card-item__chip">
+              <div class="card-item__type">
+                {#if cardType}
+                  {#each [cardType] as cardType (cardType)}
+                    <img in:fly={{y:-20}} out:fly={{y:20}} src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + cardType + '.png'} alt="" class="card-item__typeImg">
+                  {/each}
+                {/if}
+              </div>
+            </div>
+            <label for="cardNumber" class="card-item__number" bind:this={refs.cardNumber}>	
+              {#each cardNumberMask as n, index (index)}
+                <div class="card-item__numberItem" class:active={n.trim() === ''}>
+                  {#if cardNumber.length > index}
+                    <span in:fly={{y:-10}} out:fly={{y:10}}>{cardNumber[index]}</span>
+                  {:else}
+                    <span in:fly={{y:-10}} out:fly={{y:10}}>{n}</span>
+                  {/if}
+                </div>
+              {/each}
+            </label>
+            <div class="card-item__content">
+              <label for="cardName" class="card-item__info" bind:this={refs.cardName}>
+                <div class="card-item__holder">Nom</div>
+                  {#if cardName.length}
+                    <div class="card-item__name">
+                        {#each cardName.replace(/\s\s+/g, ' ') as n, index (index + 1)}
+                          {#if index == index}
+                            <span in:fly={{y:-6}} class="card-item__nameItem" >{n}</span>
+                          {/if}
+                        {/each}
+                    </div>
+                  {:else}
+                    <div in:fly={{y:-6}} class="card-item__name placeholder">NOM PRÉNOM</div>
+                  {/if}
+              </label>
+              <div class="card-item__date" bind:this={refs.cardDate}>
+                <label for="cardMonth" class="card-item__dateTitle">Expire</label>
+                <label for="cardMonth" class="card-item__dateItem">
+                  {#each [cardMonth] as cardMonth (cardMonth)}
+                    <span in:fly={{y:-6}} out:fly={{y:6}}>{cardMonth || 'MM'}</span>
+                  {/each}
+                </label>
+                /
+                <label for="cardYear" class="card-item__dateItem">
+                  {#each [cardYear] as cardYear (cardYear)}
+                    <span in:fly={{y:-6}} out:fly={{y:6}}>{cardYear ? String(cardYear).slice(2,4) : 'AA'}</span>
+                  {/each}
+                  
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-item__side back">
+          <div class="card-item__cover">
+            <img alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'} class="card-item__bg">
+          </div>
+          <div class="card-item__band"></div>
+          <div class="card-item__cvv">
+              <div class="card-item__cvvTitle">CVV</div>
+              <div class="card-item__cvvBand">{cardCvv}</div>
+              <div class="card-item__type">
+                {#if cardType}
+                  {#each [cardType] as cardType (cardType)}
+                    <img in:fly={{y:-20}} out:fly={{y:20}} alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + cardType + '.png'} class="card-item__typeImg">
+                  {/each}
+                {/if}
+              </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="card-form__inner">
+      <slot></slot>
+      {#if showCard}
+        <div class="card-input">
+          <label for="cardNumber" class="card-input__label">Numéro de carte</label>
+          <input type="text" id="cardNumber" v-mask="generateCardNumberMask" use:bindClass={{ form: paymentForm, name: "number"}} bind:value={$card.data.cardNumber} data-ref="cardNumber" autocomplete="off">
+          <ErrorContainer field={$paymentForm.fields.number} />
+        </div>
+        <div class="card-input">
+          <label for="cardName" class="card-input__label">Nom sur la carte</label>
+          <input type="text" id="cardName" bind:value={$card.data.cardName} use:bindClass={{ form: paymentForm, name: "name"}} data-ref="cardName" autocomplete="off">
+          <ErrorContainer field={$paymentForm.fields.name} />
+        </div>
+        <div class="card-form__row">
+          <div class="card-form__col">
+            <div class="card-form__group">
+              <label for="cardMonth" class="card-input__label">Expiration</label>
+              <select class="card-input__input select" id="cardMonth" bind:value={$card.month} use:bindClass={{ form: paymentForm, name: "month"}} data-ref="cardDate">
+                <option value="" disabled selected>Mois</option>
+                {#each Array(12) as _, n}
+                  <option value={(n+1) < 10 ? '0' + (n+1) : (n+1)} disabled={(n+1) < minCardMonth}>
+                      {(n+1) < 10 ? '0' + (n+1) : (n+1)}
+                  </option>
+                {/each}
+              </select>
+              <ErrorContainer field={$paymentForm.fields.month} />
+              <select class="card-input__input select" id="cardYear" bind:value={$card.year} use:bindClass={{ form: paymentForm, name: "year"}} data-ref="cardDate">
+                <option value="" disabled selected>Année</option>
+                {#each Array(12) as _, n}
+                  <option value={n + minCardYear}>
+                      {n + minCardYear}
+                  </option>
+                {/each}
+              </select>
+              <ErrorContainer field={$paymentForm.fields.year} />
+            </div>
+          </div>
+          <div class="card-form__col cvv">
+            <div class="card-input">
+              <label for="cardCvv" class="card-input__label">CVV</label>
+              <input type="text" class="card-input__input" id="cardCvv" v-mask="'####'" maxlength="4" use:bindClass={{ form: paymentForm, name: "cvx"}} bind:value={$card.data.cardCvx} on:focus={() => isCardFlipped = true} on:blur={() => isCardFlipped = false} autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <ErrorContainer field={$paymentForm.fields.cvx} />
+        <button class="btn btn-lg btn-primary w-full shadow-xl justify-center text-xl mt-3" disabled={isPaying || !$paymentForm.valid} class:disabled={isPaying || !$paymentForm.valid} on:click={handleSubmit}>
+          {#if isPaying}
+            <Icon data={faCircleNotch} spin />
+          {:else}Commander{/if}
+        </button>
+      {/if}
+    </div>
+  </div>
+</div>
     
-    <style>
+    
+<style>
     @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
     
     * {
@@ -595,133 +757,4 @@
       background-repeat: no-repeat;
       padding-right: 30px;
     }
-    </style>
-    
-    <div class="wrapper" id="app">
-      <div class="card-form">
-        <!-- <div class="card-list">
-          <div class="card-item" class:active={isCardFlipped}>
-            <div class="card-item__side front">
-              <div class="card-item__focus" class:active={focusElementStyle} style={focusElementStyle} bind:this={refs.focusElement}></div>
-              <div class="card-item__cover">
-                <img alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'} class="card-item__bg">
-              </div>
-              <div class="card-item__wrapper">
-                <div class="card-item__top">
-                  <img alt="card" src="https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/chip.png" class="card-item__chip">
-                  <div class="card-item__type">
-                    {#if cardType}
-                      {#each [cardType] as cardType (cardType)}
-                        <img in:fly={{y:-20}} out:fly={{y:20}} src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + cardType + '.png'} alt="" class="card-item__typeImg">
-                      {/each}
-                    {/if}
-                  </div>
-                </div>
-                <label for="cardNumber" class="card-item__number" bind:this={refs.cardNumber}>	
-                  {#each cardNumberMask as n, index (index)}
-                    <div class="card-item__numberItem" class:active={n.trim() === ''}>
-                      {#if cardNumber.length > index}
-                        <span in:fly={{y:-10}} out:fly={{y:10}}>{cardNumber[index]}</span>
-                      {:else}
-                        <span in:fly={{y:-10}} out:fly={{y:10}}>{n}</span>
-                      {/if}
-                    </div>
-                  {/each}
-                </label>
-                <div class="card-item__content">
-                  <label for="cardName" class="card-item__info" bind:this={refs.cardName}>
-                    <div class="card-item__holder">Nom</div>
-                      {#if cardName.length}
-                        <div class="card-item__name">
-                            {#each cardName.replace(/\s\s+/g, ' ') as n, index (index + 1)}
-                              {#if index == index}
-                                <span in:fly={{y:-6}} class="card-item__nameItem" >{n}</span>
-                              {/if}
-                            {/each}
-                        </div>
-                      {:else}
-                        <div in:fly={{y:-6}} class="card-item__name placeholder">NOM PRÉNOM</div>
-                      {/if}
-                  </label>
-                  <div class="card-item__date" bind:this={refs.cardDate}>
-                    <label for="cardMonth" class="card-item__dateTitle">Expire</label>
-                    <label for="cardMonth" class="card-item__dateItem">
-                      {#each [cardMonth] as cardMonth (cardMonth)}
-                        <span in:fly={{y:-6}} out:fly={{y:6}}>{cardMonth || 'MM'}</span>
-                      {/each}
-                    </label>
-                    /
-                    <label for="cardYear" class="card-item__dateItem">
-                      {#each [cardYear] as cardYear (cardYear)}
-                        <span in:fly={{y:-6}} out:fly={{y:6}}>{cardYear ? String(cardYear).slice(2,4) : 'AA'}</span>
-                      {/each}
-                      
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-item__side back">
-              <div class="card-item__cover">
-                <img alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + currentCardBackground + '.jpeg'} class="card-item__bg">
-              </div>
-              <div class="card-item__band"></div>
-              <div class="card-item__cvv">
-                  <div class="card-item__cvvTitle">CVV</div>
-                  <div class="card-item__cvvBand">{cardCvv}</div>
-                  <div class="card-item__type">
-                    {#if cardType}
-                      {#each [cardType] as cardType (cardType)}
-                        <img in:fly={{y:-20}} out:fly={{y:20}} alt="card" src={'https://raw.githubusercontent.com/muhammederdem/credit-card-form/master/src/assets/images/' + cardType + '.png'} class="card-item__typeImg">
-                      {/each}
-                    {/if}
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
-        <div class="card-form__inner">
-          <slot></slot>
-          <div class="card-input">
-            <label for="cardNumber" class="card-input__label">Numéro de carte</label>
-            <input type="text" id="cardNumber" v-mask="generateCardNumberMask" bind:value={cardNumber} on:focus={focusInput} on:blur={blurInput} data-ref="cardNumber" autocomplete="off">
-          </div>
-          <div class="card-input">
-            <label for="cardName" class="card-input__label">Nom sur la carte</label>
-            <input type="text" id="cardName" bind:value={cardName} on:focus={focusInput} on:blur={blurInput} data-ref="cardName" autocomplete="off">
-          </div>
-          <div class="card-form__row">
-            <div class="card-form__col">
-              <div class="card-form__group">
-                <label for="cardMonth" class="card-input__label">Expiration</label>
-                <select class="card-input__input select" id="cardMonth" bind:value={cardMonth} on:focus={focusInput} on:blur={blurInput} data-ref="cardDate">
-                  <option value="" disabled selected>Mois</option>
-                  {#each Array(12) as _, n}
-                    <option value={(n+1) < 10 ? '0' + (n+1) : (n+1)} disabled={(n+1) < minCardMonth}>
-                        {(n+1) < 10 ? '0' + (n+1) : (n+1)}
-                    </option>
-                  {/each}
-                </select>
-                <select class="card-input__input select" id="cardYear" bind:value={cardYear} on:focus={focusInput} on:blur={blurInput} data-ref="cardDate">
-                  <option value="" disabled selected>Année</option>
-                  {#each Array(12) as _, n}
-                    <option value={n + minCardYear}>
-                        {n + minCardYear}
-                    </option>
-                  {/each}
-                </select>
-              </div>
-            </div>
-            <div class="card-form__col cvv">
-              <div class="card-input">
-                <label for="cardCvv" class="card-input__label">CVV</label>
-                <input type="text" class="card-input__input" id="cardCvv" v-mask="'####'" maxlength="4" bind:value={cardCvv} on:focus={() => isCardFlipped = true} on:blur={() => isCardFlipped = false} autocomplete="off">
-              </div>
-            </div>
-          </div>
-          <button class="btn btn-lg btn-primary w-full shadow-xl justify-center text-xl mt-3">
-            Commander
-          </button>
-        </div>
-      </div>
-    </div>
+</style>
