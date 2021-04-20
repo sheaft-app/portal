@@ -12,7 +12,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
-	import { 
+	import {
 		faPlus
 	} from "@fortawesome/free-solid-svg-icons";
 	import { getContext } from 'svelte';
@@ -40,7 +40,7 @@
 		}
 
 		closings = result.data;
-	});	
+	});
 
 	const actions = [
 		{
@@ -56,7 +56,7 @@
 	};
 
 	const openManageClosingsModal = () => {
-		open(ManageYearlyClosingsModal, { 
+		open(ManageYearlyClosingsModal, {
 			onClose: (res) => {
 				closings = res;
 			}
@@ -89,7 +89,7 @@
 					<Icon data={faEdit} class="mr-2" />
 					Gérer fermetures annuelles
 				</button>
-				{#if closings.length > 0}
+				{#if closings && closings.length > 0}
 					<p class="font-semibold mt-2">Fermetures configurées :</p>
 					<ul style="list-style: circle;padding: revert;">
 						{#each closings as closing}
@@ -97,7 +97,7 @@
 						{/each}
 					</ul>
 				{/if}
-			</div> 
+			</div>
 			<td
 				class="px-2 md:px-6 py-4 whitespace-no-wrap border-b
 				border-gray-200">

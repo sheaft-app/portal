@@ -2,7 +2,6 @@
 	import DeleteProducts from "./DeleteProducts.svelte";
 	import ImportProducts from "./ImportProducts.svelte";
 	import SetProductsAvailability from "./SetProductsAvailability.svelte";
-	import SetProductsSearchability from "./SetProductsSearchability.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import { onMount, getContext } from "svelte";
 	import { format } from "date-fns";
@@ -92,27 +91,6 @@ faInfo,
 		});
 	};
 
-	const showSetSearchabilityModal = () => {
-		var selectedVisibleToStores = selectedItems.filter(p => p.visibleToStores).length;
-		var visibilityToStores = selectedVisibleToStores == selectedItems.length || selectedVisibleToStores > (selectedItems.length /2);
-
-		var selectedVisibleToConsumers = selectedItems.filter(p => p.visibleToConsumers).length;
-		var visibilityToConsumers = selectedVisibleToConsumers == selectedItems.length || selectedVisibleToConsumers > (selectedItems.length /2);
-
-		open(SetProductsSearchability, {
-			selectedItems: selectedItems,
-			visibleToStores: visibilityToStores,
-			visibleToConsumers: visibilityToConsumers,
-			onClose: async (res) => {
-				if (res.success) {
-					toggleMoreActions.set(false);
-					routerInstance.refresh();
-					selectedItems = [];
-				}
-			},
-		});
-	};
-
 	const showImportModal = () => {
 		open(ImportProducts, {
 			onClose: async (res) => {
@@ -189,15 +167,6 @@ faInfo,
 			text: "Rendre disponible",
 			icon: faPlay,
 			color: "green",
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => showSetSearchabilityModal(),
-			hideIfDisabled: true,
-			disabled: !hasSelectedOneItem,
-			text: "Changer la visibilité",
-			icon: faInfo,
-			color: "blue",
 			displaySelectedItemsNumber: true,
 		},
 		{

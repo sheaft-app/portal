@@ -70,18 +70,6 @@ export const SET_PRODUCTS_AVAILABILITY = gql`
 	}
 `;
 
-export const SET_PRODUCTS_SEARCHABILITY = gql`
-	mutation SetProductsSearchability($input: SetProductsSearchabilityInput!) {
-		setProductsSearchability(input: $input) {
-			nodes {
-				id
-				visibleToStores
-				visibleToConsumers
-			}
-		}
-	}
-`;
-
 export const UPDATE_PRODUCT_IMAGE = gql`
 	mutation UpdateProductPicture($input: UpdateProductPictureInput!) {
 		updateProductPicture(input: $input) {
