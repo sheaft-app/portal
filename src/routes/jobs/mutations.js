@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const CANCEL_JOBS = gql`
-	mutation CancelJobs($input: ResourceIdsWithReasonInput!) {
+	mutation CancelJobs($input: CancelJobsInput!) {
 		cancelJobs(input: $input) {
 			nodes {
 				id
@@ -19,7 +19,7 @@ export const CANCEL_JOBS = gql`
 `;
 
 export const RETRY_JOBS = gql`
-	mutation RetryJobs($input: ResourceIdsInput!) {
+	mutation RetryJobs($input: RetryJobsInput!) {
 		retryJobs(input: $input) {
 			nodes {
 				id
@@ -37,7 +37,7 @@ export const RETRY_JOBS = gql`
 `;
 
 export const PAUSE_JOBS = gql`
-	mutation PauseJobs($input: ResourceIdsInput!) {
+	mutation PauseJobs($input: PauseJobsInput!) {
 		pauseJobs(input: $input) {
 			nodes {
 				id
@@ -55,7 +55,7 @@ export const PAUSE_JOBS = gql`
 `;
 
 export const RESUME_JOBS = gql`
-	mutation ResumeJobs($input: ResourceIdsInput!) {
+	mutation ResumeJobs($input: ResumeJobsInput!) {
 		resumeJobs(input: $input) {
 			nodes {
 				id
@@ -72,7 +72,7 @@ export const RESUME_JOBS = gql`
 	}
 `;
 export const ARCHIVE_JOBS = gql`
-	mutation ArchiveJobs($input: ResourceIdsInput!) {
+	mutation ArchiveJobs($input: ArchiveJobsInput!) {
 		archiveJobs(input: $input) {
 			nodes {
 				id

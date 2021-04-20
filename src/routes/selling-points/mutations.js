@@ -31,7 +31,7 @@ export const CREATE_SELLING_POINT = gql`
 `;
 
 export const UPDATE_SELLING_POINT = gql`
-	mutation UpdateSellingPoint($input: UpdateDeliveryModeInput) {
+	mutation UpdateSellingPoint($input: UpdateDeliveryModeInput!) {
 		updateDeliveryMode(input: $input) {
 			id
 			name
@@ -61,7 +61,7 @@ export const UPDATE_SELLING_POINT = gql`
 `;
 
 export const DELETE_SELLING_POINT = gql`
-	mutation DeleteSellingPoint($input: ResourceIdInput!) {
+	mutation DeleteSellingPoint($input: DeleteDeliveryModeInput!) {
 		deleteDeliveryMode(input: $input)
 	}
 `;
@@ -78,7 +78,7 @@ export const SET_SELLING_POINT_AVAILABILITY = gql`
 `;
 
 export const UPDATE_BUSINESS_CLOSINGS = gql`
-	mutation UpdateBusinessClosings($input: UpdateOrCreateResourceIdClosingsInput) {
+	mutation UpdateBusinessClosings($input: UpdateOrCreateBusinessClosingsInput!) {
 		updateOrCreateBusinessClosings(input: $input) {
 			nodes {
 				id

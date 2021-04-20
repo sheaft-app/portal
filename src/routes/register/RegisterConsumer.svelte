@@ -65,19 +65,9 @@ import { config } from "../../configs/config";
         return;
       }
 
-			await authInstance.refreshLogin();
       localStorage.removeItem("user_choosen_role");
       localStorage.removeItem("user_sponsoring");
-      sub = authRegistered.subscribe(registered => {
-        if(registered)
-          {
-            routerInstance.goTo("/");
-          }
-          else{
-            location.hash = "/";
-            location.reload();
-          }
-      });
+			await authInstance.refreshLogin('/');
     }
   };
 

@@ -55,7 +55,7 @@ export const GET_ALL_PRODUCTS = gql`
 `;
 
 export const GET_STORE_DELIVERIES_FOR_PRODUCERS = gql`
-	query GetStoreDeliveriesForProducers($input: SearchProducersDeliveriesInput) {
+	query GetStoreDeliveriesForProducers($input: SearchProducersDeliveriesInput!) {
 		getStoreDeliveriesForProducers(input: $input) {
 			id
 			name

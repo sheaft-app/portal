@@ -191,10 +191,10 @@ class SheaftAuth {
 		}
 	}
 
-	async refreshLogin() {
+	async refreshLogin(url) {
 		try {
 			await this.userManager.removeUser();
-			return await this.login(window.location.hash);
+			return await this.login(url ? url : window.location.hash);
 		} catch (ex) {
 			console.log(ex);
 		}

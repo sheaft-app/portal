@@ -54,7 +54,7 @@ export const UPDATE_PRODUCT = gql`
 `;
 
 export const DELETE_PRODUCTS = gql`
-	mutation DeleteProducts($input: ResourceIdsInput!) {
+	mutation DeleteProducts($input: DeleteProductsInput!) {
 		deleteProducts(input: $input)
 	}
 `;

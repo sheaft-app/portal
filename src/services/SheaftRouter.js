@@ -13,21 +13,21 @@ class SheaftRouter {
 		});
 	}
 
-	goTo(route, routeParams, refresh) {
+	async goTo(route, routeParams, refresh) {
 		let url = handleUrl(route, routeParams);
 		if(refresh == null || !refresh)
-			push(url);
+			await push(url);
 		else
-			replace(url);
+			await replace(url);
 	}
 
-	goBack() {
-		pop();
+	async goBack() {
+		await pop();
 	}
 
 	refresh() {
-		var params = this.getQueryParams();	
-		params["refresh"] = Guid.NewGuid();	
+		let params = this.getQueryParams();
+		params["refresh"] = Guid.NewGuid();
 		this.replaceQueryParams(params);
 	}
 
@@ -45,7 +45,7 @@ class SheaftRouter {
 	}
 
 	getQueryStringParams(params) {
-		var qsParams = getParams();
+		let qsParams = getParams();
 		return Object.keys(params).map((p) => (params[p] = qsParams[p]));
 	}
 
@@ -64,8 +64,8 @@ class SheaftRouter {
 }
 
 function handleUrl(route, routeParams) {
-	var isObject = typeof(route) === "object";
-	var url = isObject ? route.Path : route;
+	let isObject = typeof(route) === "object";
+	let url = isObject ? route.Path : route;
 
 	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
 	if (url == null) url = "/";
@@ -77,13 +77,13 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 	url = sanitizeUrl(url);
 	if (!defaultRouteParams) return url;
 
-	var queryParams = [];
+	let queryParams = [];
 	Object.keys(defaultRouteParams).forEach((paramKey) => {
 		let defaultRouteParam = defaultRouteParams[paramKey];
-		var routeParam = routeParams ? routeParams[paramKey] : null;
+		let routeParam = routeParams ? routeParams[paramKey] : null;
 
 		if (paramKey.toLowerCase() !== "query") {
-			var param = routeParam ? routeParam : defaultRouteParam;
+			let param = routeParam ? routeParam : defaultRouteParam;
 			if (param == null)
 				throw `Invalid ${paramKey} parameter for route: ${url}`;
 			url = url.replace(`:${paramKey}`, param);``
@@ -96,7 +96,7 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 			let param = queryParam ? queryParam : defaultQueryParam;
 
 			if (param != null && Array.isArray(param)){
-				param.forEach(p => {					
+				param.forEach(p => {
 					queryParams = [...queryParams, {
 						key: queryKey,
 						value: p,
@@ -126,16 +126,16 @@ function sanitizeUrl(url) {
 	if(!url)
 		throw "url to navigate to cannot be null";
 
-	if (url.indexOf("/#/") == 0) url = url.substr(2);
+	if (url.indexOf("/#/") === 0) url = url.substr(2);
 
-	if (url.indexOf("#/") == 0) url = url.substr(1);
+	if (url.indexOf("#/") === 0) url = url.substr(1);
 
 	return url;
 }
 
 function handleParams(method, query, params, currentUrl) {
-	var newParams = createOrUpdateQueryStringParams(query, params);
-	var searchString = formatObjectAsQueryString(newParams);
+	let newParams = createOrUpdateQueryStringParams(query, params);
+	let searchString = formatObjectAsQueryString(newParams);
 	if (searchString && searchString.length > 0) {
 		method(`${currentUrl}?${searchString}`);
 		return newParams;

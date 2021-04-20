@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const CANCEL_MY_ORDERS = gql`
-	mutation CancelPurchaseOrders($input: ResourceIdsWithReasonInput!) {
+	mutation CancelPurchaseOrders($input: WithdrawnPurchaseOrdersInput!) {
 		withdrawnPurchaseOrders(input: $input) {
 			nodes {
 				id

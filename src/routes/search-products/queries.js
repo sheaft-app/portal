@@ -109,7 +109,7 @@ export const GET_PRODUCER_PRODUCTS = gql`
 `
 
 export const GET_PRODUCER_DELIVERIES = gql`
-	query GetProducerDeliveries($input: SearchProducersDeliveriesInput) {
+	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
 		getDeliveriesForProducers(input: $input) {
 			id
 			name

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 export const ACCEPT_PURCHASE_ORDERS = gql`
-	mutation AcceptPurchaseOrders($input: ResourceIdsInput!) {
+	mutation AcceptPurchaseOrders($input: AcceptPurchaseOrdersInput!) {
 		acceptPurchaseOrders(input: $input) {
 			nodes {
 				id
@@ -30,7 +30,7 @@ export const ACCEPT_PURCHASE_ORDERS = gql`
 `;
 
 export const REFUSE_PURCHASE_ORDERS = gql`
-	mutation RefusePurchaseOrders($input: ResourceIdsWithReasonInput!) {
+	mutation RefusePurchaseOrders($input: RefusePurchaseOrdersInput!) {
 		refusePurchaseOrders(input: $input) {
 			nodes {
 				id
@@ -59,7 +59,7 @@ export const REFUSE_PURCHASE_ORDERS = gql`
 `;
 
 export const CANCEL_PURCHASE_ORDERS = gql`
-	mutation CancelPurchaseOrders($input: ResourceIdsWithReasonInput!) {
+	mutation CancelPurchaseOrders($input: CancelPurchaseOrdersInput!) {
 		cancelPurchaseOrders(input: $input) {
 			nodes {
 				id
@@ -88,7 +88,7 @@ export const CANCEL_PURCHASE_ORDERS = gql`
 `;
 
 export const PROCESS_PURCHASE_ORDERS = gql`
-	mutation ProcessPurchaseOrders($input: ResourceIdsInput!) {
+	mutation ProcessPurchaseOrders($input: ProcessPurchaseOrdersInput!) {
 		processPurchaseOrders(input: $input) {
 			nodes {
 				id
@@ -117,7 +117,7 @@ export const PROCESS_PURCHASE_ORDERS = gql`
 `;
 
 export const COMPLETE_PURCHASE_ORDERS = gql`
-	mutation CompletePurchaseOrders($input: ResourceIdsInput!) {
+	mutation CompletePurchaseOrders($input: CompletePurchaseOrdersInput!) {
 		completePurchaseOrders(input: $input) {
 			nodes {
 				id
@@ -146,7 +146,7 @@ export const COMPLETE_PURCHASE_ORDERS = gql`
 `;
 
 export const DELIVER_PURCHASE_ORDERS = gql`
-	mutation DeliverPurchaseOrders($input: ResourceIdsInput!) {
+	mutation DeliverPurchaseOrders($input: DeliverPurchaseOrdersInput!) {
 		deliverPurchaseOrders(input: $input) {
 			nodes {
 				id

@@ -37,7 +37,7 @@ export const UPDATE_CONSUMER_ORDER = gql`
 `;
 
 export const PAY_ORDER = gql`
-	mutation payOrder($input: PayOrderInput) {
+	mutation payOrder($input: PayOrderInput!) {
 		payOrder(input: $input) {
 			id
 			identifier
