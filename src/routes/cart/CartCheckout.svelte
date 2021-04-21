@@ -41,6 +41,7 @@
 	let isSavingLegals = false;
 	let legalId = null;
 	let isPaying = false;
+	let cardError = null;
 	let paymentError = null;
 
 	let user = {
@@ -98,6 +99,7 @@
 
 	const handleSubmit = async () => {
 		isPaying = true;
+		cardError = null;
 
 		await createCardRegistration($authUserAccount.profile.sub);
 
@@ -112,13 +114,13 @@
 				orderId: $cart.userCurrentOrder,
 				cardIdentifier: res.CardId,
 				browserInfo: {
-					colorDepth: screen.colorDepth,
+					colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
 					javaEnabled: navigator.javaEnabled(),
 					javascriptEnabled: true,
 					language: navigator.language,
 					screenHeight: window.screen.height,
 					screenWidth: window.screen.width,
-					timeZoneOffset: new Date().getTimezoneOffset(),
+					timeZoneOffset: new Date().getTimezoneOffset().toString(),
 					userAgent: navigator.userAgent
 				}
 			}, errorsHandler.Uuid);
@@ -128,19 +130,37 @@
 				//TODO handle server error
 				return;
 			}
-			if(preAuthorizationResult.status == PreAuthorizationStatus.Failed){
+			if(preAuthorizationResult.data.status == PreAuthorizationStatus.Failed){
 				isPaying = false;
 				//TODO handle authorization error
 				return;
 			}
-			if (preAuthorizationResult.data.secureModeRedirectURL &&
-				preAuthorizationResult.data.secureModeRedirectURL.length > 0) {
-				isPaying = false;
-				localStorage.setItem("user_last_transaction", res.data.identifier);
+
+			if (preAuthorizationResult.data.secureModeRedirectURL) {
 				window.location = preAuthorizationResult.data.secureModeRedirectURL;
 				return;
+			} else {
+				isPaying = false;
+				return routerInstance.goTo({ 
+					Path: CartRoutes.Success.Path, 
+					Params: {
+						Query: {
+							id: $cart.userCurrentOrder
+						}
+					}
+				})
 			}
 		}, async (response) => {
+			isPaying = false;
+
+			switch (response.ResultMessage) {
+				case 'PAST_EXPIRY_DATE_ERROR':
+					cardError =  'La date d\'expiration de votre carte est passée.';
+					break;
+				default:
+					cardError = 'Les informations de votre carte ne sont pas valides.';
+					break;
+			}
 			console.log(response.ResultCode);
 			console.log(response.ResultMessage);
 		});
@@ -255,7 +275,7 @@
 			<div
 				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 xl:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
 				style="height: fit-content;">
-				<CreditCard on:submit={handleSubmit} {isPaying} showCard={step == 2}>
+				<CreditCard on:submit={handleSubmit} {isPaying} {cardError} showCard={step == 2}>
 					<div>
 						<div class="flex justify-between w-full pb-2">
 							<div class="text-left">

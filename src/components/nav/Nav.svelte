@@ -80,7 +80,7 @@
 	id="navbar"
 	class="bg-primary w-full py-2 fixed top-0 flex md:px-6 lg:px-8
   items-center top-nav lg:justify-between
-  {!$selectedItem && !($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])) ? 'justify-end': 'justify-between'}"
+  {!$selectedItem && !($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value]) || !$authRegistered) ? 'justify-end': 'justify-between'}"
 	style="z-index: 6;">
 	{#if $displayNotificationCenter}
 		<NotificationsPanel/>
@@ -176,20 +176,20 @@
 	{#if $selectedItem || $navExpended}
 		<button
 			on:click={() => {
-        navExpended.set(false);
-        selectedItem.set(null);
-      }}
+				navExpended.set(false);
+				selectedItem.set(null);
+			}}
 			aria-label="Retour"
 			class="inline-block lg:hidden py-2 px-4">
 			<Icon data={faChevronLeft} class="inline" scale="1.2"/>
 		</button>
-	{:else if !authInstance.isInRole([Roles.Consumer.Value])}
+	{:else if $authRegistered && !isInRole($authUserAccount, [Roles.Consumer.Value])}
 		<button
 			on:click={() => {
-        userMenuExpended.set(false);
-        displayNotificationCenter.set(false);
-        navExpended.set(!$navExpended);
-      }}
+				userMenuExpended.set(false);
+				displayNotificationCenter.set(false);
+				navExpended.set(!$navExpended);
+      		}}
 			aria-label="Activer la navigation"
 			class="inline-block lg:hidden py-2 px-4"
 			class:hidden={!($authRegistered && isInRole($authUserAccount, [Roles.Producer.Value, Roles.Store.Value]))}>

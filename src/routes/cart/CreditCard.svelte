@@ -13,7 +13,7 @@
     import Icon from "svelte-awesome";
     import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
-    export let isPaying = false, showCard = true;
+    export let isPaying = false, showCard = true, cardError = null;
 
     const dispatch = createEventDispatcher();
     
@@ -221,6 +221,9 @@
           </div>
         </div>
         <ErrorContainer field={$paymentForm.fields.cvx} />
+        {#if cardError}
+          <p class="text-red-500">{cardError}</p>
+        {/if}
         <button class="btn btn-lg btn-primary w-full shadow-xl justify-center text-xl mt-3" disabled={isPaying || !$paymentForm.valid} class:disabled={isPaying || !$paymentForm.valid} on:click={handleSubmit}>
           {#if isPaying}
             <Icon data={faCircleNotch} spin />

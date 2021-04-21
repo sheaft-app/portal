@@ -340,6 +340,8 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				local
 			);
 		case "UserPointsCreatedEvent":
+			return null;
+			
 			var action = "contribué à l'économie locale";
 			switch (notification.content.Kind) {
 				case "BUG_BOUNTY":
