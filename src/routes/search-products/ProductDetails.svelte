@@ -326,12 +326,11 @@
 						<div class="text-gray-600 text-sm lg:text-base">
 							{product.producer.address.zipcode} {product.producer.address.city}
 						</div>
-						<button type="button"
-										on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, { id: product.producer.id })}
+						<a href="/#{ExternalRoutes.ProducerDetails.Path.replace(':id', product.producer.id)}" target="_blank"
 										class="btn btn-link mt-1 items-center">
 							<Icon data={faEye} class="mr-1"/>
 							Voir sa page
-						</button>
+						</a>
 					</div>
 					{#if distanceInfos}
 						<div

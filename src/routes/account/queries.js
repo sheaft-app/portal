@@ -9,6 +9,8 @@ export const GET_CONSUMER_DETAILS = gql`
 			email
 			phone
 			picture
+			facebook
+			instagram
 		}
 	}
 `;
@@ -33,6 +35,11 @@ export const GET_STORE_DETAILS = gql`
 			email
 			phone
 			picture
+			description
+			summary
+			facebook
+			instagram
+			website
 			openingHours {
 				day
 				from
@@ -66,6 +73,7 @@ export const GET_PRODUCER_DETAILS = gql`
 			summary
 			facebook
 			instagram
+			website
 		}
 	}
 `;

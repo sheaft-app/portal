@@ -20,8 +20,8 @@ import { GET_AGREEMENTS } from "./queries.js";
     var res = await graphQLInstance.mutate(REFUSE_AGREEMENTS, {
       ids: [agreement.id],
       reason
-    }, 
-    errorsHandler.Uuid, 
+    },
+    errorsHandler.Uuid,
     GET_AGREEMENTS);
 
     isLoading = false;

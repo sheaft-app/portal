@@ -23,7 +23,7 @@ export const UPDATE_STORE = gql`
 			openForNewBusiness
 			email
 			phone
-			picture			
+			picture
 			address {
 				line1
 				line2
@@ -71,7 +71,7 @@ export const UPDATE_PRODUCER = gql`
 `;
 
 export const UPDATE_USER_PICTURE = gql`
-	mutation UpdateUserPicture($input: UpdatePictureInput!) {
+	mutation UpdateUserPicture($input: UpdateUserPictureInput!) {
 		updateUserPicture(input: $input) {
 			id
 			picture
