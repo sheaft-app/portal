@@ -120,7 +120,6 @@
             quantity: product.quantity
           };
         }),
-        donation: "NONE",
         producersExpectedDeliveries
       },
       onClose: () => {
@@ -148,7 +147,7 @@
   $: productsCount = normalizedProducts.reduce((sum, product) => {
     return sum + (product.quantity || 0);
   }, 0);
-  $: totalReturnable = normalizedProducts.reduce((sum, product) => {  
+  $: totalReturnable = normalizedProducts.reduce((sum, product) => {
     return parseFloat(sum) + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0);
   }, 0);
   $: totalProductsHt = normalizedProducts.reduce((sum, product) => {
@@ -208,7 +207,7 @@
                 <p style="border-bottom: 0;" class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100" class:mt-5={i >= 1}>
                   {product.producer.name}
                 </p>
-                <DeliveryModePicker 
+                <DeliveryModePicker
                   selected={product.producer.delivery}
                   selectedDeliveryHour={product.producer.deliveryHour}
                   bind:businessQuickOrderProducts={normalizedProducts}
@@ -367,7 +366,7 @@
             </button>
           </div>
         </div>
-      </div> 
+      </div>
     {/if}
   </form>
 </TransitionWrapper>

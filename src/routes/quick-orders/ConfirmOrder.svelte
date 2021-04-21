@@ -22,8 +22,7 @@
 
     var res = await graphQLInstance.mutate(CREATE_BUSINESS_ORDER, {
       products: data.products,
-      producersExpectedDeliveries: data.producersExpectedDeliveries,
-      donation: data.donation
+      producersExpectedDeliveries: data.producersExpectedDeliveries
     }, errorsHandler.Uuid);
 
 		isLoading = false;

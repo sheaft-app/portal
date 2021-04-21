@@ -82,7 +82,7 @@
       return true;
 
     return false;
-  };  
+  };
 
   onMount(async () => {
     await getAgreement(params.id);
@@ -173,7 +173,7 @@
           class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
           md:rounded md:mb-2">
           <p class="uppercase font-bold leading-none">
-            Cet accord est en attente de traitement.
+						{isSender(agreement) ? "Cet accord est en attente de traitement." : "Cet accord est en attente d'une réponse de votre part"}
           </p>
           {#if !isSender(agreement)}
             <div class="mt-3 flex">
