@@ -7,9 +7,12 @@
 	import { GET_MY_ORDERS } from "./queries.js";
 	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
+	import SheaftErrors from "../../services/SheaftErrors";
+	import ErrorCard from "./../../components/ErrorCard.svelte";
 
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
+	const errorsHandler = new SheaftErrors();
 
 	let orders = [];
 
@@ -19,7 +22,7 @@
 		graphQLInstance.clearApolloCache(MY_ORDERS);
 		graphQLInstance.clearApolloCache(MY_VALIDATING_ORDERS);
 
-		cart.reset();
+		await cart.reset();
 
 		//TODO should retrieve purchaseOrders with transactionCartId
 
@@ -28,8 +31,9 @@
 		}
 
 		// quand il n'y a qu'un seul ID, le paramètre est lu comme une string et non un array
-		var ids = Array.isArray(values.id) ? values.id : [values.id];
-		var response = await graphQLInstance.query(GET_MY_ORDERS, { ids });
+		let ids = Array.isArray(values.id) ? values.id : [values.id];
+		let response = await graphQLInstance.query(GET_MY_ORDERS, { ids }, errorsHandler.Uuid);
+		
 		if (response.success) {
 			orders = response.data;
 		} else {
@@ -43,6 +47,7 @@
 </svelte:head>
 
 <TransitionWrapper>
+	<ErrorCard {errorsHandler}/>
 	<div class="px-0 md:px-5 overflow-x-auto lg:-mx-4 md:-mx-5 mb-5">
 		<div class="flex flex-wrap w-full items-start flex-col-reverse lg:flex-row">
 			<div class="w-full lg:w-2/3 lg:pr-12">

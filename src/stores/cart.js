@@ -3,6 +3,18 @@ import {GET_CART, GET_MOST_RECENT_CART} from "./queries";
 import {CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER} from "./mutations.js";
 import orderBy from "lodash/orderBy";
 
+export const card = writable({
+    data: { 
+        cardName: null,
+        cardNumber: null,
+        cardExpirationDate: null,
+        cardCvx: null,
+        cardType: "CB_VISA_MASTERCARD",
+    },
+    year: null,
+    month: null
+});
+
 const store = () => {
 	let graphQLInstance = null;
 	let errorsHandler = null;

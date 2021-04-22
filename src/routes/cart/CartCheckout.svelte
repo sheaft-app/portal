@@ -1,18 +1,19 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { fly } from "svelte/transition";
-	import cart from "./../../stores/cart.js";
+	import cart, { card } from "./../../stores/cart.js";
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
-	import PaymentInfoForm from "./PaymentInfoForm.svelte";
+	import SummaryForm from "./SummaryForm.svelte";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_MY_CONSUMER_LEGALS } from "./queries";
 	import {
-		PAY_ORDER,
 		CREATE_CONSUMER_LEGALS,
 		UPDATE_CONSUMER_LEGALS,
+		CREATE_CARD_REGISTRATION,
+		CREATE_PRE_AUTHORIZATION
 	} from "./mutations";
 	import Loader from "../../components/Loader.svelte";
 	import { authUserAccount } from "./../../stores/auth.js";
@@ -23,6 +24,9 @@
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import formatISO from "date-fns/formatISO";
+	import PreAuthorizationStatus from "../../enums/PreAuthorizationStatus";
+	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
+	import CreditCard from "./CreditCard.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
@@ -37,6 +41,7 @@
 	let isSavingLegals = false;
 	let legalId = null;
 	let isPaying = false;
+	let cardError = null;
 	let paymentError = null;
 
 	let user = {
@@ -59,16 +64,16 @@
 		open(MangoPayInfo, {});
 	};
 
-	onMount(async () => {
-		if (!$cart.userCurrentOrder || $cart.products.length <= 0) {
-			// todo : terminée, envoyer une notif
-			if ($cart.products.length > 0) {
-				return routerInstance.goTo(CartRoutes.Resume);
-			} else {
-				return routerInstance.goTo(SearchProductsRoutes.Search);
-			}
+	$: if (!$cart.isInitializing && (!$cart.userCurrentOrder || $cart.products.length <= 0)) {
+		// todo : terminée, envoyer une notif
+		if ($cart.products.length > 0) {
+			 routerInstance.goTo(CartRoutes.Resume);
+		} else {
+			 routerInstance.goTo(SearchProductsRoutes.Search);
 		}
+	}
 
+	onMount(async () => {
 		const values = routerInstance.getQueryParams();
 
 		paymentError = values["message"] || null;
@@ -94,21 +99,89 @@
 
 	const handleSubmit = async () => {
 		isPaying = true;
-		var res = await graphQLInstance.mutate(
-			PAY_ORDER,
-			{ id: $cart.userCurrentOrder },
-			errorsHandler.Uuid
-		);
+		cardError = null;
 
-		if (!res.success) {
-			// todo
+		await createCardRegistration($authUserAccount.profile.sub);
+
+		$card.data.cardExpirationDate = `${$card.month.toString()}${$card.year.toString().substring(2)}`;
+		$card.data.cardCvx = $card.data.cardCvx.toString();
+
+		mangoPay.cardRegistration.registerCard({
+			...$card.data,
+			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
+		}, async (res) => {
+			const preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
+				orderId: $cart.userCurrentOrder,
+				cardIdentifier: res.CardId,
+				browserInfo: {
+					colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
+					javaEnabled: navigator.javaEnabled(),
+					javascriptEnabled: true,
+					language: navigator.language,
+					screenHeight: window.screen.height,
+					screenWidth: window.screen.width,
+					timeZoneOffset: new Date().getTimezoneOffset().toString(),
+					userAgent: navigator.userAgent
+				}
+			}, errorsHandler.Uuid);
+
+			if (!preAuthorizationResult.success) {
+				isPaying = false;
+				//TODO handle server error
+				return;
+			}
+			if(preAuthorizationResult.data.status == PreAuthorizationStatus.Failed){
+				isPaying = false;
+				//TODO handle authorization error
+				return;
+			}
+
+			if (preAuthorizationResult.data.secureModeRedirectURL) {
+				window.location = preAuthorizationResult.data.secureModeRedirectURL;
+				return;
+			} else {
+				isPaying = false;
+				return routerInstance.goTo({ 
+					Path: CartRoutes.Success.Path, 
+					Params: {
+						Query: {
+							id: $cart.userCurrentOrder
+						}
+					}
+				})
+			}
+		}, async (response) => {
 			isPaying = false;
+
+			switch (response.ResultMessage) {
+				case 'PAST_EXPIRY_DATE_ERROR':
+					cardError =  'La date d\'expiration de votre carte est passée.';
+					break;
+				default:
+					cardError = 'Les informations de votre carte ne sont pas valides.';
+					break;
+			}
+			console.log(response.ResultCode);
+			console.log(response.ResultMessage);
+		});
+	};
+
+	const createCardRegistration = async (userId) => {
+		var cardRegistrationResult = await graphQLInstance.mutate(CREATE_CARD_REGISTRATION, { userId }, errorsHandler.Uuid);
+		if (!cardRegistrationResult.success) {
+			//TODO handle error
 			return;
 		}
 
-		localStorage.setItem("user_last_transaction", res.data.identifier);
-		window.location = res.data.redirectUrl;
-	};
+		await mangoPay.cardRegistration.init({
+			cardRegistrationURL: cardRegistrationResult.data.url,
+			preregistrationData: cardRegistrationResult.data.preRegistrationData,
+			accessKey: cardRegistrationResult.data.accessKey,
+			Id: cardRegistrationResult.data.identifier,
+		});
+
+		console.log(mangoPay);
+  	}
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
@@ -176,11 +249,11 @@
 				on:click={handleSubmit}>Réessayer</button>
 		</div>
 	{/if}
-	<ErrorCard {errorsHandler} />
 	<div
 		class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0"
 		in:fly|local={{ x: 300, duration: 300 }}>
-		<div class="w-full lg:w-7/12">
+		<div class="w-full lg:w-8/12">
+			<ErrorCard {errorsHandler} />
 			{#if step == 1}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
 					<FacturationForm
@@ -190,7 +263,7 @@
 				</div>
 			{:else if step == 2}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<PaymentInfoForm
+					<SummaryForm
 						bind:user
 						bind:step
 						{isSavingLegals}
@@ -200,93 +273,102 @@
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
-				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 lg:py-8 static lg:block bg-white
-					shadow w-full border-t border-gray-400 lg:border-none lg:mt-0"
+				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 xl:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
 				style="height: fit-content;">
-				<div>
-					<div class="flex justify-between w-full lg:px-3 pb-2">
-						<div class="text-left">
-							<p>Panier</p>
-							<p class="text-sm text-gray-600">
-								{$cart.productsCount} articles
-								{#if $cart.returnablesCount >= 1}
-									dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
-								{/if}
-							</p>
-						</div>
-						<div class="text-right">
-							<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
-							{#if $cart.returnablesCount >= 1}
-								<p class="text-blue-500 font-medium text-sm">
-									dont 
-									<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
-									{formatMoney($cart.totalReturnableOnSalePrice)}
+				<CreditCard on:submit={handleSubmit} {isPaying} {cardError} showCard={step == 2}>
+					<div>
+						<div class="flex justify-between w-full pb-2">
+							<div class="text-left">
+								<p>Panier</p>
+								<p class="text-sm text-gray-600">
+									{$cart.productsCount} articles
+									{#if $cart.returnablesCount >= 1}
+										dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
+									{/if}
 								</p>
+							</div>
+							<div class="text-right">
+								<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
+								{#if $cart.returnablesCount >= 1}
+									<p class="text-blue-500 font-medium text-sm">
+										dont 
+										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
+										{formatMoney($cart.totalReturnableOnSalePrice)}
+									</p>
+								{/if}
+							</div>
+						</div>
+						<div class="flex justify-between w-full pb-2">
+							<div class="text-left">
+								<p>Frais bancaires</p>
+								<p class="leading-none text-gray-600 text-sm">
+									<button class="btn-link" on:click={showTransactionInfo}>C'est
+										quoi ?</button>
+								</p>
+							</div>
+							<div>
+								<p class="font-medium">{formatMoney($cart.totalFees)}</p>
+							</div>
+						</div>
+						{#if $cart.donation > 0}
+							<div class="flex justify-between w-full pb-2">
+								<div class="text-left">
+									<p>Don</p>
+								</div>
+								<div>
+									<p class="font-medium">{formatMoney($cart.donation)}</p>
+								</div>
+							</div>
+						{/if}
+						<div
+							class="flex justify-between w-full border-b border-gray-400 pb-2 text-lg">
+							<div class="text-left">
+								<p class="uppercase font-semibold">Total</p>
+							</div>
+							<div>
+								<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
+							</div>
+						</div>
+						<div class="mt-3">
+							{#if step == 2}
+								<!-- <button
+									type="button"
+									on:click={handleSubmit}
+									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+										justify-center m-auto"
+									class:disabled={isPaying || invalidPaymentForm}
+									disabled={isPaying || invalidPaymentForm}
+									style="padding-left: 50px; padding-right: 50px;">
+									{#if isPaying}
+										<Icon data={faCircleNotch} spin />
+									{:else}Commander{/if}
+								</button> -->
+							{:else if step !== 2}
+								<button
+									type="button"
+									on:click={handleSubmitLegals}
+									class:disabled={isSavingLegals || facturationFormInvalid}
+									class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
+										justify-center m-auto"
+									style="padding-left: 50px; padding-right: 50px;">
+									Suivant {#if isSavingLegals}
+										<Icon data={faCircleNotch} spin class="ml-2" />
+									{/if}
+								</button>
 							{/if}
 						</div>
 					</div>
-					<div class="flex justify-between w-full lg:px-3 pb-2">
-						<div class="text-left">
-							<p>Frais bancaires</p>
-							<p class="leading-none text-gray-600 text-sm">
-								<button class="btn-link" on:click={showTransactionInfo}>C'est
-									quoi ?</button>
-							</p>
-						</div>
-						<div>
-							<p class="font-medium">{formatMoney($cart.totalFees)}</p>
-						</div>
-					</div>
-					{#if $cart.donation > 0}
-						<div class="flex justify-between w-full lg:px-3 pb-2">
-							<div class="text-left">
-								<p>Don</p>
-							</div>
-							<div>
-								<p class="font-medium">{formatMoney($cart.donation)}</p>
-							</div>
-						</div>
-					{/if}
-					<div
-						class="flex justify-between w-full lg:px-3 border-t border-gray-400
-							pt-2">
-						<div class="text-left">
-							<p class="uppercase font-semibold">Total</p>
-						</div>
-						<div>
-							<p class="font-bold text-lg">{formatMoney($cart.totalPrice)}</p>
-						</div>
-					</div>
-					<div class="mt-3">
-						{#if step == 2}
-							<button
-								type="button"
-								on:click={handleSubmit}
-								disabled={isPaying}
-								class:disabled={isPaying}
-								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-								style="padding-left: 50px; padding-right: 50px;">
-								{#if isPaying}
-									<Icon data={faCircleNotch} spin />
-								{:else}Commander{/if}
-							</button>
-						{:else}
-							<button
-								type="button"
-								on:click={handleSubmitLegals}
-								class:disabled={isSavingLegals || facturationFormInvalid}
-								class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
-									justify-center m-auto"
-								style="padding-left: 50px; padding-right: 50px;">
-								Suivant {#if isSavingLegals}
-									<Icon data={faCircleNotch} spin class="ml-2" />
-								{/if}
-							</button>
-						{/if}
-					</div>
-				</div>
+				</CreditCard>
 			</div>
 		</div>
 	</div>
 {/if}
+
+<style lang="scss">
+	.follow-screen {
+		@media(min-width: 1024px) {
+			position: fixed;
+			width: inherit;
+		}
+	}
+</style>

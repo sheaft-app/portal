@@ -4,6 +4,10 @@ export const config = {
 	api: "https://localhost:5003",
 	signalr: "https://sprint.signalr.sheaft.com",
 	content: "https://sprint.content.sheaft.com",
+	psp: {
+		clientId:"sheaft-sprint",
+		url:"https://api.sandbox.mangopay.com"
+	},
 	auth: {
 		url: "https://sprint.auth.sheaft.com",
 		settings: {

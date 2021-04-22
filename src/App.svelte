@@ -31,8 +31,14 @@
   import OidcRoutes from "./routes/oidc/routes";
   import { notificationsCount } from "./components/notifications/store";
   import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
+  import mangoPay from './../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
+  
+  
+  mangoPay.cardRegistration.baseURL = config.psp.url;
+  mangoPay.cardRegistration.clientId = config.psp.clientId;
+  
+  $: isLoading = true;
 
-	$: isLoading = true;
 
 	if ("serviceWorker" in navigator) {
 		navigator.serviceWorker.register("./sw.js", {scope: "./"});

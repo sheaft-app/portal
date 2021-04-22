@@ -91,3 +91,24 @@ export const UPDATE_CONSUMER_LEGALS = gql`
 		}
 	}
 `;
+
+export const CREATE_CARD_REGISTRATION = gql`
+	mutation createCardRegistration {
+		createCardRegistration {
+			identifier
+			url
+			preRegistrationData
+			accessKey
+		}
+	}
+`;
+
+export const CREATE_PRE_AUTHORIZATION = gql`
+	mutation createPreAuthorization($input: CreatePreAuthorizationInput!) {
+		prepayOrder(input: $input) {
+			id
+			status
+			secureModeRedirectURL
+		}
+	}
+`;
