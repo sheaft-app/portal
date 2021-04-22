@@ -7,7 +7,8 @@ let enums = {
 	Contact: { Value: "CONTACT", Label: "Contact"},
 };
 
-let AddressKind = {	
+let AddressKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

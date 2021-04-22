@@ -8,7 +8,8 @@ let enums = {
     Ingredient: { Value: "INGREDIENT", Label: "Ingrédient"}
 }
 
-let TagKind = {	
+let TagKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

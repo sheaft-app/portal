@@ -12,6 +12,7 @@ let enums = {
 };
 
 let DeliveryKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

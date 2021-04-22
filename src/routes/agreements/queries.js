@@ -1,24 +1,55 @@
 import gql from "graphql-tag";
 
 export const GET_AGREEMENTS = gql`
-	query GetAgreements {
-		agreements {
-			nodes {
-				id
-				status
-				createdOn
-				store {
-					id
-					name
+	query GetAgreements(
+		$first: PaginationAmount
+		$after: String
+		$last: PaginationAmount
+		$before: String
+		$orderBy: AgreementSort
+		$where: AgreementFilter
+	) {
+		agreements (
+			first: $first,
+			after: $after,
+			last: $last,
+			before: $before,
+			order_by: $orderBy
+			where: $where) {
+				pageInfo {
+					startCursor
+					endCursor
+					hasNextPage
+					hasPreviousPage
 				}
-				delivery {
-					producer {
+				totalCount
+				edges {
+					cursor
+					node {
 						id
-						name
+						status
+						createdOn
+						store {
+							id
+							name
+						}
+						delivery {
+							producer {
+								id
+								name
+							}
+						}
+						selectedHours{
+							day
+							from
+							to
+						}
+						catalog{
+							name
+						}
 					}
 				}
 			}
-		}
 	}
 `;
 
@@ -28,11 +59,6 @@ export const GET_AGREEMENT_DETAILS = gql`
 			id
 			status
 			createdOn
-			selectedHours {
-				day
-				from
-				to
-			}
 			store {
 				id
 				name
@@ -58,6 +84,14 @@ export const GET_AGREEMENT_DETAILS = gql`
 					phone
 					email
 				}
+			}
+			selectedHours{
+				day
+				from
+				to
+			}
+			catalog{
+				name
 			}
 		}
 	}

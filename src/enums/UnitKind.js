@@ -8,7 +8,8 @@ let enums = {
     NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
 }
 
-let UnitKind = {	
+let UnitKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

@@ -11,7 +11,8 @@ let enums = {
 	Expired: { Value: "EXPIRED", Label: "Expiré", Color:"gray"},
 };
 
-let ProcessStatusKind = {	
+let ProcessStatusKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

@@ -4,7 +4,7 @@
   import Loader from "./../../components/Loader.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
-  import { faTruck, faHourglass, faCheck, faMapMarkerAlt, faTimesCircle, faPhone, faEnvelope, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+  import { faTruck, faMapMarkerAlt, faPhone, faEnvelope, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetAuthInstance from "./../../services/SheaftAuth.js";

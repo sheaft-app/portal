@@ -9,7 +9,8 @@ let enums = {
 	ExportAccountData: { Value: "EXPORT_ACCOUNT_DATA", Label: "Export RGPD"},
 };
 
-let JobKind = {	
+let JobKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

@@ -6,7 +6,8 @@ let enums = {
 	Individual: { Value: "INDIVIDUAL", Label: "Individuel"},
 };
 
-let LegalKind = {	
+let LegalKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

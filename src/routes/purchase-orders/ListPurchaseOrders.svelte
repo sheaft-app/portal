@@ -1,7 +1,7 @@
 <script>
-	import { onMount, getContext } from "svelte";
+	import {onMount, getContext} from "svelte";
 	import Icon from "svelte-awesome";
-	import { format } from "date-fns";
+	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "../../components/table/Table.svelte";
@@ -19,7 +19,7 @@
 	import ProcessPurchaseOrders from "./ProcessPurchaseOrders.svelte";
 	import CompletePurchaseOrders from "./CompletePurchaseOrders.svelte";
 	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
-  import Select from "./../../components/controls/select/Select.js";
+	import Select from "./../../components/controls/select/Select.js";
 	import {
 		canCreatePickingOrders,
 		canCancelOrders,
@@ -30,7 +30,7 @@
 		canDeliverOrders,
 		canShipOrders,
 	} from "./validators";
-	import { formatMoney } from "./../../helpers/app";
+	import {formatMoney} from "./../../helpers/app";
 	import {
 		GET_ORDERS,
 		HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
@@ -53,20 +53,20 @@
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import { toggleMoreActions } from "./../../stores/app";
+	import {toggleMoreActions} from "./../../stores/app";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
 	const graphQLInstance = GetGraphQLInstance();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 
 	const headers = [
-		{ name: "Commande", sortLabel: "reference" },
-		{ name: "Panier" },
-		{ name: "Livraison/Récupération", displayOn: "md" },
-		{ name: "Statut", displayOn: "md" },
-		{ name: "Passée le", displayOn: "md", sortLabel: "createdOn" },
+		{name: "Commande", sortLabel: "reference"},
+		{name: "Panier"},
+		{name: "Livraison/Récupération", displayOn: "md"},
+		{name: "Statut", displayOn: "md"},
+		{name: "Passée le", displayOn: "md", sortLabel: "createdOn"},
 	];
 
 	let selectedItems = [];
@@ -160,7 +160,7 @@
 	};
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(PurchaseOrderRoutes.Details, { id: item.id });
+		routerInstance.goTo(PurchaseOrderRoutes.Details, {id: item.id});
 	};
 
 	$: hasSelectedOneItem =
@@ -243,13 +243,13 @@
 </svelte:head>
 
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
+	<ErrorCard {errorsHandler}/>
 	{#if hasPendingJobs}
 		<div
 			class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
 			text-gray-600 shadow rounded mb-5">
 			<div class="flex">
-				<Icon data={faCircleNotch} spin scale="1.3" class="mr-5" />
+				<Icon data={faCircleNotch} spin scale="1.3" class="mr-5"/>
 				<div>
 					<p class="uppercase font-bold leading-none mb-2">
 						Génération de bons de préparations
@@ -273,95 +273,93 @@
 		</div>
 	{/if}
 	{#if !noResults}
-		<Actions {actions} selectedItemsNumber={selectedItems.length} />
-	{/if}
-	<Table
-		let:rowItem={order}
-		bind:items
-		bind:noResults
-		{headers}
-		{isLoading}
-		graphQuery={GET_ORDERS}
-		{errorsHandler}
-		defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
-		bind:selectedItems
-		disableRowSelection={(order) => order && (order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Refused.Value || order.status == PurchaseOrderStatusKind.Delivered.Value)}
-		{getRowBackgroundColor}
-		{onRowClick}>
-		<section slot="filters">
-			<div class="themed">
-				<Select
-					isMulti={true}
-					bind:selectedValue={selectedStatus}
-					optionIdentifier="value"
-					placeholder="N'afficher que les commandes avec le statut..."
-					items={filterStatus}
-				/>
-			</div>
-		</section>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(order.status)} block md:hidden">
-				{PurchaseOrderStatusKind.label(order.status)}
-			</div>
-			<div
-				class="text-sm leading-5 font-medium text-gray-900 truncate"
-				style="max-width: 180px;">
-				{order.sender.name}
-			</div>
-			<div class="text-sm leading-5 text-gray-600">#{order.reference}</div>
-		</td>
-		<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-			<div class="text-sm leading-5 text-gray-900">
-				{formatMoney(order.totalOnSalePrice)}
-			</div>
-			<div class="text-sm leading-5 text-gray-600">
-				{order.productsCount} produits
-			</div>
-		</td>
-		<td
-			class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
-			{#if order.expectedDelivery.expectedDeliveryDate}
-				<div>
-					<p>
-						<Icon data={faCalendarAlt} scale=".8" class=" inline" />
-						{format(
-							new Date(order.expectedDelivery.expectedDeliveryDate),
-							'PP',
-							{
-								locale: fr,
-							}
-						)}
-					</p>
-					<p class="text-gray-600">
-						<Icon data={faMapMarkerAlt} scale=".8" class=" inline" />
-						{DeliveryKind.label(order.expectedDelivery.kind)}
-					</p>
+		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		<Table
+			let:rowItem={order}
+			bind:items
+			bind:noResults
+			{headers}
+			{isLoading}
+			graphQuery={GET_ORDERS}
+			{errorsHandler}
+			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
+			bind:selectedItems
+			disableRowSelection={(order) => order && (order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Refused.Value || order.status == PurchaseOrderStatusKind.Delivered.Value)}
+			{getRowBackgroundColor}
+			{onRowClick}>
+			<section slot="filters">
+				<div class="themed">
+					<Select
+						isMulti={true}
+						bind:selectedValue={selectedStatus}
+						optionIdentifier="value"
+						placeholder="N'afficher que les commandes avec le statut..."
+						items={filterStatus}
+					/>
 				</div>
-			{/if}
-		</td>
-		<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
+			</section>
+			<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
+				<div class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(order.status)} block md:hidden">
+					{PurchaseOrderStatusKind.label(order.status)}
+				</div>
+				<div
+					class="text-sm leading-5 font-medium text-gray-900 truncate"
+					style="max-width: 180px;">
+					{order.sender.name}
+				</div>
+				<div class="text-sm leading-5 text-gray-600">#{order.reference}</div>
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
+				<div class="text-sm leading-5 text-gray-900">
+					{formatMoney(order.totalOnSalePrice)}
+				</div>
+				<div class="text-sm leading-5 text-gray-600">
+					{order.productsCount} produits
+				</div>
+			</td>
+			<td
+				class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+				{#if order.expectedDelivery.expectedDeliveryDate}
+					<div>
+						<p>
+							<Icon data={faCalendarAlt} scale=".8" class=" inline"/>
+							{format(
+								new Date(order.expectedDelivery.expectedDeliveryDate),
+								'PP',
+								{
+									locale: fr,
+								}
+							)}
+						</p>
+						<p class="text-gray-600">
+							<Icon data={faMapMarkerAlt} scale=".8" class=" inline"/>
+							{DeliveryKind.label(order.expectedDelivery.kind)}
+						</p>
+					</div>
+				{/if}
+			</td>
+			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
 				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full
 				{order.status == PurchaseOrderStatusKind.Delivered.Value ? `bg-white border border-green-500 text-green-500` : `bg-${PurchaseOrderStatusKind.color(order.status)} text-white`}">
 				{PurchaseOrderStatusKind.label(order.status)}
 			</span>
-		</td>
-		<td
-			class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
-			<div>
-				<p>
-					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
-					{format(new Date(order.createdOn), 'PP', { locale: fr })}
-				</p>
-				<p class="text-gray-600">
-					<Icon data={faClock} scale=".8" class=" inline" />
-					{format(new Date(order.createdOn), 'p', { locale: fr })}
-				</p>
-			</div>
-		</td>
-	</Table>
-
-	{#if noResults}
+			</td>
+			<td
+				class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+				<div>
+					<p>
+						<Icon data={faCalendarAlt} scale=".8" class=" inline"/>
+						{format(new Date(order.createdOn), 'PP', {locale: fr})}
+					</p>
+					<p class="text-gray-600">
+						<Icon data={faClock} scale=".8" class=" inline"/>
+						{format(new Date(order.createdOn), 'p', {locale: fr})}
+					</p>
+				</div>
+			</td>
+		</Table>
+	{:else}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">
 				<p>Aucune commande pour le moment.</p>
@@ -370,7 +368,7 @@
 					src="/img/no_orders.svg"
 					class="m-auto"
 					style="width: 200px; height: auto"
-					alt="Aucune commande ici" />
+					alt="Aucune commande ici"/>
 			</div>
 		</div>
 	{/if}
@@ -378,7 +376,7 @@
 
 <style lang="scss">
 	.themed {
-    --cursor: pointer;
+		--cursor: pointer;
 		--multiItemMargin: 5px 2px;
 		--multiItemActiveBG: #ebedef;
 		--multiItemDisabledHoverBg: #ebedef;
@@ -389,7 +387,7 @@
 	tr {
 		&:hover {
 			box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0,
-				0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+			0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
 		}
 	}
 
@@ -399,8 +397,7 @@
 		transition: background 0.8s;
 
 		&:hover {
-			background: #f7fafc radial-gradient(circle, transparent 1%, #edf2f7 1%)
-				center/15000%;
+			background: #f7fafc radial-gradient(circle, transparent 1%, #edf2f7 1%) center/15000%;
 		}
 
 		&:active {
