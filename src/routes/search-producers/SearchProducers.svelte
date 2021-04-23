@@ -129,7 +129,7 @@
 		}
 
 		response.data.map((a) => {
-			let producer = prevFeed.find((p) => p.id === a.delivery.producer.id);
+			let producer = prevFeed.find((p) => p.id === a.producer.id);
 			if (producer) {
 				if (
 					a.status == AgreementStatusKind.WaitingForProducerApproval.Value ||

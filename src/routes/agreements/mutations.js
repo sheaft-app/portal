@@ -12,7 +12,7 @@ export const CANCEL_AGREEMENTS = gql`
 `
 
 export const ACCEPT_AGREEMENTS = gql`
-	mutation acceptAgreement($input: AcceptAgreementsInput!) {
+	mutation acceptAgreements($input: AcceptAgreementsInput!) {
 		acceptAgreements(input: $input) {
 			nodes {
 				id

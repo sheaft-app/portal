@@ -59,10 +59,8 @@ export const GET_AGREEMENTS = gql`
 				store {
 					id
 				}
-				delivery {
-					producer {
-						id
-					}
+				producer {
+					id
 				}
 			}
 		}
@@ -102,10 +100,11 @@ export const GET_STORE_AGREEMENTS = gql`
 `;
 
 export const GET_DELIVERIES = gql`
-	query GetDelivery {
+	query GetDeliveries {
 		deliveries(first: 50, where: { kind_in: [PRODUCER_TO_STORE] }) {
 			nodes {
 				id
+				name
 				kind
 				openingHours {
 					day

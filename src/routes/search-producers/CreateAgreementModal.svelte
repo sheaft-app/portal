@@ -20,7 +20,7 @@
 			CREATE_AGREEMENT,
 			{
 				storeId,
-				deliveryModeId: producer.delivery.id,
+				producerId: producer.id
 			},
 			errorsHandler.Uuid,
 			GET_AGREEMENTS

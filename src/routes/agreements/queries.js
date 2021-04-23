@@ -34,17 +34,15 @@ export const GET_AGREEMENTS = gql`
 							name
 						}
 						delivery {
-							producer {
-								id
-								name
-							}
+							id
+							name
 						}
-						selectedHours{
-							day
-							from
-							to
+						producer {
+							id
+							name
 						}
 						catalog{
+							id
 							name
 						}
 					}
@@ -72,25 +70,23 @@ export const GET_AGREEMENT_DETAILS = gql`
 				email
 			}
 			delivery {
-				producer {
-					id
-					name
-					address {
-						line1
-						line2
-						city
-						zipcode
-					}
-					phone
-					email
-				}
+				id
+				name
 			}
-			selectedHours{
-				day
-				from
-				to
+			producer {
+				id
+				name
+				address {
+					line1
+					line2
+					city
+					zipcode
+				}
+				phone
+				email
 			}
 			catalog{
+				id
 				name
 			}
 		}

@@ -13,6 +13,7 @@
   import AgreementRoutes from "../agreements/routes";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 import { config } from "../../configs/config.js";
+	import {authUserAccount} from "../../stores/auth";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
@@ -92,6 +93,7 @@ import { config } from "../../configs/config.js";
     open(CreateAgreementModal, {
       submit: () => {},
       store,
+			producerId: $authUserAccount.profile.sub,
       onClosed: res => {
         if (res.success) {
           store.agreement = { id: res.data.id, status: res.data.status };
@@ -101,7 +103,7 @@ import { config } from "../../configs/config.js";
       }
     });
   };
-  
+
   onDestroy(() => openings = []);
 
   $: if ($selectedItem) openAndLoad($selectedItem);
@@ -120,7 +122,7 @@ import { config } from "../../configs/config.js";
     <span>Fermer</span>
   </button>
 </div>
-{#if storeDoesntExist} 
+{#if storeDoesntExist}
   <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
     <p class="text-center">Mince, il semblerait que ce magasin n'existe plus !</p>
   </div>
@@ -148,8 +150,7 @@ import { config } from "../../configs/config.js";
     <div class="-mx-10 relative">
       <div
         style="background-position: center; background-image:
-        url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=953&q=80
-        '); background-size: cover;"
+        url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=953&q=80'); background-size: cover;"
         class="w-full rounded-t-md shadow-md h-40 lg:h-64" />
       {#if !store.agreement}
         <button

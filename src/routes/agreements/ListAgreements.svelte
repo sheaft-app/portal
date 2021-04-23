@@ -6,13 +6,10 @@
 	import SearchStoreRoutes from "./../search-stores/routes.js";
 	import SearchProducerRoutes from "./../search-producers/routes.js";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import Loader from "./../../components/Loader.svelte";
 	import {GET_AGREEMENTS} from "./queries.js";
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import {GET_JOBS} from "../jobs/queries";
-	import JobRoutes from "../jobs/routes";
 	import {faThumbsDown, faThumbsUp, faTimes} from "@fortawesome/free-solid-svg-icons";
 	import Actions from "../../components/table/Actions.svelte";
 	import Table from "../../components/table/Table.svelte";
@@ -21,12 +18,13 @@
 	import {faCalendarAlt, faClock} from "@fortawesome/free-solid-svg-icons";
 	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
-	import {ACCEPT_AGREEMENTS, CANCEL_AGREEMENTS, REFUSE_AGREEMENTS} from "./mutations";
 	import {getContext, onMount} from "svelte";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import {timeSpanToFrenchHour} from "../../helpers/app";
 	import Select from "../../components/controls/select/Select.svelte";
-	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
+	import AcceptAgreementModal from "./AcceptAgreementModal.svelte";
+	import RefuseAgreementModal from "./RefuseAgreementModal.svelte";
+	import CancelAgreementModal from "./CancelAgreementModal.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
@@ -40,6 +38,8 @@
 	$: isLoading = true;
 	let selectedStatus = null;
 
+	let isProducer = authInstance.isInRole(Roles.Producer.Value);
+
 	$: routerInstance.replaceQueryParams({
 		where: selectedStatus ? "status_in" : null,
 		whereValues: selectedStatus ? selectedStatus.map((s) => s.value) : null
@@ -50,6 +50,7 @@
 			agreements: selectedAgreements,
 			onClose: async (res) => {
 				if (res.success) {
+					//TODO hack this refresh (not refreshing when acceptAgreements...)
 					routerInstance.refresh();
 					selectedItems = [];
 				}
@@ -57,59 +58,36 @@
 		});
 	};
 
-	const handleAgreementsCommand = async (mutation) => {
-		isLoading = true;
-
-		var res = await graphQLInstance.mutate(
-			mutation,
-			{
-				ids: selectedItems.map((s) => s.id),
-			},
-			errorsHandler.Uuid,
-			GET_JOBS
-		);
-
-		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		selectedItems = [];
-	};
-
 	const onRowClick = (item) => {
 		routerInstance.goTo(AgreementRoutes.Details, {id: item.id});
 	};
 
-
 	const acceptAgreements = () => {
-		openModal(ACCEPT_AGREEMENTS, selectedItems);
+		openModal(AcceptAgreementModal, selectedItems);
 	};
 
 	const refuseAgreements = () => {
-		openModal(REFUSE_AGREEMENTS, selectedItems);
+		openModal(RefuseAgreementModal, selectedItems);
 	};
 
 	const cancelAgreements = () => {
-		openModal(CANCEL_AGREEMENTS, selectedItems);
+		openModal(CancelAgreementModal, selectedItems);
 	};
 
 	$: canAcceptAgreements =
 		selectedItems.length > 0 &&
 		selectedItems.filter(
 			(o) =>
-				o.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
-				o.status == AgreementStatusKind.WaitingForStoreApproval.Value
+				o.status == AgreementStatusKind.WaitingForProducerApproval.Value && isProducer ||
+				o.status == AgreementStatusKind.WaitingForStoreApproval.Value && !isProducer
 		).length == selectedItems.length;
 
 	$: canRefuseAgreements =
 		selectedItems.length > 0 &&
 		selectedItems.filter(
 			(o) =>
-				o.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
-				o.status == AgreementStatusKind.WaitingForStoreApproval.Value
+				o.status == AgreementStatusKind.WaitingForProducerApproval.Value && isProducer ||
+				o.status == AgreementStatusKind.WaitingForStoreApproval.Value && !isProducer
 		).length == selectedItems.length;
 
 	$: canCancelAgreements =
@@ -227,7 +205,8 @@
 				</div>
 			</section>
 			<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 text-gray-800">{authInstance.isInRole(Roles.Store.Value) ? agreement.delivery.producer.name : agreement.store.name}</div>
+				<div
+					class="text-sm leading-5 text-gray-800">{authInstance.isInRole(Roles.Store.Value) ? agreement.producer.name : agreement.store.name}</div>
 			</td>
 			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
@@ -252,7 +231,9 @@
 			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
 				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full">
-				{@html getFormattedSelectedHours(agreement.selectedHours)}
+				{#if agreement.delivery}
+					{@html getFormattedSelectedHours(agreement.delivery.deliveryHours)}
+				{/if}
 			</span>
 			</td>
 		</Table>

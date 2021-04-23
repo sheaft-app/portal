@@ -77,7 +77,7 @@
 
     if (
       agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value &&
-      agreement.delivery.producer.id == authManager.user.profile.sub
+      agreement.producer.id == authManager.user.profile.sub
     )
       return true;
 
@@ -204,7 +204,7 @@
                   </div>
                 </div>
                 <h4 class="mt-1 font-semibold text-lg leading-tight truncate">
-                  {agreement.delivery.producer.name}
+                  {agreement.producer.name}
                 </h4>
                 <div class="mt-1">
                   <p class="text-base mb-1">
@@ -212,9 +212,9 @@
                       data={faPhone}
                       class="mr-1 inline"
                       style="margin-bottom: 1px; width: 20px;" />
-                    {#if agreement.delivery.producer.phone}
-                      <a href="tel:{agreement.delivery.producer.phone}">
-                        {agreement.delivery.producer.phone}
+                    {#if agreement.producer.phone}
+                      <a href="tel:{agreement.producer.phone}">
+                        {agreement.producer.phone}
                       </a>
                     {:else}Non renseigné{/if}
                   </p>
@@ -223,8 +223,8 @@
                       data={faEnvelope}
                       class="mr-1 inline"
                       style="margin-bottom: 3px; width: 20px;" />
-                    <a href="mailto:{agreement.delivery.producer.email}">
-                      {agreement.delivery.producer.email}
+                    <a href="mailto:{agreement.producer.email}">
+                      {agreement.producer.email}
                     </a>
                   </p>
                   <div class="text-base flex">
@@ -234,14 +234,14 @@
                       style="margin-bottom: 3px; width: 20px;" />
                     <div class="leading-none">
                       <div class="mb-1">
-                        {agreement.delivery.producer.address.line1}
+                        {agreement.producer.address.line1}
                       </div>
-                      {#if agreement.delivery.producer.address.line2}
-                        <div>{agreement.delivery.producer.address.line2}</div>
+                      {#if agreement.producer.address.line2}
+                        <div>{agreement.producer.address.line2}</div>
                       {/if}
                       <div>
-                        {agreement.delivery.producer.address.zipcode}
-                        {agreement.delivery.producer.address.city}
+                        {agreement.producer.address.zipcode}
+                        {agreement.producer.address.city}
                       </div>
                     </div>
                   </div>
@@ -305,15 +305,15 @@
             </div>
           </div>
         {/if}
-        {#if agreement.selectedHours.length > 0}
+        {#if agreement.delivery && agreement.delivery.openingHours && agreement.delivery.openingHours.length > 0}
           <div class="w-full lg:w-1/2 bg-white p-6 md:rounded md:shadow border-t border-gray-400 md:border-none">
             <div class="flex">
               <Icon data={faTruck} scale="1.3" class="mr-5" />
               <div>
                 <p class="uppercase font-bold leading-none mb-2">
-                  Créneaux de livraison choisis :
+                  Créneaux de livraison :
                 </p>
-                {#each agreement.selectedHours as selectedHour}
+                {#each agreement.delivery.openingHours as selectedHour}
                   <div class="mb-2">
                     <p style="min-width: 100px;">
                       Le {DayOfWeekKind.label(selectedHour.day).toLowerCase()}

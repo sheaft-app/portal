@@ -85,11 +85,9 @@ export const GET_AGREEMENTS = gql`
 				store {
 					id
 				}
-				delivery {
-					producer {
+				producer {
 						id
 					}
-				}
 			}
 		}
 	}
