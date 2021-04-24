@@ -81,6 +81,7 @@
 		graphQuery={GET_SELLING_POINTS}
 		{errorsHandler}
 		{onRowClick}
+		getRowBackgroundColor={(i) => !i.available ? 'bg-orange-200' : ''}
 		headers={[{ name: 'Nom' }, { name: 'Adresse' }, { name: 'Type' }]}
 		let:rowItem={sellingPoint}
 	>
