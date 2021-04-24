@@ -291,8 +291,17 @@
 						</button> -->
 				</div>
 			</div>
-			<ProducerOtherProducts productParentId={product.id} producerName={product.producer.name}
-														 producerId={product.producer.id} {errorsHandler}/>
+			<ProducerOtherProducts 
+				productParentId={product.id} 
+				producerName={product.producer.name}
+				producerId={product.producer.id} {errorsHandler}
+				breakpoints={{
+					1025: {
+						slidesPerView: 4,
+						spaceBetween: 10
+					}
+				}} 
+			/>
 			<div class="flex flex-wrap justify-between mt-5">
 				<div class="lg:w-2/3 w-full">
 					<div

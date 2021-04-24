@@ -13,11 +13,12 @@
 	import GetGraphQLInstance from "./../services/SheaftGraphQL.js";
 	import {GET_PRODUCER_PRODUCTS} from "./queries.js";
 
-	export let productParentId, producerName, producerId, errorsHandler;
+	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
 
 	const graphQLInstance = GetGraphQLInstance();
 
 	let productsSuggestions = [];
+	let ref = null;
 
 	SwiperCore.use([Navigation]);
 
@@ -29,8 +30,8 @@
 	});
 
 	const handleSlideChange = (e) => {
-		const nextButton = document.getElementsByClassName('swiper-button-next')[0];
-		const prevButton = document.getElementsByClassName('swiper-button-prev')[0];
+		const nextButton = ref.$$.ctx[6]; // todo : find a better way
+		const prevButton = ref.$$.ctx[5]; // todo : find a better way
 
 		let elem = e.detail[0];
 		// C'est une slide ?
@@ -61,25 +62,23 @@
 	<Swiper
 		navigation
 		threshold={6}
+		bind:this={ref}
 		preventClicks={false}
 		preventClicksPropagation={false}
 		breakpoints={{
-        320: {
-            slidesPerView: 1,
-            spaceBetween: 0
-        },
-        375: {
-            slidesPerView: 2,
-            spaceBetween: 10
-        },
-        728: {
-            slidesPerView: 3,
-            spaceBetween: 10
-        },
-        1025: {
-            slidesPerView: 4,
-            spaceBetween: 10
-        }
+			320: {
+				slidesPerView: 1,
+				spaceBetween: 0
+			},
+			375: {
+				slidesPerView: 2,
+				spaceBetween: 10
+			},
+			728: {
+				slidesPerView: 3,
+				spaceBetween: 10
+			},
+			...breakpoints,
         }}
 		spaceBetween={20}
 		slidesPerView={2}
