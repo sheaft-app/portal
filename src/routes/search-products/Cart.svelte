@@ -58,6 +58,10 @@
   }
 
   onMount(() => {
+    if (localStorage.getItem("user_location") && !userPosition) {
+      userPosition = JSON.parse(localStorage.getItem("user_location"));
+    }
+
     window.addEventListener("popstate", popStateListener, false);
   })
 

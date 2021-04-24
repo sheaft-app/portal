@@ -292,16 +292,7 @@
 
 		return routerInstance.pushQueryParams({[queryParam]: ""});
 	};
-
-	const goToCart = () => {
-		if (authManager.authenticated) {
-			return routerInstance.goTo(CartRoutes.Resume);
-		}
-
-		loadToCart = true;
-		return authManager.login(CartRoutes.Resume.Path);
-	};
-
+	
 	onMount(async () => {
 		var newPosition = retrieveUserLocationInQueryString();
 		if (newPosition) {
