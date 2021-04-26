@@ -61,6 +61,14 @@
       isLoading = true;
       let variables = user;
 
+      if(user.tags){
+      	let tags = user.tags.map(t => t.id);
+				variables = {
+					...user,
+					tags
+				}
+			}
+
       if (user.openingHours) {
         let openingHours = normalizeOpeningHours(user.openingHours);
         variables = {

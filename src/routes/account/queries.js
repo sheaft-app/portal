@@ -45,6 +45,10 @@ export const GET_STORE_DETAILS = gql`
 				from
 				to
 			}
+			tags{
+				id
+				name
+			}
 		}
 	}
 `;
@@ -74,6 +78,10 @@ export const GET_PRODUCER_DETAILS = gql`
 			facebook
 			instagram
 			website
+			tags{
+				id
+				name
+			}
 		}
 	}
 `;

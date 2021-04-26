@@ -61,10 +61,8 @@ export const GET_AGREEMENT_DETAILS = gql`
 				id
 				name
 				address {
-					line1
-					line2
-					city
-					zipcode
+					latitude
+					longitude
 				}
 				phone
 				email
@@ -77,10 +75,8 @@ export const GET_AGREEMENT_DETAILS = gql`
 				id
 				name
 				address {
-					line1
-					line2
-					city
-					zipcode
+					latitude
+					longitude
 				}
 				phone
 				email

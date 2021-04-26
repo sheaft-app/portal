@@ -38,6 +38,7 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				id
 				name
 				onSalePricePerUnit
+				wholeSalePricePerUnit
 				picture
 				rating
 				quantityPerUnit

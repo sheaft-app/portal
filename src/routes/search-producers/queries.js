@@ -100,6 +100,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 			name
 			deliveries {
 				id
+				name
 				kind
 				address {
 					city

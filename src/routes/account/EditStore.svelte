@@ -30,8 +30,7 @@
 			country: "FR"
 		},
 		openingHours: [],
-
-		openForNewBusiness: false
+		openForNewBusiness: true
 	};
 
 	const storeForm = form(() => ({
