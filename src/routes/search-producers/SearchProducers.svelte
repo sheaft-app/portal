@@ -347,7 +347,7 @@
 		class="fixed overflow-y-scroll overflow-x-hidden shadow right-0 top-0
 		h-screen producer-details bg-white"
 		transition:fly={{ x: 600, duration: 300 }}
-		style="z-index: 10; padding-bottom: 60px;">
+		style="z-index: 10;">
 		<ProducerDetails />
 	</div>
 {/if}
