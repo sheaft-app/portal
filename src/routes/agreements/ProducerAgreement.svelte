@@ -1,14 +1,10 @@
 <script>
-	import {slide} from "svelte/transition";
 	import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
 	import Icon from "svelte-awesome";
 	import {
-		faChevronDown,
-		faChevronUp,
 		faMapMarkerAlt,
 		faPhone,
 		faEnvelope,
-		faChevronLeft
 	} from "@fortawesome/free-solid-svg-icons";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
@@ -21,6 +17,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import {GET_PRODUCER_DELIVERIES} from "../search-producers/queries";
 	import DeliveryKind from "../../enums/DeliveryKind";
+	import Loader from "../../components/Loader.svelte";
 
 	export let agreementDelivery, producerId, distanceInfos;
 
@@ -29,18 +26,20 @@
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
+	let isLoading = true;
 	let producer = null;
 	let deliveries = [];
 	let deliveryHours = [];
-	let producerDescriptionExpanded = false;
 
 	const getProducer = async id => {
+		isLoading = true;
 		var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
 			id: id
 		}, errorsHandler.Uuid);
 
 		if (!res.success) {
 			//TODO
+			isLoading = false;
 			routerInstance.goTo(AgreementRoutes.List);
 			return;
 		}
@@ -67,6 +66,7 @@
 		}
 
 		producer = res.data;
+		isLoading = false;
 	};
 
 	const getDeliveryHours = deliveryHours => {
@@ -82,7 +82,9 @@
 	})
 </script>
 
-{#if producer}
+{#if isLoading}
+	<Loader/>
+{:else}
 	<div class="mt-5">
 		<div
 			id="producer-card"
@@ -141,25 +143,6 @@
 			{#if producer.summary}
 				<div class="w-12/12 text-gray-600 py-5">
 					{producer.summary}
-				</div>
-			{/if}
-			<div
-				on:click={() => producerDescriptionExpanded = !producerDescriptionExpanded}
-				class:hidden={!producer.description}
-				class="rounded-b-lg w-full py-3 bg-white
-            text-center font-semibold flex
-            justify-center items-center cursor-pointer mt-2">
-				{#if !producerDescriptionExpanded}
-					<Icon data={faChevronDown} class="mr-2"/>
-					<span>En savoir plus sur le producteur</span>
-				{:else}
-					<Icon data={faChevronUp} class="mr-2"/>
-					<span>Replier le bandeau</span>
-				{/if}
-			</div>
-			{#if producerDescriptionExpanded && producer.description}
-				<div transition:slide id="producer-description" class="w-12/12 text-gray-600 py-5">
-					{producer.description}
 				</div>
 			{/if}
 			<div class="w-full">

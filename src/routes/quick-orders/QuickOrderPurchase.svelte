@@ -355,7 +355,7 @@
           class="text-center text-gray-600 flex w-full h-full justify-center
           items-center">
           <div>
-            <p class="text-2xl">Vous n'avez aucun producteur avec qui échanger.</p>
+            <p class="text-2xl">Vous n'avez aucun producteur avec qui commercer.</p>
             <p class="mb-5 text-2xl">Commençons par trouver des producteurs qui vous intéressent.</p>
             <button
               on:click={() => routerInstance.goTo(SearchProducerRoutes.Search)}

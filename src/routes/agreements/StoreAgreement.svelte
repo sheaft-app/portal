@@ -1,13 +1,9 @@
 <script>
-	import {slide} from "svelte/transition";
 	import Icon from "svelte-awesome";
 	import {
-		faChevronDown,
-		faChevronUp,
 		faMapMarkerAlt,
 		faPhone,
 		faEnvelope,
-		faChevronLeft
 	} from "@fortawesome/free-solid-svg-icons";
 	import {onMount} from "svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
@@ -18,6 +14,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
+	import Loader from "../../components/Loader.svelte";
 
 	export let storeId, distanceInfos;
 
@@ -30,21 +27,24 @@
 	let openings = [];
 	let deliveries = [];
 	let deliveryHours = [];
-	let storeDescriptionExpanded = false;
+	let isLoading = true;
 
 	const getStore = async id => {
+		isLoading = true;
 		var res = await graphQLInstance.query(GET_STORE_DETAILS, {
 			id: id
 		}, errorsHandler.Uuid);
 
 		if (!res.success) {
 			//TODO
+			isLoading = false;
 			routerInstance.goTo(AgreementRoutes.List);
 			return;
 		}
 
 		openings = groupBy(res.data.openingHours, item => [item.day]);
 		store = res.data;
+		isLoading = false;
 	};
 
 	onMount(async () => {
@@ -52,7 +52,9 @@
 	})
 </script>
 
-{#if store}
+{#if isLoading}
+	<Loader/>
+{:else}
 	<div class="mt-5">
 		<div
 			id="store-card"
@@ -110,25 +112,6 @@
 			{#if store.summary}
 				<div class="w-full text-gray-800 pt-5 pb-2">
 					{store.summary}
-				</div>
-			{/if}
-			<div
-				on:click={() => storeDescriptionExpanded = !storeDescriptionExpanded}
-				class:hidden={!store.description}
-				class="rounded-b-lg w-full mb-2 bg-white
-            text-center font-semibold flex
-            justify-center items-center cursor-pointer">
-				{#if !storeDescriptionExpanded}
-					<Icon data={faChevronDown} class="mr-2"/>
-					<span>En savoir plus sur le magasin</span>
-				{:else}
-					<Icon data={faChevronUp} class="mr-2"/>
-					<span>Replier le bandeau</span>
-				{/if}
-			</div>
-			{#if storeDescriptionExpanded && store.description}
-				<div transition:slide id="store-description" class="w-full text-gray-600 py-5">
-					{store.description}
 				</div>
 			{/if}
 			{#if store.tags && store.tags.length > 0}

@@ -12,6 +12,7 @@
 	import GetAuthInstance from "./../services/SheaftAuth.js";
 	import GetGraphQLInstance from "./../services/SheaftGraphQL.js";
 	import {GET_PRODUCER_PRODUCTS} from "./queries.js";
+	import Loader from "./Loader.svelte";
 
 	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
 
@@ -20,14 +21,22 @@
 
 	let productsSuggestions = [];
 	let ref = null;
+	let isLoading = true;
 
 	SwiperCore.use([Navigation]);
 
 	onMount(async () => {
 		if (producerId) {
+			isLoading = true;
 			const result = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {id: producerId}, errorsHandler.Uuid);
+			if (!result.success) {
+				isLoading = false;
+				return;
+			}
+
 			productsSuggestions = result.data.filter((p) => p.id !== productParentId);
 		}
+		isLoading = false;
 	});
 
 	const handleSlideChange = (e) => {
@@ -58,7 +67,9 @@
 	$: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
 </script>
 
-{#if productsSuggestions.length > 0}
+{#if isLoading}
+	<Loader/>
+{:else if productsSuggestions.length > 0}
 	<p
 		class="font-semibold pt-5 mb-3">{productParentId ? `Autres produits de ${producerName}` : `Produits de ${producerName}`}</p>
 	<Swiper
@@ -104,8 +115,7 @@
 							</div>
 						{/if}
 						<div
-							style="height: 95px; background-image: url({suggestion.picture}); background-size:
-                        cover; background-position: top;"
+							style="height: 95px; background-image: url({suggestion.picture}); background-size: cover; background-position: top;"
 							class:opacity-50={suggestedProductIsInCart(suggestion)}
 							class="transition duration-200 ease-in-out w-full rounded-t-md">
 							{#if suggestion.picture.includes("pictures/tags/images/") && !suggestedProductIsInCart(suggestion)}
@@ -170,4 +180,6 @@
 			</SwiperSlide>
 		{/each}
 	</Swiper>
+	{:else}
+	<p>Ce producteur ne possède pas de produits dans son catalogue</p>
 {/if}

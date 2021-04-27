@@ -82,7 +82,7 @@
 
 	const handleAgreementModal = (Modal, obj) => {
 		open(Modal, {
-			agreement: obj,
+			agreements: [obj],
 			onClose: async res => {
 				if (res.success) {
 					await getAgreement(agreement.id);

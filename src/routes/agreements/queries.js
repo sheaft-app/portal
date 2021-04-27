@@ -33,10 +33,6 @@ export const GET_AGREEMENTS = gql`
 							id
 							name
 						}
-						delivery {
-							id
-							name
-						}
 						producer {
 							id
 							name

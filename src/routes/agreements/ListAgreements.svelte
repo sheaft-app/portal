@@ -126,8 +126,7 @@
 	const headers = [
 		{name: authInstance.isInRole(Roles.Store.Value) ? "Producteur" : "Magasin"},
 		{name: "Statut", sortLabel: "status"},
-		{name: "Créé le", displayOn: "md", sortLabel: "createdOn"},
-		{name: "Livraisons"},
+		{name: "Créé le", displayOn: "md", sortLabel: "createdOn"}
 	];
 
 	const getFormattedSelectedHours = (selectedHours) => {
@@ -227,14 +226,6 @@
 						{format(new Date(agreement.createdOn), 'p', {locale: fr})}
 					</p>
 				</div>
-			</td>
-			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
-			<span
-				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full">
-				{#if agreement.delivery}
-					{@html getFormattedSelectedHours(agreement.delivery.deliveryHours)}
-				{/if}
-			</span>
 			</td>
 		</Table>
 	{:else}
