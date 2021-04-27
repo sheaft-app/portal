@@ -127,12 +127,12 @@ export const GET_PRODUCER_AGREEMENTS = gql`
 			input: $id
 			first: 50
 			where: {
-				status_in: [
+				status: { in: [
 					ACCEPTED
 					WAITING_FOR_PRODUCER_APPROVAL
 					WAITING_FOR_STORE_APPROVAL
 				]
-			}) {
+			}}) {
 			nodes {
 				id
 				status

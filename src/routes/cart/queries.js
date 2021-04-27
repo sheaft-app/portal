@@ -16,7 +16,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours(order: { expectedDeliveryDate: "ASC" }) {
 					day
 					from
 					to
@@ -29,7 +29,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 
 export const GET_MY_ORDERS = gql`
 	query MyOrders($ids: [Uuid!]) {
-		myOrders(where: { id_in: $ids }) {
+		myOrders(where: { id: { in: $ids }}) {
 			nodes {
 				id
 				reference

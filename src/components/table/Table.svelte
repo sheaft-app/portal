@@ -36,7 +36,6 @@
 	let _pagination = [];
 	let _searchValues = null;
 	let _take = null;
-	let _totalCount = 0;
 	let _pageInfo = {
 		hasPreviousPage: false,
 		hasNextPage: false,
@@ -99,7 +98,6 @@
 
 		_pageInfo = result.pageInfo;
 		_pagination.push(_pageInfo);
-		_totalCount = result.totalCount;
 
 		items = result.data;
 		window.scrollTo(0, 0);

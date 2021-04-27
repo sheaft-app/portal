@@ -2,20 +2,19 @@ import gql from "graphql-tag";
 
 export const GET_JOBS = gql`
 	query GetJobs(
-		$first: PaginationAmount
+		$first: Int
 		$after: String
-		$last: PaginationAmount
+		$last: Int
 		$before: String
-		$orderBy:JobSort
+		$orderBy: [JobSort!]
 	) {
-		jobs(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
+		jobs(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
 				startCursor
 				endCursor
 				hasNextPage
 				hasPreviousPage
 			}
-			totalCount
 			edges {
 				cursor
 				node {

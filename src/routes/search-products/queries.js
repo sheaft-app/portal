@@ -36,7 +36,7 @@ export const SEARCH_PRODUCTS = gql`
 	}
 `;
 
-export const GET_PRODUCT_DETAILS = gql` 
+export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
 		product(input: $id) {
 			id
@@ -60,7 +60,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			ratings(first: 10, order_by: { createdOn: DESC }) {
+			ratings(first: 10, order: { createdOn: DESC }) {
 				nodes {
 					user {
 						name
@@ -124,7 +124,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours(order: { expectedDeliveryDate: "ASC" }) {
 					day
 					from
 					to

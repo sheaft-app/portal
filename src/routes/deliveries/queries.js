@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERIES = gql`
 	query Deliveries {
-		deliveries(where: { kind_in:[PRODUCER_TO_STORE] }) {
+		deliveries(where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			nodes {
 				id
 				name

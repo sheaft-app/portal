@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_NOTIFICATIONS = gql`
-	query GetNotifications($first: PaginationAmount, $after: String) {
-		notifications(first: $first, after: $after, order_by: { createdOn: DESC }) {
+	query GetNotifications($first: Int, $after: String) {
+		notifications(first: $first, after: $after, order: { createdOn: DESC }) {
 			edges {
 				node {
 					id

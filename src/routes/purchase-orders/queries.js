@@ -2,11 +2,11 @@ import gql from "graphql-tag";
 
 export const GET_ORDERS = gql`
 	query GetOrders(
-		$first: PaginationAmount
-		$last: PaginationAmount
+		$first: Int
+		$last: Int
 		$after: String
 		$before: String
-		$orderBy: PurchaseOrderSort
+		$order: [PurchaseOrderSort!]
 		$where: PurchaseOrderFilter
 	) {
 		purchaseOrders(
@@ -14,7 +14,7 @@ export const GET_ORDERS = gql`
 			last: $last
 			after: $after
 			before: $before
-			order_by: $orderBy
+			order: $orderBy
 			where: $where
 		) {
 			pageInfo {
@@ -23,7 +23,6 @@ export const GET_ORDERS = gql`
 				hasNextPage
 				hasPreviousPage
 			}
-			totalCount
 			edges {
 				cursor
 				node {

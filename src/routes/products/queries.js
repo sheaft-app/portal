@@ -2,20 +2,19 @@ import gql from "graphql-tag";
 
 export const GET_PRODUCTS = gql`
 	query GetProducts(
-		$first: PaginationAmount
+		$first: Int
 		$after: String
-		$last: PaginationAmount
+		$last: Int
 		$before: String
-		$orderBy: ProductSort
+		$orderBy: [ProductSort!]
 	) {
-		products(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
+		products(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
 				startCursor
 				endCursor
 				hasNextPage
 				hasPreviousPage
 			}
-			totalCount
 			edges {
 				cursor
 				node {

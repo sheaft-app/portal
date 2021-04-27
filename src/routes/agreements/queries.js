@@ -2,11 +2,11 @@ import gql from "graphql-tag";
 
 export const GET_AGREEMENTS = gql`
 	query GetAgreements(
-		$first: PaginationAmount
+		$first: Int
 		$after: String
-		$last: PaginationAmount
+		$last: Int
 		$before: String
-		$orderBy: AgreementSort
+		$orderBy: [AgreementSort!]
 		$where: AgreementFilter
 	) {
 		agreements (
@@ -14,7 +14,7 @@ export const GET_AGREEMENTS = gql`
 			after: $after,
 			last: $last,
 			before: $before,
-			order_by: $orderBy
+			order: $orderBy
 			where: $where) {
 				pageInfo {
 					startCursor
@@ -22,7 +22,6 @@ export const GET_AGREEMENTS = gql`
 					hasNextPage
 					hasPreviousPage
 				}
-				totalCount
 				edges {
 					cursor
 					node {
@@ -66,6 +65,11 @@ export const GET_AGREEMENT_DETAILS = gql`
 			delivery {
 				id
 				name
+				openingHours{
+				from
+				to
+				day
+				}
 			}
 			producer {
 				id

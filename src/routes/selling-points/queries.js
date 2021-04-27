@@ -4,7 +4,7 @@ export const GET_SELLING_POINTS = gql`
 	query SellingPoints {
 		deliveries(
 			first: 50
-			where: { kind_not_in: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] }
+			where: { kind: { not_in: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] }}
 		) {
 			pageInfo{
 				hasPreviousPage
@@ -73,7 +73,7 @@ export const GET_BUSINESS_CLOSINGS = gql`
 	query GetBusinessClosings {
 		businessClosings
 		{
-			nodes {	
+			nodes {
 				id
 				from
 				to

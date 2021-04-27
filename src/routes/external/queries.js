@@ -25,7 +25,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			ratings(first: 10, order_by: { createdOn: DESC }) {
+			ratings(first: 10, order: { createdOn: DESC }) {
 				nodes {
 					user {
 						name
@@ -76,7 +76,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours(order: { expectedDeliveryDate: "ASC" }) {
 					day
 					from
 					to

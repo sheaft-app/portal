@@ -84,12 +84,12 @@ export const GET_STORE_AGREEMENTS = gql`
 			input: $id
 			first: 50
 			where: {
-				status_in: [
+				status: { in: [
 					ACCEPTED
 					WAITING_FOR_PRODUCER_APPROVAL
 					WAITING_FOR_STORE_APPROVAL
 				]
-			}
+			}}
 		) {
 			nodes {
 				id
@@ -101,7 +101,7 @@ export const GET_STORE_AGREEMENTS = gql`
 
 export const GET_DELIVERIES = gql`
 	query GetDeliveries {
-		deliveries(first: 50, where: { kind_in: [PRODUCER_TO_STORE] }) {
+		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			nodes {
 				id
 				name

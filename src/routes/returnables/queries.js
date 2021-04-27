@@ -2,13 +2,13 @@ import gql from "graphql-tag";
 
 export const GET_RETURNABLES = gql`
 	query Returnables(
-		$first: PaginationAmount
+		$first: Int
 		$after: String
-		$last: PaginationAmount
+		$last: Int
 		$before: String
-		$orderBy: ReturnableSort
+		$orderBy: [ReturnableSort!]
 	) {
-		returnables(first: $first, after: $after, last: $last, before: $before, order_by: $orderBy) {
+		returnables(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			edges {
 				cursor
 				node {
@@ -25,7 +25,6 @@ export const GET_RETURNABLES = gql`
 				startCursor
 				endCursor
 			}
-			totalCount
 		}
 	}
 `;
