@@ -76,16 +76,3 @@ export const SET_SELLING_POINT_AVAILABILITY = gql`
 		}
 	}
 `;
-
-export const UPDATE_BUSINESS_CLOSINGS = gql`
-	mutation UpdateBusinessClosings($input: UpdateOrCreateBusinessClosingsInput!) {
-		updateOrCreateBusinessClosings(input: $input) {
-			nodes {
-				id
-				from
-				to
-				reason
-			}
-		}
-	}
-`

@@ -1,16 +1,16 @@
 <script>
   import { faCheck } from "@fortawesome/free-solid-svg-icons";
-  import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import GetAuthInstance from "../../services/SheaftAuth";
+  import ActionConfirm from "./modal/ActionConfirm.svelte";
+	import GetAuthInstance from "./../services/SheaftAuth";
   import { GET_BUSINESS_CLOSINGS } from "./queries.js";
   import { UPDATE_BUSINESS_CLOSINGS } from "./mutations.js";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL";
-  import SheaftErrors from "./../../services/SheaftErrors";
-  import ClosingDates from "./../../components/ClosingDates.svelte";
-  import { normalizeClosingDates, denormalizeClosingDates } from "../../helpers/app";
+  import GetNotificationsInstance from "./../services/SheaftNotifications.js";
+  import GetGraphQLInstance from "./../services/SheaftGraphQL";
+  import SheaftErrors from "./../services/SheaftErrors";
+  import ClosingDates from "./ClosingDates.svelte";
+  import { normalizeClosingDates, denormalizeClosingDates } from "../helpers/app";
   import { onMount } from "svelte";
-  import Loader from "../../components/Loader.svelte";
+  import Loader from "./Loader.svelte";
   
   const errorsHandler = new SheaftErrors();
   const notificationsInstance = GetNotificationsInstance();
