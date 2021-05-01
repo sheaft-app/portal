@@ -31,7 +31,7 @@
   <div class={`mb-6 lg:mb-0`}>
     <div class="form-control">
       <div class="w-full">
-        <label for="grid-product">Nom de la consigne *</label>
+        <label for="grid-product">Nom du catalogue *</label>
         <input
           bind:value={catalog.name}
           class:disabled={isLoading}
