@@ -181,7 +181,7 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	$: history.pushState({selected: $selectedItem}, "Trouver des producteurs");
+	$: history.pushState({selected: $selectedItem}, "Trouver des magasins");
 	$: refetch($querystring);
 </script>
 
