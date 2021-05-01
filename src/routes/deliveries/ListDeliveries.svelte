@@ -24,7 +24,7 @@
 	const actions = [
 		{
 			click: () => routerInstance.goTo(DeliveryRoutes.Create),
-			text: "Créer un créaneau de livraison",
+			text: "Créer un créneau de livraison",
 			icon: faPlus,
 			color: "green",
 		}
