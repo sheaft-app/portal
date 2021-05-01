@@ -92,6 +92,7 @@ query GetUserProfile($id: ID!) {
 	producer(input: $id) {
 		id
 		name
+		picture
 		summary
 		closings {
 			id
