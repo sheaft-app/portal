@@ -1,13 +1,11 @@
 <script>
-  import { onMount } from "svelte";
   import Icon from "svelte-awesome";
-  import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import { faPaperPlane, faCircleNotch, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
   import Toggle from "./../../components/controls/Toggle.svelte";
-  import { timeToTimeSpan, normalizeOpeningHours, denormalizeOpeningHours } from "../../helpers/app";
+  import { normalizeOpeningHours, denormalizeOpeningHours } from "../../helpers/app";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
-	import ConfigureYearlyClosings from "../../components/ConfigureYearlyClosings.svelte";
 
   export let submit, initialValues, isLoading;
   let delivery = initialValues;
@@ -33,7 +31,25 @@
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
-  <ConfigureYearlyClosings container="px-3 py-4 bg-white shadow mb-5" />
+  <div class="form-control">
+    <div class="w-full">
+      <label for="grid-name">Nom du créneau</label>
+      <input
+        bind:value={delivery.name}
+        class:disabled={isLoading}
+        disabled={isLoading}
+        id="grid-name"
+        type="text"
+        placeholder="ex : Marché d'Annecy (vieille ville)" />
+      <small class="text-gray-600">
+        <Icon
+          data={faInfoCircle}
+          scale="0.8"
+          class="mr-2" />
+          Donnez un nom (visible que par vous) au créneau pour le retrouver plus facilement dans votre liste.
+        </small>
+    </div>
+  </div>
   <div class="flex flex-wrap mb-6 lg:mb-0">
     <div class="w-full lg:w-1/2">
       <div class="form-control">

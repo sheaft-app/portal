@@ -12,34 +12,30 @@
     faEye
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
-  import { GetDistanceInfos } from "./../../helpers/distances";
-  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl } from "./../../helpers/app";
+  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
   import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS, GET_PRODUCER_PRODUCTS } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import { selectedItem } from "./../../stores/app.js";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
+	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import AgreementRoutes from "../agreements/routes";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-import { config } from "../../configs/config";
+  import { config } from "../../configs/config";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
   const notificationsInstance = new GetNotificationsInstance();
   const { open } = getContext("modal");
-  const values = routerInstance.getQueryParams();
 
   let producer = null;
-  let isLoading = true;
   let producerDoesntExist = false;
-  let distanceInfos = null;
 
   const openAndLoad = async () => {
     history.pushState({ selected: $selectedItem}, "Détails du producteur");
 
     const values = routerInstance.getQueryParams();
-    isLoading = true;
 
     const producerDetails = document.getElementById("producer-details");
 
@@ -53,29 +49,30 @@ import { config } from "../../configs/config";
 
     if (!res.success) {
       // TODO
-      isLoading = false;
       console.error("No producer found for this ID");
       producerDoesntExist = true;
       return;
     }
 
     const products = await loadProducts(res.data.id);
-    const delivery = await loadDelivery(res.data.id);
-    const agreements = await loadAgreements(res.data.id);
+    const deliveries = await loadDeliveries(res.data.id);
 
-    distanceInfos = GetDistanceInfos(
-      values["latitude"],
-      values["longitude"],
-      res.data.address.latitude,
-      res.data.address.longitude
-    );
+    console.log(deliveries);
+
+    const agreements = await loadAgreements(res.data.id);
 
     producer = {
       ...res.data,
       products,
-      delivery: delivery.deliveries[0],
+      deliveries: deliveries.map((d) => groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+        index === self.findIndex((d) => (
+          d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+        ))
+      ))),
       agreement: agreements.length > 0 ? agreements[0] : null
     };
+
+    console.log(producer.deliveries);
   }
 
   const loadProducts = async (id) => {
@@ -95,7 +92,7 @@ import { config } from "../../configs/config";
     return res.data;
   }
 
-  const loadDelivery = async (id) =>  {
+  const loadDeliveries = async (id) =>  {
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
       input: {
         ids: [id],
@@ -108,11 +105,11 @@ import { config } from "../../configs/config";
       return;
     }
 
-    if (res.data.length <= 0) {
+    if (!res.data || res.data.length <= 0) {
       return [];
     }
 
-    return res.data[0];
+    return res.data[0].deliveries;
   }
 
   const loadAgreements = async (id) =>  {
@@ -145,12 +142,7 @@ import { config } from "../../configs/config";
       }
     });
   };
-
-  function focus(node) {
-    node.focus();
-    node.scrollIntoView();
-  }
-
+  
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
       event.preventDefault();
@@ -246,7 +238,7 @@ import { config } from "../../configs/config";
           <Icon data={faEye} scale="1.3" class="mr-2" />
           voir accord
         </button>
-      {:else if !producer.delivery}
+      {:else if producer.deliveries.length == 0}
         <button disabled class="flex items-center justify-center p-2 uppercase
         disabled rounded-full shadow cursor-blocked text-sm mb-2 m-auto">
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible
@@ -338,6 +330,27 @@ import { config } from "../../configs/config";
             </div>
         </div>
       {/if}
+      <div class="mt-2 px-4">
+        {#each producer.deliveries as delivery, index}
+          <div class="bg-gray-100 rounded-lg p-4 px-5 mb-2">
+            <p class="font-semibold mb-2">Créneau de livraison {index + 1}</p>
+            {#each delivery as deliveryHour, index}
+              <div class="flex mb-2 border-gray-300"
+                  class:pb-2={index !== delivery.length - 1}
+                  class:border-b={index !== delivery.length - 1}>
+                <p style="min-width: 100px;">
+                  {DayOfWeekKind.label(deliveryHour[0].day)}
+                </p>
+                <div>
+                  {#each deliveryHour as hours}
+                    <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+                  {/each}
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/each}
+      </div>
       <div class="mt-5 px-4">
         <p class="text-2xl font-semibold mb-0">Produits</p>
         {#each producer.products as product, index}
