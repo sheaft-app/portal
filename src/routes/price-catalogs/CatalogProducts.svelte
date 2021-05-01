@@ -14,7 +14,7 @@
     const graphQLInstance = GetGraphQLInstance();
     const { open } = getContext('modal');
 
-    let headers = ['Nom', 'Prix HT', 'Ajouté le', 'Actions']
+    let headers = [{ label: 'Nom', mobile: true }, {label: 'Prix HT', mobile: true}, {label:'Ajouté le', mobile: false}, {label: 'Actions', mobile:false}]
 
     onMount(async () => {
         $products = [];
@@ -60,10 +60,11 @@
         <tr class="bg-white">
             {#each headers as header}
                 <th
-                    class="md:px-6 py-3 border-b border-gray-300 text-left
+                    class:hidden={!header.mobile}
+                    class="px-3 md:px-6 py-3 border-b border-gray-300 text-left lg:table-cell
                     text-xs leading-4 font-medium text-gray-600 uppercase
                     tracking-wider">
-                    {header}
+                    {header.label}
                 </th>
             {/each}
         </tr>
@@ -77,6 +78,11 @@
                         style="max-width: 180px;">
                         {product.name}
                         <p class="text-gray-600">#{product.reference}</p>
+                        {#if !product.markForDeletion}
+                            <button type="button" class="btn-link block lg:hidden" on:click={() => removeProduct(product)}>Retirer</button>
+                        {:else}
+                            <button type="button" class="btn-link block lg:hidden" on:click={() => cancelRemoveProduct(product)}>Annuler</button>
+                        {/if}
                     </div>
                 </td>
                 <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -93,14 +99,14 @@
 							placeholder="ex : 2.49"/>
                     </div>
                 </td>
-                <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
                         {format(new Date(product.addedTo), 'PP', { locale: fr })}
                     </div>
                 </td>
-                <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
