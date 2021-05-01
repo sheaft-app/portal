@@ -7,6 +7,7 @@
   import { timeToTimeSpan, normalizeOpeningHours, denormalizeOpeningHours } from "../../helpers/app";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
+	import ConfigureYearlyClosings from "../../components/ConfigureYearlyClosings.svelte";
 
   export let submit, initialValues, isLoading;
   let delivery = initialValues;
@@ -32,6 +33,7 @@
 </script>
 
 <form class="w-full" on:submit|preventDefault={handleSubmit}>
+  <ConfigureYearlyClosings container="px-3 py-4 bg-white shadow mb-5" />
   <div class="flex flex-wrap mb-6 lg:mb-0">
     <div class="w-full lg:w-1/2">
       <div class="form-control">
