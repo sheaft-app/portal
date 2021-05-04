@@ -127,8 +127,6 @@
 			},
 		});
 	};
-
-	$: console.log(products);
 </script>
 
 <svelte:head>

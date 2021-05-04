@@ -39,13 +39,13 @@
           disabled={isLoading}
           id="grid-product"
           type="text"
-          placeholder="Catalogue petits magasins AVRIL" />
+          placeholder="Catalogue petits magasins été" />
       </div>
       <ErrorContainer field={$catalogForm.fields.name}/>
     </div>  
   </div>
   <div class="form-control" style="display: block;">
-		<label>Disponible *</label>
+		<label>Disponible</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
@@ -54,7 +54,7 @@
 		</Toggle>
   </div>
   <div class="form-control" style="display: block;">
-		<label>Utiliser comme catalogue par défaut *</label>
+		<label>Utiliser comme catalogue par défaut</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
