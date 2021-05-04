@@ -11,7 +11,7 @@
   import CartRoutes from "../cart/routes";
   import { freezeBody, unfreezeBody } from "./../../helpers/app.js";
   import Icon from "svelte-awesome";
-  import { faChevronRight, faCircleNotch, faSpinner, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronRight, faCircleNotch, faSpinner, faShoppingCart, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
   import CartConflictResolveModal from "./CartConflictResolveModal.svelte";
 
   const routerInstance = GetRouterInstance();
@@ -123,12 +123,18 @@
 		{hoveredProduct} />
   <section
     class="mb-4 cart-items"
-    class:mt-4={!$cart.isSaving}
+    class:mt-4={!$cart.isSaving && !$cart.warningInfo}
     style="margin-bottom: 125px; overflow-y: auto; overflow-x: hidden;">
     {#if $cart.isSaving}
       <div class="bg-green-500 text-white py-1 text-center" style="width: 350px;">
         <Icon data={faSpinner} spin class="mr-2" />
         <span>Sauvegarde du panier...</span>
+      </div>
+    {/if}
+    {#if $cart.warningInfo}
+      <div class="bg-orange-500 text-white py-1 text-center" style="width: 350px;">
+        <Icon data={faInfoCircle} class="mr-2" />
+        <span>{$cart.warningInfo}</span>
       </div>
     {/if}
     {#if !$cart.isInitializing}
