@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 
 export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
-		product(input: $id) {
+		product(id: $id) {
 			id
 			name
 			description
@@ -89,7 +89,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 
 export const GET_PRODUCER_PROFILE = gql`
 query GetUserProfile($id: ID!) {
-	producer(input: $id) {
+	producer(id: $id) {
 		id
 		name
 		summary

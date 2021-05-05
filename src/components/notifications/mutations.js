@@ -2,13 +2,13 @@ import gql from "graphql-tag";
 
 export const MARK_USER_NOTIFICATIONS_AS_READ = gql`
 	mutation MarkUserNotificationsAsRead{
-		markUserNotificationsAsRead
+		markNotificationsAsRead
 	}
 `;
 
 export const MARK_USER_NOTIFICATION_AS_READ = gql`
 	mutation MarkUserNotificationAsRead($input: MarkUserNotificationAsReadInput!){
-		markUserNotificationAsRead(input: $input)
+		markNotificationAsRead(input: $input)
 		{
 			id
 		}

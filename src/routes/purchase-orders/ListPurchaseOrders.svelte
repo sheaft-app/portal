@@ -54,6 +54,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import {toggleMoreActions} from "./../../stores/app";
+import JobKind from "../../enums/JobKind";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
@@ -93,7 +94,7 @@
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
 			HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
-			null,
+			{kinds:[JobKind.ExportPickingOrders.Value]},
 			errorsHandler.Uuid
 		);
 		if (!res.success) {

@@ -42,7 +42,7 @@
       isLoading = true;
   
       const result = await graphQLInstance.mutate(UPDATE_BUSINESS_CLOSINGS, {
-        id: authInstance.user.profile.sub,
+        id: authInstance.user.profile.id,
         closings: normalizeClosingDates(closings)
       },  errorsHandler.Uuid);
   

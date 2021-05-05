@@ -6,7 +6,7 @@ export const GET_PRODUCTS = gql`
 		$after: String
 		$last: Int
 		$before: String
-		$orderBy: [ProductSort!]
+		$orderBy: [ProductSortInput!]
 	) {
 		products(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
@@ -40,7 +40,7 @@ export const GET_PRODUCTS = gql`
 
 export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
-		product(input: $id) {
+		product(id: $id) {
 			id
 			reference
 			onSalePricePerUnit
@@ -77,7 +77,7 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_DETAILS = gql`
 	query GetProducerDetails($id: ID!) {
-		producer(input: $id) {
+		producer(id: $id) {
 			notSubjectToVat
 		}
 	}
@@ -106,8 +106,8 @@ export const GET_PRODUCT_RATINGS = gql`
 `;
 
 export const HAS_PRODUCTS_IMPORT_INPROGRESS = gql`
-	query ProductsImportInProgress {
-		productsImportInProgress
+	query hasPendingJobs($kinds: [JobKind!]) {
+		hasPendingJobs(kinds:$kinds)
 	}
 `;
 
@@ -127,10 +127,12 @@ export const GET_RETURNABLES = gql`
 export const GET_TAGS = gql`
 	query Tags {
 		tags {
-			id
-			name
-			icon
-			kind
+			nodes {
+				id
+				name
+				icon
+				kind
+			}
 		}
 	}
 `;

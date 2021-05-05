@@ -22,7 +22,7 @@
 	export let submit, initialValues, isLoading;
 	let sellingPoint = initialValues;
 	let closings = sellingPoint.closings ? denormalizeClosingDates(sellingPoint.closings) : [];
-	let openings = denormalizeOpeningHours(sellingPoint.openingHours);
+	let openings = denormalizeOpeningHours(sellingPoint.deliveryHours);
 	let limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
     
 	let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
@@ -43,7 +43,7 @@
 		sellingPointForm.validate();
 
 		if ($sellingPointForm.valid && !isLoading) {
-			sellingPoint.openingHours = normalizeOpeningHours(openings);
+			sellingPoint.deliveryHours = normalizeOpeningHours(openings);
 			sellingPoint.closings = normalizeClosingDates(closings);
 			delete sellingPoint.address["insee"];
 

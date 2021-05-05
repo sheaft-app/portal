@@ -42,7 +42,7 @@ async function retrieveFreshdeskToken() {
 	var postSettings = {
 		method: "POST",
 		body:
-			'{"operationName":"GenerateFreshdeskToken","variables":{},"query":"query GenerateFreshdeskToken {generateFreshdeskToken}"}',
+			'{"operationName":"FreshdeskToken","variables":{},"query":"query FreshdeskToken {freshdeskToken}"}',
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + GetAuthInstance().user.access_token,
@@ -53,8 +53,8 @@ async function retrieveFreshdeskToken() {
 		var result = await (
 			await fetch(config.api + "/graphql", postSettings)
 		).json();
-		if (result && result.data && result.data.generateFreshdeskToken) {
-			return result.data.generateFreshdeskToken;
+		if (result && result.data && result.data.freshdeskToken) {
+			return result.data.freshdeskToken;
 		}
 		return null;
 	} catch (err) {

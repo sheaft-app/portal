@@ -117,7 +117,7 @@
 					href="javascript:void(0)"
 					on:click={() => {
             userMenuExpended.set(false);
-            routerInstance.goTo(ExternalRoutes.ProducerDetails, {id:$authUserAccount.profile.sub});
+            routerInstance.goTo(ExternalRoutes.ProducerDetails, {id:$authUserAccount.profile.id});
           }}>
 					<Icon
 						data={ExternalRoutes.ProducerDetails.Icon}

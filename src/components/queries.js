@@ -3,10 +3,12 @@ import gql from "graphql-tag";
 export const GET_CATEGORIES = gql`
 	query GetCategories {
 		tags(where: { kind: { in: [CATEGORY] }}) {
-			id
-      kind
-      icon
-			name
+			nodes{
+				id
+				kind
+				icon
+				name
+			}
 		}
 	}
 `;
@@ -14,9 +16,11 @@ export const GET_CATEGORIES = gql`
 export const GET_COUNTRIES = gql`
 query GetCountries {
   countries {
-    id
-    code
-    name
+	  nodes{
+		id
+		code
+		name
+	  }
   }
 }
 `;
@@ -24,9 +28,11 @@ query GetCountries {
 export const GET_NATIONALITIES = gql`
 query GetNationalities {
   nationalities {
-    id
-    code
-    name
+	nodes{
+	  id
+	  code
+	  name
+	}
   }
 }
 `;

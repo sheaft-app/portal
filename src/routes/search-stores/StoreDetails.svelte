@@ -93,7 +93,7 @@ import { config } from "../../configs/config.js";
     open(CreateAgreementModal, {
       submit: () => {},
       store,
-			producerId: $authUserAccount.profile.sub,
+			producerId: $authUserAccount.profile.id,
       onClosed: res => {
         if (res.success) {
           store.agreement = { id: res.data.id, status: res.data.status };

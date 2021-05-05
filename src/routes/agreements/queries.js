@@ -65,7 +65,7 @@ export const GET_AGREEMENT_DETAILS = gql`
 			delivery {
 				id
 				name
-				openingHours{
+				deliveryHours{
 				from
 				to
 				day

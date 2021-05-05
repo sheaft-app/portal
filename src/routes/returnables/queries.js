@@ -6,9 +6,9 @@ export const GET_RETURNABLES = gql`
 		$after: String
 		$last: Int
 		$before: String
-		$orderBy: [ReturnableSort!]
+		$order: [ReturnableSortInput!]
 	) {
-		returnables(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
+		returnables(first: $first, after: $after, last: $last, before: $before, order: $order) {
 			edges {
 				cursor
 				node {
@@ -31,7 +31,7 @@ export const GET_RETURNABLES = gql`
 
 export const GET_RETURNABLE_DETAILS = gql`
 	query Returnable($id: ID!) {
-		returnable(input: $id) {
+		returnable(id: $id) {
 			id
 			name
 			vat

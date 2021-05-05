@@ -134,7 +134,7 @@ import { config } from "../../configs/config";
     open(CreateAgreementModal, {
       submit: () => {},
       producer,
-      storeId: GetAuthInstance().user.profile.sub,
+      storeId: GetAuthInstance().user.profile.id,
       onClosed: (res) => {
         if (res.success) {
           producer.agreement = { id: res.data.id, status: res.data.status };

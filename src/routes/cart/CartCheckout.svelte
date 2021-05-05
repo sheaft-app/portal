@@ -101,7 +101,7 @@
 		isPaying = true;
 		cardError = null;
 
-		await createCardRegistration($authUserAccount.profile.sub);
+		await createCardRegistration($authUserAccount.profile.id);
 
 		$card.data.cardExpirationDate = `${$card.month.toString()}${$card.year.toString().substring(2)}`;
 		$card.data.cardCvx = $card.data.cardCvx.toString();
@@ -207,7 +207,7 @@
 			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;
 			variables = {
 				...variables,
-				userId: $authUserAccount.profile.sub,
+				userId: $authUserAccount.profile.id,
 			};
 			delete variables["id"];
 		}

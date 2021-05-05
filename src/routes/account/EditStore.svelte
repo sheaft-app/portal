@@ -9,9 +9,10 @@
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import ProfileForm from "./ProfileForm.svelte";
 
-	export let errorsHandler, userId;
+	export let errorsHandler;
 
 	let store = {
+		id: null,
 		name: null,
 		firstName: null,
 		lastName: null,
@@ -56,8 +57,7 @@
 	form={storeForm}
 	updateQuery={UPDATE_STORE}
 	getQuery={GET_STORE_DETAILS}
-	{errorsHandler}
-	{userId}>
+	{errorsHandler}>
 	<h3 class="font-semibold uppercase mb-0 mt-5">Votre magasin</h3>
 	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	<div class="form-control">

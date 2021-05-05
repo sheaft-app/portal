@@ -11,7 +11,7 @@ export const GET_DELIVERIES = gql`
 				lockOrderHoursBeforeDelivery
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
-				openingHours {
+				deliveryHours {
 					day
 					from
 					to
@@ -31,7 +31,7 @@ export const GET_DELIVERY_DETAILS = gql`
 			lockOrderHoursBeforeDelivery
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to

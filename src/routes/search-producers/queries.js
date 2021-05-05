@@ -34,7 +34,7 @@ export const GET_MY_BUSINESS_LOCATION = gql`
 
 export const GET_PRODUCER_DETAILS = gql`
 	query GetProducerDetails($id: ID!) {
-		producer(input: $id) {
+		producer(id: $id) {
 			id
 			name
 			summary

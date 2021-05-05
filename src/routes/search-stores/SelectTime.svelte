@@ -74,7 +74,7 @@
 				class:active={selectedDelivery && selectedDelivery.id == delivery.id}
 				on:click={() => selectDelivery(delivery)}
 				class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded">
-				{delivery.name} : {@html getFormattedSelectedHours(delivery.openingHours)}
+				{delivery.name} : {@html getFormattedSelectedHours(delivery.deliveryHours)}
 			</div>
 		{/each}
 	{/if}

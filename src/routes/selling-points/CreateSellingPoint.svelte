@@ -26,7 +26,7 @@ import { GET_SELLING_POINTS } from "./queries";
     maxPurchaseOrdersPerTimeSlot: null,
     autoAcceptRelatedPurchaseOrder: false,
     autoCompleteRelatedPurchaseOrder: false,
-    openingHours: [
+    deliveryHours: [
       {
         id: 0,
         days: [],

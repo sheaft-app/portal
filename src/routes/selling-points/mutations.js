@@ -16,7 +16,7 @@ export const CREATE_SELLING_POINT = gql`
 				to
 				reason
 			}
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to
@@ -46,7 +46,7 @@ export const UPDATE_SELLING_POINT = gql`
 				to
 				reason
 			}
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to

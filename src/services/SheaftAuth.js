@@ -70,11 +70,13 @@ class SheaftAuth {
 
 			var content = await result.json();
 			if (content.data.me && content.data.me.id) {
+				user.profile.id = content.data.me.id;
 				this.setAuthStatus(user, true, true, true, true);
 			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
 				this.refreshPageAsUnauthorized(false);
 			} else {
+				user.profile.id = null;
 				this.setAuthStatus(user, true, true, false, true);
 			}
 		} catch (err) {

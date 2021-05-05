@@ -292,7 +292,7 @@
 
 		return routerInstance.pushQueryParams({[queryParam]: ""});
 	};
-	
+
 	onMount(async () => {
 		var newPosition = retrieveUserLocationInQueryString();
 		if (newPosition) {

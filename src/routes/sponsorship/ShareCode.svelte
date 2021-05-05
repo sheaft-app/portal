@@ -26,7 +26,7 @@
     isLoading = true;
 
     var res = await graphQLInstance.mutate(GENERATE_USER_SPONSORING_CODE, {
-      id: auth.user.profile.sub
+      id: auth.user.profile.id
     }, errorsHandler.Uuid);
 
     if (!res.success) {

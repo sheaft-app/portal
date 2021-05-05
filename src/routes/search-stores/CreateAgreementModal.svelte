@@ -16,7 +16,7 @@
 	let selectedDelivery = null;
 	let isLoading = false;
 
-	$: isValid = selectedDelivery && selectedDelivery.openingHours.length > 0;
+	$: isValid = selectedDelivery && selectedDelivery.deliveryHours.length > 0;
 
 	const handleSubmit = async () => {
 		isLoading = true;

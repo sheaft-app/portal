@@ -38,7 +38,7 @@ export const SEARCH_PRODUCTS = gql`
 
 export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
-		product(input: $id) {
+		product(id: $id) {
 			id
 			name
 			description
@@ -60,7 +60,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			ratings(first: 10, order: { createdOn: DESC }) {
+			ratings(first: 10, order: [{ createdOn: DESC }]) {
 				nodes {
 					user {
 						name
@@ -92,7 +92,7 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query($id: ID!) {
-		producerProducts(input: $id) {
+		producerProducts(id: $id) {
 	  		nodes {
 				id
 				name
@@ -110,7 +110,7 @@ export const GET_PRODUCER_PRODUCTS = gql`
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
-		getDeliveriesForProducers(input: $input) {
+		getDeliveriesForProducers(id: $input) {
 			id
 			name
 			deliveries {
@@ -137,7 +137,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 
 export const GET_PRODUCER_NAME = gql`
 	query GetProducerName($id: ID!) {
-		producerSummary(input: $id) {
+		producer(id: $id) {
 			id
 			name
 		}

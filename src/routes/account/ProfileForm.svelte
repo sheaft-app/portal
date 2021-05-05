@@ -12,8 +12,9 @@
   import Cleave from "cleave.js";
   import "cleave.js/dist/addons/cleave-phone.fr";
   import {loginFreshdesk} from "./../../services/SheaftFreshdesk";
+import { authUserAccount } from "../../stores/auth";
 
-  export let user, form, updateQuery, getQuery, errorsHandler, userId, isLoading = false;
+  export let user, form, updateQuery, getQuery, errorsHandler, isLoading = false;
 
 	const graphQLInstance = GetGraphQLInstance();
   const authInstance = GetAuthInstance();
@@ -22,7 +23,7 @@
 
   const handleGet = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.query(getQuery, { id: userId, }, errorsHandler.Uuid);
+		var res = await graphQLInstance.query(getQuery, errorsHandler.Uuid);
 		isLoading = false;
 
 		if (!res.success) {
