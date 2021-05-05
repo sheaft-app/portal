@@ -22,6 +22,7 @@
 	import ConditioningKind from "../../enums/ConditioningKind";
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import {config} from "../../configs/config";
+	import ProductCatalogs from "./ProductCatalogs.svelte";
 
 	export let submit, product, isLoading;
 
@@ -31,6 +32,7 @@
 
 	let isLoadingTags = false;
 	let isLoadingReturnables = false;
+	let invalidCatalogs = false;
 	let notSubjectToVat = false;
 
 	let selectedCategory = null;
@@ -42,11 +44,6 @@
 			name: {
 				value: product.name,
 				validators: ["required", "min:3"],
-				enabled: true,
-			},
-			wholeSalePricePerUnit: {
-				value: product.wholeSalePricePerUnit,
-				validators: ["required", "min:0"],
 				enabled: true,
 			},
 			vat: {value: product.vat, validators: ["required"], enabled: !notSubjectToVat},
@@ -253,22 +250,8 @@
 			</div>
 			<div class="form-control">
 				<div class="flex w-full">
-					<div class="w-full" class:pr-2={!notSubjectToVat}>
-						<label for="grid-price">{notSubjectToVat ? 'Prix *' : 'Prix HT *'}</label>
-						<input
-							bind:value={product.wholeSalePricePerUnit}
-							use:bindClass={{ form: productForm, name: 'wholeSalePricePerUnit' }}
-							class:skeleton-box={isLoading}
-							disabled={isLoading}
-							id="grid-price"
-							type="number"
-							step=".01"
-							name="wholeSalePricePerUnit"
-							placeholder="ex : 2.49"/>
-						<ErrorContainer field={$productForm.fields.wholeSalePricePerUnit}/>
-					</div>
 					<div class="w-full" class:hidden={notSubjectToVat}>
-						<label for="grid-vat">TVA *</label>
+						<label for="grid-vat">TVA quand applicable *</label>
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={isLoading}
@@ -343,6 +326,10 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Présent dans les catalogues *</label>
+		<ProductCatalogs bind:catalogs={product.catalogsPrices} bind:invalidCatalogs />
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>
@@ -508,7 +495,8 @@
 	<div class="form-control mt-5">
 		<button
 			type="submit"
-			class:disabled={isLoading || !$productForm.valid}
+			disabled={isLoading || invalidCatalogs}
+			class:disabled={isLoading || !$productForm.valid || invalidCatalogs}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto">
 			<Icon
 				data={isLoading ? faCircleNotch : faPaperPlane}

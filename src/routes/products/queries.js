@@ -53,6 +53,12 @@ export const GET_PRODUCT_DETAILS = gql`
 			weight
 			picture
 			vat
+			catalogsPrices {
+				id
+				name
+				wholeSalePricePerUnit
+				addedTo
+			}
 			quantityPerUnit
 			conditioning
 			unit

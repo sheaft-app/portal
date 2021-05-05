@@ -25,7 +25,6 @@
 
   let product = {
     reference: null,
-    wholeSalePricePerUnit: null,
     unit: null,
     quantityPerUnit: null,
     vat: null,
@@ -45,8 +44,11 @@
     var res = await graphQLInstance.mutate(CREATE_PRODUCT, {
       description: product.description,
       name: product.name,
+      catalogs: product.catalogsPrices.map((c) => ({
+        id: c.id,
+        wholeSalePricePerUnit: c.wholeSalePricePerUnit
+      })),
       returnableId: product.returnable ? product.returnable.id : null,
-      wholeSalePricePerUnit: product.wholeSalePricePerUnit,
       quantityPerUnit: product.quantityPerUnit,
       unit: product.unit,
       conditioning: product.conditioning,
