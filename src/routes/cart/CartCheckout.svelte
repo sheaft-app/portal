@@ -111,7 +111,7 @@
 			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
 		}, async (res) => {
 			const preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
-				orderId: $cart.userCurrentOrder,
+				id: $cart.userCurrentOrder,
 				cardIdentifier: res.CardId,
 				browserInfo: {
 					colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
@@ -204,11 +204,7 @@
 		};
 
 		if (!legalId) {
-			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;
-			variables = {
-				...variables,
-				userId: $authUserAccount.profile.id,
-			};
+			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;			
 			delete variables["id"];
 		}
 

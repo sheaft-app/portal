@@ -83,20 +83,19 @@ export const GET_PRODUCER_DETAILS = gql`
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
-	query GetProducerProducts($companyId: ID!) {
-		producerProducts(input: $companyId) {
-			nodes {
+	query GetProducerProducts($companyId: ID!) {		
+		producer(id: $companyId) {
+			products {
 				id
 				name
+				onSalePricePerUnit
 				wholeSalePricePerUnit
-				wholeSalePrice
+				picture
 				rating
 				quantityPerUnit
-				unit
 				conditioning
-				producer {
-					id
-				}
+				unit
+				available
 			}
 		}
 	}

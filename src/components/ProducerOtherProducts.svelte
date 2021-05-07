@@ -34,7 +34,7 @@
 				return;
 			}
 
-			productsSuggestions = result.data.filter((p) => p.id !== productParentId);
+			productsSuggestions = result.data.products.filter((p) => p.id !== productParentId);
 		}
 		isLoading = false;
 	});

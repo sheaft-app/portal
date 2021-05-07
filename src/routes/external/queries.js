@@ -1,6 +1,5 @@
 import gql from "graphql-tag";
 
-
 export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
 		product(id: $id) {
@@ -56,7 +55,7 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE, PRODUCER_TO_STORE]) {
+		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -76,7 +75,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours {
 					day
 					from
 					to
@@ -111,25 +110,38 @@ query GetUserProfile($id: ID!) {
 		facebook
 		instagram
 		twitter
+		products{
+			id
+			name
+			onSalePricePerUnit
+			imageMedium
+			imageSmall
+			rating
+			quantityPerUnit
+			conditioning
+			unit
+			available
+		}
 	}
 }
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query($id: ID!) {
-		producerProducts(input: $id) {
-	  		nodes {
+		
+		producer(id: $id) {
+			products {
 				id
 				name
 				onSalePricePerUnit
-				imageMedium
-				imageSmall
+				wholeSalePricePerUnit
+				picture
 				rating
 				quantityPerUnit
 				conditioning
 				unit
 				available
-	  		}
+			}
 		}
   	}
 `

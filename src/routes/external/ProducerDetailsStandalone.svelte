@@ -37,7 +37,6 @@
 	export let params = {};
 
 	let producer = null;
-	let producerProducts = [];
 	let isLoading = true;
 	let deliveries = [];
 
@@ -62,14 +61,7 @@
 		producer = res.data;
 
 		let deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-			input: {
-				ids: [params.id],
-				kinds: [
-					DeliveryKind.Farm.Value,
-					DeliveryKind.Market.Value,
-					DeliveryKind.Collective.Value
-				]
-			}
+			input: [params.id]
 		}, errorsHandler.Uuid);
 
 		if (!deliveriesResult.success || deliveriesResult.data.length == 0) {
@@ -85,16 +77,6 @@
 					))
 				}
 			});
-		}
-
-		let productsResult = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
-			id: params.id
-		}, errorsHandler.Uuid);
-
-		if (!productsResult.success) {
-			producerProducts = [];
-		} else {
-			producerProducts = productsResult.data;
 		}
 
 		isLoading = false;
@@ -234,7 +216,7 @@
 				<TabPanel>
 					<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
           xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
-						{#each producerProducts as product}
+						{#each producer.products as product}
 							<ProductCard {product} displayProducerData={false} useAddToCartButtonCTA={true}/>
 						{/each}
 					</div>
@@ -260,6 +242,7 @@
 									<div class="flex flex-row justify-between items-start mb-3">
 										<div>
 											<p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
+											{#if delivery.address}
 											<p>{delivery.address.line1}</p>
 											{#if delivery.address.line2}
 												<p>
@@ -273,6 +256,7 @@
 												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
 												Voir sur Google Maps
 											</a>
+											{/if}
 										</div>
 									</div>
 									<div class="mt-2">

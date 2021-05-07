@@ -92,18 +92,19 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query($id: ID!) {
-		producerProducts(id: $id) {
-	  		nodes {
+		producer(id: $id) {
+			products {
 				id
 				name
 				onSalePricePerUnit
+				wholeSalePricePerUnit
 				picture
 				rating
 				quantityPerUnit
 				conditioning
 				unit
 				available
-	  		}
+			}
 		}
   	}
 `
@@ -124,7 +125,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours {
 					day
 					from
 					to

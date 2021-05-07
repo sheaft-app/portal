@@ -16,31 +16,27 @@ export const GET_CATEGORIES = gql`
 export const GET_COUNTRIES = gql`
 query GetCountries {
   countries {
-	  nodes{
 		id
 		code
 		name
 	  }
-  }
 }
 `;
 
 export const GET_NATIONALITIES = gql`
 query GetNationalities {
   nationalities {
-	nodes{
 	  id
 	  code
 	  name
 	}
-  }
 }
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query GetProducerProducts($id: ID!) {
-		producerProducts(input: $id) {
-			nodes {
+		producer(id: $id) {
+			products {
 				id
 				name
 				onSalePricePerUnit
