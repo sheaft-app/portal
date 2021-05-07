@@ -52,7 +52,7 @@
     }), i => i.producer.name, ['asc']);
 
     if (normalizedProducts.length > 1) {
-      loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
+      await loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
     }
 
     dirty = false;
@@ -60,10 +60,7 @@
 
   const loadDeliveries = async (ids) => {
     var res = await graphQLInstance.query(GET_STORE_DELIVERIES_FOR_PRODUCERS, {
-      input: {
-        ids,
-        kinds: [DeliveryKind.ProducerToStore.Value]
-      }
+      input: ids
     }, errorsHandler.Uuid);
 
     if (!res.success) {

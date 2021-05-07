@@ -2,7 +2,8 @@ import gql from "graphql-tag";
 
 export const GET_DEFAULT_QUICK_ORDER = gql`
 	query GetDefaultQuickOrder {
-		defaultQuickOrder {
+		quickOrders (where:{ isDefault: { eq:true}})
+		{
 			id
 			products {
 				quantity
@@ -25,7 +26,7 @@ export const GET_DEFAULT_QUICK_ORDER = gql`
 
 export const GET_ALL_PRODUCTS = gql`
 	query GetAllProducts {
-		storeAgreementsProducts {
+		products (first:50){
 			nodes {
 				id
 				name
@@ -42,9 +43,8 @@ export const GET_ALL_PRODUCTS = gql`
 				returnable {
 					wholeSalePrice
 					onSalePrice
-          vatPrice
-        }
-				quantityPerUnit
+					vatPrice
+				}
 				producer {
 					id
 					name
@@ -55,8 +55,8 @@ export const GET_ALL_PRODUCTS = gql`
 `;
 
 export const GET_STORE_DELIVERIES_FOR_PRODUCERS = gql`
-	query GetStoreDeliveriesForProducers($input: SearchProducersDeliveriesInput!) {
-		getStoreDeliveriesForProducers(input: $input) {
+	query GetStoreDeliveriesForProducers($input: [ID!]) {
+		nextProducersDeliveries(ids: $input, kinds:[PRODUCER_TO_STORE]) {
 			id
 			name
 			deliveries {

@@ -108,7 +108,7 @@ const store = () => {
 				id: state.userCurrentOrder,
 				donation,
 				products: getters.getNormalizedProducts(),
-				producersExpectedDeliveries: getters.getNormalizedSelectedDeliveries()
+				deliveries: getters.getNormalizedSelectedDeliveries()
 			};
 
 			if (!state.userCurrentOrder) {

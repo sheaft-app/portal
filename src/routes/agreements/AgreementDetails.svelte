@@ -215,9 +215,9 @@
 				</div>
 			{/if}
 			{#if authManager.isInRole(Roles.Store.Value)}
-				<ProducerAgreement producerId={agreement.producer.id} {distanceInfos} agreementDelivery={agreement.delivery}/>
+				<ProducerAgreement agreement={agreement} {distanceInfos}/>
 			{:else}
-				<StoreAgreement storeId={agreement.store.id} {distanceInfos}/>
+				<StoreAgreement agreement={agreement} {distanceInfos}/>
 			{/if}
 		</div>
 	{/if}

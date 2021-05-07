@@ -220,7 +220,10 @@
 		}
 
 		if (_searchValues.where && _searchValues.whereValues) {
-			settings.where[_searchValues.where] = _searchValues.whereValues.split(',');
+			var splittedFilter = _searchValues.where.split("_");
+			var filter = {};
+			filter[splittedFilter[1]] = _searchValues.whereValues.split(',');
+			settings.where[splittedFilter[0]] = filter;
 		}
 
 		settings.orderBy[_searchValues.orderBy] = _searchValues.direction;

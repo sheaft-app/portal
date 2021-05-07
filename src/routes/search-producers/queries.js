@@ -16,6 +16,10 @@ export const SEARCH_PRODUCERS = gql`
 				tags {
 					name
 				}
+				agreement{
+					id
+					status
+				}
 			}
 		}
 	}
@@ -51,6 +55,28 @@ export const GET_PRODUCER_DETAILS = gql`
 				zipcode
 				latitude
 				longitude
+			}
+			agreement{
+				id
+				status
+				delivery{
+					name
+					deliveryHours{
+						from
+						to
+						day
+					}
+				}
+			}
+			products{
+				id
+				name
+				wholeSalePricePerUnit
+				wholeSalePrice
+				rating
+				quantityPerUnit
+				unit
+				conditioning
 			}
 		}
 	}
@@ -94,8 +120,8 @@ export const GET_AGREEMENTS = gql`
 `;
 
 export const GET_PRODUCER_DELIVERIES = gql`
-	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
-		getDeliveriesForProducers(input: $input) {
+	query GetProducerDeliveries($input: [ID!]) {
+		nextProducersDeliveries(ids: $input, kinds:[PRODUCER_TO_STORE]) {
 			id
 			name
 			deliveries {

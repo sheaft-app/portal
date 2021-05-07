@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 export const CANCEL_JOBS = gql`
 	mutation CancelJobs($input: CancelJobsInput!) {
 		cancelJobs(input: $input) {
-			nodes {
 				id
 				name
 				createdOn
@@ -13,7 +12,6 @@ export const CANCEL_JOBS = gql`
 				startedOn
 				completedOn
 				file
-			}
 		}
 	}
 `;
@@ -21,7 +19,6 @@ export const CANCEL_JOBS = gql`
 export const RETRY_JOBS = gql`
 	mutation RetryJobs($input: RetryJobsInput!) {
 		retryJobs(input: $input) {
-			nodes {
 				id
 				name
 				createdOn
@@ -31,7 +28,6 @@ export const RETRY_JOBS = gql`
 				startedOn
 				completedOn
 				file
-			}
 		}
 	}
 `;
@@ -39,7 +35,6 @@ export const RETRY_JOBS = gql`
 export const PAUSE_JOBS = gql`
 	mutation PauseJobs($input: PauseJobsInput!) {
 		pauseJobs(input: $input) {
-			nodes {
 				id
 				name
 				createdOn
@@ -49,7 +44,6 @@ export const PAUSE_JOBS = gql`
 				startedOn
 				completedOn
 				file
-			}
 		}
 	}
 `;
@@ -57,7 +51,6 @@ export const PAUSE_JOBS = gql`
 export const RESUME_JOBS = gql`
 	mutation ResumeJobs($input: ResumeJobsInput!) {
 		resumeJobs(input: $input) {
-			nodes {
 				id
 				name
 				createdOn
@@ -67,14 +60,12 @@ export const RESUME_JOBS = gql`
 				startedOn
 				completedOn
 				file
-			}
 		}
 	}
 `;
 export const ARCHIVE_JOBS = gql`
 	mutation ArchiveJobs($input: ArchiveJobsInput!) {
 		archiveJobs(input: $input) {
-			nodes {
 				id
 				name
 				createdOn
@@ -84,7 +75,6 @@ export const ARCHIVE_JOBS = gql`
 				startedOn
 				completedOn
 				file
-			}
 		}
 	}
 `;

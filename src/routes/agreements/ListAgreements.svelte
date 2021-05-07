@@ -126,7 +126,8 @@
 	const headers = [
 		{name: authInstance.isInRole(Roles.Store.Value) ? "Producteur" : "Magasin"},
 		{name: "Statut", sortLabel: "status"},
-		{name: "Créé le", displayOn: "md", sortLabel: "createdOn"}
+		{name: "Créé le", displayOn: "md", sortLabel: "createdOn"},
+		{name: "Créneaux de livraisons"}
 	];
 
 	const getFormattedSelectedHours = (selectedHours) => {
@@ -146,7 +147,7 @@
 	}
 
 	const getFormattedSelectedHour = (selectedHour) => {
-		return `le ${DayOfWeekKind.label(selectedHour.day)} entre ${timeSpanToFrenchHour(selectedHour.from)} et ${timeSpanToFrenchHour(selectedHour.to)}`;
+		return `- le ${DayOfWeekKind.label(selectedHour.day)} entre ${timeSpanToFrenchHour(selectedHour.from)} et ${timeSpanToFrenchHour(selectedHour.to)}`;
 	}
 
 	const filterStatus = Object.entries(AgreementStatusKind).map(([key, value]) => {
@@ -226,6 +227,11 @@
 						{format(new Date(agreement.createdOn), 'p', {locale: fr})}
 					</p>
 				</div>
+			</td>
+			<td>
+				{#if agreement.delivery && agreement.delivery.deliveryHours}
+					{@html getFormattedSelectedHours(agreement.delivery.deliveryHours)}
+				{/if}
 			</td>
 		</Table>
 	{:else}

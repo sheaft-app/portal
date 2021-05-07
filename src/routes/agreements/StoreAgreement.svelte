@@ -6,49 +6,22 @@
 		faEnvelope,
 	} from "@fortawesome/free-solid-svg-icons";
 	import {onMount} from "svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetRouterInstance from "./../../services/SheaftRouter";
-	import AgreementRoutes from "./routes";
-	import {GET_STORE_DETAILS} from "../account/queries";
-	import SheaftErrors from "../../services/SheaftErrors";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
 	import Loader from "../../components/Loader.svelte";
 
-	export let storeId, distanceInfos;
-
-	const errorsHandler = new SheaftErrors();
-	const authManager = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
-	const routerInstance = GetRouterInstance();
+	export let agreement, distanceInfos;
 
 	let store = null;
 	let openings = [];
-	let deliveries = [];
-	let deliveryHours = [];
 	let isLoading = true;
 
-	const getStore = async id => {
+	onMount(() => {
 		isLoading = true;
-		var res = await graphQLInstance.query(GET_STORE_DETAILS, {
-			id: id
-		}, errorsHandler.Uuid);
 
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			routerInstance.goTo(AgreementRoutes.List);
-			return;
-		}
-
-		openings = groupBy(res.data.openingHours, item => [item.day]);
-		store = res.data;
+		openings = groupBy(agreement.store.openingHours, item => [item.day]);
+		store = agreement.store;
 		isLoading = false;
-	};
-
-	onMount(async () => {
-		await getStore(storeId);
 	})
 </script>
 

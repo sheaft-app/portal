@@ -23,7 +23,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
-		delivery(input: $id) {
+		delivery(id: $id) {
 			id
 			name
 			kind

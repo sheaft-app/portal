@@ -46,18 +46,20 @@
         closings: normalizeClosingDates(closings)
       },  errorsHandler.Uuid);
   
-      if (!result)
+      isLoading = false;
+
+      if (!result.success)
           notificationsInstance.error(
               "Une erreur est survenue pendant la création de la fermeture."
               );
-      else notificationsInstance.success(
+      else {
+        notificationsInstance.success(
               "Vos fermetures annuelles ont bien été mises à jour !"
               );
   
+        return await closeModal(result.data);
+      }  
       
-      isLoading = false;
-  
-      return await closeModal(result.data);
   }
 
   async function closeModal(res) {

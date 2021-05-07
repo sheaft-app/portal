@@ -8,8 +8,8 @@ export const timeSpanToFrenchHour = (timeSpan) => {
 		return;
 	}
 	
-	const slots = timeSpan.split(':');
-	return `${slots[0]}h${slots[1]}`;
+	const result = /^P(?!$)((?<years>\d+)Y)?((?<months>\d+)M)?((?<weeks>\d+)W)?((?<days>\d+)D)?(T(?=\d+[HMS])((?<hours>\d+)H)?((?<minutes>\d+)M)?((?<seconds>\d+)S)?)?$/.exec(timeSpan)
+	return `${result.groups.hours}h${result.groups.minutes ?? ''}`;
 }
 export const timeToTimeSpan = (time) => 
 	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S`: ''}`;
@@ -28,6 +28,9 @@ export const timeSpanToTime = (timeSpan) => {
 };
 
 export const groupBy = (array, f) => {
+	if(!array || array.length < 1)
+		return [];
+		
 	var groups = {};
 	array.forEach((o) => {
 		var group = JSON.stringify(f(o));

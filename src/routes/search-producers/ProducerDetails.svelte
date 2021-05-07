@@ -1,5 +1,4 @@
 <script>
-  import DeliveryKind from "../../enums/DeliveryKind";
   import { onMount, onDestroy, getContext } from "svelte";
   import Icon from "svelte-awesome";
   import {
@@ -13,7 +12,7 @@
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
   import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
-  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS, GET_PRODUCER_PRODUCTS } from "./queries.js";
+  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
@@ -27,7 +26,6 @@ import { config } from "../../configs/config";
   const routerInstance = GetRouterInstance();
   const notificationsInstance = new GetNotificationsInstance();
   const { open } = getContext("modal");
-  const values = routerInstance.getQueryParams();
 
   let producer = null;
   let isLoading = true;
@@ -58,9 +56,9 @@ import { config } from "../../configs/config";
       return;
     }
 
-    const products = await loadProducts(res.data.id);
-    const delivery = await loadDelivery(res.data.id);
-    const agreements = await loadAgreements(res.data.id);
+    let deliveries = [];
+    if(!res.data.agreement || !res.data.agreement.delivery)
+      deliveries = await loadDelivery(res.data.id);
 
     distanceInfos = GetDistanceInfos(
       values["latitude"],
@@ -71,35 +69,15 @@ import { config } from "../../configs/config";
 
     producer = {
       ...res.data,
-      products,
-      delivery: delivery.deliveries[0],
-      agreement: agreements.length > 0 ? agreements[0] : null
+      deliveries: deliveries,
     };
-  }
 
-  const loadProducts = async (id) => {
-    var res = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
-      companyId: id
-    });
-
-    if (!res.success) {
-      // todo
-      return;
-    }
-
-    if (res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data;
+    isLoading = false;
   }
 
   const loadDelivery = async (id) =>  {
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
-      input: {
-        ids: [id],
-        kinds: [DeliveryKind.ProducerToStore.Value]
-      } 
+      input: [id]
     });
 
     if (!res.success) {
@@ -108,17 +86,6 @@ import { config } from "../../configs/config";
     }
 
     if (res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data[0];
-  }
-
-  const loadAgreements = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_AGREEMENTS, { id } );
-
-    if (!res.success) {
-      //todo
       return [];
     }
 
@@ -212,7 +179,7 @@ import { config } from "../../configs/config";
             <Icon data={faEye} scale="1.3" class="mr-2" />
             voir accord
           </button>
-        {:else if !producer.delivery}
+        {:else if producer.deliveries.length < 1}
           <button disabled class="flex items-center justify-center p-2 uppercase
            disabled rounded-full shadow absolute cursor-blocked text-sm"
            style="right: 40px; bottom: -20px;">

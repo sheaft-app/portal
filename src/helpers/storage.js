@@ -7,4 +7,5 @@ export const clearLocalStorage = () => {
   localStorage.removeItem("user_location");
   localStorage.removeItem("user_first_time_on_cart");
   localStorage.removeItem("user_sponsoring");
+  localStorage.removeItem("user");
 }

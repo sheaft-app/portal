@@ -16,6 +16,10 @@ export const SEARCH_STORES = gql`
 				tags {
 					name
 				}
+				agreement{
+					id
+					status
+				}
 			}
 		}
 	}
@@ -23,7 +27,7 @@ export const SEARCH_STORES = gql`
 
 export const GET_STORE_DETAILS = gql`
 	query GetStoreDetails($id: ID!) {
-		store(input: $id) {
+		store(id: $id) {
 			id
 			name
 			email
@@ -36,6 +40,10 @@ export const GET_STORE_DETAILS = gql`
 				day
 				from
 				to
+			}
+			agreement{
+				id 
+				status
 			}
 			summary
 			address {

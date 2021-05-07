@@ -62,21 +62,21 @@ import { authUserAccount } from "../../stores/auth";
       isLoading = true;
       let variables = user;
 
-      if(user.tags){
-      	let tags = user.tags.map(t => t.id);
-				variables = {
-					...user,
-					tags
-				}
+      let tags = user.tags;
+      if(tags){
+      	tags = user.tags.map(t => t.id);
 			}
 
-      if (user.openingHours) {
-        let openingHours = normalizeOpeningHours(user.openingHours);
+      let openingHours = user.openingHours;
+      if (openingHours) {
+        openingHours = normalizeOpeningHours(user.openingHours);
+      };
+
         variables = {
           ...user,
+          tags,
           openingHours
         }
-      };
 
 			var res = await graphQLInstance.mutate(updateQuery, variables, errorsHandler.Uuid);
 			isLoading = false;

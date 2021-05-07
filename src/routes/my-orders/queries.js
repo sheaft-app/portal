@@ -6,9 +6,9 @@ export const MY_ORDERS = gql`
 		$last: Int
 		$after: String
 		$before: String
-		$orderBy: [PurchaseOrderSort!]
+		$orderBy: [PurchaseOrderSortInput!]
 	) {
-		myOrders(
+		purchaseOrders(
 			first: $first
 			last: $last
 			after: $after
@@ -62,7 +62,7 @@ export const MY_ORDERS = gql`
 
 export const GET_MY_ORDER_DETAILS = gql`
 	query GetMyOrderDetails($id: ID!) {
-		purchaseOrder(input: $id) {
+		purchaseOrder(id: $id) {
 			id
 			reference
 			totalOnSalePrice
@@ -114,7 +114,7 @@ export const GET_MY_ORDER_DETAILS = gql`
 
 export const MY_VALIDATING_ORDERS = gql`
 	query {
-		orders(where: { OR: [{ status: { in: [WAITING] }}, { AND:[{status: { in: [VALIDATED]}}, {purchaseOrdersCount: 0}]}] }) {
+		orders(where: { or: [{ status: { in: [WAITING] }}, { status: { in: [VALIDATED]}}]}) {
 			nodes {
 				id
 				status

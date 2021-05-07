@@ -70,14 +70,7 @@
     const ids = cart.getProducersIds();
 
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-      input: {
-        ids,
-        kinds: [
-          DeliveryKind.Farm.Value,
-          DeliveryKind.Market.Value,
-          DeliveryKind.Collective.Value
-        ]
-      }
+      input: ids
     }, errorsHandler.Uuid);
 
     if (!res.success) {

@@ -10,46 +10,27 @@
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
 	import {onMount} from "svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetRouterInstance from "./../../services/SheaftRouter";
-	import AgreementRoutes from "./routes";
-	import {GET_PRODUCER_DETAILS} from "../account/queries";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import {GET_PRODUCER_DELIVERIES} from "../search-producers/queries";
 	import DeliveryKind from "../../enums/DeliveryKind";
 	import Loader from "../../components/Loader.svelte";
 
-	export let agreementDelivery, producerId, distanceInfos;
+	export let agreement, distanceInfos;
 
 	const errorsHandler = new SheaftErrors();
-	const authManager = GetAuthInstance();
 	const graphQLInstance = GetGraphQLInstance();
-	const routerInstance = GetRouterInstance();
 
 	let isLoading = true;
 	let producer = null;
 	let deliveries = [];
 	let deliveryHours = [];
 
-	const getProducer = async id => {
+	const getProducer = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
-			id: id
-		}, errorsHandler.Uuid);
 
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			routerInstance.goTo(AgreementRoutes.List);
-			return;
-		}
-
-		if (!agreementDelivery || !agreementDelivery.deliveryHours || agreementDelivery.deliveryHours.length < 1) {
+		if (!agreement.delivery || !agreement.delivery.deliveryHours || agreement.delivery.deliveryHours.length < 1) {
 			var deliveryRes = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: {
-					ids: [id],
-					kinds: [DeliveryKind.ProducerToStore.Value]
-				}
+				input: ids
 			});
 
 			if (!deliveryRes.success) {
@@ -58,14 +39,14 @@
 				deliveries = deliveryRes.data[0].deliveries
 			}
 		} else {
-			deliveryHours = groupBy(agreementDelivery.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+			deliveryHours = groupBy(agreement.delivery.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
 				index === self.findIndex((d) => (
 					d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
 				))
 			));
 		}
 
-		producer = res.data;
+		producer = agreement.producer;
 		isLoading = false;
 	};
 
@@ -78,7 +59,7 @@
 	}
 
 	onMount(async () => {
-		await getProducer(producerId);
+		await getProducer();
 	})
 </script>
 
@@ -150,21 +131,20 @@
 															 producerId={producer.id} {errorsHandler}/>
 			</div>
 
-			{#if agreementDelivery && agreementDelivery.deliveryHours && agreementDelivery.deliveryHours.length > 0}
+			{#if agreement.delivery && agreement.delivery.deliveryHours && agreement.delivery.deliveryHours.length > 0}
 				<p class="mt-3 font-semibold pt-5">Horaires de livraisons</p>
 				<div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
 					<div class="mt-2">
-						{#each agreementDelivery.deliveryHours as deliveryHour, index}
+						{#each agreement.delivery.deliveryHours as deliveryHour, index}
 							<div class="flex mb-2 border-gray-300"
-									 class:pb-2={index !== agreementDelivery.deliveryHours.length - 1}
-									 class:border-b={index !== agreementDelivery.deliveryHours.length - 1}>
+									 class:pb-2={index !== agreement.delivery.deliveryHours.length - 1}
+									 class:border-b={index !== agreement.delivery.deliveryHours.length - 1}>
+									 
 								<p style="min-width: 100px;">
-									{DayOfWeekKind.label(deliveryHour[0].day)}
+									{DayOfWeekKind.label(deliveryHour.day)}
 								</p>
 								<div>
-									{#each deliveryHour as hours}
-										<p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
-									{/each}
+										<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
 								</div>
 							</div>
 						{/each}

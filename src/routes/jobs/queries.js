@@ -6,7 +6,7 @@ export const GET_JOBS = gql`
 		$after: String
 		$last: Int
 		$before: String
-		$orderBy: [JobSort!]
+		$orderBy: [JobSortInput!]
 	) {
 		jobs(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
@@ -38,7 +38,7 @@ export const GET_JOBS = gql`
 
 export const GET_JOB_DETAILS = gql`
 	query GetJobDetails($id: ID!) {
-		job(input: $id) {
+		job(id: $id) {
 			id
 			name
 			createdOn

@@ -76,12 +76,8 @@ import { config } from "../../configs/config.js";
       res.data.address.longitude
     );
 
-    const agreements = await loadAgreements(res.data.id);
-
-    store = {
-      ...res.data,
-      agreement: agreements.length > 0 ? agreements[0] : null
-    };
+    store = res.data;
+      isLoading = false;
   }
 
   const openAgreement = () => {

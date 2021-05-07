@@ -62,10 +62,8 @@ export const DELETE_PRODUCTS = gql`
 export const SET_PRODUCTS_AVAILABILITY = gql`
 	mutation SetProductsAvailability($input: SetProductsAvailabilityInput!) {
 		setProductsAvailability(input: $input) {
-			nodes {
 				id
 				available
-			}
 		}
 	}
 `;

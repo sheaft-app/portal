@@ -5,6 +5,7 @@
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances";
 import { config } from "../../configs/config";
+import AgreementStatusKind from "../../enums/AgreementStatusKind";
 
   export let store, hoveredStore = null, businessLocation = null;
 
@@ -67,12 +68,12 @@ import { config } from "../../configs/config";
     <div
       class="relative pb-5/6 overflow-hidden bg-black rounded-t-md lg:block
       hidden">
-      {#if store.hasAgreement || store.hasPendingAgreement}
+      {#if store.agreement}
         <div class="absolute w-full h-full" style="z-index: 1; top: 40%;">
-          {#if store.hasAgreement}
+          {#if store.agreement.status == AgreementStatusKind.Accepted.Value}
             <span class="bg-white px-3 py-2 uppercase">déjà partenaire</span>
           {/if}
-          {#if store.hasPendingAgreement}
+          {#if store.agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value}
             <span class="bg-blue-400 text-white px-3 py-2 uppercase">en attente</span>
           {/if}
         </div>
@@ -81,7 +82,7 @@ import { config } from "../../configs/config";
         style="height: 150px; background-image: url({src}); background-size:
         cover; background-position: center;"
         class:skeleton-box={!src}
-        class:opacity-50={store.hasAgreement || store.hasPendingAgreement}
+        class:opacity-50={store.agreement}
         class="transition duration-200 ease-in-out w-full rounded-t-md" />
     </div>
     <div class="relative lg:block flex p-3 lg:p-0">

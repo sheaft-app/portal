@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_PRODUCER_DELIVERIES = gql`
-	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
-		getDeliveriesForProducers(input: $input) {
+	query GetProducerDeliveries($input: [ID!]) {
+		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
