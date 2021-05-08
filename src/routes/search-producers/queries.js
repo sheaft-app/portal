@@ -6,6 +6,7 @@ export const SEARCH_PRODUCERS = gql`
 			count
 			producers {
 				id
+				picture
 				name
 				address {
 					city
@@ -42,8 +43,16 @@ export const GET_PRODUCER_DETAILS = gql`
 			id
 			name
 			summary
+			description
+			picture
 			email
 			phone
+			closings {
+				id
+				from
+				to
+				reason
+			}
 			tags {
 				kind
 				name
@@ -91,6 +100,8 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				onSalePricePerUnit
 				wholeSalePricePerUnit
 				picture
+				wholeSalePrice
+				imageSmall
 				rating
 				quantityPerUnit
 				conditioning

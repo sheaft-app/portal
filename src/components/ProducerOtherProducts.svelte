@@ -1,5 +1,5 @@
 <script>
-	import {onMount} from "svelte";
+	import { onMount, createEventDispatcher } from "svelte";
 	import Icon from "svelte-awesome";
 	import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 	import SwiperCore, {Navigation} from 'swiper';
@@ -17,6 +17,7 @@
 	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
 
 	const graphQLInstance = GetGraphQLInstance();
+  	const dispatch = createEventDispatcher();
 	const authInstance = GetAuthInstance();
 
 	let productsSuggestions = [];
@@ -64,6 +65,12 @@
 		}
 	}
 
+	const handleClickProduct = (e, id) => {
+		dispatch('productClick', {
+			id
+		})
+	}
+
 	$: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
 </script>
 
@@ -100,7 +107,7 @@
 	>
 		{#each productsSuggestions as suggestion}
 			<SwiperSlide let:data="{{ isNext }}">
-				<div class="border border-light rounded-lg h-full bg-white">
+				<div class="border border-light rounded-lg h-full bg-white cursor-pointer" on:click={(e) => handleClickProduct(e, suggestion.id)}>
 					<div
 						class="relative pb-5/6 overflow-hidden bg-black rounded-t-md block">
 						{#if suggestedProductIsInCart(suggestion)}

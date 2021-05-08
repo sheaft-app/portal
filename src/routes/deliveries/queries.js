@@ -2,7 +2,15 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERIES = gql`
 	query Deliveries {
-		deliveries(where: { kind: { in: [PRODUCER_TO_STORE] }}) {
+		deliveries(
+			first: 50
+			where: { kkind: { in: [PRODUCER_TO_STORE] }}) {
+			pageInfo{
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
 			nodes {
 				id
 				name

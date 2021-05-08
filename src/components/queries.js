@@ -51,3 +51,18 @@ export const GET_PRODUCER_PRODUCTS = gql`
 		}
 	}
 `;
+
+export const GET_BUSINESS_CLOSINGS = gql`
+	query GetBusinessClosings {
+		businessClosings
+		{
+			nodes {	
+				id
+				from
+				to
+				reason
+			}
+		}
+	}
+`
+

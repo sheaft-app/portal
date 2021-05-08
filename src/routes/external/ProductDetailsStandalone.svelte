@@ -1,6 +1,6 @@
 <script>
 	import {onDestroy, onMount} from "svelte";
-	import {slide} from "svelte/transition";
+	import {slide, fly} from "svelte/transition";
 	import Icon from "svelte-awesome";
 	import {faCircleNotch, faChevronUp, faChevronDown, faChevronLeft, faEye} from "@fortawesome/free-solid-svg-icons";
 	import AddToCart from "./../../components/controls/AddToCart.svelte";
@@ -10,6 +10,7 @@
 	import SearchProductsRoutes from "../search-products/routes";
 	import ExternalRoutes from "../external/routes";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
+	import ProductDetails from "../search-products/ProductDetails.svelte";
 	import {GET_PRODUCT_DETAILS, GET_PRODUCER_DELIVERIES} from "./queries.js";
 	import {RATE_PRODUCT} from "./mutations.js";
 	import Rating from "./../../components/rating/Rating.svelte";
@@ -19,6 +20,7 @@
 	import {timeSpanToFrenchHour, formatMoney} from "./../../helpers/app.js";
 	import TagKind from "./../../enums/TagKind";
 	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
+	import {selectedItem} from "../../stores/app.js";
 	import ConditioningKind from "./../../enums/ConditioningKind";
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -285,6 +287,7 @@
 				</div>
 			</div>
 			<ProducerOtherProducts 
+				on:productClick={(e) => $selectedItem = product.id}
 				productParentId={product.id} 
 				producerName={product.producer.name}
 				producerId={product.producer.id} {errorsHandler}
@@ -522,6 +525,18 @@
       transition duration-300 ease-in-out cart-panel">
 		<Cart/>
 	</div>
+
+	{#if $selectedItem}
+		<div
+			id="product-details"
+			transition:fly={{ x: -600, duration: 300 }}
+			class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
+        h-screen product-details bg-white"
+			style="z-index: 10; padding-bottom: 70px;">
+			<ProductDetails />
+		</div>
+	{/if}
+
 </TransitionWrapper>
 
 <style lang="scss">
@@ -569,6 +584,21 @@
 
 		&.active {
 			transform: translateY(0px);
+		}
+	}
+
+	$product-details-panel-size: 600px;
+
+	.product-details {
+		width: $product-details-panel-size;
+
+		@media (max-width: 1024px) {
+			width: 100%;
+		}
+
+		@media (max-width: 1024px) {
+			top: 45px;
+			padding-bottom: 115px !important;
 		}
 	}
 </style>

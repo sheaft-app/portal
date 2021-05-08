@@ -1,12 +1,8 @@
 <script>
 	import DeliveryKind from './../../enums/DeliveryKind.js';
-	import { GET_SELLING_POINTS, GET_BUSINESS_CLOSINGS } from "./queries";
+	import { GET_SELLING_POINTS } from "./queries";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
-	import Icon from "svelte-awesome";
-	import { faEdit } from "@fortawesome/free-solid-svg-icons";
-	import Loader from './../../components/Loader.svelte';
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import SellingPointRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -15,32 +11,14 @@
 	import {
 		faPlus
 	} from "@fortawesome/free-solid-svg-icons";
-	import { getContext } from 'svelte';
-	import ManageYearlyClosingsModal from "./ManageYearlyClosingsModal.svelte";
-	import { format } from "date-fns";
-	import fr from "date-fns/locale/fr";
-	import { onMount } from "svelte";
+	import ConfigureYearlyClosings from "../../components/ConfigureYearlyClosings.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
-	const { open } = getContext('modal');
 
 	let isLoading = true;
 	let items = [];
 	let noResults = true;
-	let closings = [];
-
-	onMount(async () => {
-		const result = await graphQLInstance.query(GET_BUSINESS_CLOSINGS, errorsHandler.Uuid);
-
-		if (!result.success) {
-			// todo
-			return;
-		}
-
-		closings = result.data;
-	});
 
 	const actions = [
 		{
@@ -54,14 +32,6 @@
 	const onRowClick = (item) => {
 		routerInstance.goTo(SellingPointRoutes.Details, { id: item.id });
 	};
-
-	const openManageClosingsModal = () => {
-		open(ManageYearlyClosingsModal, {
-			onClose: (res) => {
-				closings = res;
-			}
-		});
-	}
 </script>
 
 <svelte:head>
@@ -86,18 +56,7 @@
 		let:rowItem={sellingPoint}
 	>
 			<div slot="globalActions" class="px-2 md:px-6 py-3 border-b border-gray-200">
-				<button on:click={openManageClosingsModal} class="btn-link flex items-center">
-					<Icon data={faEdit} class="mr-2" />
-					Gérer fermetures annuelles
-				</button>
-				{#if closings && closings.length > 0}
-					<p class="font-semibold mt-2">Fermetures configurées :</p>
-					<ul style="list-style: circle;padding: revert;">
-						{#each closings as closing}
-							<li>du {format(new Date(closing.from), 'PPPP', {locale: fr })} au {format(new Date(closing.to), 'PPPP', {locale: fr })}</li>
-						{/each}
-					</ul>
-				{/if}
+				<ConfigureYearlyClosings />
 			</div>
 			<td
 				class="px-2 md:px-6 py-4 whitespace-no-wrap border-b

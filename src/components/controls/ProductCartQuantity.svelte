@@ -46,8 +46,14 @@
   // si l'utilisateur appuie sur + ou -, le debounce va provoquer l'attente. Or, si ProductCartQuantity se démonte
   // avant l'exécution de la fonction, alors productId n'est plus défini. On passe donc directement la valeur de productId
   // à la fonction comme paramètre pour éviter un problème lié à un unmount triggered "trop tôt"
-  const updateProductQuantity = debounce((quantity, _productId) => {
-    cart.updateProduct(_productId, quantity);
+  const updateProductQuantity = debounce(async (quantity, _productId) => {
+    const hasUpdatedProductInCart = await cart.updateProduct(_productId, quantity);
+
+    if (!hasUpdatedProductInCart) {
+      quantity = 0;
+      disabled = true
+    }
+
     if (userFeedback) triggerFeedback();
   }, 800);
 

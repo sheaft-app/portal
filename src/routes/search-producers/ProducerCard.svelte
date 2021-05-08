@@ -1,13 +1,11 @@
 <script>
-	import { onMount } from "svelte";
-  import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import Icon from "svelte-awesome";
   import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
-  import { authUserAccount } from "./../../stores/auth.js";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
 import AgreementStatusKind from "../../enums/AgreementStatusKind";
+  import { config } from "./../../configs/config";
 
   const authInstance = GetAuthInstance();
 
@@ -30,11 +28,11 @@ import AgreementStatusKind from "../../enums/AgreementStatusKind";
   function onIntersect(entries) {
     if (!src && entries[0].isIntersecting) {
       const img = new Image();
-      img.src =
-        "https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1868&q=80"; // producer.image
+      let picture = producer.picture || 'img/icons/farmer.svg';
+
+      img.src = picture;
       img.onload = () => {
-        src =
-          "https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1868&q=80"; // producer.image
+        src = picture;
       };
 
       return;
@@ -85,19 +83,26 @@ import AgreementStatusKind from "../../enums/AgreementStatusKind";
         </div>
       {/if}
       <div
-        style="height: 150px; background-image: url({src}); background-size:
-        cover; background-position: center;"
-        class:skeleton-box={!src}
+        style="height: 150px; background-color: #fbfbfb;"
         class:opacity-50={producer.agreement}
-        class="transition duration-200 ease-in-out w-full rounded-t-md" />
+        class="transition duration-200 ease-in-out w-full rounded-t-md relative">
+        <img
+          class:skeleton-box={!src}
+          class="h-32 w-32 rounded-full p-1 border
+          border-gray-800 border-solid m-auto absolute"
+          style="top: calc(50% - 64px);left: calc(50% - 64px);"
+          src={src}
+          alt="Photo du producteur"/>
+      </div>
     </div>
     <div class="relative lg:block flex p-3 lg:p-0">
       <div class="block lg:hidden w-1/4 text-xs">
-        <div
-          style="background-image: url({src}); background-size: cover;
-          background-position: center; max-width: 60px;"
-          class:skeleton-box={!src}
-          class="h-10 mt-1 rounded-lg block" />
+        <img
+            class:skeleton-box={!src}
+            class="h-16 w-16 rounded-full p-1 border
+            border-gray-800 border-solid m-auto absolute"
+            src={src}
+            alt="Photo du producteur"/>
       </div>
       <div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
         <div style="width: 20px; right: 15px;" class="absolute">

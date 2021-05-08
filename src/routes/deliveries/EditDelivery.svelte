@@ -3,6 +3,8 @@
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+  import Icon from "svelte-awesome";
+  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import Loader from "./../../components/Loader.svelte";
   import { UPDATE_DELIVERY } from "./mutations";
@@ -86,15 +88,39 @@
   {#if !delivery}
     <Loader />
   {:else}
-    <section
-      class="md:pt-12 lg:pt-2">
-      <h1 class="font-semibold uppercase mb-0">Vos horaires de livraison magasin</h1>
-      <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-    </section>
-    <div class="mb-5 text-gray-600">
-      <p>Cette section n'est utile pour vous que si vous souhaitez commercer avec des professionels. Elle sert à leur afficher vos horaires de livraison.</p>
-      <p>Les particuliers ne voient pas ces informations.</p>
-    </div>
+  <section
+  class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
+  <div class="mb-3">
+    <button
+      class="text-gray-600 items-center flex uppercase"
+      on:click={() => routerInstance.goTo(DeliveryRoutes.List)}>
+      <Icon data={faChevronLeft} class="mr-2 inline" />
+      Livraisons
+    </button>
+  </div>
+  <div class="flex justify-between items-center">
+    <h1 class="font-semibold uppercase mb-0">{delivery.name || "Modifier créneau de livraison"}</h1>
+    {#if !delivery.available}
+      <span
+        class="rounded-full bg-orange-500 ml-2 mr-2 px-3 py-1 shadow uppercase
+        font-semibold text-xs text-white my-2 h-6">
+        Indisponible
+      </span>
+    {/if}
+  </div>
+  <div class="flex mt-2">
+    <!-- <button
+      class={`btn btn-lg bg-white border mr-2 hover:text-white ${delivery.available ? 'text-orange-500 border-orange-500 hover:bg-orange-500' : 'text-green-500 border-green-500 hover:bg-green-500'}`}
+      on:click={showSetAvailabilityModal}>
+      {delivery.available ? 'Désactiver' : 'Activer'}
+    </button> -->
+    <button
+      class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+      on:click={showDeleteModal}>
+      Supprimer
+    </button>
+  </div>
+</section>
     <DeliveryForm
       submit={handleSubmit}
       initialValues={delivery}

@@ -402,8 +402,13 @@
 						</div>
 					{/if}
 				</div>
-				<ProducerOtherProducts productParentId={product.id} producerName={product.producer.name}
-															 producerId={product.producer.id} {errorsHandler}/>
+				<ProducerOtherProducts  
+					on:productClick={(e) => $selectedItem = e.detail.id}
+					productParentId={product.id} 
+					producerName={product.producer.name}
+					producerId={product.producer.id}
+					{errorsHandler}
+				/>
 			</div>
 		{/if}
 		<div class="mt-5">
