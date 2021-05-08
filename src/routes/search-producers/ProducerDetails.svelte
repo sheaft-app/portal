@@ -1,6 +1,4 @@
 <script>
-  import { onMount, onDestroy, getContext } from "svelte";
-  import DeliveryKind from "../../enums/DeliveryKind";
   import { getContext } from "svelte";
   import Icon from "svelte-awesome";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
@@ -13,7 +11,6 @@
     faEye
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
-  import { GetDistanceInfos } from "./../../helpers/distances";
   import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
@@ -58,9 +55,7 @@
 
     let deliveries = [];
     if(!res.data.agreement || !res.data.agreement.delivery)
-      deliveries = await loadDelivery(res.data.id);
-
-    const agreements = await loadAgreements(res.data.id);
+      deliveries = await loadDeliveries(res.data.id);
 
     producer = {
       ...res.data,
@@ -71,7 +66,7 @@
   }
 
   const loadDeliveries = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
+    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
       input: [id]
     });
 
@@ -106,7 +101,7 @@
       }
     });
   };
-  
+
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
       event.preventDefault();
@@ -137,7 +132,7 @@
     <span>Fermer</span>
   </button>
 </div>
-{#if producerDoesntExist} 
+{#if producerDoesntExist}
   <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
     <p class="text-center">Mince, il semblerait que ce producteur n'existe plus !</p>
   </div>
@@ -208,7 +203,7 @@
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible
         </button>
       {:else}
-        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center 
+        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center
         p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> demander accord
         </button>
@@ -235,7 +230,7 @@
               <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
             </div>
           {/if}
-          <div> 
+          <div>
             <p class="text-base mb-1">
               <Icon
                 data={faPhone}
@@ -318,7 +313,7 @@
       <div class="mt-5 px-4">
         <p class="text-2xl font-semibold mb-0">Produits</p>
         {#each producer.products as product, index}
-          <div 
+          <div
           style="margin-bottom:1px;"
           class="rounded hover:bg-gray-100 transition duration-200
           ease-in-out focus:outline-none">
@@ -340,7 +335,7 @@
                     <span class="text-gray-600">
                       {product.rating || 'Aucun avis'}
                     </span>
-                  </div>  
+                  </div>
                 </div>
                 <div
                   class="text-base text-right font-semibold">
