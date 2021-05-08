@@ -21,7 +21,7 @@
   let isCreatingDelivery = false;
 
   let delivery = { 
-    openingHours: [
+    deliveryHours: [
       {
         id: 0,
         days: [],

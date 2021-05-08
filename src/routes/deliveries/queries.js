@@ -4,7 +4,7 @@ export const GET_DELIVERIES = gql`
 	query Deliveries {
 		deliveries(
 			first: 50
-			where: { kkind: { in: [PRODUCER_TO_STORE] }}) {
+			where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			pageInfo{
 				hasPreviousPage
 				hasNextPage

@@ -70,7 +70,7 @@
             </td>
             <td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b
             border-gray-200">
-                {#each delivery.openingHours as opening}
+                {#each delivery.deliveryHours as opening}
                     <div class="flex mb-2">
                         <p style="min-width: 100px;">
                         {DayOfWeekKind.get(opening.day).Label}
