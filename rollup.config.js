@@ -1,16 +1,16 @@
 import svelte from "rollup-plugin-svelte";
+import resolve from "rollup-plugin-node-resolve";
+import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
 import del from "rollup-plugin-delete";
+import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
 import { generateSW } from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
+import alias from "rollup-plugin-alias";
 import define from 'rollup-plugin-define';
-import alias from "@rollup/plugin-alias";
-import commonjs from "@rollup/plugin-commonjs";
-import babel from "@rollup/plugin-babel";
-import nodeResolve from "@rollup/plugin-node-resolve";
 
 const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
@@ -40,9 +40,7 @@ export default {
 	},
 	plugins: [
 		alias({
-			entries: {
-				forms: __dirname + "vendors/svelte-forms",
-			}
+			forms: __dirname + "vendors/svelte-forms",
 		}),
 		del({
 			targets: "public/dist/*",
@@ -74,19 +72,17 @@ export default {
 		svelteSVG(),
 		postcss(),
 		production && babel({
-			babelHelpers: 'bundled',
 			extensions: [".ts", ".js", ".mjs", ".html", ".svelte"],
+			runtimeHelpers: true,
 			sourceMap: !production,
 			include: ["src/**/*", "node_modules/svelte/**"],
 			presets: [
 				[
 					"@babel/preset-env",
 					{
-						corejs: 3,
 						loose: false,
-						modules: "auto",
 						debug: !production,
-						useBuiltIns:"entry",
+						modules: false,
 						targets: {
 							browsers: ["last 2 versions", "Firefox ESR", "> 1%"],
 						},
@@ -116,16 +112,25 @@ export default {
 				"@babel/plugin-transform-sticky-regex",
 				"@babel/plugin-transform-template-literals",
 				"@babel/plugin-transform-property-mutators",
-				"@babel/plugin-transform-classes",
+				[
+					"@babel/plugin-transform-classes",
+					{
+						loose: true,
+					},
+				],
 				"@babel/plugin-transform-named-capturing-groups-regex",
 				["@babel/plugin-transform-arrow-functions", { spec: true }],
-				"@babel/plugin-syntax-dynamic-import"
+				"@babel/plugin-syntax-dynamic-import",
+				[
+					"@babel/plugin-transform-runtime",
+					{
+						corejs: 3,
+						regenerator: true,
+					},
+				],
 			],
 		}),
-		nodeResolve({
-			customResolveOptions: {
-				moduleDirectories: ['src']
-			},
+		resolve({
 			browser: true,
 			dedupe: ["svelte"],
 		}),
