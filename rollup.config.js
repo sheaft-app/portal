@@ -59,7 +59,6 @@ export default {
 		// 	sourceMap: !production,
 		// }),
 		svelte({
-			dev: !production,
 			emitCss: true,
 			preprocess: autoPreprocess({
 				postcss: {
@@ -75,6 +74,7 @@ export default {
 		svelteSVG(),
 		postcss(),
 		production && babel({
+			babelHelpers: 'bundled',
 			extensions: [".ts", ".js", ".mjs", ".html", ".svelte"],
 			sourceMap: !production,
 			include: ["src/**/*", "node_modules/svelte/**"],
@@ -123,6 +123,9 @@ export default {
 			],
 		}),
 		nodeResolve({
+			customResolveOptions: {
+				moduleDirectories: ['src']
+			},
 			browser: true,
 			dedupe: ["svelte"],
 		}),
