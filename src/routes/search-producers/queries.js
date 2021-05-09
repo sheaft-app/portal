@@ -83,6 +83,7 @@ export const GET_PRODUCER_DETAILS = gql`
 				wholeSalePricePerUnit
 				wholeSalePrice
 				rating
+				imageSmall
 				quantityPerUnit
 				unit
 				conditioning

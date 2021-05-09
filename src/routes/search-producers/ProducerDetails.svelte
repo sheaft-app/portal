@@ -30,11 +30,10 @@
 
   let producer = null;
   let producerDoesntExist = false;
+  let isLoading = true;
 
   const openAndLoad = async () => {
     history.pushState({ selected: $selectedItem}, "Détails du producteur");
-
-    const values = routerInstance.getQueryParams();
 
     const producerDetails = document.getElementById("producer-details");
 
@@ -54,7 +53,9 @@
     }
 
     let deliveries = [];
-    if(!res.data.agreement || !res.data.agreement.delivery)
+    if(res.data.agreement && res.data.agreement.delivery)
+      deliveries = [res.data.agreement.delivery];
+    else
       deliveries = await loadDeliveries(res.data.id);
 
     producer = {
@@ -289,29 +290,33 @@
             </div>
         </div>
       {/if}
-      <div class="mt-2 px-4">
+      <div class="w-full px-4 mt-5">
+        <p class="text-2xl font-semibold mb-0">Livraisons</p>
+        {#if producer.deliveries && producer.deliveries.length > 0}
         {#each producer.deliveries as delivery, index}
           <div class="bg-gray-100 rounded-lg p-4 px-5 mb-2">
-            <p class="font-semibold mb-2">Créneau de livraison {index + 1}</p>
-            {#each delivery as deliveryHour, index}
+            <p class="font-semibold mb-2">{delivery.name}</p>
+            {#each delivery.deliveryHours as deliveryHour, index}
               <div class="flex mb-2 border-gray-300"
                   class:pb-2={index !== delivery.length - 1}
                   class:border-b={index !== delivery.length - 1}>
                 <p style="min-width: 100px;">
-                  {DayOfWeekKind.label(deliveryHour[0].day)}
+                  {DayOfWeekKind.label(deliveryHour.day)}
                 </p>
                 <div>
-                  {#each deliveryHour as hours}
-                    <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
-                  {/each}
+                    <p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
                 </div>
               </div>
             {/each}
           </div>
         {/each}
+        {:else}
+        <p>Ce producteur n'a pas configuré de créneau de livraison</p>
+        {/if}
       </div>
-      <div class="mt-5 px-4">
+      <div class="w-full px-4 mt-5">
         <p class="text-2xl font-semibold mb-0">Produits</p>
+        {#if producer.products && producer.products.length > 0}
         {#each producer.products as product, index}
           <div
           style="margin-bottom:1px;"
@@ -347,6 +352,9 @@
           </div>
         </div>
         {/each}
+        {:else}
+          <p>Ce producteur ne possède pas de produits à vendre pour le moment</p>
+        {/if}
       </div>
     </div>
   </div>

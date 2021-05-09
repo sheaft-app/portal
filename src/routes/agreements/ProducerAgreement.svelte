@@ -122,7 +122,7 @@
 				</div>
 			{/if}
 			{#if producer.summary}
-				<div class="w-12/12 text-gray-600 py-5">
+				<div class="w-full text-gray-600 py-5">
 					{producer.summary}
 				</div>
 			{/if}

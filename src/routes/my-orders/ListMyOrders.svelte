@@ -52,6 +52,7 @@
 					...p,
 					active:
 						p.status !== PurchaseOrderStatusKind.Cancelled.Value &&
+						p.status !== PurchaseOrderStatusKind.Withdrawned.Value &&
 						p.status !== PurchaseOrderStatusKind.Refused.Value &&
 						p.status !== PurchaseOrderStatusKind.Delivered.Value,
 				};

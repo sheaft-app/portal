@@ -110,11 +110,6 @@
 						id="grid-name"
 						type="text"
 						placeholder="ex : Marché d'Annecy (vieille ville)" />
-					<small class="text-gray-600"><Icon
-							data={faInfoCircle}
-							scale="0.8"
-							class="mr-2" />Donnez un nom (visible que par vous) au point de
-						vente pour le retrouver plus facilement dans votre liste.</small>
 				</div>
 			</div>
 			<div class="form-control">

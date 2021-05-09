@@ -40,14 +40,7 @@
         disabled={isLoading}
         id="grid-name"
         type="text"
-        placeholder="ex : Marché d'Annecy (vieille ville)" />
-      <small class="text-gray-600">
-        <Icon
-          data={faInfoCircle}
-          scale="0.8"
-          class="mr-2" />
-          Donnez un nom (visible que par vous) au créneau pour le retrouver plus facilement dans votre liste.
-        </small>
+        placeholder="ex : Livraison bassin Annecien" />
     </div>
   </div>
   <div class="flex flex-wrap mb-6 lg:mb-0">
