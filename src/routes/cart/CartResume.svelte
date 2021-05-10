@@ -68,16 +68,8 @@
     isLoadingDeliveries = true;
 
     const ids = cart.getProducersIds();
-
     var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-      input: {
-        ids,
-        kinds: [
-          DeliveryKind.Farm.Value,
-          DeliveryKind.Market.Value,
-          DeliveryKind.Collective.Value
-        ]
-      }
+      input: ids
     }, errorsHandler.Uuid);
 
     if (!res.success) {
@@ -91,7 +83,7 @@
     const cartItemWithProducerDeliveryNotFound = $cart.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
     
     if (cartItemWithProducerDeliveryNotFound) {
-      cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producer.id);
+      cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producerId);
     }
 
     if (res.data.length !== ids.length) {

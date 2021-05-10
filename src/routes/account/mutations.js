@@ -80,14 +80,14 @@ export const UPDATE_USER_PICTURE = gql`
 `;
 
 export const DELETE_ACCOUNT = gql`
-	mutation DeleteUser($input: DeleteUserInput!) {
-		deleteUser(input: $input)
+	mutation DeleteUser {
+		deleteUser
 	}
 `;
 
 export const EXPORT_DATA = gql`
-	mutation ExportRGPD($input: ExportUserDataInput!) {
-		exportRGPD(input: $input) {
+	mutation ExportRGPD {
+		exportUserData {
 			id
 		}
 	}

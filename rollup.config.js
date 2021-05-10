@@ -57,7 +57,6 @@ export default {
 		// 	sourceMap: !production,
 		// }),
 		svelte({
-			dev: !production,
 			emitCss: true,
 			preprocess: autoPreprocess({
 				postcss: {
@@ -81,7 +80,8 @@ export default {
 				[
 					"@babel/preset-env",
 					{
-						loose: true,
+						loose: false,
+						debug: !production,
 						modules: false,
 						targets: {
 							browsers: ["last 2 versions", "Firefox ESR", "> 1%"],

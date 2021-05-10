@@ -12,19 +12,19 @@
 
   // pour éviter d'avoir un two-way binding avec delivery directement
   // comme on normalise l'envoi, donc qu'on modifie delivery, le two-way binding peut provoquer une boucle
-  let openings = denormalizeOpeningHours(delivery.openingHours);
+  let openings = denormalizeOpeningHours(delivery.deliveryHours);
 
   const handleSubmit = () => {
     deliveryForm.validate();
 
     if ($deliveryForm.valid) {
-      delivery.openingHours = normalizeOpeningHours(openings);
+      delivery.deliveryHours = normalizeOpeningHours(openings);
       submit();
     }
   }
 
   const deliveryForm = form(() => ({
-    openingHours: { value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: true }
+    deliveryHours: { value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: true }
   }), {
     initCheck: false
   });
@@ -40,23 +40,16 @@
         disabled={isLoading}
         id="grid-name"
         type="text"
-        placeholder="ex : Marché d'Annecy (vieille ville)" />
-      <small class="text-gray-600">
-        <Icon
-          data={faInfoCircle}
-          scale="0.8"
-          class="mr-2" />
-          Donnez un nom (visible que par vous) au créneau pour le retrouver plus facilement dans votre liste.
-        </small>
+        placeholder="ex : Livraison bassin Annecien" />
     </div>
   </div>
   <div class="flex flex-wrap mb-6 lg:mb-0">
     <div class="w-full lg:w-1/2">
       <div class="form-control">
-        <div class="w-full" use:bindClass={{ form: deliveryForm, name: "openingHours" }}>
+        <div class="w-full" use:bindClass={{ form: deliveryForm, name: "deliveryHours" }}>
           <label for="grid-timestamp">Horaires de livraison *</label>
           <OpeningHoursContainer bind:openings={openings} />
-          <ErrorContainer field={$deliveryForm.fields.openingHours} />
+          <ErrorContainer field={$deliveryForm.fields.deliveryHours} />
         </div>
       </div>
     </div>

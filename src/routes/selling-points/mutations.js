@@ -16,7 +16,7 @@ export const CREATE_SELLING_POINT = gql`
 				to
 				reason
 			}
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to
@@ -46,7 +46,7 @@ export const UPDATE_SELLING_POINT = gql`
 				to
 				reason
 			}
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to
@@ -69,10 +69,19 @@ export const DELETE_SELLING_POINT = gql`
 export const SET_SELLING_POINT_AVAILABILITY = gql`
 	mutation SetDeliveryModesAvailability($input: SetDeliveryModesAvailabilityInput!) {
 		setDeliveryModesAvailability(input: $input) {
-			nodes {
 				id
 				available
-			}
 		}
 	}
 `;
+
+export const UPDATE_BUSINESS_CLOSINGS = gql`
+	mutation UpdateBusinessClosings($input: UpdateOrCreateBusinessClosingsInput!) {
+		updateOrCreateBusinessClosings(input: $input) {
+				id
+				from
+				to
+				reason
+		}
+	}
+`

@@ -4,7 +4,7 @@ export const GET_DELIVERIES = gql`
 	query Deliveries {
 		deliveries(
 			first: 50
-			where: { kind_in:[PRODUCER_TO_STORE] }) {
+			where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			pageInfo{
 				hasPreviousPage
 				hasNextPage
@@ -19,7 +19,7 @@ export const GET_DELIVERIES = gql`
 				lockOrderHoursBeforeDelivery
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
-				openingHours {
+				deliveryHours {
 					day
 					from
 					to
@@ -31,7 +31,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
-		delivery(input: $id) {
+		delivery(id: $id) {
 			id
 			name
 			kind
@@ -39,7 +39,7 @@ export const GET_DELIVERY_DETAILS = gql`
 			lockOrderHoursBeforeDelivery
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to

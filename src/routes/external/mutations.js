@@ -22,7 +22,7 @@ export const RATE_PRODUCT = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			ratings(first: 10, order_by: { createdOn: DESC }) {
+			ratings(first: 10, order: { createdOn: DESC }) {
 				nodes {
 					user {
 						name

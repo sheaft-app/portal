@@ -144,7 +144,7 @@
 
 	const getProducer = async () => {
 		var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
-			id: authInstance.user.profile.sub
+			id: authInstance.user.profile.id
 		});
 
 		if (!res.success) {

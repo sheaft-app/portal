@@ -7,6 +7,7 @@ let enums = {
 }
 
 let UserKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

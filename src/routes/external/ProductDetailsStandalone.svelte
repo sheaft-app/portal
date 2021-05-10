@@ -104,14 +104,7 @@
 		product = res.data;
 
 		var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-			input: {
-				ids: [res.data.producer.id],
-				kinds: [
-					DeliveryKind.Farm.Value,
-					DeliveryKind.Market.Value,
-					DeliveryKind.Collective.Value
-				]
-			}
+			input: [res.data.producer.id]
 		}, errorsHandler.Uuid);
 
 		if (!deliveriesResult.success || deliveriesResult.data.length == 0) {

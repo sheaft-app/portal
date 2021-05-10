@@ -10,7 +10,8 @@ let enums = {
     NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
 }
 
-let ConditioningKind = {	
+let ConditioningKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

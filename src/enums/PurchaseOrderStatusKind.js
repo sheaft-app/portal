@@ -94,6 +94,7 @@ let enums = {
 };
 
 let PurchaseOrderStatusKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

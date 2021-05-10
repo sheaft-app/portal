@@ -1,13 +1,13 @@
 <script>
 	import { UPDATE_CONSUMER } from "./mutations.js";
 	import { GET_CONSUMER_DETAILS } from "./queries.js";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
-	import ErrorContainer from "./../../components/ErrorContainer.svelte";
+	import { form } from '../../../vendors/svelte-forms/src/index';
 	import ProfileForm from "./ProfileForm.svelte";
 
-	export let errorsHandler, userId;
+	export let errorsHandler;
 
 	let consumer = {
+		id: null,
 		firstName: null,
 		lastName: null,
 		email: null,
@@ -29,8 +29,7 @@
 	form={consumerForm}
 	updateQuery={UPDATE_CONSUMER}
 	getQuery={GET_CONSUMER_DETAILS}
-	{errorsHandler}
-	{userId}>
+	{errorsHandler}>
 	<h3 class="font-semibold uppercase mb-0 mt-5">Vos réseaux sociaux</h3>
 	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	<div class="form-control">

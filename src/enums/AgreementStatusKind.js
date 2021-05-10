@@ -7,39 +7,40 @@ import {
 import GetEnumObjectFor from './helpers.js';
 
 let enums = {
-	WaitingForProducerApproval: { 
-		Value: "WAITING_FOR_PRODUCER_APPROVAL", 
-		Label: "En attente d'acceptation du producteur", 
+	WaitingForProducerApproval: {
+		Value: "WAITING_FOR_PRODUCER_APPROVAL",
+		Label: "En attente du producteur",
 		Icon: faSpinner,
 		Color: "blue-400"
 	},
-	WaitingForStoreApproval: { 
-		Value: "WAITING_FOR_STORE_APPROVAL", 
-		Label: "En attente d'acceptation du magasin",
+	WaitingForStoreApproval: {
+		Value: "WAITING_FOR_STORE_APPROVAL",
+		Label: "En attente du magasin",
 		Icon: faSpinner,
 		Color: "blue-400"
 	},
-	Refused: { 
+	Refused: {
 		Value: "REFUSED",
 		Label: "Refusé",
 		Icon: faThumbsDown,
 		Color: "red-400",
 	},
-	Cancelled: { 
+	Cancelled: {
 		Value: "CANCELLED",
 		Label: "Annulé",
 		Icon: faTimes,
 		Color: "gray-600",
 	},
-	Accepted: { 
-		Value: "ACCEPTED", 
+	Accepted: {
+		Value: "ACCEPTED",
 		Label: "Accepté",
 		Icon: faCheck,
 		Color: "green-400",
 	},
 };
 
-let AgreementStatusKind = {	
+let AgreementStatusKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

@@ -10,7 +10,8 @@ let enums = {
 	Sunday: { Value: "SUNDAY", Label: "Dimanche", Index: 6 },
 };
 
-let DayOfWeekKind = {	
+let DayOfWeekKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

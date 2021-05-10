@@ -7,7 +7,8 @@ let enums = {
 	RateProduct: { Value: "RATE_PRODUCT", Label: "Notation"},
 };
 
-let PointKind = {	
+let PointKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

@@ -53,19 +53,20 @@
 
 	const handleSubmit = async () => {
 		isLoading = true;
+
 		var res = await graphQLInstance.mutate(
 			UPDATE_RETURNABLE,
 			returnable,
 			errorsHandler.Uuid
     );
-    
+
 		isLoading = false;
 
 		if (!res.success) {
 			//TODO
 			return;
 		}
-		
+
 		notificationsInstance.success(
       "Vos modifications ont bien été appliquées."
     );

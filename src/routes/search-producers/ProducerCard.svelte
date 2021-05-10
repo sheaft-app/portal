@@ -4,7 +4,10 @@
   import { selectedItem } from "./../../stores/app.js";
   import { GetDistanceInfos } from "./../../helpers/distances.js";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
+import AgreementStatusKind from "../../enums/AgreementStatusKind";
   import { config } from "./../../configs/config";
+
+  const authInstance = GetAuthInstance();
 
   export let producer,
     hoveredProducer = null,
@@ -69,19 +72,19 @@
     <div
       class="relative pb-5/6 overflow-hidden bg-black rounded-t-md lg:block
       hidden">
-      {#if producer.hasAgreement || producer.hasPendingAgreement}
+      {#if producer.agreement}
         <div class="absolute w-full h-full" style="z-index: 1; top: 40%;">
-          {#if producer.hasAgreement}
+          {#if producer.agreement.status == AgreementStatusKind.Accepted.Value}
             <span class="bg-white px-3 py-2 uppercase">déjà partenaire</span>
           {/if}
-          {#if producer.hasPendingAgreement}
+          {#if producer.agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value}
             <span class="bg-blue-400 text-white px-3 py-2 uppercase">en attente</span>
           {/if}
         </div>
       {/if}
       <div
         style="height: 150px; background-color: #fbfbfb;"
-        class:opacity-50={producer.hasAgreement || producer.hasPendingAgreement}
+        class:opacity-50={producer.agreement}
         class="transition duration-200 ease-in-out w-full rounded-t-md relative">
         <img
           class:skeleton-box={!src}

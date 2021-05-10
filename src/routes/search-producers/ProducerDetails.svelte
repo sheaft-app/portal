@@ -1,5 +1,4 @@
 <script>
-  import DeliveryKind from "../../enums/DeliveryKind";
   import { getContext } from "svelte";
   import Icon from "svelte-awesome";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
@@ -12,8 +11,8 @@
     faEye
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
+  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
   import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
-  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS, GET_PRODUCER_PRODUCTS } from "./queries.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
@@ -31,11 +30,10 @@
 
   let producer = null;
   let producerDoesntExist = false;
+  let isLoading = true;
 
   const openAndLoad = async () => {
     history.pushState({ selected: $selectedItem}, "Détails du producteur");
-
-    const values = routerInstance.getQueryParams();
 
     const producerDetails = document.getElementById("producer-details");
 
@@ -54,50 +52,23 @@
       return;
     }
 
-    const products = await loadProducts(res.data.id);
-    const deliveries = await loadDeliveries(res.data.id);
-
-    console.log(deliveries);
-
-    const agreements = await loadAgreements(res.data.id);
+    let deliveries = [];
+    if(res.data.agreement && res.data.agreement.delivery)
+      deliveries = [res.data.agreement.delivery];
+    else
+      deliveries = await loadDeliveries(res.data.id);
 
     producer = {
       ...res.data,
-      products,
-      deliveries: deliveries.map((d) => groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-        index === self.findIndex((d) => (
-          d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-        ))
-      ))),
-      agreement: agreements.length > 0 ? agreements[0] : null
+      deliveries: deliveries,
     };
 
-    console.log(producer.deliveries);
-  }
-
-  const loadProducts = async (id) => {
-    var res = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
-      companyId: id
-    });
-
-    if (!res.success) {
-      // todo
-      return;
-    }
-
-    if (res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data;
+    isLoading = false;
   }
 
   const loadDeliveries = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
-      input: {
-        ids: [id],
-        kinds: [DeliveryKind.ProducerToStore.Value]
-      } 
+    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
+      input: [id]
     });
 
     if (!res.success) {
@@ -106,17 +77,6 @@
     }
 
     if (!res.data || res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data[0].deliveries;
-  }
-
-  const loadAgreements = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_AGREEMENTS, { id } );
-
-    if (!res.success) {
-      //todo
       return [];
     }
 
@@ -132,7 +92,7 @@
     open(CreateAgreementModal, {
       submit: () => {},
       producer,
-      storeId: GetAuthInstance().user.profile.sub,
+      storeId: GetAuthInstance().user.profile.id,
       onClosed: (res) => {
         if (res.success) {
           producer.agreement = { id: res.data.id, status: res.data.status };
@@ -142,7 +102,7 @@
       }
     });
   };
-  
+
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
       event.preventDefault();
@@ -173,7 +133,7 @@
     <span>Fermer</span>
   </button>
 </div>
-{#if producerDoesntExist} 
+{#if producerDoesntExist}
   <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
     <p class="text-center">Mince, il semblerait que ce producteur n'existe plus !</p>
   </div>
@@ -244,7 +204,7 @@
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible
         </button>
       {:else}
-        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center 
+        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center
         p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> demander accord
         </button>
@@ -271,7 +231,7 @@
               <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
             </div>
           {/if}
-          <div> 
+          <div>
             <p class="text-base mb-1">
               <Icon
                 data={faPhone}
@@ -330,31 +290,35 @@
             </div>
         </div>
       {/if}
-      <div class="mt-2 px-4">
+      <div class="w-full px-4 mt-5">
+        <p class="text-2xl font-semibold mb-0">Livraisons</p>
+        {#if producer.deliveries && producer.deliveries.length > 0}
         {#each producer.deliveries as delivery, index}
           <div class="bg-gray-100 rounded-lg p-4 px-5 mb-2">
-            <p class="font-semibold mb-2">Créneau de livraison {index + 1}</p>
-            {#each delivery as deliveryHour, index}
+            <p class="font-semibold mb-2">{delivery.name}</p>
+            {#each delivery.deliveryHours as deliveryHour, index}
               <div class="flex mb-2 border-gray-300"
                   class:pb-2={index !== delivery.length - 1}
                   class:border-b={index !== delivery.length - 1}>
                 <p style="min-width: 100px;">
-                  {DayOfWeekKind.label(deliveryHour[0].day)}
+                  {DayOfWeekKind.label(deliveryHour.day)}
                 </p>
                 <div>
-                  {#each deliveryHour as hours}
-                    <p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
-                  {/each}
+                    <p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
                 </div>
               </div>
             {/each}
           </div>
         {/each}
+        {:else}
+        <p>Ce producteur n'a pas configuré de créneau de livraison</p>
+        {/if}
       </div>
-      <div class="mt-5 px-4">
+      <div class="w-full px-4 mt-5">
         <p class="text-2xl font-semibold mb-0">Produits</p>
+        {#if producer.products && producer.products.length > 0}
         {#each producer.products as product, index}
-          <div 
+          <div
           style="margin-bottom:1px;"
           class="rounded hover:bg-gray-100 transition duration-200
           ease-in-out focus:outline-none">
@@ -376,7 +340,7 @@
                     <span class="text-gray-600">
                       {product.rating || 'Aucun avis'}
                     </span>
-                  </div>  
+                  </div>
                 </div>
                 <div
                   class="text-base text-right font-semibold">
@@ -388,6 +352,9 @@
           </div>
         </div>
         {/each}
+        {:else}
+          <p>Ce producteur ne possède pas de produits à vendre pour le moment</p>
+        {/if}
       </div>
     </div>
   </div>

@@ -60,7 +60,7 @@
 		if (!authInstance.authenticated) return;
 
 		userPosition = {
-			userId: authInstance.user.profile.sub,
+			userId: authInstance.user.profile.id,
 			name: authInstance.user.profile.given_name,
 			points: null,
 			position: null
@@ -74,7 +74,7 @@
 
 		userPosition.points = res.data.points;
 		userPosition.position = res.data.position;
-		showUserPosition = users.filter(c => c.userId == authInstance.user.profile.sub).length == 0;
+		showUserPosition = users.filter(c => c.userId == authInstance.user.profile.id).length == 0;
 	}
 
 	const getUserPicture = (user) => {

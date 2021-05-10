@@ -7,6 +7,7 @@ let enums = {
 };
 
 let NotificationKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

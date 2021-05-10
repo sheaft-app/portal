@@ -1,26 +1,19 @@
 import gql from 'graphql-tag';
 
-export const CANCEL_AGREEMENT = gql`
+export const CANCEL_AGREEMENTS = gql`
 	mutation cancelAgreements($input: CancelAgreementsInput!) {
 		cancelAgreements(input: $input) {
-			nodes {
 				id
 				status
-			}
 		}
 	}
 `
 
-export const ACCEPT_AGREEMENT = gql`
-	mutation acceptAgreement($input: AcceptAgreementInput!) {
-		acceptAgreement(input: $input) {
-			id
-			status
-			selectedHours {
-				day
-				from
-				to
-			}
+export const ACCEPT_AGREEMENTS = gql`
+	mutation acceptAgreements($input: AcceptAgreementsInput!) {
+		acceptAgreements(input: $input) {
+				id
+				status				
 		}
 	}
 `
@@ -28,10 +21,8 @@ export const ACCEPT_AGREEMENT = gql`
 export const REFUSE_AGREEMENTS = gql`
 	mutation refuseAgreements($input: RefuseAgreementsInput!) {
 		refuseAgreements(input: $input) {
-			nodes {
 				id
 				status
-			}
 		}
 	}
 `

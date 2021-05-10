@@ -22,7 +22,7 @@
 	export let submit, initialValues, isLoading;
 	let sellingPoint = initialValues;
 	let closings = sellingPoint.closings ? denormalizeClosingDates(sellingPoint.closings) : [];
-	let openings = denormalizeOpeningHours(sellingPoint.openingHours);
+	let openings = denormalizeOpeningHours(sellingPoint.deliveryHours);
 	let limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
     
 	let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
@@ -43,7 +43,7 @@
 		sellingPointForm.validate();
 
 		if ($sellingPointForm.valid && !isLoading) {
-			sellingPoint.openingHours = normalizeOpeningHours(openings);
+			sellingPoint.deliveryHours = normalizeOpeningHours(openings);
 			sellingPoint.closings = normalizeClosingDates(closings);
 			delete sellingPoint.address["insee"];
 
@@ -110,11 +110,6 @@
 						id="grid-name"
 						type="text"
 						placeholder="ex : Marché d'Annecy (vieille ville)" />
-					<small class="text-gray-600"><Icon
-							data={faInfoCircle}
-							scale="0.8"
-							class="mr-2" />Donnez un nom (visible que par vous) au point de
-						vente pour le retrouver plus facilement dans votre liste.</small>
 				</div>
 			</div>
 			<div class="form-control">

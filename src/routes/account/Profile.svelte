@@ -1,11 +1,10 @@
 <script>
-  import { onMount, getContext } from "svelte";
+  import { getContext } from "svelte";
   import Icon from "svelte-awesome";
-  import { faCircleNotch, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
+  import { faEdit } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import GetRouterInstance from "./../../services/SheaftRouter.js";
   import UpdateImage from "./UpdateImage.svelte";
   import { UPDATE_USER_PICTURE, EXPORT_DATA } from "./mutations.js";
   import { authUserAccount } from "./../../stores/auth.js";
@@ -16,22 +15,19 @@
   import EditProducer from "./EditProducer.svelte";
   import EditStore from "./EditStore.svelte";
   import { config } from "../../configs/config";
-	import ExternalRoutes from "../external/routes";
 
 	const errorsHandler = new SheaftErrors();
   const authInstance = GetAuthInstance();
   const graphQLInstance = GetGraphQLInstance();
-	const routerInstance = GetRouterInstance();
   const { open } = getContext("modal");
 
   let isLoading = false;
   let isSendingRGPDRequest = false;
   let hasSentRGPDRequest = false;
-  let userId = $authUserAccount.profile.sub;
 
   const handleExport = async () => {
     isSendingRGPDRequest = true;
-    var res = await graphQLInstance.mutate(EXPORT_DATA, { id: userId }, errorsHandler.Uuid);
+    var res = await graphQLInstance.mutate(EXPORT_DATA, { id: $authUserAccount.profile.id }, errorsHandler.Uuid);
     isSendingRGPDRequest = false;
     if (!res.success) {
       //TODO
@@ -42,7 +38,7 @@
 
   const updateImage = () => {
     open(UpdateImage, {
-      id: userId,
+      id: $authUserAccount.profile.id,
       initialSrc: $authUserAccount.profile.picture,
       mutation: UPDATE_USER_PICTURE,
       onClose: async res => {
@@ -95,11 +91,11 @@
   </section>
   <ErrorCard {errorsHandler} />
   {#if isInRole("CONSUMER")}
-    <EditConsumer {errorsHandler} {userId} />
+    <EditConsumer {errorsHandler} />
   {:else if isInRole("PRODUCER")}
-    <EditProducer {errorsHandler} {userId} />
+    <EditProducer {errorsHandler} />
   {:else if isInRole("STORE")}
-    <EditStore {errorsHandler} {userId} />
+    <EditStore {errorsHandler} />
   {:else}
     Aucune donnée modifiable
   {/if}
@@ -119,7 +115,7 @@
         hover:bg-gray-100"
         class:disabled={isSendingRGPDRequest ||hasSentRGPDRequest}
         disabled={isSendingRGPDRequest || hasSentRGPDRequest}
-        on:click={handleExport}>
+        on:click={() => handleExport()}>
         Je demande une copie de mes données
       </button>
       {#if hasSentRGPDRequest}

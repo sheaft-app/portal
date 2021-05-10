@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_CONSUMER_DETAILS = gql`
-	query GetConsumerDetails($id: ID!) {
-		consumer(input: $id) {
+	query GetConsumerDetails {
+		myConsumerProfile {
 			id
 			lastName
 			firstName
@@ -16,8 +16,8 @@ export const GET_CONSUMER_DETAILS = gql`
 `;
 
 export const GET_STORE_DETAILS = gql`
-	query GetStoreDetails($id: ID!) {
-		store(input: $id) {
+	query GetStoreDetails {
+		myStoreProfile {
 			id
 			address {
 				line1
@@ -45,13 +45,17 @@ export const GET_STORE_DETAILS = gql`
 				from
 				to
 			}
+			tags{
+				id
+				name
+			}
 		}
 	}
 `;
 
 export const GET_PRODUCER_DETAILS = gql`
-	query GetProducerDetails($id: ID!) {
-		producer(input: $id) {
+	query GetProducerDetails {
+		myProducerProfile {
 			id
 			address {
 				line1

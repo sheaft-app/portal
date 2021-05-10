@@ -6,7 +6,8 @@ let enums = {
 	Consumer: { Value: "CONSUMER", Label: "Consommateur"},
 };
 
-let ProfileKind = {	
+let ProfileKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

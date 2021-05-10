@@ -61,7 +61,7 @@
       return;
     }
     notificationsInstance.success("Vos modifications ont bien été appliquées.");
-    await fetchDelivery(delivery.id);
+    routerInstance.goTo(DeliveryRoutes.List);
   };
 
   const showDeleteModal = () => {

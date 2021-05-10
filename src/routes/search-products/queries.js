@@ -36,9 +36,9 @@ export const SEARCH_PRODUCTS = gql`
 	}
 `;
 
-export const GET_PRODUCT_DETAILS = gql` 
+export const GET_PRODUCT_DETAILS = gql`
 	query GetProductDetails($id: ID!) {
-		product(input: $id) {
+		product(id: $id) {
 			id
 			name
 			description
@@ -60,7 +60,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			ratings(first: 10, order_by: { createdOn: DESC }) {
+			ratings(first: 10, order: [{ createdOn: DESC }]) {
 				nodes {
 					user {
 						name
@@ -92,25 +92,26 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query($id: ID!) {
-		producerProducts(input: $id) {
-	  		nodes {
+		producer(id: $id) {
+			products {
 				id
 				name
 				onSalePricePerUnit
+				wholeSalePricePerUnit
 				picture
 				rating
 				quantityPerUnit
 				conditioning
 				unit
 				available
-	  		}
+			}
 		}
   	}
 `
 
 export const GET_PRODUCER_DELIVERIES = gql`
-	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
-		getDeliveriesForProducers(input: $input) {
+	query GetProducerDeliveries($input: [ID!]) {
+		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -124,7 +125,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours {
 					day
 					from
 					to
@@ -137,7 +138,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 
 export const GET_PRODUCER_NAME = gql`
 	query GetProducerName($id: ID!) {
-		producerSummary(input: $id) {
+		producer(id: $id) {
 			id
 			name
 		}

@@ -8,6 +8,7 @@ import {
 	authAuthorized,
 } from "./../stores/auth.js";
 import {clearLocalStorage} from "./../helpers/storage";
+import { stringify } from "qs";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
@@ -42,7 +43,10 @@ class SheaftAuth {
 				return;
 			}
 
-			this.setAuthStatus({profile: {role: "ANONYMOUS"}}, false, false, false, true);
+			this.setAuthStatus({profile: {role: ["ANONYMOUS"]}}, false, false, false, true);
+		}, reason => {
+			localStorage.removeItem("user");
+			this.setAuthStatus({profile: {role: ["ANONYMOUS"]}}, false, false, false, true);
 		});
 
 		this.userManager.events.addUserLoaded(async (user) => {
@@ -51,7 +55,7 @@ class SheaftAuth {
 
 		this.userManager.events.addUserUnloaded((e) => {
 		});
-
+ 
 		this.userManager.events.addAccessTokenExpiring(async () => {
 			await this.loginSilent();
 		});
@@ -63,6 +67,13 @@ class SheaftAuth {
 
 	async retrieveUser(user, onInit) {
 		try {
+			var localUser = JSON.parse(localStorage.getItem("user"));
+			if(localUser.id && localUser.id.length > 0){
+				user.profile.id = localUser.id;
+				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
+				return;
+			}
+
 			var result = await fetch(
 				config.api + "/graphql",
 				getUserInfoSettings(user)
@@ -70,11 +81,13 @@ class SheaftAuth {
 
 			var content = await result.json();
 			if (content.data.me && content.data.me.id) {
+				user.profile.id = content.data.me.id;
 				this.setAuthStatus(user, true, true, true, true);
 			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
 				this.refreshPageAsUnauthorized(false);
 			} else {
+				user.profile.id = null;
 				this.setAuthStatus(user, true, true, false, true);
 			}
 		} catch (err) {
@@ -102,6 +115,8 @@ class SheaftAuth {
 			authAuthenticated.set(authenticated);
 		if (this.initialized != initialized)
 			authInitialized.set(initialized);
+
+		localStorage.setItem("user", JSON.stringify({id : user.profile.id, authenticated : authenticated, authorized: authorized, registered : registered, role: user.profile.role}));
 	}
 
 	userIsAnonymous() {

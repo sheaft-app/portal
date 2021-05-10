@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const CREATE_CONSUMER_ORDER = gql`
 	mutation createOrder($input: CreateOrderInput!) {
-		createOrder(input: $input) {
+		createConsumerOrder(input: $input) {
 			id
 			totalFees
 			totalOnSalePrice
@@ -60,7 +60,7 @@ export const CREATE_CONSUMER_ORDER = gql`
 
 export const UPDATE_CONSUMER_ORDER = gql`
 	mutation updateOrder($input: UpdateOrderInput!) {
-		updateOrder(input: $input) {
+		updateConsumerOrder(input: $input) {
 			id
 			totalFees
 			totalOnSalePrice

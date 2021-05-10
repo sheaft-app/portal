@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const CREATE_CONSUMER_ORDER = gql`
 	mutation createOrder($input: CreateOrderInput!) {
-		createOrder(input: $input) {
+		createConsumerOrder(input: $input) {
 			id
 			donation
 			productsCount
@@ -104,11 +104,18 @@ export const CREATE_CARD_REGISTRATION = gql`
 `;
 
 export const CREATE_PRE_AUTHORIZATION = gql`
-	mutation createPreAuthorization($input: CreatePreAuthorizationInput!) {
+	mutation createPreAuthorization($input: CreatePreAuthorizationForOrderInput!) {
 		prepayOrder(input: $input) {
 			id
 			status
 			secureModeRedirectURL
+			order{
+				id
+				status
+				purchaseOrders{
+					id
+				}
+			}
 		}
 	}
 `;

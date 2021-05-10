@@ -33,7 +33,7 @@
 			{#if authManager.isInRole([Roles.Producer.Value])}
 				<span class="text-lg font-medium">{agreement.store.name}</span>
 			{:else}
-				<span class="text-lg font-medium">{agreement.delivery.producer.name}</span>
+				<span class="text-lg font-medium">{agreement.producer.name}</span>
 			{/if}
 		</div>
 	</div>
