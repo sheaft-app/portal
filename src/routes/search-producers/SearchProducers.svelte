@@ -111,37 +111,10 @@
 	async function refetch() {
 		isLoading.set(true);
 		await searchProducers(0);
-		await getAndSetAgreements();
 
 		isLoading.set(false);
 	}
 
-	const getAndSetAgreements = async () => {
-		var response = await graphQLInstance.query(
-			GET_AGREEMENTS,
-			null,
-			errorsHandler.Uuid
-		);
-
-		if (!response.success) {
-			// todo
-			return;
-		}
-
-		response.data.map((a) => {
-			let producer = prevFeed.find((p) => p.id === a.delivery.producer.id);
-			if (producer) {
-				if (
-					a.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
-					a.status == AgreementStatusKind.WaitingForStoreApproval.Value
-				) {
-					producer.hasPendingAgreement = true;
-				} else if (a.status == AgreementStatusKind.Accepted.Value) {
-					producer.hasAgreement = true;
-				}
-			}
-		});
-	};
 
 	const searchProducers = async (page) => {
 		currentPage = ++page;

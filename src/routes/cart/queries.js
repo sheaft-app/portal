@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_PRODUCER_DELIVERIES = gql`
-	query GetProducerDeliveries($input: SearchProducersDeliveriesInput!) {
-		getDeliveriesForProducers(input: $input) {
+	query GetProducerDeliveries($input: [ID!]) {
+		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -16,7 +16,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours(order_by: { expectedDeliveryDate: "ASC" }) {
+				deliveryHours{
 					day
 					from
 					to
@@ -29,7 +29,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 
 export const GET_MY_ORDERS = gql`
 	query MyOrders($ids: [Uuid!]) {
-		myOrders(where: { id_in: $ids }) {
+		purchaseOrders(where: { id: { in: $ids }}) {
 			nodes {
 				id
 				reference
@@ -43,7 +43,7 @@ export const GET_MY_ORDERS = gql`
 
 export const GET_ORDER = gql`
 	query order($input: ID!) {
-		order(input: $input) {
+		order(id: $input) {
 			id
 			totalFees
 			status
@@ -63,7 +63,7 @@ export const GET_ORDER = gql`
 
 export const GET_MY_CONSUMER_LEGALS = gql`
 	query GetMyConsumerLegals {
-		getMyConsumerLegals {
+		consumerLegals {
 			id
 			owner {
 				firstName

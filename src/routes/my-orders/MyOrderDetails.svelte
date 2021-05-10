@@ -80,6 +80,7 @@
     order &&
     order.status != PurchaseOrderStatusKind.Completed.Value &&
     order.status != PurchaseOrderStatusKind.Cancelled.Value &&
+    order.status != PurchaseOrderStatusKind.Withdrawned.Value &&
     order.status != PurchaseOrderStatusKind.Delivered.Value &&
     order.status != PurchaseOrderStatusKind.Shipping.Value &&
     order.status != PurchaseOrderStatusKind.Processing.Value &&
@@ -108,7 +109,7 @@
       <h4 class="text-gray-600">#{order.reference}</h4>
       <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
     </section>
-    {#if order.status == PurchaseOrderStatusKind.Cancelled.Value}
+    {#if order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Withdrawned.Value}
       <div
         class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3">
@@ -183,7 +184,7 @@
         {/if}
       </div>
     {/if}
-    {#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
+    {#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value  && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
       <div
         class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3 border-t md:border-none border-gray-400">
@@ -263,7 +264,7 @@
         </div>
       </div>
     {/if}
-    {#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Refused.Value}
+    {#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Refused.Value}
       <div
         class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
         border-t md:border-l md:border-r border-gray-400">

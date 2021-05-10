@@ -9,15 +9,14 @@
 
 	const errorsHandler = new SheaftErrors();
 
-	export let onClosed, close, store;
+	export let onClosed, close, store, producerId;
 
 	const graphQLInstance = GetGraphQLInstance();
 
 	let selectedDelivery = null;
 	let isLoading = false;
-	let isValid = false;
 
-	$: isValid = selectedDelivery && selectedDelivery.selectedHours.length > 0;
+	$: isValid = selectedDelivery && selectedDelivery.deliveryHours.length > 0;
 
 	const handleSubmit = async () => {
 		isLoading = true;
@@ -25,14 +24,8 @@
 			CREATE_AGREEMENT,
 			{
 				storeId: store.id,
-				selectedHours: selectedDelivery.selectedHours.map((selectedHour) => {
-					return {
-						days: [selectedHour.day],
-						from: selectedHour.from,
-						to: selectedHour.to,
-					};
-				}),
-				deliveryModeId: selectedDelivery.deliveryId,
+				producerId: producerId,
+				deliveryId: selectedDelivery.id,
 			},
 			errorsHandler.Uuid,
 			GET_AGREEMENTS
@@ -67,7 +60,7 @@
 	<p class="leading-5">
 		Vous vous apprêtez à demander un accord de partenariat avec {store.name}
 	</p>
-	<p class="leading-5">
+	<p class="leading-5 mb-5">
 		Le magasin sera automatiquement notifié de votre demande.
 	</p>
 	<SelectTime bind:selectedDelivery />

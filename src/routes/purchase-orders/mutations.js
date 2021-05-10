@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 export const ACCEPT_PURCHASE_ORDERS = gql`
 	mutation AcceptPurchaseOrders($input: AcceptPurchaseOrdersInput!) {
 		acceptPurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -24,7 +23,6 @@ export const ACCEPT_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;
@@ -32,7 +30,6 @@ export const ACCEPT_PURCHASE_ORDERS = gql`
 export const REFUSE_PURCHASE_ORDERS = gql`
 	mutation RefusePurchaseOrders($input: RefusePurchaseOrdersInput!) {
 		refusePurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -53,7 +50,6 @@ export const REFUSE_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;
@@ -61,7 +57,6 @@ export const REFUSE_PURCHASE_ORDERS = gql`
 export const CANCEL_PURCHASE_ORDERS = gql`
 	mutation CancelPurchaseOrders($input: CancelPurchaseOrdersInput!) {
 		cancelPurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -82,7 +77,6 @@ export const CANCEL_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;
@@ -90,7 +84,6 @@ export const CANCEL_PURCHASE_ORDERS = gql`
 export const PROCESS_PURCHASE_ORDERS = gql`
 	mutation ProcessPurchaseOrders($input: ProcessPurchaseOrdersInput!) {
 		processPurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -111,7 +104,6 @@ export const PROCESS_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;
@@ -119,7 +111,6 @@ export const PROCESS_PURCHASE_ORDERS = gql`
 export const COMPLETE_PURCHASE_ORDERS = gql`
 	mutation CompletePurchaseOrders($input: CompletePurchaseOrdersInput!) {
 		completePurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -140,7 +131,6 @@ export const COMPLETE_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;
@@ -148,7 +138,6 @@ export const COMPLETE_PURCHASE_ORDERS = gql`
 export const DELIVER_PURCHASE_ORDERS = gql`
 	mutation DeliverPurchaseOrders($input: DeliverPurchaseOrdersInput!) {
 		deliverPurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -169,7 +158,6 @@ export const DELIVER_PURCHASE_ORDERS = gql`
 					email
 					phone
 				}
-			}
 		}
 	}
 `;

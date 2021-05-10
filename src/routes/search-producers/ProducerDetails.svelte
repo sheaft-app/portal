@@ -1,5 +1,4 @@
 <script>
-  import DeliveryKind from "../../enums/DeliveryKind";
   import { getContext } from "svelte";
   import Icon from "svelte-awesome";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
@@ -12,34 +11,29 @@
     faEye
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
-  import { GetDistanceInfos } from "./../../helpers/distances";
-  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl } from "./../../helpers/app";
-  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES, GET_PRODUCER_AGREEMENTS, GET_PRODUCER_PRODUCTS } from "./queries.js";
+  import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
+  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import { selectedItem } from "./../../stores/app.js";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
+	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import AgreementRoutes from "../agreements/routes";
   import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-import { config } from "../../configs/config";
+  import { config } from "../../configs/config";
 
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
   const notificationsInstance = new GetNotificationsInstance();
   const { open } = getContext("modal");
-  const values = routerInstance.getQueryParams();
 
   let producer = null;
-  let isLoading = true;
   let producerDoesntExist = false;
-  let distanceInfos = null;
+  let isLoading = true;
 
   const openAndLoad = async () => {
     history.pushState({ selected: $selectedItem}, "Détails du producteur");
-
-    const values = routerInstance.getQueryParams();
-    isLoading = true;
 
     const producerDetails = document.getElementById("producer-details");
 
@@ -53,34 +47,28 @@ import { config } from "../../configs/config";
 
     if (!res.success) {
       // TODO
-      isLoading = false;
       console.error("No producer found for this ID");
       producerDoesntExist = true;
       return;
     }
 
-    const products = await loadProducts(res.data.id);
-    const delivery = await loadDelivery(res.data.id);
-    const agreements = await loadAgreements(res.data.id);
-
-    distanceInfos = GetDistanceInfos(
-      values["latitude"],
-      values["longitude"],
-      res.data.address.latitude,
-      res.data.address.longitude
-    );
+    let deliveries = [];
+    if(res.data.agreement && res.data.agreement.delivery)
+      deliveries = [res.data.agreement.delivery];
+    else
+      deliveries = await loadDeliveries(res.data.id);
 
     producer = {
       ...res.data,
-      products,
-      delivery: delivery.deliveries[0],
-      agreement: agreements.length > 0 ? agreements[0] : null
+      deliveries: deliveries,
     };
+
+    isLoading = false;
   }
 
-  const loadProducts = async (id) => {
-    var res = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {
-      companyId: id
+  const loadDeliveries = async (id) =>  {
+    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
+      input: [id]
     });
 
     if (!res.success) {
@@ -88,38 +76,7 @@ import { config } from "../../configs/config";
       return;
     }
 
-    if (res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data;
-  }
-
-  const loadDelivery = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, { 
-      input: {
-        ids: [id],
-        kinds: [DeliveryKind.ProducerToStore.Value]
-      } 
-    });
-
-    if (!res.success) {
-      // todo
-      return;
-    }
-
-    if (res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data[0];
-  }
-
-  const loadAgreements = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_AGREEMENTS, { id } );
-
-    if (!res.success) {
-      //todo
+    if (!res.data || res.data.length <= 0) {
       return [];
     }
 
@@ -135,7 +92,7 @@ import { config } from "../../configs/config";
     open(CreateAgreementModal, {
       submit: () => {},
       producer,
-      storeId: GetAuthInstance().user.profile.sub,
+      storeId: GetAuthInstance().user.profile.id,
       onClosed: (res) => {
         if (res.success) {
           producer.agreement = { id: res.data.id, status: res.data.status };
@@ -145,11 +102,6 @@ import { config } from "../../configs/config";
       }
     });
   };
-
-  function focus(node) {
-    node.focus();
-    node.scrollIntoView();
-  }
 
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
@@ -181,7 +133,7 @@ import { config } from "../../configs/config";
     <span>Fermer</span>
   </button>
 </div>
-{#if producerDoesntExist} 
+{#if producerDoesntExist}
   <div class="mb-10 p-4 border border-red-500 text-red-500 lg:flex flex-row justify-center">
     <p class="text-center">Mince, il semblerait que ce producteur n'existe plus !</p>
   </div>
@@ -246,13 +198,13 @@ import { config } from "../../configs/config";
           <Icon data={faEye} scale="1.3" class="mr-2" />
           voir accord
         </button>
-      {:else if !producer.delivery}
+      {:else if producer.deliveries.length == 0}
         <button disabled class="flex items-center justify-center p-2 uppercase
         disabled rounded-full shadow cursor-blocked text-sm mb-2 m-auto">
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible
         </button>
       {:else}
-        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center 
+        <button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center
         p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
           <Icon data={faHandshake} scale="1.3" class="mr-2" /> demander accord
         </button>
@@ -279,7 +231,7 @@ import { config } from "../../configs/config";
               <img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="m-auto mb-1" style="max-width: 30px;" />
             </div>
           {/if}
-          <div> 
+          <div>
             <p class="text-base mb-1">
               <Icon
                 data={faPhone}
@@ -338,10 +290,35 @@ import { config } from "../../configs/config";
             </div>
         </div>
       {/if}
-      <div class="mt-5 px-4">
+      <div class="w-full px-4 mt-5">
+        <p class="text-2xl font-semibold mb-0">Livraisons</p>
+        {#if producer.deliveries && producer.deliveries.length > 0}
+        {#each producer.deliveries as delivery, index}
+          <div class="bg-gray-100 rounded-lg p-4 px-5 mb-2">
+            <p class="font-semibold mb-2">{delivery.name}</p>
+            {#each delivery.deliveryHours as deliveryHour, index}
+              <div class="flex mb-2 border-gray-300"
+                  class:pb-2={index !== delivery.length - 1}
+                  class:border-b={index !== delivery.length - 1}>
+                <p style="min-width: 100px;">
+                  {DayOfWeekKind.label(deliveryHour.day)}
+                </p>
+                <div>
+                    <p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/each}
+        {:else}
+        <p>Ce producteur n'a pas configuré de créneau de livraison</p>
+        {/if}
+      </div>
+      <div class="w-full px-4 mt-5">
         <p class="text-2xl font-semibold mb-0">Produits</p>
+        {#if producer.products && producer.products.length > 0}
         {#each producer.products as product, index}
-          <div 
+          <div
           style="margin-bottom:1px;"
           class="rounded hover:bg-gray-100 transition duration-200
           ease-in-out focus:outline-none">
@@ -363,7 +340,7 @@ import { config } from "../../configs/config";
                     <span class="text-gray-600">
                       {product.rating || 'Aucun avis'}
                     </span>
-                  </div>  
+                  </div>
                 </div>
                 <div
                   class="text-base text-right font-semibold">
@@ -375,6 +352,9 @@ import { config } from "../../configs/config";
           </div>
         </div>
         {/each}
+        {:else}
+          <p>Ce producteur ne possède pas de produits à vendre pour le moment</p>
+        {/if}
       </div>
     </div>
   </div>

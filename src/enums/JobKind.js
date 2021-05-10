@@ -1,15 +1,14 @@
 import GetEnumObjectFor from './helpers.js';
 
 let enums = {
-	CreateOrders: { Value: "CREATE_ORDERS", Label: "Création de commandes"},
-	CreatePickingFromOrders: { Value: "CREATE_PICKING_FROM_ORDERS", Label: "Bon de préparation"},
+	ExportPickingOrders: { Value: "EXPORT_PICKING_ORDERS", Label: "Bon de préparation"},
 	ImportProducts: { Value: "IMPORT_PRODUCTS", Label: "Import de produits"},
-	ExportProducts: { Value: "EXPORT_PRODUCTS", Label: "Export de produits"},
-	OrderPicking: { Value: "ORDER_PICKING", Label: ""},
-	ExportAccountData: { Value: "EXPORT_ACCOUNT_DATA", Label: "Export RGPD"},
+	ExportUserData: { Value: "EXPORT_USER_DATA", Label: "Export RGPD"},
+	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export Virements"},
 };
 
-let JobKind = {	
+let JobKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

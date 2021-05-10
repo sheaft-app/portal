@@ -86,7 +86,7 @@ class SheaftGraphQL {
 	updateApolloCache(res, dataType, input, typename) {
 		if (!res || !res.data || dataType.length < 2) return;
 
-		if (dataType.length > 1 && !this.findIdInDataType(dataType)) 
+		if (dataType.length > 1 && !this.findIdInDataType(dataType))
 			return;
 
 		var hasInputIds = input.id || input.ids;
@@ -219,7 +219,6 @@ class SheaftGraphQL {
 			return {
 				data: resultData.nodes,
 				pageInfo: resultData.pageInfo,
-				totalCount: resultData.totalCount,
 				errors,
 				success,
 			};
@@ -228,7 +227,6 @@ class SheaftGraphQL {
 			return {
 				data: resultData.edges.map((n) => n.node),
 				pageInfo: resultData.pageInfo,
-				totalCount: resultData.totalCount,
 				errors,
 				success,
 			};
@@ -242,7 +240,6 @@ class SheaftGraphQL {
 					startCursor: null,
 					endCursor: null,
 				},
-				totalCount: resultData.length,
 				errors,
 				success,
 			};
@@ -276,7 +273,6 @@ class SheaftGraphQL {
 				startCursor: null,
 				endCursor: null,
 			},
-			totalCount: 0,
 			success: false,
 			errors: errors,
 		};

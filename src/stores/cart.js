@@ -33,7 +33,8 @@ const store = () => {
 		totalPrice: 0,
 		totalReturnableOnSalePrice: 0,
 		returnablesCount: 0,
-		conflicts: []
+		conflicts: [],
+		warningInfo: null
 	}
 
 	const {subscribe, set, update} = writable(state);
@@ -98,6 +99,11 @@ const store = () => {
 			initialized = true;
 		},
 		async updateCart(donation = "NONE") {
+			update(state => {
+				state.warningInfo = null;
+				return state;
+			});
+
 			if (state.isSaving) {
 				return;
 			}
@@ -108,7 +114,7 @@ const store = () => {
 				id: state.userCurrentOrder,
 				donation,
 				products: getters.getNormalizedProducts(),
-				producersExpectedDeliveries: getters.getNormalizedSelectedDeliveries()
+				deliveries: getters.getNormalizedSelectedDeliveries()
 			};
 
 			if (!state.userCurrentOrder) {
@@ -122,14 +128,31 @@ const store = () => {
 
 				if (invalidProductsError) {
 					const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+					let products = JSON.parse(localStorage.getItem("user_cart"));
+					localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
 					setters.disableProducts(ids);
 				}
 
-				state.isSaving = false;
-				return;
+				const disabledProductsError = response.errors.find((e) => e.message.includes('sont actuellement indisponibles'));
+
+				if (disabledProductsError) {
+					const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+					let products = JSON.parse(localStorage.getItem("user_cart"));
+					localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
+					setters.disableProducts(ids);
+				}
+
+				return update(state => {
+					state.isSaving = false;
+					state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
+					return state;
+				});
+
+				return false;
 			}
 
 			setters.updateWholeCart(response.data);
+			return true;
 		},
 		async chooseCart(cartId) {
 			state.isSaving = true;
@@ -273,7 +296,7 @@ const store = () => {
 		disableProducts(productIds) {
 			productIds.map((i) => {
 				let product = getters.getProductById(i);
-				product.disabled = true;
+				if (product) product.disabled = true;
 			})
 		},
 		disableProducers(producersIds) {
@@ -299,7 +322,7 @@ const store = () => {
 				return state;
 			})
 		},
-		updateProduct(productId, quantity) {
+		async updateProduct(productId, quantity) {
 			update(state => {
 				let product = getters.getProductById(productId);
 
@@ -311,7 +334,8 @@ const store = () => {
 				}
 				return state;
 			})
-			return methods.updateCart();
+			const result = await methods.updateCart();
+			return result;
 		},
 		removeProducerProducts(producerId) {
 			update(state => {

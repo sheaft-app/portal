@@ -2,19 +2,19 @@ import gql from "graphql-tag";
 
 export const GET_ORDERS = gql`
 	query GetOrders(
-		$first: PaginationAmount
-		$last: PaginationAmount
+		$first: Int
+		$last: Int
 		$after: String
 		$before: String
-		$orderBy: PurchaseOrderSort
-		$where: PurchaseOrderFilter
+		$order: [PurchaseOrderSortInput!]
+		$where: PurchaseOrderFilterInput
 	) {
 		purchaseOrders(
 			first: $first
 			last: $last
 			after: $after
 			before: $before
-			order_by: $orderBy
+			order: $order
 			where: $where
 		) {
 			pageInfo {
@@ -23,7 +23,6 @@ export const GET_ORDERS = gql`
 				hasNextPage
 				hasPreviousPage
 			}
-			totalCount
 			edges {
 				cursor
 				node {
@@ -55,7 +54,7 @@ export const GET_ORDERS = gql`
 
 export const GET_ORDER_DETAILS = gql`
 	query GetOrderDetails($id: ID!) {
-		purchaseOrder(input: $id) {
+		purchaseOrder(id: $id) {
 			id
 			reference
 			totalOnSalePrice
@@ -103,7 +102,7 @@ export const GET_ORDER_DETAILS = gql`
 `;
 
 export const HAS_PICKING_ORDERS_EXPORT_INPROGRESS = gql`
-	query PickingOrdersExportInProgress {
-		pickingOrdersExportInProgress
+	query hasPendingJobs($kinds: [JobKind!]) {
+		hasPendingJobs(kinds:$kinds)
 	}
 `;

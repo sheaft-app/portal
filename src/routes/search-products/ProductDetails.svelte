@@ -70,14 +70,7 @@
 
 		if (displayProducerData) {
 			var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: {
-					ids: [res.data.producer.id],
-					kinds: [
-						DeliveryKind.Farm.Value,
-						DeliveryKind.Market.Value,
-						DeliveryKind.Collective.Value
-					]
-				}
+				input: [res.data.producer.id]
 			}, errorsHandler.Uuid);
 
 			if (!deliveriesResult.success) {
@@ -153,7 +146,7 @@
 		var res = await graphQLInstance.mutate(RATE_PRODUCT, {
 			id: $selectedItem,
 			value: rating,
-			comment
+			comment: comment
 		}, errorsHandler.Uuid);
 
 		isSubmittingRate = false;
@@ -163,8 +156,9 @@
 			return;
 		}
 
-		product = res.data;
-		ratings = product.ratings.nodes.map(r => r);
+		product.rating = res.data.rating;
+		product.ratingsCount = res.data.ratingsCount;
+		ratings = res.data.ratings;
 		isSubmittingRate = false;
 		rating = null;
 		comment = null;

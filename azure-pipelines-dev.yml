@@ -12,7 +12,7 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '12.13.0' 
+      versionSpec: '15.14.0' 
   - script: |
       npm run sprint
   - task: ArchiveFiles@2

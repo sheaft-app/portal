@@ -32,6 +32,7 @@ faInfo,
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import { formatMoney } from "./../../helpers/app";
 	import { toggleMoreActions } from "./../../stores/app";
+import JobKind from "../../enums/JobKind";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -53,7 +54,7 @@ faInfo,
 	const checkHasImportInProgress = async () => {
 		var res = await graphQLInstance.query(
 			HAS_PRODUCTS_IMPORT_INPROGRESS,
-			null,
+			{kinds:[JobKind.ImportProducts.Value]},
 			errorsHandler.Uuid
 		);
 		if (!res.success) {

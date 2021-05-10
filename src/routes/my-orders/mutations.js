@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 export const CANCEL_MY_ORDERS = gql`
 	mutation CancelPurchaseOrders($input: WithdrawnPurchaseOrdersInput!) {
 		withdrawnPurchaseOrders(input: $input) {
-			nodes {
 				id
 				totalOnSalePrice
 				totalWholeSalePrice
@@ -32,7 +31,6 @@ export const CANCEL_MY_ORDERS = gql`
 				sender {
 					name
 				}
-			}
 		}
 	}
 `;

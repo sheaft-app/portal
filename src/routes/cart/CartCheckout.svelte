@@ -101,7 +101,7 @@
 		isPaying = true;
 		cardError = null;
 
-		await createCardRegistration($authUserAccount.profile.sub);
+		await createCardRegistration($authUserAccount.profile.id);
 
 		$card.data.cardExpirationDate = `${$card.month.toString()}${$card.year.toString().substring(2)}`;
 		$card.data.cardCvx = $card.data.cardCvx.toString();
@@ -111,7 +111,7 @@
 			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
 		}, async (res) => {
 			const preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
-				orderId: $cart.userCurrentOrder,
+				id: $cart.userCurrentOrder,
 				cardIdentifier: res.CardId,
 				browserInfo: {
 					colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
@@ -204,11 +204,7 @@
 		};
 
 		if (!legalId) {
-			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;
-			variables = {
-				...variables,
-				userId: $authUserAccount.profile.sub,
-			};
+			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;			
 			delete variables["id"];
 		}
 

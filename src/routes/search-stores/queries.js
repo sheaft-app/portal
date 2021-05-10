@@ -16,6 +16,10 @@ export const SEARCH_STORES = gql`
 				tags {
 					name
 				}
+				agreement{
+					id
+					status
+				}
 			}
 		}
 	}
@@ -23,7 +27,7 @@ export const SEARCH_STORES = gql`
 
 export const GET_STORE_DETAILS = gql`
 	query GetStoreDetails($id: ID!) {
-		store(input: $id) {
+		store(id: $id) {
 			id
 			name
 			email
@@ -36,6 +40,10 @@ export const GET_STORE_DETAILS = gql`
 				day
 				from
 				to
+			}
+			agreement{
+				id 
+				status
 			}
 			summary
 			address {
@@ -59,10 +67,8 @@ export const GET_AGREEMENTS = gql`
 				store {
 					id
 				}
-				delivery {
-					producer {
-						id
-					}
+				producer {
+					id
 				}
 			}
 		}
@@ -86,12 +92,12 @@ export const GET_STORE_AGREEMENTS = gql`
 			input: $id
 			first: 50
 			where: {
-				status_in: [
+				status: { in: [
 					ACCEPTED
 					WAITING_FOR_PRODUCER_APPROVAL
 					WAITING_FOR_STORE_APPROVAL
 				]
-			}
+			}}
 		) {
 			nodes {
 				id
@@ -102,10 +108,11 @@ export const GET_STORE_AGREEMENTS = gql`
 `;
 
 export const GET_DELIVERIES = gql`
-	query GetDelivery {
-		deliveries(first: 50, where: { kind_in: [PRODUCER_TO_STORE] }) {
+	query GetDeliveries {
+		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			nodes {
 				id
+				name
 				kind
 				openingHours {
 					day

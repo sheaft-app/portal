@@ -8,11 +8,11 @@ export const timeSpanToFrenchHour = (timeSpan) => {
 		return;
 	}
 	
-	const slots = timeSpan.split(':');
-	return `${slots[0]}h${slots[1]}`;
+	const result = /^P(?!$)((?<years>\d+)Y)?((?<months>\d+)M)?((?<weeks>\d+)W)?((?<days>\d+)D)?(T(?=\d+[HMS])((?<hours>\d+)H)?((?<minutes>\d+)M)?((?<seconds>\d+)S)?)?$/.exec(timeSpan)
+	return `${result.groups.hours}h${result.groups.minutes ?? ''}`;
 }
 export const timeToTimeSpan = (time) => 
-	`${time.hours ? time.hours : '00'}:${time.minutes ? time.minutes : '00'}:${time.seconds ? time.seconds : '00'}`;
+	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S`: ''}`;
 
 export const timeSpanToTime = (timeSpan) => {
 	if (!timeSpan) {
@@ -23,15 +23,14 @@ export const timeSpanToTime = (timeSpan) => {
 		}
 	}
 
-	const slots = timeSpan.split(':');
-	return {
-		hours: parseInt(slots[0] ? slots[0] : '0'),
-		minutes: parseInt(slots[1] ? slots[1] : '0'),
-		seconds: parseInt(slots[2] ? slots[2] : '0'),
-	};
+	const result = /^P(?!$)((?<years>\d+)Y)?((?<months>\d+)M)?((?<weeks>\d+)W)?((?<days>\d+)D)?(T(?=\d+[HMS])((?<hours>\d+)H)?((?<minutes>\d+)M)?((?<seconds>\d+)S)?)?$/.exec(timeSpan)
+	return result.groups;
 };
 
 export const groupBy = (array, f) => {
+	if(!array || array.length < 1)
+		return [];
+		
 	var groups = {};
 	array.forEach((o) => {
 		var group = JSON.stringify(f(o));

@@ -206,64 +206,65 @@
 	<ErrorCard {errorsHandler} />
 	{#if !noResults}
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
-	{/if}
-	<Table
-		graphQuery={GET_JOBS}
-		{errorsHandler}
-		bind:items
-		bind:noResults
-		bind:selectedItems
-		{isLoading}
-		{headers}
-		let:rowItem={job}
-		defaultSearchValues={JobRoutes.List.Params.Query}
-		{getRowBackgroundColor}
-		{onRowClick}>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-			<div class="text-xs leading-5 font-semibold text-{ProcessStatusKind.color(job.status)}-500 block md:hidden">
-				{ProcessStatusKind.label(job.status)}
-			</div>
-			<div class="text-sm leading-5 text-gray-800">{job.name}</div>
-		</td>
-		<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden md:table-cell">
-			<div class="text-sm leading-5 text-gray-900">
-				{JobKind.label(job.kind)}
-			</div>
-		</td>
-		<td
-			class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
-			<div>
-				<p>
-					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
-					{format(new Date(job.createdOn), 'PP', { locale: fr })}
-				</p>
-				<p class="text-gray-600">
-					<Icon data={faClock} scale=".8" class=" inline" />
-					{format(new Date(job.createdOn), 'p', { locale: fr })}
-				</p>
-			</div>
-		</td>
-		<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
+
+		<Table
+			graphQuery={GET_JOBS}
+			{errorsHandler}
+			bind:items
+			bind:noResults
+			bind:selectedItems
+			{isLoading}
+			{headers}
+			let:rowItem={job}
+			defaultSearchValues={JobRoutes.List.Params.Query}
+			{getRowBackgroundColor}
+			{onRowClick}>
+			<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+				<div class="text-xs leading-5 font-semibold text-{ProcessStatusKind.color(job.status)}-500 block md:hidden">
+					{ProcessStatusKind.label(job.status)}
+				</div>
+				<div class="text-sm leading-5 text-gray-800">{job.name}</div>
+			</td>
+			<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden md:table-cell">
+				<div class="text-sm leading-5 text-gray-900">
+					{JobKind.label(job.kind)}
+				</div>
+			</td>
+			<td
+				class="px-6 py-4 whitespace-no-wrap text-sm leading-5">
+				<div>
+					<p>
+						<Icon data={faCalendarAlt} scale=".8" class=" inline" />
+						{format(new Date(job.createdOn), 'PP', { locale: fr })}
+					</p>
+					<p class="text-gray-600">
+						<Icon data={faClock} scale=".8" class=" inline" />
+						{format(new Date(job.createdOn), 'p', { locale: fr })}
+					</p>
+				</div>
+			</td>
+			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
 			<span
 				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-{ProcessStatusKind.color(job.status)}-500
 				text-white">
 				{ProcessStatusKind.label(job.status)}
 			</span>
-		</td>
-		<td
-			class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
-			<div>
-				<p>
-					<Icon data={faCalendarAlt} scale=".8" class=" inline" />
-					{format(new Date(getLastUpdate(job)), 'PP', { locale: fr })}
-				</p>
-				<p class="text-gray-600">
-					<Icon data={faClock} scale=".8" class=" inline" />
-					{format(new Date(getLastUpdate(job)), 'p', { locale: fr })}
-				</p>
-			</div>
-		</td>
-	</Table>
+			</td>
+			<td
+				class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+				<div>
+					<p>
+						<Icon data={faCalendarAlt} scale=".8" class=" inline" />
+						{format(new Date(getLastUpdate(job)), 'PP', { locale: fr })}
+					</p>
+					<p class="text-gray-600">
+						<Icon data={faClock} scale=".8" class=" inline" />
+						{format(new Date(getLastUpdate(job)), 'p', { locale: fr })}
+					</p>
+				</div>
+			</td>
+		</Table>
+	{/if}
 	{#if noResults}
 		<div class="w-full h-full flex justify-center">
 			<div class="text-center text-xl text-gray-600 m-auto px-6">

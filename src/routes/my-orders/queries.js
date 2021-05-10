@@ -2,18 +2,18 @@ import gql from "graphql-tag";
 
 export const MY_ORDERS = gql`
 	query MyOrders(
-		$first: PaginationAmount
-		$last: PaginationAmount
+		$first: Int
+		$last: Int
 		$after: String
 		$before: String
-		$orderBy: PurchaseOrderSort
+		$orderBy: [PurchaseOrderSortInput!]
 	) {
-		myOrders(
+		purchaseOrders(
 			first: $first
 			last: $last
 			after: $after
 			before: $before
-			order_by: $orderBy
+			order: $orderBy
 		) {
 			pageInfo {
 				startCursor
@@ -21,7 +21,6 @@ export const MY_ORDERS = gql`
 				hasNextPage
 				hasPreviousPage
 			}
-			totalCount
 			edges {
 				cursor
 				node {
@@ -63,7 +62,7 @@ export const MY_ORDERS = gql`
 
 export const GET_MY_ORDER_DETAILS = gql`
 	query GetMyOrderDetails($id: ID!) {
-		purchaseOrder(input: $id) {
+		purchaseOrder(id: $id) {
 			id
 			reference
 			totalOnSalePrice
@@ -115,7 +114,7 @@ export const GET_MY_ORDER_DETAILS = gql`
 
 export const MY_VALIDATING_ORDERS = gql`
 	query {
-		orders(where: { OR: [{ status_in: WAITING }, { AND:[{status_in: VALIDATED}, {purchaseOrdersCount: 0}]}] }) {
+		orders(where: { or: [{ status: { in: [WAITING] }}, { status: { in: [VALIDATED]}}]}) {
 			nodes {
 				id
 				status

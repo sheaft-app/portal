@@ -36,7 +36,6 @@
 	let _pagination = [];
 	let _searchValues = null;
 	let _take = null;
-	let _totalCount = 0;
 	let _pageInfo = {
 		hasPreviousPage: false,
 		hasNextPage: false,
@@ -99,7 +98,6 @@
 
 		_pageInfo = result.pageInfo;
 		_pagination.push(_pageInfo);
-		_totalCount = result.totalCount;
 
 		items = result.data;
 		window.scrollTo(0, 0);
@@ -222,7 +220,10 @@
 		}
 
 		if (_searchValues.where && _searchValues.whereValues) {
-			settings.where[_searchValues.where] = _searchValues.whereValues.split(',');
+			var splittedFilter = _searchValues.where.split("_");
+			var filter = {};
+			filter[splittedFilter[1]] = _searchValues.whereValues.split(',');
+			settings.where[splittedFilter[0]] = filter;
 		}
 
 		settings.orderBy[_searchValues.orderBy] = _searchValues.direction;
@@ -238,7 +239,7 @@
 		if (getRowBackgroundColor) return getRowBackgroundColor(item);
 		else return "";
 	};
-	$: noResults = !isLoading && items.length < 1 && !(_searchValues.where && _searchValues.where.length > 1);
+	$: noResults = !isLoading && items.length < 1 && !(_searchValues && _searchValues.where && _searchValues.where.length > 1);
 
 	$: refetch($querystring);
 </script>

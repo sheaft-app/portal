@@ -5,7 +5,7 @@
 
     TODO Geoffrey : when we'll be using his credit card with CSS, send money as thanks
     */
-    
+
     import { onMount, createEventDispatcher } from 'svelte';
     import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
     import { card } from "../../stores/cart";
@@ -16,7 +16,7 @@
     export let isPaying = false, showCard = true, cardError = null;
 
     const dispatch = createEventDispatcher();
-    
+
     let currentCardBackground = Math.floor(Math.random()* 25 + 1) // just for fun :D
     let cardName = ""
     let cardNumber = ""
@@ -33,7 +33,7 @@
     let refs = {}
     let cardNumberMask;
     let hasRemovedCardPreview = false;
-    
+
     let paymentForm = form(() => ({
       number: { value: $card.data.cardNumber, validators: ['required'], enabled: true },
       month: { value: $card.month, validators: ['required'], enabled: true },
@@ -43,9 +43,11 @@
     }), {
       initCheck: false
     });
-    
+
     onMount(function() {
-        document.getElementById("cardNumber").focus();
+        var cardNumberEl = document.getElementById("cardNumber");
+        if(cardNumberEl)
+					cardNumberEl.focus();
     })
 
     const handleSubmit = () => {
@@ -54,18 +56,18 @@
       if ($paymentForm.valid)
         dispatch('submit');
     }
-    
+
+		$: minCardMonth = cardYear === minCardYear ? new Date().getMonth() + 1 : 1
     $: cardMonth = cardMonth < minCardMonth ? '' : cardMonth
-    $: minCardMonth = cardYear === minCardYear ? new Date().getMonth() + 1 : 1
-    
+
     $: {
       // if ($card.data.cardNumber.match(new RegExp("^(34|37)")) != null) cardType = "amex";
       //   else if ($card.data.cardNumber.match(new RegExp("^5[1-5]")) != null) cardType = "mastercard";
       //   else if ($card.data.cardNumber.match(new RegExp("^6011")) != null) cardType = "discover";
       // else cardType = "visa"; // default type
-    
+
       cardNumberMask = cardType === "amex" ? amexCardMask : otherCardMask;
-    
+
       // Credit card input masking
       if ($card.data.cardNumber) {
         for (let index = 0; index < $card.data.cardNumber.length; index++) {
@@ -75,14 +77,14 @@
         $card.data.cardNumber = $card.data.cardNumber.substr(0, cardNumberMask.length).replace(/[^0-9 ]/g, '')
       }
     }
-    
+
     // function focusInput(e) {
     //     isInputFocused = true;
     //   let targetRef = e.target.dataset.ref;
     //     let target = refs[targetRef];
     //     focusElementStyle = `opacity: 1;width: ${target.offsetWidth}px;height: ${target.offsetHeight}px;transform: translateX(${target.offsetLeft}px) translateY(${target.offsetTop}px)`
     // }
-    
+
     // function blurInput() {
     //     setTimeout(() => {
     //         if (!isInputFocused) {
@@ -92,7 +94,7 @@
     //     isInputFocused = false;
     // }
 </script>
-    
+
 <div class="wrapper" id="app">
   <div class="card-form">
     <!-- <div class="card-list">
@@ -113,7 +115,7 @@
                 {/if}
               </div>
             </div>
-            <label for="cardNumber" class="card-item__number" bind:this={refs.cardNumber}>	
+            <label for="cardNumber" class="card-item__number" bind:this={refs.cardNumber}>
               {#each cardNumberMask as n, index (index)}
                 <div class="card-item__numberItem" class:active={n.trim() === ''}>
                   {#if cardNumber.length > index}
@@ -151,7 +153,7 @@
                   {#each [cardYear] as cardYear (cardYear)}
                     <span in:fly={{y:-6}} out:fly={{y:6}}>{cardYear ? String(cardYear).slice(2,4) : 'AA'}</span>
                   {/each}
-                  
+
                 </label>
               </div>
             </div>
@@ -233,18 +235,18 @@
     </div>
   </div>
 </div>
-    
-    
+
+
 <style>
     @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
-    
+
     * {
       box-sizing: border-box;
     }
     *:focus {
       outline: none;
     }
-    
+
     .wrapper {
       display: flex;
     }
@@ -254,7 +256,7 @@
         flex-direction: column;
       }
     }
-    
+
     .card-form {
       max-width: 570px;
       margin: auto;
@@ -350,7 +352,7 @@
         margin-top: 10px;
       }
     }
-    
+
     .card-item {
       max-width: 310px;
       height: 150px;
@@ -712,7 +714,7 @@
         margin-bottom: 15px;
       }
     }
-    
+
     .card-list {
       margin-bottom: -130px;
     }
@@ -721,7 +723,7 @@
         margin-bottom: -120px;
       }
     }
-    
+
     .card-input {
       margin-bottom: 20px;
     }

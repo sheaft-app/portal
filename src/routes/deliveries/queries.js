@@ -2,7 +2,15 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERIES = gql`
 	query Deliveries {
-		deliveries(where: { kind_in:[PRODUCER_TO_STORE] }) {
+		deliveries(
+			first: 50
+			where: { kind: { in: [PRODUCER_TO_STORE] }}) {
+			pageInfo{
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
 			nodes {
 				id
 				name
@@ -11,7 +19,7 @@ export const GET_DELIVERIES = gql`
 				lockOrderHoursBeforeDelivery
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
-				openingHours {
+				deliveryHours {
 					day
 					from
 					to
@@ -23,7 +31,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
-		delivery(input: $id) {
+		delivery(id: $id) {
 			id
 			name
 			kind
@@ -31,7 +39,7 @@ export const GET_DELIVERY_DETAILS = gql`
 			lockOrderHoursBeforeDelivery
 			autoAcceptRelatedPurchaseOrder
 			autoCompleteRelatedPurchaseOrder
-			openingHours {
+			deliveryHours {
 				day
 				from
 				to

@@ -55,6 +55,7 @@ let enums = {
 };
 
 let OrderStatusKind = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},

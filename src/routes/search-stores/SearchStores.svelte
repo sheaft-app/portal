@@ -109,30 +109,8 @@
 	async function refetch() {
 		isLoading.set(true);
 		await searchStores(0);
-		await getAndSetAgreements();
 
 		isLoading.set(false);
-	}
-
-	const getAndSetAgreements = async () => {
-		var response = await graphQLInstance.query(GET_AGREEMENTS, null, errorsHandler.Uuid);
-
-		if (!response.success) {
-			// todo
-			return;
-		}
-
-		response.data.map((a) => {
-			let store = prevFeed.find((p) => p.id === a.store.id);
-			if (store) {
-				if (a.status == AgreementStatusKind.WaitingForProducerApproval.Value ||
-					a.status == AgreementStatusKind.WaitingForStoreApproval.Value) {
-					store.hasPendingAgreement = true;
-				} else if (a.status == AgreementStatusKind.Accepted.Value) {
-					store.hasAgreement = true;
-				}
-			}
-		});
 	}
 
 	const searchStores = async (page) => {
