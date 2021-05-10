@@ -6,7 +6,7 @@
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
   	import GetNotificationsInstance from "../../services/SheaftNotifications";
 	import CatalogForm from "./CatalogForm.svelte";
-	import { CREATE_CATALOG, UPDATE_CATALOG_PRODUCTS } from "./mutations";
+	import { CREATE_CATALOG } from "./mutations";
 	import CatalogRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "../../components/ErrorCard.svelte";
@@ -27,11 +27,18 @@
 	let catalog = {
 		isAvailable: true,
 		isDefault: false,
-		name: ""
+		name: "",
+		products:[]
 	};
 
 	const handleSubmit = async () => {
 		isLoading = true;
+
+		catalog.products = $products.filter((p) => !p.markForDeletion).map((p) => ({
+					id: p.id,
+					wholeSalePricePerUnit: p.wholeSalePricePerUnit
+				}));
+
 		var res = await graphQLInstance.mutate(
 			CREATE_CATALOG,
 			catalog,
@@ -41,24 +48,6 @@
 
 		if (!res.success) {
 			//TODO
-			isLoading = false;
-			return;
-		}
-
-		let resProducts = await graphQLInstance.mutate(
-			UPDATE_CATALOG_PRODUCTS,
-			{
-				id: res.data.id,
-				products: $products.filter((p) => !p.markForDeletion).map((p) => ({
-					id: p.id,
-					wholeSalePricePerUnit: p.wholeSalePricePerUnit
-				}))
-			},
-			errorsHandler.Uuid
-		);
-
-		if (!resProducts.success) {
-			// todo
 			isLoading = false;
 			return;
 		}

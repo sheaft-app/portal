@@ -3,7 +3,7 @@ import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
 import { faTags, faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/price-catalogs";
+const prefix = "/catalogs";
 
 const list = "/";
 const create = "/create";

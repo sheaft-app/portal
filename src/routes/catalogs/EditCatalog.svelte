@@ -4,8 +4,8 @@
 	import Loader from "../../components/Loader.svelte";
 	import Icon from "svelte-awesome";
 	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-	import { UPDATE_CATALOG, UPDATE_CATALOG_PRODUCTS, REMOVE_CATALOG_PRODUCTS } from "./mutations";
-	import { GET_CATALOGS, GET_CATALOG_DETAILS, GET_CATALOG_PRODUCTS } from "./queries";
+	import { UPDATE_CATALOG } from "./mutations";
+	import { GET_CATALOGS, GET_CATALOG_DETAILS } from "./queries";
 	import CatalogForm from "./CatalogForm.svelte";
 	import DeleteCatalog from "./DeleteCatalog.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
@@ -59,8 +59,12 @@
 			{
 				id: catalog.id,
 				name: catalog.name,
-				isAvailable: catalog.isAvailable,
-				isDefault: catalog.isDefault
+				available: catalog.available,
+				isDefault: catalog.isDefault,
+				products: $products.filter((p) => !p.markForDeletion).map((p) => ({
+					id: p.product.id,
+					wholeSalePricePerUnit: p.wholeSalePricePerUnit
+				}))
 			},
 			errorsHandler.Uuid
 		);
@@ -70,47 +74,9 @@
 			isLoading = false;
 			return;
 		}
-
-		res = await graphQLInstance.mutate(
-			UPDATE_CATALOG_PRODUCTS,
-			{
-				id: catalog.id,
-				products: $products.filter((p) => !p.markForDeletion).map((p) => ({
-					id: p.id,
-					wholeSalePricePerUnit: p.wholeSalePricePerUnit
-				}))
-			},
-			errorsHandler.Uuid
-		);
-
-		if (!res.success) {
-			// todo
-			isLoading = false;
-			return;
-		}
-
-		const productsToRemove = $products.filter((p) => p.markForDeletion);
-
-		if (productsToRemove.length > 0) {
-			let res = await graphQLInstance.mutate(
-				REMOVE_CATALOG_PRODUCTS,
-				{
-					id: catalog.id,
-					productIds: productsToRemove.map((p) => p.id)
-				},
-				errorsHandler.Uuid
-			);
-
-			if (!res.success) {
-				// todo
-				isLoading = false;
-				return;
-			}
-		}
 		
+		products.set($products.filter((p) => !p.markForDeletion));
 		isLoading = false;
-
-		graphQLInstance.clearApolloCache(GET_CATALOG_PRODUCTS);
 
 		notificationsInstance.success("Vos modifications ont bien été appliquées.");
 		routerInstance.goTo(CatalogRoutes.List);

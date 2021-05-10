@@ -2,21 +2,20 @@ import gql from "graphql-tag";
 
 export const GET_CATALOGS = gql`
 	query Catalogs(
-		$first: PaginationAmount
+		$first: Int
 		$after: String
-		$last: PaginationAmount
+		$last: Int
 		$before: String
 	) {
 		catalogs(first: $first, after: $after, last: $last, before: $before) {
 			edges {
 				cursor
 				node {
-					id
-					productsCount
+					id					
 					name
 					kind
 					isDefault
-					isAvailable
+					available
 					updatedOn
 				}
 			}
@@ -25,50 +24,38 @@ export const GET_CATALOGS = gql`
 				hasNextPage
 				startCursor
 				endCursor
-			}
-			totalCount
+			}			
 		}
 	}
 `;
 
 export const GET_CATALOG_DETAILS = gql`
 	query Catalog($id: ID!) {
-		catalog(input: $id) {
+		catalog(id: $id) {
 			id
-			productsCount
 			name
 			kind
 			isDefault
-			isAvailable
+			available
 			updatedOn
-			products {
+			prices {
 				id
-				name
-				reference
 				onSalePrice
 				onSalePricePerUnit
 				vatPrice
 				vatPricePerUnit
 				wholeSalePrice
 				wholeSalePricePerUnit
+				addedOn
+				product{
+					id
+					name
+					reference
+				}
 			}
 		}
 	}
 `;
-
-export const GET_CATALOG_PRODUCTS = gql`
-query CatalogProducts($id: ID!) {
-	catalogProducts(input: $id) {
-		nodes {
-			id
-			name
-			reference
-			wholeSalePricePerUnit
-			addedTo
-		}
-	}
-}
-`
 
 export const GET_PRODUCTS = gql`
 	query GetProducts {
@@ -78,7 +65,6 @@ export const GET_PRODUCTS = gql`
 					id
 					reference
 					name
-					wholeSalePricePerUnit
 				}
 			}
 		}

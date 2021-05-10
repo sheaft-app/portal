@@ -1,5 +1,5 @@
 <script>
-    import { GET_CATALOG_PRODUCTS } from "./queries";
+	import { GET_CATALOG_DETAILS } from './queries.js';
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
     import { getContext, onMount } from "svelte";
@@ -21,7 +21,7 @@
 
         if (!catalogId) return;
 
-        const result = await graphQLInstance.query(GET_CATALOG_PRODUCTS, {
+        const result = await graphQLInstance.query(GET_CATALOG_DETAILS, {
             id: catalogId
         }, errorsHandler.Uuid);
 
@@ -29,12 +29,12 @@
             return false;
         }
 
-        $products = result.data;
+        $products = result.data.prices;
     })
 
     const removeProduct = product => {
         if (product.checked) 
-            $products = $products.filter((p) => p.id != product.id);
+            $products = $products.filter((p) => p.product.id != product.id);
         else
             product.markForDeletion = true;
 
@@ -48,7 +48,7 @@
 
     const addProduct = () => {
         open(AddProductModal, {
-            alreadyPresentProducts: $products.map((p) => p.id)
+            alreadyPresentProducts: $products.map((p) => p.product.id)
         })
     }
 
@@ -70,18 +70,18 @@
         </tr>
     </thead>
     <tbody>
-        {#each $products as product}
-            <tr class:bg-green-200={product.checked} class:bg-red-200={product.markForDeletion}>
+        {#each $products as productPrice}
+            <tr class:bg-green-200={productPrice.checked} class:bg-red-200={productPrice.markForDeletion}>
                 <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
-                        {product.name}
-                        <p class="text-gray-600">#{product.reference}</p>
-                        {#if !product.markForDeletion}
-                            <button type="button" class="btn-link block lg:hidden" on:click={() => removeProduct(product)}>Retirer</button>
+                        {productPrice.product.name}
+                        <p class="text-gray-600">#{productPrice.product.reference}</p>
+                        {#if !productPrice.markForDeletion}
+                            <button type="button" class="btn-link block lg:hidden" on:click={() => removeProduct(productPrice)}>Retirer</button>
                         {:else}
-                            <button type="button" class="btn-link block lg:hidden" on:click={() => cancelRemoveProduct(product)}>Annuler</button>
+                            <button type="button" class="btn-link block lg:hidden" on:click={() => cancelRemoveProduct(productPrice)}>Annuler</button>
                         {/if}
                     </div>
                 </td>
@@ -90,7 +90,7 @@
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 100px;">
                         <input
-							bind:value={product.wholeSalePricePerUnit}
+							bind:value={productPrice.wholeSalePricePerUnit}
                             id="grid-price"
                             required
 							type="number"
@@ -103,17 +103,17 @@
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
-                        {format(new Date(product.addedTo), 'PP', { locale: fr })}
+                        {format(new Date(productPrice.addedOn), 'PP', { locale: fr })}
                     </div>
                 </td>
                 <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
-                        {#if !product.markForDeletion}
-                            <button type="button" class="btn btn-outline btn-lg" on:click={() => removeProduct(product)}>Retirer</button>
+                        {#if !productPrice.markForDeletion}
+                            <button type="button" class="btn btn-outline btn-lg" on:click={() => removeProduct(productPrice)}>Retirer</button>
                         {:else}
-                            <button type="button" class="btn btn-outline btn-lg" on:click={() => cancelRemoveProduct(product)}>Annuler</button>
+                            <button type="button" class="btn btn-outline btn-lg" on:click={() => cancelRemoveProduct(productPrice)}>Annuler</button>
                         {/if}
                     </div>
                 </td>

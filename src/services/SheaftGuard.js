@@ -10,7 +10,7 @@ import Sponsorship from "./../routes/sponsorship/Sponsorship.svelte";
 import SellingPoints from "./../routes/selling-points/SellingPoints.svelte";
 import Deliveries from "./../routes/deliveries/Deliveries.svelte";
 import Returnables from "./../routes/returnables/Returnables.svelte";
-import Catalogs from "./../routes/price-catalogs/PriceCatalogs.svelte";
+import Catalogs from "./../routes/catalogs/PriceCatalogs.svelte";
 import Callback from "./../routes/oidc/Callback.svelte";
 import CallbackSilent from "./../routes/oidc/CallbackSilent.svelte";
 import NotFound from "./../routes/home/NotFound.svelte";
@@ -49,7 +49,7 @@ import Roles from "./../enums/Roles";
 import {
 	authInitialized,
 } from "../stores/auth";
-import CatalogRoutes from "../routes/price-catalogs/routes";
+import CatalogRoutes from "../routes/catalogs/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {

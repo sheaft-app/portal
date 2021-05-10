@@ -15,7 +15,7 @@
 
     const removeCatalog = catalog => {
         if (catalog.checked) 
-            catalogs = catalogs.filter((c) => c.id != catalog.id);
+            catalogs = catalogs.filter((c) => c.id != catalog.catalog.id);
         else
             catalog.markForDeletion = true;
 
@@ -51,7 +51,7 @@
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
-                        {catalog.name}
+                        {catalog.catalog.name}
                         {#if !catalog.markForDeletion}
                             <button type="button" class="btn-link block lg:hidden" on:click={() => removeCatalog(catalog)}>Retirer</button>
                         {:else}
@@ -77,7 +77,7 @@
                     <div
                         class="text-sm leading-5 font-medium truncate"
                         style="max-width: 180px;">
-                        {format(new Date(catalog.addedTo), 'PP', { locale: fr })}
+                        {format(new Date(catalog.addedOn), 'PP', { locale: fr })}
                     </div>
                 </td>
                 <td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">

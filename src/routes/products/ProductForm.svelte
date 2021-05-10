@@ -329,7 +329,7 @@
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues *</label>
-		<ProductCatalogs bind:catalogs={product.catalogsPrices} bind:invalidCatalogs />
+		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>

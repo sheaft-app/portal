@@ -1,5 +1,5 @@
 <script>
-    import { GET_CATALOGS } from "./../price-catalogs/queries";
+    import { GET_CATALOGS } from "./../catalogs/queries";
     import Select from "./../../components/controls/select/Select";
     import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
     import SheaftErrors from "../../services/SheaftErrors";
@@ -40,10 +40,9 @@
         catalogs = [
             ...catalogs,
             {
-                id: catalog.id,
-                name: catalog.name,
+                catalog: catalog,
                 wholeSalePricePerUnit: 0,
-                addedTo: Date.now(),
+                addedOn: Date.now(),
                 checked: true
             }
         ];

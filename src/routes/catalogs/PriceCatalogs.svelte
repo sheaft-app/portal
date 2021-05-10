@@ -6,7 +6,7 @@
 	import Meta from "../../components/Meta.svelte";
 
 	export let params;
-	export const prefix = "/price-catalogs";
+	export const prefix = "/catalogs";
 
 	const routes = {
 		"/": ListCatalogs,

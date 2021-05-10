@@ -80,8 +80,8 @@
     var res = await graphQLInstance.mutate(UPDATE_PRODUCT, {
       id: product.id,
       description: product.description,
-      catalogs: product.catalogsPrices.filter((c) => !c.markForDeletion).map((c) => ({
-        id: c.id,
+      catalogs: product.catalogs.filter((c) => !c.markForDeletion).map((c) => ({
+        id: c.catalog.id,
         wholeSalePricePerUnit: c.wholeSalePricePerUnit
       })),
       name: product.name,
@@ -94,9 +94,7 @@
       originalPicture: product.originalPicture ? product.originalPicture : null,
       tags: product.tags.map(i => i.id),
       vat: product.vat,
-      available: product.available,
-      visibleToStores: product.visibleToStores,
-      visibleToConsumers: product.visibleToConsumers
+      available: product.available
     }, errorsHandler.Uuid, GET_PRODUCTS);
     isLoading = false;
 

@@ -5,12 +5,13 @@
 	import Toggle from "./../../components/controls/Toggle.svelte";
   import ErrorContainer from "../../components/ErrorContainer.svelte";
   import CatalogProducts from "./CatalogProducts.svelte";
+import CatalogKind from "../../enums/CatalogKind";
 
   export let submit, catalog, isLoading, errorsHandler;
 
   const catalogForm = form(() => ({
     name: { value: catalog.name, validators: ['required', 'min:3'], enabled: true },
-    isAvailable: { value: catalog.isAvailable, validators: ['required'], enabled: true },
+    available: { value: catalog.available, validators: ['required'], enabled: true },
     isDefault: { value: catalog.isDefault, validators: ['required'], enabled: true }
 	}), {
     initCheck: false
@@ -50,11 +51,12 @@
 			labelPosition="left"
 			disabled={isLoading}
 			classNames="ml-1"
-			bind:isChecked={catalog.isAvailable}>
+			bind:isChecked={catalog.available}>
 		</Toggle>
   </div>
+  {#if catalog.kind == CatalogKind.Stores.Value}
   <div class="form-control" style="display: block;">
-		<label>Utiliser comme catalogue par défaut</label>
+		<label>Utiliser comme catalogue par défaut pour les magasins</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
@@ -62,6 +64,7 @@
 			bind:isChecked={catalog.isDefault}>
 		</Toggle>
   </div>
+  {/if}
   <CatalogProducts catalogId={catalog.id} {errorsHandler} bind:invalidCatalogProducts />
   <p class="text-sm mt-5">* champs requis</p>   
   <div class="form-control mt-5">

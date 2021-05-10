@@ -18,7 +18,7 @@
             ...$products,
             ...temp.map((r) => ({
                 ...r,
-                addedTo: Date.now()
+                addedOn: Date.now()
             }))
         ];
         close();
