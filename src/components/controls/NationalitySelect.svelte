@@ -16,7 +16,7 @@
   let nationalities = [];
 
   onMount(async () => {
-    var res = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
+    const res = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
 
 		if (!res.success) {
       // todo

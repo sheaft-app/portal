@@ -64,7 +64,7 @@
   const getLabel = option => option.name;
 
   onMount(async () => {
-    var resCountries = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
+    const resCountries = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
 
 		if (!resCountries.success) {
       // todo
@@ -74,7 +74,7 @@
 
     countries = resCountries.data;
     
-    var resNationalities = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
+    const resNationalities = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
 
     if (!resNationalities.success) {
       // todo

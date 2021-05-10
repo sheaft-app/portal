@@ -16,7 +16,7 @@
   let countries = [];
 
   onMount(async () => {
-    var res = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
+    const res = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
 
 		if (!res.success) {
       // todo

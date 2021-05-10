@@ -9,7 +9,7 @@ export function openingsDays(val, args) {
 
   const openingsLength = val.length;
 
-  for (var i = 0; i <= openingsLength - 1; i++) {
+  for (let i = 0; i <= openingsLength - 1; i++) {
     if (!val[i].days.find((d) => {
       if (d) return d.checked
     })) {
