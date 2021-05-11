@@ -1,10 +1,10 @@
-import { querystring, push, pop, replace, location } from "svelte-spa-router";
+import { querystring, push, pop, replace, location as locat } from "svelte-spa-router";
 import qs from "qs";
 import Guid from "../helpers/Guid";
 
 class SheaftRouter {
 	constructor() {
-		this.locSubscription = location.subscribe((loc) => {
+		this.locSubscription = locat.subscribe((loc) => {
 			this.currentUrl = loc;
 		});
 
@@ -23,6 +23,10 @@ class SheaftRouter {
 
 	async goBack() {
 		await pop();
+	}
+
+	reload() {
+		location.reload();
 	}
 
 	refresh() {
