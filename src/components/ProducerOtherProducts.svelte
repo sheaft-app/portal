@@ -6,7 +6,7 @@
 	import ProductCartQuantity from "./controls/ProductCartQuantity.svelte";
 	import {Swiper, SwiperSlide} from 'swiper/svelte';
 	import cart from "./../stores/cart";
-	import {formatMoney} from "./../helpers/app.js";
+	import {formatMoney, handleSlideChange} from "./../helpers/app.js";
 	import {formatConditioningDisplay} from "./../helpers/app";
 	import RatingStars from "./rating/RatingStars.svelte";
 	import GetAuthInstance from "./../services/SheaftAuth.js";
@@ -28,31 +28,6 @@
 			productsSuggestions = result.data.filter((p) => p.id !== productParentId);
 		}
 	});
-
-	const handleSlideChange = (e) => {
-		const nextButton = ref.$$.ctx[6]; // todo : find a better way
-		const prevButton = ref.$$.ctx[5]; // todo : find a better way
-
-		let elem = e.detail[0];
-		// C'est une slide ?
-		if (Array.isArray(e.detail[0])) {
-			elem = elem.shift();
-		}
-
-		if (elem.isBeginning && elem.isEnd) {
-			prevButton.classList.add('hidden');
-			nextButton.classList.add('hidden');
-		} else if (elem.isBeginning) {
-			prevButton.classList.add('hidden');
-			nextButton.classList.remove('hidden');
-		} else if (elem.isEnd) {
-			prevButton.classList.remove('hidden');
-			nextButton.classList.add('hidden');
-		} else {
-			prevButton.classList.remove('hidden');
-			nextButton.classList.remove('hidden');
-		}
-	}
 
 	$: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
 </script>
@@ -79,11 +54,11 @@
 				spaceBetween: 10
 			},
 			...breakpoints,
-        }}
+		}}
 		spaceBetween={20}
 		slidesPerView={2}
-		on:swiper={(e) => handleSlideChange(e)}
-		on:slideChange={(e) => handleSlideChange(e)}
+		on:swiper={(e) => handleSlideChange(e, ref)}
+		on:slideChange={(e) => handleSlideChange(e, ref)}
 	>
 		{#each productsSuggestions as suggestion}
 			<SwiperSlide let:data="{{ isNext }}">

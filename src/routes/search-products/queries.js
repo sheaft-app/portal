@@ -60,6 +60,10 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
+			pictures {
+				id
+				url
+			}
 			ratings(first: 10, order_by: { createdOn: DESC }) {
 				nodes {
 					user {
