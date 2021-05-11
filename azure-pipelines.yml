@@ -25,6 +25,7 @@ steps:
     displayName: Cache npm
   - script: npm ci
     condition: ne(variables.CACHE_RESTORED, 'true')
+  - script: npm install cpy
   - script: npm run staging
   - task: ArchiveFiles@2
     displayName: "Archive files"
