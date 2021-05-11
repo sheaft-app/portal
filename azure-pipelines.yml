@@ -25,11 +25,11 @@ steps:
     displayName: Cache npm
   - script: npm ci
     condition: ne(variables.CACHE_RESTORED, 'true')
-  - task: CopyFiles@2
+  - task: PowerShell@2
+    displayName: 'Replace Staging Config'
     inputs:
-      Contents: 'src/configs/config.staging.js'
-      TargetFolder: 'src/configs/config.js'
-      OverWrite: true
+      targetType: inline
+      script: Copy-Item -Path "src/configs/config.staging.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
   - script: npm run staging
   - task: ArchiveFiles@2
     displayName: "Archive files"
@@ -41,11 +41,11 @@ steps:
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip'
       artifactName: 'sheaft-portal-staging'
-  - task: CopyFiles@2
+  - task: PowerShell@2
+    displayName: 'Replace Production Config'
     inputs:
-      Contents: 'src/configs/config.production.js'
-      TargetFolder: 'src/configs/config.js'
-      OverWrite: true
+      targetType: inline
+      script: Copy-Item -Path "src/configs/config.production.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
   - script: npm run production
   - task: ArchiveFiles@2
     displayName: "Archive files"
