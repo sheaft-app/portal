@@ -12,9 +12,6 @@ pool:
   vmImage: "ubuntu-latest"
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '15.14.0' 
   - task: Cache@2
     inputs:
       key: 'npm | "$(Agent.OS)" | package-lock.json'
@@ -23,7 +20,7 @@ steps:
       path: $(npm_config_cache)
       cacheHitVar: CACHE_RESTORED
     displayName: Cache npm    
-  - script: npm ci --cache $(npm_config_cache)
+  - script: npm ci
   - task: PowerShell@2
     displayName: 'Replace Staging Config'
     inputs:
