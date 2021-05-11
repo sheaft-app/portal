@@ -118,6 +118,11 @@ export const GET_AGREEMENT_DETAILS = gql`
 			catalog{
 				id
 				name
+				products {
+					name
+					reference
+					wholeSalePricePerUnit
+				}
 			}
 		}
 	}
