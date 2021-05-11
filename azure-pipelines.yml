@@ -25,7 +25,11 @@ steps:
     displayName: Cache npm
   - script: npm ci
     condition: ne(variables.CACHE_RESTORED, 'true')
-  - script: npm install cpy
+  - task: CopyFiles@2
+    inputs:
+      Contents: 'src/configs/config.staging.js'
+      TargetFolder: 'src/configs/config.js'
+      OverWrite: true
   - script: npm run staging
   - task: ArchiveFiles@2
     displayName: "Archive files"
@@ -37,6 +41,11 @@ steps:
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip'
       artifactName: 'sheaft-portal-staging'
+  - task: CopyFiles@2
+    inputs:
+      Contents: 'src/configs/config.production.js'
+      TargetFolder: 'src/configs/config.js'
+      OverWrite: true
   - script: npm run production
   - task: ArchiveFiles@2
     displayName: "Archive files"
