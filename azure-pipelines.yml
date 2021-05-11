@@ -2,6 +2,8 @@
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
 
 trigger:
   batch: true
@@ -13,8 +15,17 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: '15.14.0' 
-  - script: |
-      npm run staging
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | package-lock.json'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+      path: $(npm_config_cache)
+      cacheHitVar: CACHE_RESTORED
+    displayName: Cache npm
+  - script: npm ci
+    condition: ne(variables.CACHE_RESTORED, 'true')
+  - script: npm run staging
   - task: ArchiveFiles@2
     displayName: "Archive files"
     inputs:
@@ -25,8 +36,7 @@ steps:
     inputs:
       PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip'
       artifactName: 'sheaft-portal-staging'
-  - script: |
-      npm run production
+  - script: npm run production
   - task: ArchiveFiles@2
     displayName: "Archive files"
     inputs:
