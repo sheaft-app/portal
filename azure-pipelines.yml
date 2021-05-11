@@ -22,12 +22,8 @@ steps:
         npm | "$(Agent.OS)"
       path: $(npm_config_cache)
       cacheHitVar: CACHE_RESTORED
-    displayName: Cache npm
-  - task: Npm@1
-    displayName: Npm restore dependencies
-    inputs:
-      command: 'custom'
-      customCommand: 'install --cache $(npm_config_cache)'
+    displayName: Cache npm    
+  - script: npm ci --cache $(npm_config_cache)
   - task: PowerShell@2
     displayName: 'Replace Staging Config'
     inputs:
