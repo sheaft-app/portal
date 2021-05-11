@@ -13,10 +13,10 @@ import { GET_SELLING_POINTS } from "./queries";
   const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
 
-  async function closeModal(obj) {
-    close();
-    if (onClose) await onClose(obj);
-  }
+	const closeModal = async (obj) => {
+		close();
+		if (onClose) await onClose(obj);
+	}
 
   const handleSubmit = async () => {
     var res = await graphQLInstance.mutate(
@@ -36,7 +36,7 @@ import { GET_SELLING_POINTS } from "./queries";
   }
 </script>
 
-<ActionConfirm title="Suppression" level="danger" submit={handleSubmit} {close} {errorsHandler}>
+<ActionConfirm title="Suppression" level="danger" submit={handleSubmit} close={() => closeModal({ success: false, data: null })} {errorsHandler}>
   <p class="leading-5 text-gray-600">
     Vous vous apprêtez à <span class="text-gray-700">supprimer ce point de vente</span>
   </p>

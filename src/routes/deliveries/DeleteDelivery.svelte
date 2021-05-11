@@ -15,9 +15,9 @@
 
 	let isLoading = false;
 
-	async function closeModal(obj) {
+	const closeModal = async (obj) => {
 		close();
-		if (onClosed) await onClose(obj);
+		if (onClose) await onClose(obj);
 	}
 
 	const handleSubmit = async () => {
@@ -46,7 +46,7 @@
 	level="danger"
 	submit={handleSubmit}
 	{isLoading}
-	{close}
+	close={() => closeModal({ success: false, data: null })} 
 	{errorsHandler}>
 	<p class="leading-5">
 		Vous vous apprêtez à

@@ -31,6 +31,12 @@ export const GET_SELLING_POINTS = gql`
 					city
 					zipcode
 				}
+				closings {
+					id
+					from
+					to
+					reason
+				}
 			}
 		}
 	}

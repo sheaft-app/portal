@@ -51,12 +51,12 @@
 				sellingPoint.lockOrderHoursBeforeDelivery = null;
 				sellingPoint.maxPurchaseOrdersPerTimeSlot = null;
 			} else if (lockOrders < 0 || maxOrders < 0){        
-          return;
-      }
-      else{
-        sellingPoint.lockOrderHoursBeforeDelivery = lockOrders;
-        sellingPoint.maxPurchaseOrdersPerTimeSlot = maxOrders;
-      }
+				return;
+			}
+			else{
+				sellingPoint.lockOrderHoursBeforeDelivery = lockOrders;
+				sellingPoint.maxPurchaseOrdersPerTimeSlot = maxOrders;
+			}
 
 			submit();
 		}
@@ -165,7 +165,7 @@
 				<ClosingDates bind:closings />
 			</div>
 			<hr class="my-5" />
-      <div class="form-control mt-6" style="display: block;">
+      		<div class="form-control mt-6" style="display: block;">
 				<label>Limiter les commandes</label>
 				<Toggle
 					labelPosition="left"
