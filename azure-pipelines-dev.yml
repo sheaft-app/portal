@@ -21,7 +21,6 @@ steps:
       cacheHitVar: CACHE_RESTORED
     displayName: Cache npm    
   - script: npm ci
-    condition: ne(variables.CACHE_RESTORED, 'true')
   - task: PowerShell@2
     displayName: 'Replace Sprint Config'
     inputs:
