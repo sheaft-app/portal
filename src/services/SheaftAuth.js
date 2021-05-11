@@ -69,7 +69,8 @@ class SheaftAuth {
 		try {
 			var localUser = JSON.parse(localStorage.getItem("user"));
 			if(localUser.id && localUser.id.length > 0){
-				user.profile.id = localUser.id;
+				user.id = localUser.id;
+				user.profile.id = localUser.profileId;
 				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
 				return;
 			}
@@ -81,12 +82,14 @@ class SheaftAuth {
 
 			var content = await result.json();
 			if (content.data.me && content.data.me.id) {
-				user.profile.id = content.data.me.id;
+				user.id = content.data.me.id;
+				user.profile.id = content.data.me.profileId;
 				this.setAuthStatus(user, true, true, true, true);
 			} else if (content.errors && content.errors.length > 0) {
 				console.error('An error occurred while retrieving user infos', content.errors);
 				this.refreshPageAsUnauthorized(false);
 			} else {
+				user.id = null;
 				user.profile.id = null;
 				this.setAuthStatus(user, true, true, false, true);
 			}
@@ -116,7 +119,7 @@ class SheaftAuth {
 		if (this.initialized != initialized)
 			authInitialized.set(initialized);
 
-		localStorage.setItem("user", JSON.stringify({id : user.profile.id, authenticated : authenticated, authorized: authorized, registered : registered, role: user.profile.role}));
+		localStorage.setItem("user", JSON.stringify({id: user.id, profileId : user.profile.id, authenticated : authenticated, authorized: authorized, registered : registered, role: user.profile.role}));
 	}
 
 	userIsAnonymous() {
@@ -234,7 +237,7 @@ function getUserInfoSettings(user) {
 	return {
 		method: "POST",
 		body:
-			'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id}}"}',
+			'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id profileId}}"}',
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + user.access_token,
