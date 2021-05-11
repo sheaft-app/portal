@@ -34,6 +34,7 @@
 	import SearchProducerRoutes from "./../../routes/search-producers/routes.js";
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
+	import CatalogRoutes from "./../../routes/catalogs/routes.js";
 	import SponsorshipRoutes from "./../../routes/sponsorship/routes.js";
 	import LeaderboardRoutes from "./../../routes/leaderboard/routes.js";
 	import SearchProductRoutes from "./../../routes/search-products/routes.js";
@@ -299,6 +300,7 @@
 					<NavLink route={JobRoutes.List}/>
 				{/if}
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
+					<NavLink route={CatalogRoutes.List}/>
 					<NavLink route={ProductRoutes.List}/>
 					<NavLink route={PurchaseOrderRoutes.List}/>
 					<NavLink route={ReturnableRoutes.List}/>

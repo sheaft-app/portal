@@ -25,7 +25,6 @@
 
   let product = {
     reference: null,
-    wholeSalePricePerUnit: null,
     unit: null,
     quantityPerUnit: null,
     vat: null,
@@ -37,7 +36,8 @@
     tags: [],
     available: true,
     visibleToStores: true,
-    visibleToConsumers: true
+    visibleToConsumers: true,
+    catalogs:[]
   };
 
   const handleSubmit = async () => {
@@ -45,8 +45,11 @@
     var res = await graphQLInstance.mutate(CREATE_PRODUCT, {
       description: product.description,
       name: product.name,
+      catalogs: product.catalogs.map((c) => ({
+        id: c.id,
+        wholeSalePricePerUnit: c.wholeSalePricePerUnit
+      })),
       returnableId: product.returnable ? product.returnable.id : null,
-      wholeSalePricePerUnit: product.wholeSalePricePerUnit,
       quantityPerUnit: product.quantityPerUnit,
       unit: product.unit,
       conditioning: product.conditioning,
@@ -55,9 +58,7 @@
       originalPicture: product.originalPicture ? product.originalPicture : null,
       tags: product.tags.map(i => i.id),
       vat: product.vat,
-      available: product.available,
-      visibleToStores: product.visibleToStores,
-      visibleToConsumers: product.visibleToConsumers
+      available: product.available
     }, errorsHandler.Uuid, GET_PRODUCTS);
 
     isLoading = false;
