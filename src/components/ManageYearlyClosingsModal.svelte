@@ -50,7 +50,7 @@
 
       if (!result.success)
           notificationsInstance.error(
-              "Une erreur est survenue pendant la création de la fermeture."
+              "Une erreur est survenue pendant la configuration de vos fermetures annuelles."
               );
       else {
         notificationsInstance.success(

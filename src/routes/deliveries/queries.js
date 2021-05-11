@@ -24,6 +24,12 @@ export const GET_DELIVERIES = gql`
 					from
 					to
 				}
+				closings {
+					id
+					from
+					to
+					reason
+				}
 			}
 		}
 	}
@@ -48,6 +54,12 @@ export const GET_DELIVERY_DETAILS = gql`
 				line1
 				city
 				zipcode
+			}
+			closings {
+				id
+				from
+				to
+				reason
 			}
 		}
 	}
