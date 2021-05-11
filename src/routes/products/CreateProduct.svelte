@@ -8,7 +8,6 @@
   import ProductForm from "./ProductForm.svelte";
   import { CREATE_PRODUCT } from "./mutations.js";
   import { GET_PRODUCTS } from "./queries.js";
-  import ChangeImage from "./ChangeImage.svelte";
   import ProductRoutes from "./routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";

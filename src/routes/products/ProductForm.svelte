@@ -132,6 +132,7 @@
 
 	onMount(async () => {
 		isLoading = true;
+		notSubjectToVat = product.producer.notSubjectToVat;
 		await getTags();
 		await getReturnables();
 		isLoading = false;
