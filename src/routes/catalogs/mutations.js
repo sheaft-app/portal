@@ -9,8 +9,10 @@ export const CREATE_CATALOG = gql`
 			isDefault
 			available
 			updatedOn
-			prices {
+			products {
 				id
+				name
+				reference
 				onSalePrice
 				onSalePricePerUnit
 				vatPrice
@@ -18,11 +20,6 @@ export const CREATE_CATALOG = gql`
 				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
-				product{
-					id
-					name
-					reference
-				}
 			}
 		}
 	}
@@ -37,8 +34,10 @@ export const UPDATE_CATALOG = gql`
 			isDefault
 			available
 			updatedOn
-			prices {
+			products {
 				id
+				name
+				reference
 				onSalePrice
 				onSalePricePerUnit
 				vatPrice
@@ -46,11 +45,6 @@ export const UPDATE_CATALOG = gql`
 				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
-				product{
-					id
-					name
-					reference
-				}
 			}
 		}
 	}

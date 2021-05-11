@@ -15,6 +15,7 @@
 	import ErrorCard from "../../components/ErrorCard.svelte";
 	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import { products } from "./stores";
+import CatalogKind from "../../enums/CatalogKind";
 
 	export let params;
 
@@ -62,7 +63,7 @@
 				available: catalog.available,
 				isDefault: catalog.isDefault,
 				products: $products.filter((p) => !p.markForDeletion).map((p) => ({
-					id: p.product.id,
+					id: p.id,
 					wholeSalePricePerUnit: p.wholeSalePricePerUnit
 				}))
 			},
@@ -115,11 +116,13 @@
 				</button>
 			</div>
 		<h1 class="font-semibold uppercase mb-2">Modifier un catalogue</h1>
-		<button
-			class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
-			on:click={showDeleteModal}>
-			Supprimer
-		</button>
+		{#if catalog.kind == CatalogKind.Stores.Value}
+			<button
+				class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
+				on:click={showDeleteModal}>
+				Supprimer
+			</button>
+		{/if}
 		</section>
 		<CatalogForm
 			submit={handleSubmit}

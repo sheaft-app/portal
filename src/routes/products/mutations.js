@@ -4,6 +4,38 @@ export const CREATE_PRODUCT = gql`
 	mutation CreateProduct($input: CreateProductInput!) {
 		createProduct(input: $input) {
 			id
+			reference
+			name
+			rating
+			ratingsCount
+			description
+			weight
+			picture
+			vat
+			quantityPerUnit
+			conditioning
+			unit
+			returnable {
+				id
+				name
+				vat
+				wholeSalePrice
+			}
+			catalogs {
+				wholeSalePricePerUnit
+				addedOn
+				id
+				name
+			}
+			createdOn
+			tags {
+				id
+				name
+				kind
+			}
+			available
+			visibleToStores
+			visibleToConsumers
 		}
 	}
 `;
@@ -21,8 +53,6 @@ export const UPDATE_PRODUCT = gql`
 		updateProduct(input: $input) {
 			id
 			reference
-			onSalePricePerUnit
-			wholeSalePricePerUnit
 			name
 			rating
 			ratingsCount
@@ -39,12 +69,17 @@ export const UPDATE_PRODUCT = gql`
 				vat
 				wholeSalePrice
 			}
-			vatPricePerUnit
 			createdOn
 			tags {
 				id
 				name
 				kind
+			}
+			catalogs {
+				wholeSalePricePerUnit
+				addedOn
+				id
+				name
 			}
 			available
 			visibleToStores

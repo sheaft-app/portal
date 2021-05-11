@@ -81,7 +81,7 @@
       id: product.id,
       description: product.description,
       catalogs: product.catalogs.filter((c) => !c.markForDeletion).map((c) => ({
-        id: c.catalog.id,
+        id: c.id,
         wholeSalePricePerUnit: c.wholeSalePricePerUnit
       })),
       name: product.name,

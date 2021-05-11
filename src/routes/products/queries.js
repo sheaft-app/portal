@@ -20,14 +20,11 @@ export const GET_PRODUCTS = gql`
 				node {
 					id
 					reference
-					onSalePricePerUnit
-					wholeSalePricePerUnit
 					name
 					rating
 					ratingsCount
 					description
 					vat
-					vatPricePerUnit
 					createdOn
 					available
 					visibleToStores
@@ -43,8 +40,6 @@ export const GET_PRODUCT_DETAILS = gql`
 		product(id: $id) {
 			id
 			reference
-			onSalePricePerUnit
-			wholeSalePricePerUnit
 			name
 			rating
 			ratingsCount
@@ -55,10 +50,8 @@ export const GET_PRODUCT_DETAILS = gql`
 			catalogs {
 				wholeSalePricePerUnit
 				addedOn
-				catalog{
-					id
-					name
-				}
+				id
+				name
 			}
 			quantityPerUnit
 			conditioning
@@ -69,7 +62,6 @@ export const GET_PRODUCT_DETAILS = gql`
 				vat
 				wholeSalePrice
 			}
-			vatPricePerUnit
 			createdOn
 			tags {
 				id

@@ -38,8 +38,10 @@ export const GET_CATALOG_DETAILS = gql`
 			isDefault
 			available
 			updatedOn
-			prices {
+			products {
 				id
+				name
+				reference
 				onSalePrice
 				onSalePricePerUnit
 				vatPrice
@@ -47,11 +49,6 @@ export const GET_CATALOG_DETAILS = gql`
 				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
-				product{
-					id
-					name
-					reference
-				}
 			}
 		}
 	}

@@ -45,6 +45,22 @@ import CatalogKind from "../../enums/CatalogKind";
       <ErrorContainer field={$catalogForm.fields.name}/>
     </div>  
   </div>
+  {#if catalog.id && catalog.id.length > 0}
+    <div class={`mb-6 lg:mb-0`}>
+      <div class="form-control">
+        <div class="w-full">
+          <label for="type-catalog">Cible</label>
+          <input
+            value={CatalogKind.label(catalog.kind)}
+            class="disabled"
+            disabled
+            id="type-catalog"
+            type="text"
+            placeholder="Cible du catalogue" />
+        </div>
+      </div>  
+    </div>
+  {/if}
   <div class="form-control" style="display: block;">
 		<label>Disponible</label>
 		<Toggle
@@ -54,16 +70,17 @@ import CatalogKind from "../../enums/CatalogKind";
 			bind:isChecked={catalog.available}>
 		</Toggle>
   </div>
+
   {#if catalog.kind == CatalogKind.Stores.Value}
-  <div class="form-control" style="display: block;">
-		<label>Utiliser comme catalogue par défaut pour les magasins</label>
-		<Toggle
-			labelPosition="left"
-			disabled={isLoading}
-			classNames="ml-1"
-			bind:isChecked={catalog.isDefault}>
-		</Toggle>
-  </div>
+    <div class="form-control" style="display: block;">
+      <label>Utiliser comme catalogue par défaut pour les professionels</label>
+      <Toggle
+        labelPosition="left"
+        disabled={isLoading}
+        classNames="ml-1"
+        bind:isChecked={catalog.isDefault}>
+      </Toggle>
+    </div>
   {/if}
   <CatalogProducts catalogId={catalog.id} {errorsHandler} bind:invalidCatalogProducts />
   <p class="text-sm mt-5">* champs requis</p>   

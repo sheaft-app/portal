@@ -47,7 +47,6 @@ import JobKind from "../../enums/JobKind";
 		{ name: "Produit", sortLabel: "name" },
 		{ name: "Visible pour", displayOn: "md" },
 		{ name: "Notation", displayOn: "md" },
-		{ name: "Prix", noMobilePadding: true },
 		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
 	];
 
@@ -264,14 +263,6 @@ import JobKind from "../../enums/JobKind";
 				hidden md:table-cell">
 			<div class="text-sm leading-5 font-medium">
 				<RatingStars rating={product.rating} />
-			</div>
-		</td>
-		<td class="md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-			<div class="text-sm leading-5 font-medium">
-				{product.wholeSalePricePerUnit ? formatMoney(product.wholeSalePricePerUnit) : 'N/A'}
-			</div>
-			<div class="text-sm leading-5 text-gray-600">
-				{product.wholeSalePricePerUnit ? `+${formatMoney(product.vatPricePerUnit)} TVA` : '' }
 			</div>
 		</td>
 		<td

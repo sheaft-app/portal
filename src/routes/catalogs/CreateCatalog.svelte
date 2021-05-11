@@ -25,7 +25,7 @@
 	let isLoading = false;
 
 	let catalog = {
-		isAvailable: true,
+		available: true,
 		isDefault: false,
 		name: "",
 		products:[]

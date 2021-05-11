@@ -46,7 +46,7 @@
       description: product.description,
       name: product.name,
       catalogs: product.catalogs.map((c) => ({
-        id: c.catalog.id,
+        id: c.id,
         wholeSalePricePerUnit: c.wholeSalePricePerUnit
       })),
       returnableId: product.returnable ? product.returnable.id : null,

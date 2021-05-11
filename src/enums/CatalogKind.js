@@ -2,7 +2,7 @@ import GetEnumObjectFor from './helpers.js';
 
 let enums = {
 	Consumers: { Value: "CONSUMERS", Label: "Consommateurs"},
-	Stores: { Value: "STORES", Label: "Professionel"}
+	Stores: { Value: "STORES", Label: "Professionels"}
 };
 
 let CatalogKind = {

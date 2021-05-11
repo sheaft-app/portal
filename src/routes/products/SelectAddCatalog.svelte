@@ -40,7 +40,8 @@
         catalogs = [
             ...catalogs,
             {
-                catalog: catalog,
+                id: catalog.id,
+                name: catalog.name,
                 wholeSalePricePerUnit: 0,
                 addedOn: Date.now(),
                 checked: true

@@ -473,24 +473,6 @@
 			bind:isChecked={product.available}>
 		</Toggle>
 	</div>
-	<div class="form-control" style="display: block;">
-		<label>Visible pour les consommateurs</label>
-		<Toggle
-			labelPosition="left"
-			disabled={isLoading}
-			classNames="ml-1"
-			bind:isChecked={product.visibleToConsumers}>
-		</Toggle>
-	</div>
-	<div class="form-control" style="display: block;">
-		<label>Visible pour les magasins</label>
-		<Toggle
-			labelPosition="left"
-			disabled={isLoading}
-			classNames="ml-1"
-			bind:isChecked={product.visibleToStores}>
-		</Toggle>
-	</div>
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">
 		<button
