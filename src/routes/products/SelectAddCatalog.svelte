@@ -24,7 +24,7 @@
     })
 
     const loadCatalogs = async (ids) => {
-        var res = await graphQLInstance.query(GET_CATALOGS, {}, errorsHandler.Uuid);
+        var res = await graphQLInstance.query(GET_CATALOGS, {first:50}, errorsHandler.Uuid);
 
         if (!res.success) {
         // todo
