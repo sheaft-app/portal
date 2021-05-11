@@ -84,7 +84,6 @@
 			}
 
 			if (isBasketType) {
-				console.log("passed");
 				product.conditioning = ConditioningKind.Basket.Value
 			}
 
@@ -133,26 +132,11 @@
 
 	onMount(async () => {
 		isLoading = true;
-		await getProducer();
+		notSubjectToVat = product.producer.notSubjectToVat;
 		await getTags();
 		await getReturnables();
 		isLoading = false;
 	});
-
-	const getProducer = async () => {
-		var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
-			id: authInstance.user.profile.id
-		});
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		notSubjectToVat = res.data.notSubjectToVat;
-		if(notSubjectToVat)
-			selectVat(0);
-	}
 
 	const getReturnables = async () => {
 		isLoadingReturnables = true;

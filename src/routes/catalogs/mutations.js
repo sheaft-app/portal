@@ -13,11 +13,6 @@ export const CREATE_CATALOG = gql`
 				id
 				name
 				reference
-				onSalePrice
-				onSalePricePerUnit
-				vatPrice
-				vatPricePerUnit
-				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
 			}
@@ -38,11 +33,6 @@ export const UPDATE_CATALOG = gql`
 				id
 				name
 				reference
-				onSalePrice
-				onSalePricePerUnit
-				vatPrice
-				vatPricePerUnit
-				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
 			}
@@ -63,11 +53,26 @@ export const CLONE_CATALOG = gql`
 				id
 				name
 				reference
-				onSalePrice
-				onSalePricePerUnit
-				vatPrice
-				vatPricePerUnit
-				wholeSalePrice
+				wholeSalePricePerUnit
+				addedOn
+			}
+		}
+	}
+`;
+
+export const UPDATE_CATALOG_PRICES = gql`
+	mutation UpdateCatalogPrices($input: UpdateAllCatalogPricesInput!) {
+		updateCatalogPrices(input: $input) {
+			id
+			name
+			kind
+			isDefault
+			available
+			updatedOn
+			products {
+				id
+				name
+				reference
 				wholeSalePricePerUnit
 				addedOn
 			}

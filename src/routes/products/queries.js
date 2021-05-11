@@ -62,6 +62,10 @@ export const GET_PRODUCT_DETAILS = gql`
 				vat
 				wholeSalePrice
 			}
+			producer{
+				id
+				notSubjectToVat
+			}
 			createdOn
 			tags {
 				id

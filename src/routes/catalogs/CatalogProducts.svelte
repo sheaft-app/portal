@@ -1,35 +1,26 @@
 <script>
-	import { GET_CATALOG_DETAILS } from './queries.js';
+	import UpdateCatalogPrices from './UpdateCatalogPrices.svelte';
+	import { GET_CATALOGS } from './queries.js';
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
     import { getContext, onMount } from "svelte";
     import GetGraphQLInstance from "../../services/SheaftGraphQL";
+    import GetRouterInstance from "../../services/SheaftRouter";
     import AddProductModal from "./AddProductModal.svelte";
     import Icon from "svelte-awesome";
-    import { faPlus } from "@fortawesome/free-solid-svg-icons";
+    import { faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
     import { products } from "./stores";
 
-    export let catalogId, errorsHandler, invalidCatalogProducts = false;
+    export let catalog, errorsHandler, invalidCatalogProducts = false;
     
     const graphQLInstance = GetGraphQLInstance();
+    const routerInstance = GetRouterInstance();
     const { open } = getContext('modal');
 
     let headers = [{ label: 'Nom', mobile: true }, {label: 'Prix HT', mobile: true}, {label:'Ajouté le', mobile: false}, {label: 'Actions', mobile:false}]
 
     onMount(async () => {
-        $products = [];
-
-        if (!catalogId) return;
-
-        const result = await graphQLInstance.query(GET_CATALOG_DETAILS, {
-            id: catalogId
-        }, errorsHandler.Uuid);
-
-        if (!result.data || !result.success) {
-            return false;
-        }
-
-        $products = result.data.products;
+        $products = catalog.products;
     })
 
     const removeProduct = product => {
@@ -49,6 +40,18 @@
     const addProduct = () => {
         open(AddProductModal, {
             alreadyPresentProducts: $products.map((p) => p.id)
+        })
+    }
+
+    const showUpdateCatalogPricesModal = () => {
+        open(UpdateCatalogPrices, {
+            catalog: catalog,
+			onClose: async(res) => {
+				if (res.success) {
+					graphQLInstance.clearApolloCache(GET_CATALOGS);
+                    routerInstance.reload();
+				}
+			},
         })
     }
 
@@ -126,6 +129,14 @@
                     Ajouter des produits
                 </button>
             </td>
+            {#if catalog.id && catalog.id.length > 0}
+                <td class="px-3 md:px-6 py-2 whitespace-no-wrap border-b border-gray-200">
+                    <button type="button" class="flex items-center btn-link" on:click={showUpdateCatalogPricesModal}>
+                        <Icon data={faEdit} class="mr-2" />
+                        Modifier tous les prix
+                    </button>
+                </td>
+            {/if}
         </tr>
     </tbody>
 </table>

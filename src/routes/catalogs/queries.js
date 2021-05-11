@@ -42,11 +42,6 @@ export const GET_CATALOG_DETAILS = gql`
 				id
 				name
 				reference
-				onSalePrice
-				onSalePricePerUnit
-				vatPrice
-				vatPricePerUnit
-				wholeSalePrice
 				wholeSalePricePerUnit
 				addedOn
 			}

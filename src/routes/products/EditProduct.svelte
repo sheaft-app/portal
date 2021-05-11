@@ -1,6 +1,5 @@
 <script>
   import Loader from "./../../components/Loader.svelte";
-  import ChangeImage from "./ChangeImage.svelte";
   import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";

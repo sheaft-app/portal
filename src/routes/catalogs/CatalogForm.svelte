@@ -82,7 +82,7 @@ import CatalogKind from "../../enums/CatalogKind";
       </Toggle>
     </div>
   {/if}
-  <CatalogProducts catalogId={catalog.id} {errorsHandler} bind:invalidCatalogProducts />
+  <CatalogProducts catalog={catalog} {errorsHandler} bind:invalidCatalogProducts />
   <p class="text-sm mt-5">* champs requis</p>   
   <div class="form-control mt-5">
     <button
