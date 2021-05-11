@@ -23,8 +23,11 @@ steps:
       path: $(npm_config_cache)
       cacheHitVar: CACHE_RESTORED
     displayName: Cache npm
-  - script: npm ci
-    condition: ne(variables.CACHE_RESTORED, 'true')
+  - task: Npm@1
+    displayName: Npm restore dependencies
+    inputs:
+      command: 'custom'
+      customCommand: 'install --cache $(npm_config_cache)'
   - task: PowerShell@2
     displayName: 'Replace Staging Config'
     inputs:
