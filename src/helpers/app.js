@@ -195,3 +195,28 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 			return '';
 	}
 }
+
+export const handleSlideChange = (e, ref) => {
+	const nextButton = ref.$$.ctx[6]; // todo : find a better way
+	const prevButton = ref.$$.ctx[5]; // todo : find a better way
+
+	let elem = e.detail[0];
+	// C'est une slide ?
+	if (Array.isArray(e.detail[0])) {
+		elem = elem.shift();
+	}
+
+	if (elem.isBeginning && elem.isEnd) {
+		prevButton.classList.add('hidden');
+		nextButton.classList.add('hidden');
+	} else if (elem.isBeginning) {
+		prevButton.classList.add('hidden');
+		nextButton.classList.remove('hidden');
+	} else if (elem.isEnd) {
+		prevButton.classList.remove('hidden');
+		nextButton.classList.add('hidden');
+	} else {
+		prevButton.classList.remove('hidden');
+		nextButton.classList.remove('hidden');
+	}
+}
