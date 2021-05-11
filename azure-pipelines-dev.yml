@@ -12,9 +12,6 @@ pool:
   vmImage: "ubuntu-latest"
 
 steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '15.14.0' 
   - task: Cache@2
     inputs:
       key: 'npm | "$(Agent.OS)" | package-lock.json'
@@ -22,9 +19,14 @@ steps:
         npm | "$(Agent.OS)"
       path: $(npm_config_cache)
       cacheHitVar: CACHE_RESTORED
-    displayName: Cache npm
+    displayName: Cache npm    
   - script: npm ci
     condition: ne(variables.CACHE_RESTORED, 'true')
+  - task: PowerShell@2
+    displayName: 'Replace Sprint Config'
+    inputs:
+      targetType: inline
+      script: Copy-Item -Path "src/configs/config.sprint.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
   - script: npm run sprint
   - task: ArchiveFiles@2
     displayName: "Archive files"
