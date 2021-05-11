@@ -50,6 +50,31 @@ export const UPDATE_CATALOG = gql`
 	}
 `;
 
+export const CLONE_CATALOG = gql`
+	mutation CloneCatalog($input: CloneCatalogInput!) {
+		cloneCatalog(input: $input) {
+			id
+			name
+			kind
+			isDefault
+			available
+			updatedOn
+			products {
+				id
+				name
+				reference
+				onSalePrice
+				onSalePricePerUnit
+				vatPrice
+				vatPricePerUnit
+				wholeSalePrice
+				wholeSalePricePerUnit
+				addedOn
+			}
+		}
+	}
+`;
+
 export const DELETE_CATALOGS = gql`
 	mutation DeleteCatalogs($input: DeleteCatalogsInput!) {
 		deleteCatalogs(input: $input)

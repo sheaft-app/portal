@@ -1,4 +1,5 @@
 <script>
+	import SetDeliveryAvailability from './SetDeliveryAvailability.svelte';
   import { onMount, onDestroy, getContext } from "svelte";
   import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
@@ -76,6 +77,18 @@
     });
   };
 
+const showSetAvailabilityModal = () => {
+  open(SetDeliveryAvailability, {
+    onClose: async res => {
+      if (res.success) {
+        graphQLInstance.clearApolloCache(GET_DELIVERIES);
+        routerInstance.goTo(DeliveryRoutes.List);
+      }
+    },
+    delivery
+  });
+};
+
   onDestroy(() => (delivery = null));
 </script>
 
@@ -109,11 +122,11 @@
     {/if}
   </div>
   <div class="flex mt-2">
-    <!-- <button
+    <button
       class={`btn btn-lg bg-white border mr-2 hover:text-white ${delivery.available ? 'text-orange-500 border-orange-500 hover:bg-orange-500' : 'text-green-500 border-green-500 hover:bg-green-500'}`}
       on:click={showSetAvailabilityModal}>
       {delivery.available ? 'Désactiver' : 'Activer'}
-    </button> -->
+    </button>
     <button
       class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
       on:click={showDeleteModal}>

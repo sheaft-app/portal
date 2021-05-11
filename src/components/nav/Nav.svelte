@@ -300,8 +300,8 @@
 					<NavLink route={JobRoutes.List}/>
 				{/if}
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
-					<NavLink route={CatalogRoutes.List}/>
 					<NavLink route={ProductRoutes.List}/>
+					<NavLink route={CatalogRoutes.List}/>
 					<NavLink route={PurchaseOrderRoutes.List}/>
 					<NavLink route={ReturnableRoutes.List}/>
 					<NavLink route={SellingPointRoutes.List}/>

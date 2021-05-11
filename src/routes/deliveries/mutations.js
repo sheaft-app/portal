@@ -48,6 +48,15 @@ export const UPDATE_DELIVERY = gql`
 	}
 `;
 
+export const SET_DELIVERY_AVAILABILITY = gql`
+	mutation SetDeliveryAvailability($input: SetDeliveryModesAvailabilityInput!) {
+		setDeliveryModesAvailability(input: $input) {
+				id
+				available
+		}
+	}
+`;
+
 export const DELETE_DELIVERY = gql`
 	mutation DeleteSellingPoint($input: DeleteDeliveryModeInput!) {
 		deleteDeliveryMode(input: $input)

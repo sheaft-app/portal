@@ -15,7 +15,8 @@
 	import ErrorCard from "../../components/ErrorCard.svelte";
 	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import { products } from "./stores";
-import CatalogKind from "../../enums/CatalogKind";
+	import CatalogKind from "../../enums/CatalogKind";
+import CloneCatalog from "./CloneCatalog.svelte";
 
 	export let params;
 
@@ -89,7 +90,20 @@ import CatalogKind from "../../enums/CatalogKind";
 			onClose: async (res) => {
 				if (res.success) {
       				graphQLInstance.clearApolloCache(GET_CATALOGS);
-					routerInstance.goTo(CatalogRoutes.List);
+					  await routerInstance.goTo(CatalogRoutes.List);
+				}
+			},
+		});
+	};
+
+	const showCloneModal = () => {
+		open(CloneCatalog, {
+			catalog,
+			onClose: async(res) => {
+				if (res.success) {
+					graphQLInstance.clearApolloCache(GET_CATALOGS);
+					await routerInstance.goTo(CatalogRoutes.Details, {id: res.data.id});
+					routerInstance.reload();
 				}
 			},
 		});
@@ -116,13 +130,21 @@ import CatalogKind from "../../enums/CatalogKind";
 				</button>
 			</div>
 		<h1 class="font-semibold uppercase mb-2">Modifier un catalogue</h1>
+		
+		<div class="flex mt-2">
 		{#if catalog.kind == CatalogKind.Stores.Value}
+			<button
+				class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white mr-3"
+				on:click={showCloneModal}>
+				Dupliquer
+			</button>
 			<button
 				class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
 				on:click={showDeleteModal}>
 				Supprimer
 			</button>
 		{/if}
+		</div>
 		</section>
 		<CatalogForm
 			submit={handleSubmit}
