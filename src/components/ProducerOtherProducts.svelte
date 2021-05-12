@@ -187,6 +187,6 @@
 			</SwiperSlide>
 		{/each}
 	</Swiper>
-	{:else}
+{:else}
 	<p>Ce producteur ne possède pas de produits dans son catalogue</p>
 {/if}

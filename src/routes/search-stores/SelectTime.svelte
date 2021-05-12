@@ -17,10 +17,10 @@
 	export let selectedDelivery = null;
 
 	onMount(async () => {
-		await fetchDelivery();
+		await fetchDeliveries();
 	})
 
-	const fetchDelivery = async () => {
+	const fetchDeliveries = async () => {
 		const res = await graphQLInstance.query(GET_DELIVERIES);
 
 		isLoading = false;
@@ -60,7 +60,7 @@
 
 <div class="form-control mt-2" style="display: block;">
 	<div class="mb-2">
-		<label>Quelle livraison souhaitez-vous assigner à ce magasin ?</label>
+		<label>Quelle livraison souhaitez-vous proposer à ce magasin ?</label>
 	</div>
 	{#if isLoading}
 		<Loader/>
@@ -74,7 +74,7 @@
 				class:active={selectedDelivery && selectedDelivery.id == delivery.id}
 				on:click={() => selectDelivery(delivery)}
 				class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded">
-				{delivery.name} : {@html getFormattedSelectedHours(delivery.deliveryHours)}
+				<b>{delivery.name}</b> : {@html getFormattedSelectedHours(delivery.deliveryHours)}
 			</div>
 		{/each}
 	{/if}

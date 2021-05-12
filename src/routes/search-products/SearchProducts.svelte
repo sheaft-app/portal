@@ -372,7 +372,7 @@
 	{#if errors.length < 1}
 		<div
 			class:has-bottom-mobile-cta={$cart.products.length > 0}
-			class="search-products md:-my-4">
+			class="search-products md:-my-4 container m-auto">
 			<div class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
 				<CitySearch
 					withGeolocationButton={true}

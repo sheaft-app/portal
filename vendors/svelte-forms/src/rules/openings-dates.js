@@ -9,7 +9,7 @@ export function openingsDates(val, args) {
 
   const openingsLength = val.length;
 
-  for (var i = 0; i <= openingsLength - 1; i++) {
+  for (let i = 0; i <= openingsLength - 1; i++) {
     const startDate = new Date(null, null, null, val[i].start.hours, val[i].start.minutes);
     const endDate = new Date(null, null, null, val[i].end.hours, val[i].end.minutes);
     

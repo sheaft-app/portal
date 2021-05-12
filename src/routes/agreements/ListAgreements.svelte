@@ -236,8 +236,7 @@
 		</Table>
 	{:else}
 		<div
-			class="text-center text-gray-600 flex w-full h-full justify-center
-      items-center">
+			class="text-gray-600">
 			<div>
 				<p class="text-2xl">Vous n'avez aucun accord.</p>
 				{#if authInstance.isInRole([Roles.Producer.Value])}
@@ -245,7 +244,7 @@
 					<button
 						on:click={() => routerInstance.goTo(SearchStoreRoutes.Search)}
 						aria-label="Accéder à la recherche de magasins"
-						class="btn btn-lg btn-accent mt-3 m-auto">
+						class="btn btn-lg btn-accent mt-3">
 						Je me lance
 					</button>
 				{/if}
@@ -255,7 +254,7 @@
 					<button
 						on:click={() => routerInstance.goTo(SearchProducerRoutes.Search)}
 						aria-label="Accéder à la recherche de producteurs"
-						class="btn btn-lg btn-accent mt-3 m-auto">
+						class="btn btn-lg btn-accent mt-3">
 						Je me lance
 					</button>
 				{/if}

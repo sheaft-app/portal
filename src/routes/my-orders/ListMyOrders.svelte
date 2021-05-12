@@ -125,13 +125,13 @@
 	<title>Mes Commandes</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
 	<ErrorCard {errorsHandler}/>
+	<h1 class="font-semibold uppercase">Vos Commandes</h1>
+	<span class="bg-primary h-1 w-20 block mt-2 mb-6"></span>
 	{#if $isLoading}
 		<Loader/>
 	{:else if $items.length > 0 || validatingOrders.length > 0}
-		<h1 class="font-semibold uppercase">Vos Commandes</h1>
-		<span class="bg-primary h-1 w-20 block mt-2 mb-6"></span>
 		{#if !hiddenNavigation}
 			<div
 				class="text-lg justify-center button-group mb-5 w-full md:w-auto -mx-1 md:mx-0">
@@ -190,15 +190,14 @@
 		</div>
 	{:else}
 		<div
-			class="text-center text-gray-600 flex w-full h-full justify-center
-			items-center">
+			class="text-gray-600">
 			<div>
 				<p class="text-2xl">Vous n'avez aucune commande.</p>
 				<p class="mb-5 text-2xl">Première étape, constituer un panier !</p>
 				<button
 					on:click={goToOrderProducts}
 					aria-label="Accéder à la recherche de produits"
-					class="btn btn-lg btn-accent mt-3 m-auto">
+					class="btn btn-lg btn-accent mt-3">
 					Je me lance
 				</button>
 			</div>

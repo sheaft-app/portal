@@ -3,7 +3,6 @@
   import Icon from "svelte-awesome";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
   import {
-    faMapMarkerAlt,
     faPhone,
     faEnvelope,
     faTimesCircle,
@@ -30,7 +29,6 @@
 
   let producer = null;
   let producerDoesntExist = false;
-  let isLoading = true;
 
   const openAndLoad = async () => {
     history.pushState({ selected: $selectedItem}, "Détails du producteur");
@@ -62,8 +60,6 @@
       ...res.data,
       deliveries: deliveries,
     };
-
-    isLoading = false;
   }
 
   const loadDeliveries = async (id) =>  {
@@ -91,7 +87,7 @@
   const showCreateAgreementModal = () => {
     open(CreateAgreementModal, {
       submit: () => {},
-      producer,
+      producerId: producer.id,
       storeId: GetAuthInstance().user.profile.id,
       onClosed: (res) => {
         if (res.success) {

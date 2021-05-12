@@ -84,19 +84,14 @@
 	</Table>
 
 	{#if noResults}
-		<div class="w-full h-full flex justify-center">
-			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-3">Vous n'avez pas encore de créneau de livraison configuré.</p>
-				<div class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse md:flex-row">
-					<a
-						class="btn btn-lg btn-accent justify-center"
-						href="javascript:void(0)"
-						on:click={() => routerInstance.goTo(DeliveryRoutes.Create)}
-						>
-						Créer un créneau de livraison
-					</a>
-				</div>
-			</div>
+		<div class="text-xl text-gray-600">
+			<p class="mb-3">Vous n'avez pas encore de créneau de livraison configuré.</p>
+			<button
+				class="btn btn-lg btn-accent justify-center"
+				on:click={() => routerInstance.goTo(DeliveryRoutes.Create)}
+				>
+				Créer un créneau de livraison
+			</button>
 		</div>
 	{/if}
 </TransitionWrapper>

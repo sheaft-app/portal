@@ -1,33 +1,21 @@
 <script>
-	import {slide} from "svelte/transition";
-	import DayOfWeekKind from "./../../enums/DayOfWeekKind.js";
 	import AgreementStatusKind from "./../../enums/AgreementStatusKind.js";
 	import Loader from "./../../components/Loader.svelte";
 	import {onMount, getContext} from "svelte";
 	import Icon from "svelte-awesome";
-	import {
-		faChevronDown,
-		faChevronUp,
-		faMapMarkerAlt,
-		faPhone,
-		faEnvelope,
-		faChevronLeft
-	} from "@fortawesome/free-solid-svg-icons";
+	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import {GET_AGREEMENT_DETAILS} from "./queries";
-	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import CancelAgreementModal from "./CancelAgreementModal.svelte";
 	import AcceptAgreementModal from "./AcceptAgreementModal.svelte";
 	import RefuseAgreementModal from "./RefuseAgreementModal.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import AgreementRoutes from "./routes";
-	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
 	import Roles from "./../../enums/Roles";
-	import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
 	import {GetDistanceInfos} from "../../helpers/distances";
 	import ProducerAgreement from "./ProducerAgreement.svelte";
 	import StoreAgreement from "./StoreAgreement.svelte";
@@ -41,11 +29,7 @@
 	const {open} = getContext("modal");
 
 	let agreement = null;
-	let products = [];
-	let deliveryHours = [];
 	let distanceInfos = null;
-	let producerDescriptionExpanded = false;
-	let user = null;
 
 	const getAgreement = async id => {
 		var res = await graphQLInstance.query(GET_AGREEMENT_DETAILS, {

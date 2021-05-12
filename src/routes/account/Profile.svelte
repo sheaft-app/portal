@@ -71,7 +71,7 @@
   <title>Mon profil</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
   <section
     class="mb-4 pb-2 md:mb-6 md:pb-4 border-b border-gray-400 border-solid">
     <div class="flex flex-wrap items-center relative justify-between">

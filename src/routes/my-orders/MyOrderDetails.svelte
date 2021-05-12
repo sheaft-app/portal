@@ -91,7 +91,7 @@
   <title>Mes Commandes</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
   <ErrorCard {errorsHandler} />
   {#if !order}
     <Loader />

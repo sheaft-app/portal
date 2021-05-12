@@ -26,9 +26,9 @@
 	};
 	
 	const scrollTo = (node) => {
-		var headerOffset = document.getElementById('navbar').offsetHeight;
-		var elementPosition = node.offsetTop;
-		var offsetPosition = elementPosition - headerOffset;
+		let headerOffset = document.getElementById('navbar').offsetHeight;
+		let elementPosition = node.offsetTop;
+		let offsetPosition = elementPosition - headerOffset;
 		
 		window.scrollTo({
 				top: offsetPosition,

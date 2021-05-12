@@ -245,6 +245,8 @@ import JobKind from "../../enums/JobKind";
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler}/>
+    <h1 class="font-semibold uppercase mb-0">Commandes</h1>
+    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	{#if hasPendingJobs}
 		<div
 			class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
@@ -361,16 +363,13 @@ import JobKind from "../../enums/JobKind";
 			</td>
 		</Table>
 	{:else}
-		<div class="w-full h-full flex justify-center">
-			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p>Aucune commande pour le moment.</p>
-				<p class="mb-5">Ne vous en faites pas, ça ne va pas tarder !</p>
-				<img
-					src="/img/no_orders.svg"
-					class="m-auto"
-					style="width: 200px; height: auto"
-					alt="Aucune commande ici"/>
-			</div>
+		<div class="text-xl text-gray-600">
+			<p>Aucune commande pour le moment.</p>
+			<p class="mb-5">Ne vous en faites pas, ça ne va pas tarder !</p>
+			<img
+				src="/img/no_orders.svg"
+				style="width: 200px; height: auto"
+				alt="Aucune commande ici"/>
 		</div>
 	{/if}
 </TransitionWrapper>

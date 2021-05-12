@@ -128,4 +128,50 @@
 			{/if}
 		</div>
 	</div>
+	<div class="flex justify-between flex-wrap mt-5 card shadow rounded-lg bg-white">
+		<div class="w-full lg:w-2/4 p-3 lg:p-6 border-b lg:border-b-0 lg:border-r border-gray-300">
+			<p class="text-sm">Créneau de livraison</p>
+			{#if agreement.delivery}
+				<p class="font-semibold mb-2">{agreement.delivery.name}</p>
+				{#each agreement.delivery.deliveryHours as deliveryHour, index}
+					<div class="flex border-gray-300 py-2"
+								class:pb-2={index !== agreement.delivery.deliveryHours.length - 1}
+								class:border-b={index !== agreement.delivery.deliveryHours.length - 1}>
+								
+						<p style="min-width: 100px;">
+							{DayOfWeekKind.label(deliveryHour.day)}
+						</p>
+						<div>
+								<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+						</div>
+					</div>
+				{/each}
+			{:else}
+				<p class="font-semibold mb-2">À sélectionner</p>
+			{/if}
+		</div>
+		<div class="w-full lg:w-2/4 p-3 lg:p-6">
+			<p class="text-sm">Catalogue sélectionné</p>
+			{#if agreement.catalog}
+				<p class="font-semibold mb-2">{agreement.catalog.name}</p>
+				{#each agreement.catalog.products as product}
+					<div class="flex justify-between py-2 whitespace-no-wrap border-b border-gray-200">
+						<div
+							class="leading-5 font-medium truncate"
+							style="max-width: 180px;">
+							{product.name}
+							<p class="text-gray-600 text-sm">#{product.reference}</p>
+						</div>
+						<div
+							class="leading-5 font-medium truncate"
+							style="max-width: 100px;">
+							<span>{product.wholeSalePricePerUnit}€</span>
+						</div>
+					</div>
+				{/each}
+			{:else}
+				<p class="font-semibold mb-2">À sélectionner</p>
+			{/if}
+		</div>
+	</div>
 {/if}

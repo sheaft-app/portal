@@ -78,13 +78,16 @@
 		</td> -->
 	</Table>
 	{#if noResults}
-		<div class="text-xl text-gray-600">
-			<p class="mb-3">Vous n'avez pas encore de catalogue.</p>
-			<button
-				on:click={() => routerInstance.goTo(CatalogRoutes.Create)}
-				class="btn btn-lg btn-accent justify-center">
-				Créer mon premier catalogue
-			</button>
+		<div class="w-full h-full flex justify-center">
+			<div class="text-center text-xl text-gray-600 m-auto px-6">
+				<p class="mb-3">Vous n'avez pas encore de catalogue.</p>
+				<a
+					href="javascript:void(0)"
+					on:click={() => routerInstance.goTo(CatalogRoutes.Create)}
+					class="btn btn-lg btn-accent justify-center">
+					Créer mon premier catalogue
+				</a>
+			</div>
 		</div>
 	{/if}
 </TransitionWrapper>

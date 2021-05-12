@@ -1,9 +1,8 @@
 <script>
 	import DayOfWeekKind from "./../../enums/DayOfWeekKind.js";
-	import {onMount, onDestroy, getContext} from "svelte";
+	import {onDestroy, getContext} from "svelte";
 	import Icon from "svelte-awesome";
 	import {
-		faMapMarkerAlt,
 		faPhone,
 		faEnvelope,
 		faTimesCircle,
@@ -12,15 +11,14 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import CreateAgreementModal from "./CreateAgreementModal.svelte";
-	import {GetDistanceInfos} from "./../../helpers/distances";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import {GET_STORE_DETAILS, GET_STORE_AGREEMENTS} from "./queries.js";
+	import { GET_STORE_DETAILS } from "./queries.js";
 	import {selectedItem} from "./../../stores/app.js";
-	import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
+	import { encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
 	import AgreementRoutes from "../agreements/routes";
 	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import {config} from "../../configs/config.js";
-	import {authUserAccount} from "../../stores/auth";
+  	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
 
 	const graphQLInstance = GetGraphQLInstance();
@@ -30,20 +28,7 @@
 
 	let store = null;
 	let storeDoesntExist = false;
-	let distanceInfos = null;
-	let isLoading = false;
 	let openings = [];
-
-	async function loadAgreements(id) {
-		var res = await graphQLInstance.query(GET_STORE_AGREEMENTS, {id});
-
-		if (!res.success) {
-			//todo
-			return [];
-		}
-
-		return res.data;
-	}
 
 	const handleKeyup = ({key}) => {
 		if ($selectedItem && key === "Escape") {
@@ -55,37 +40,25 @@
 	const openAndLoad = async () => {
 		history.pushState({selected: $selectedItem}, "Détails du magasin");
 
-		const values = routerInstance.getQueryParams();
-		isLoading = true;
-
 		const storeDetails = document.getElementById("store-details");
 
 		if (storeDetails) {
 			storeDetails.scrollTop = 0;
 		}
 
-		var res = await graphQLInstance.query(GET_STORE_DETAILS, {
+		let res = await graphQLInstance.query(GET_STORE_DETAILS, {
 			id: $selectedItem.id
 		});
 
 		if (!res.success) {
 			//TODO
-			isLoading = false;
 			console.error("No store found for this ID");
 			storeDoesntExist = true;
 			return;
 		}
 
 		openings = groupBy(res.data.openingHours, item => [item.day]);
-		distanceInfos = GetDistanceInfos(
-			values["latitude"],
-			values["longitude"],
-			res.data.address.latitude,
-			res.data.address.longitude
-		);
-
 		store = res.data;
-		isLoading = false;
 	}
 
 	const openAgreement = () => {
@@ -98,7 +71,8 @@
 			submit: () => {
 			},
 			store,
-			storeId: $authUserAccount.profile.id,
+			producerId: GetAuthInstance().user.profile.id,
+			storeId: store.id,
 			onClosed: res => {
 				if (res.success) {
 					store.agreement = {id: res.data.id, status: res.data.status};
@@ -199,8 +173,9 @@
 					voir accord
 				</button>
 			{:else}
-				<button on:click={showCreateAgreementModal} class="flex py-3 px-6 items-center justify-center
-          p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
+				<button on:click={showCreateAgreementModal} 
+				class="flex py-3 px-6 items-center justify-center
+          	p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
 					<Icon data={faHandshake} scale="1.3" class="mr-2"/>
 					demander accord
 				</button>
@@ -277,33 +252,31 @@
 					{/if}
 				</div>
 			{/if}
-				<div class="w-full px-4 mt-5">
-					<label
-						class="block uppercase tracking-wide text-gray-700 text-xs font-bold
-          mb-2">
-						Intéressé par
-					</label>
-					<div class="flex flex-wrap">
-            {#if store.tags && store.tags.length > 0}
+			<div class="w-full px-4 mt-5">
+				<label
+					class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+					Intéressé par
+				</label>
+				<div class="flex flex-wrap">
+            		{#if store.tags && store.tags.length > 0}
 						{#each store.tags as tag}
-            <span
-							class="mx-2 mb-2 px-4 h-6 rounded-full text-xs font-semibold flex
-              items-center cursor-pointer bg-gray-100 text-gray-600">
-              {tag.name}
-            </span>
+            				<span class="mx-2 mb-2 px-4 h-6 rounded-full text-xs font-semibold flex
+              					items-center cursor-pointer bg-gray-100 text-gray-600">
+								{tag.name}
+							</span>
 						{/each}
-            {:else}
-            <p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
-            {/if}
-					</div>
+            		{:else}
+            			<p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
+            		{/if}
 				</div>
-				<div class="w-full px-4 mt-5">
-					<label
-						class="block uppercase tracking-wide text-gray-700 text-xs font-bold
-          mb-2">
-						Horaires d'ouverture
-					</label>
-          {#if openings && openings.length > 0}
+			</div>
+			<div class="w-full px-4 mt-5">
+				<label
+					class="block uppercase tracking-wide text-gray-700 text-xs font-bold
+          				mb-2">
+					Horaires d'ouverture
+				</label>
+				{#if openings && openings.length > 0}
 					{#each openings as opening}
 						<div class="flex mb-2">
 							<p style="min-width: 100px;">
@@ -316,11 +289,10 @@
 							</div>
 						</div>
 					{/each}
-
-			{:else}
-      <p>Ce magasin n'a pas renseigné ses horaires d'ouvertures</p>
-      {/if}
-				</div>
+				{:else}
+					<p>Ce magasin n'a pas renseigné ses horaires d'ouvertures</p>
+				{/if}
+			</div>
 		</div>
 	</div>
 {/if}

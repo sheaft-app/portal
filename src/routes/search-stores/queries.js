@@ -86,39 +86,29 @@ export const GET_MY_BUSINESS_LOCATION = gql`
 	}
 `;
 
-export const GET_STORE_AGREEMENTS = gql`
-	query GetStoreAgreements($id: ID!) {
-		storeAgreements(
-			input: $id
-			first: 50
-			where: {
-				status: { in: [
-					ACCEPTED
-					WAITING_FOR_PRODUCER_APPROVAL
-					WAITING_FOR_STORE_APPROVAL
-				]
-			}}
-		) {
-			nodes {
-				id
-				status
-			}
-		}
-	}
-`;
-
 export const GET_DELIVERIES = gql`
 	query GetDeliveries {
 		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] }}) {
 			nodes {
 				id
 				name
-				kind
-				openingHours {
+				deliveryHours {
 					day
 					from
 					to
 				}
+			}
+		}
+	}
+`;
+
+export const GET_CATALOGS = gql`
+	query GetCatalogs {
+		catalogs(where: { kind: { in: [STORES] }}) {
+			nodes {
+				id
+				name
+				kind
 			}
 		}
 	}

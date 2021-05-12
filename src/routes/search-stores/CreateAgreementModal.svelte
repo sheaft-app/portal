@@ -1,6 +1,7 @@
 <script>
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import SelectTime from "./SelectTime.svelte";
+	import SelectCatalog from "./SelectCatalog.svelte";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import { CREATE_AGREEMENT } from "./mutations.js";
@@ -14,17 +15,20 @@
 	const graphQLInstance = GetGraphQLInstance();
 
 	let selectedDelivery = null;
+	let selectedCatalog = null;
 	let isLoading = false;
 
-	$: isValid = selectedDelivery && selectedDelivery.deliveryHours.length > 0;
+	$: isValid = selectedDelivery && selectedDelivery.deliveryHours.length > 0 && selectedCatalog;
 
 	const handleSubmit = async () => {
+		console.log(producerId);
 		isLoading = true;
 		var res = await graphQLInstance.mutate(
 			CREATE_AGREEMENT,
 			{
 				storeId: store.id,
-				producerId: producerId,
+				catalogId: selectedCatalog.id,
+				producerId,
 				deliveryId: selectedDelivery.id,
 			},
 			errorsHandler.Uuid,
@@ -64,4 +68,5 @@
 		Le magasin sera automatiquement notifié de votre demande.
 	</p>
 	<SelectTime bind:selectedDelivery />
+	<SelectCatalog bind:selectedCatalog />
 </ActionConfirm>

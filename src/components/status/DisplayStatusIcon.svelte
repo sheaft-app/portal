@@ -7,9 +7,9 @@
 	export let status, type;
 
 	onMount(() => {
-			if (type != "order" && type != "agreement") {
-				throw 'Type must be "order" or "agreement"';
-			}
+		if (type != "order" && type != "agreement") {
+			throw 'Type must be "order" or "agreement"';
+		}
 	})
 
 	$: data = type === "order" ? PurchaseOrderStatusKind.get(status) : AgreementStatusKind.get(status);
