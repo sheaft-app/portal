@@ -17,6 +17,7 @@ export const GET_CATALOGS = gql`
 					isDefault
 					available
 					updatedOn
+					productsCount
 				}
 			}
 			pageInfo{
