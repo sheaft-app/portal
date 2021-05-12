@@ -97,8 +97,8 @@
 
 <Meta metadata={metadata}/>
 
-<TransitionWrapper style="margin: 0" hasRightPanel>
-	<div class="details-container">
+<TransitionWrapper hasRightPanel>
+	<div class="container m-auto">
 		{#if !authInstance.isInRole([Roles.Producer.Value])}
 			<button
 				class="text-gray-600 items-center flex uppercase mb-2"

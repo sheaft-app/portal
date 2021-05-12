@@ -282,33 +282,29 @@ import JobKind from "../../enums/JobKind";
 	</Table>
 
 	{#if displayNoResults}
-		<div class="w-full h-full flex justify-center">
-			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-3">
-					Vous n'avez pas encore de produits dans votre catalogue.
-				</p>
-				<div
-					class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse
-						md:flex-row">
-					<a
-						class="btn btn-lg bg-white shadow md:mr-5 justify-center text-normal"
-						href="javascript:void(0)"
-						on:click={createNewProduct}>
-						Créer un produit
-					</a>
-					<a
-						class="btn btn-lg btn-primary mb-3 md:mb-0 justify-center"
-						href="javascript:void(0)"
-						on:click={showImportModal}>
-						Importer plusieurs produits
-					</a>
-				</div>
-				<img
-					src="./img/start_importing.svg"
-					class="m-auto hidden md:block pt-10"
-					style="width: 200px; height: auto"
-					alt="Commençons à importer des produits !" />
+		<div class="text-xl text-gray-600">
+			<p class="mb-3">
+				Vous n'avez pas encore de produits dans votre catalogue.
+			</p>
+			<div
+				class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse
+					md:flex-row">
+				<button
+					class="btn btn-lg bg-white shadow md:mr-5 justify-center text-normal"
+					on:click={createNewProduct}>
+					Créer un produit
+				</button>
+				<button
+					class="btn btn-lg btn-primary mb-3 md:mb-0 justify-center"
+					on:click={showImportModal}>
+					Importer plusieurs produits
+				</button>
 			</div>
+			<img
+				src="./img/start_importing.svg"
+				class="hidden md:block pt-10"
+				style="width: 200px; height: auto"
+				alt="Commençons à importer des produits !" />
 		</div>
 	{/if}
 </TransitionWrapper>

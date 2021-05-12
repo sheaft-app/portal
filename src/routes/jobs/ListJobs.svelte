@@ -204,6 +204,8 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
+    <h1 class="font-semibold uppercase mb-0">Tâches de fond</h1>
+    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	{#if !noResults}
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 
@@ -266,16 +268,13 @@
 		</Table>
 	{/if}
 	{#if noResults}
-		<div class="w-full h-full flex justify-center">
-			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-10">Aucune tâche en cours.</p>
-				<img
-					src="/img/no_tasks.svg"
-					class="m-auto"
-					style="width: 200px; height: auto"
-					alt="Aucune tâche ici" />
-			</div>
-		</div>
+	<div class="text-xl text-gray-600 px-6">
+		<p class="mb-10">Aucune tâche en cours.</p>
+		<img
+			src="/img/no_tasks.svg"
+			style="width: 200px; height: auto"
+			alt="Aucune tâche ici" />
+	</div>
 	{/if}
 </TransitionWrapper>
 

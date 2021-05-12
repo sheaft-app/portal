@@ -10,7 +10,7 @@
 <div
   in:fade={{ duration: 300 }}
   class:wrap-main-content={hasRightPanel}
-  class="h-full {classNames ? classNames : ''} m-auto"
+  class="h-full {classNames ? classNames : ''} container"
   style="{style ? style : ''}">
   <slot />
 </div>

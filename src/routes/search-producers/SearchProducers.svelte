@@ -172,7 +172,7 @@
 
 <Meta/>
 
-<TransitionWrapper style="margin:0;">
+<TransitionWrapper>
 	<div class="search-producers">
 		<h1 class="font-semibold uppercase mb-0">Trouver des producteurs</h1>
     <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>

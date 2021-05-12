@@ -49,6 +49,8 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
+    <h1 class="font-semibold uppercase mb-0">Consignes</h1>
+    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
 	{#if !noResults}
 		<Actions {actions} />
 	{/if}
@@ -81,16 +83,13 @@
 		</td>
 	</Table>
 	{#if noResults}
-		<div class="w-full h-full flex justify-center">
-			<div class="text-center text-xl text-gray-600 m-auto px-6">
-				<p class="mb-3">Vous n'avez pas encore de consignes.</p>
-				<a
-					href="javascript:void(0)"
-					on:click={() => routerInstance.goTo(ReturnableRoutes.Create)}
-					class="btn btn-lg btn-accent justify-center">
-					Créer une consigne
-				</a>
-			</div>
+		<div class="text-xl text-gray-600">
+			<p class="mb-3">Vous n'avez pas encore de consignes.</p>
+			<button
+				on:click={() => routerInstance.goTo(ReturnableRoutes.Create)}
+				class="btn btn-lg btn-accent justify-center">
+				Créer une consigne
+		</button>
 		</div>
 	{/if}
 </TransitionWrapper>
