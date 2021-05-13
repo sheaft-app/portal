@@ -32,7 +32,7 @@ const CatalogRoutes = {
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Details: {
 		Name: "Editer un catalogue",
@@ -42,6 +42,14 @@ const CatalogRoutes = {
 		Params: {
 			id: null,
 		}
+	},
+	NoResults: {
+		Name: "Créer un catalogue",
+		Text: "Vous n'avez pas encore de catalogue.",
+		Icon: faPlus,
+		Path: `${prefix}${create}`,
+		SubPart: `${create}`,
+		Params: null,
 	},
 };
 

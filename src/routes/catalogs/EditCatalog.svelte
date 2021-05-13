@@ -1,33 +1,31 @@
 <script>
-	import { onMount, getContext } from "svelte";
+	import {onMount, getContext} from "svelte";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
-	import Loader from "../../components/Loader.svelte";
-	import Icon from "svelte-awesome";
-	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-	import { UPDATE_CATALOG } from "./mutations";
-	import { GET_CATALOGS, GET_CATALOG_DETAILS } from "./queries";
+	import {UPDATE_CATALOG} from "./mutations";
+	import {GET_CATALOGS, GET_CATALOG_DETAILS} from "./queries";
 	import CatalogForm from "./CatalogForm.svelte";
 	import DeleteCatalog from "./DeleteCatalog.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import CatalogRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "../../components/ErrorCard.svelte";
 	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-	import { products } from "./stores";
-	import CatalogKind from "../../enums/CatalogKind";
-import CloneCatalog from "./CloneCatalog.svelte";
+	import {products} from "./stores";
+	import CloneCatalog from "./CloneCatalog.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	export let params;
 
 	const errorsHandler = new SheaftErrors();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
-    const notificationsInstance = new GetNotificationsInstance();
+	const notificationsInstance = new GetNotificationsInstance();
 
-	let isLoading = false;
+	let isLoading = true;
 	let catalog = null;
+	let loadingMessage = 'Chargement du catalogue en cours... veuillez patienter';
 
 	onMount(async () => {
 		await getCatalog(params.id);
@@ -43,8 +41,6 @@ import CloneCatalog from "./CloneCatalog.svelte";
 			errorsHandler.Uuid
 		);
 
-		isLoading = false;
-
 		if (!res.success) {
 			//TODO
 			routerInstance.goTo(CatalogRoutes.List);
@@ -52,9 +48,11 @@ import CloneCatalog from "./CloneCatalog.svelte";
 		}
 
 		catalog = res.data;
+		isLoading = false;
 	};
 
 	const handleSubmit = async () => {
+		loadingMessage = 'Enregistrement du catalogue en cours... veuillez patienter';
 		isLoading = true;
 		let res = await graphQLInstance.mutate(
 			UPDATE_CATALOG,
@@ -76,7 +74,7 @@ import CloneCatalog from "./CloneCatalog.svelte";
 			isLoading = false;
 			return;
 		}
-		
+
 		products.set($products.filter((p) => !p.markForDeletion));
 		isLoading = false;
 
@@ -89,8 +87,8 @@ import CloneCatalog from "./CloneCatalog.svelte";
 			catalog,
 			onClose: async (res) => {
 				if (res.success) {
-      				graphQLInstance.clearApolloCache(GET_CATALOGS);
-					  await routerInstance.goTo(CatalogRoutes.List);
+					graphQLInstance.clearApolloCache(GET_CATALOGS);
+					await routerInstance.goTo(CatalogRoutes.List);
 				}
 			},
 		});
@@ -99,7 +97,7 @@ import CloneCatalog from "./CloneCatalog.svelte";
 	const showCloneModal = () => {
 		open(CloneCatalog, {
 			catalog,
-			onClose: async(res) => {
+			onClose: async (res) => {
 				if (res.success) {
 					graphQLInstance.clearApolloCache(GET_CATALOGS);
 					await routerInstance.goTo(CatalogRoutes.Details, {id: res.data.id});
@@ -108,48 +106,27 @@ import CloneCatalog from "./CloneCatalog.svelte";
 			},
 		});
 	};
+
+	const buttons = [
+		{
+			text: 'Dupliquer',
+			click: () => showCloneModal(),
+			color: 'blue'
+		},
+		{
+			text: 'Supprimer',
+			click: () => showDeleteModal(),
+			color: 'red'
+		}
+	]
 </script>
 
-<svelte:head>
-	<title>Modifier un catalogue</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-	{#if !catalog}
-		<Loader />
-	{:else}
-		<section
-			class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
-			<div class="mb-3">
-				<button
-					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goTo(CatalogRoutes.List)}>
-					<Icon data={faChevronLeft} class="mr-2 inline" />
-					Catalogues
-				</button>
-			</div>
-		<h1 class="font-semibold uppercase mb-2">Modifier un catalogue</h1>
-		
-		<div class="flex mt-2">
-		{#if catalog.kind == CatalogKind.Stores.Value}
-			<button
-				class="btn btn-lg bg-white text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white mr-3"
-				on:click={showCloneModal}>
-				Dupliquer
-			</button>
-			<button
-				class="btn btn-lg bg-white text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
-				on:click={showDeleteModal}>
-				Supprimer
-			</button>
-		{/if}
-		</div>
-		</section>
+	<PageHeader name="Modifier un catalogue" previousPage={CatalogRoutes.List}/>
+	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<CatalogForm
 			submit={handleSubmit}
 			{catalog}
-			{isLoading}
-			{errorsHandler} />
-	{/if}
+			{isLoading}/>
+	</PageBody>
 </TransitionWrapper>

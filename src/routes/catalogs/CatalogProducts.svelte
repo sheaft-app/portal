@@ -11,8 +11,8 @@
     import { faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
     import { products } from "./stores";
 
-    export let catalog, errorsHandler, invalidCatalogProducts = false;
-    
+    export let catalog, invalidCatalogProducts = false;
+
     const graphQLInstance = GetGraphQLInstance();
     const routerInstance = GetRouterInstance();
     const { open } = getContext('modal');
@@ -24,7 +24,7 @@
     })
 
     const removeProduct = product => {
-        if (product.checked) 
+        if (product.checked)
             $products = $products.filter((p) => p.id != product.id);
         else
             product.markForDeletion = true;

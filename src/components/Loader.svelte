@@ -14,7 +14,7 @@
   <div>
     <Icon data={icon} scale="4" spin class="inline text-primary opacity-75" />
     {#if text}
-      <p class="py-2">{text}</p>
+      <p class="py-4">{text}</p>
     {/if}
   </div>
 </div>

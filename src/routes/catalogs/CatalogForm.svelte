@@ -7,7 +7,7 @@
   import CatalogProducts from "./CatalogProducts.svelte";
 import CatalogKind from "../../enums/CatalogKind";
 
-  export let submit, catalog, isLoading, errorsHandler;
+  export let submit, catalog, isLoading;
 
   const catalogForm = form(() => ({
     name: { value: catalog.name, validators: ['required', 'min:3'], enabled: true },
@@ -43,7 +43,7 @@ import CatalogKind from "../../enums/CatalogKind";
           placeholder="Catalogue petits magasins été" />
       </div>
       <ErrorContainer field={$catalogForm.fields.name}/>
-    </div>  
+    </div>
   </div>
   {#if catalog.id && catalog.id.length > 0}
     <div class={`mb-6 lg:mb-0`}>
@@ -58,7 +58,7 @@ import CatalogKind from "../../enums/CatalogKind";
             type="text"
             placeholder="Cible du catalogue" />
         </div>
-      </div>  
+      </div>
     </div>
   {/if}
   <div class="form-control" style="display: block;">
@@ -82,8 +82,8 @@ import CatalogKind from "../../enums/CatalogKind";
       </Toggle>
     </div>
   {/if}
-  <CatalogProducts catalog={catalog} {errorsHandler} bind:invalidCatalogProducts />
-  <p class="text-sm mt-5">* champs requis</p>   
+  <CatalogProducts catalog={catalog} bind:invalidCatalogProducts />
+  <p class="text-sm mt-5">* champs requis</p>
   <div class="form-control mt-5">
     <button
       type="submit"

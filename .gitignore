@@ -6,4 +6,6 @@ public/sw.*
 public/workbox-*
 src/configs/config.js
 .history
+.idea
 *.log
+.vs
