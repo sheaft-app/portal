@@ -21,7 +21,6 @@
 	$: isValid = selectedDelivery && selectedDelivery.deliveryHours.length > 0 && selectedCatalog;
 
 	const handleSubmit = async () => {
-		console.log(producerId);
 		isLoading = true;
 		var res = await graphQLInstance.mutate(
 			CREATE_AGREEMENT,

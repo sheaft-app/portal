@@ -1,48 +1,37 @@
 <script>
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
+	import { GET_RETURNABLES } from "./queries";
 	import { DELETE_RETURNABLE } from "./mutations";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { GET_RETURNABLES } from "./queries";
+	import { getContext } from "svelte";
 
+	const { mutate, isLoading } = getContext('api');
 	const errorsHandler = new SheaftErrors();
 
 	export let returnable, close, onClose;
-
-	let isLoading = false;
-	const graphQLInstance = GetGraphQLInstance();
-
+	
 	const handleSubmit = async () => {
-		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			DELETE_RETURNABLE,
-			{
-				id: returnable.id,
-			},
-			errorsHandler.Uuid,
-			GET_RETURNABLES
-    );
-    
-		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		return await handleClose(res);
+		mutate({
+			mutation: DELETE_RETURNABLE,
+			variables: { id: returnable.id },
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			successNotification: "La consigne a été supprimée avec succès",
+			errorNotification: "Impossible de supprimer la consigne",
+			clearCache: [GET_RETURNABLES]
+		});
 	};
 
 	const handleClose = async (res) => {
-		close();
 		if (onClose) await onClose(res);
+		close();
 	};
 </script>
 
 <ActionConfirm
 	title="Suppression"
 	level="danger"
-	{isLoading}
+	isLoading={$isLoading}
 	submit={handleSubmit}
 	{errorsHandler}
 	close={() => handleClose({ success: false, data: null })}>

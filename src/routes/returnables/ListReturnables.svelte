@@ -16,7 +16,6 @@
 	let isLoading = true;
 	let items = [];
 	let noResults = true;
-	let selectedItems = [];
 
 	const headers = [
 		{ name: "Nom", sortLabel: "name" },
@@ -33,7 +32,7 @@
 		routerInstance.goTo(ReturnableRoutes.Details, { id: item.id });
 	};
 
-	$: actions = [
+	const actions = [
 		{
 			click: () => routerInstance.goTo(ReturnableRoutes.Create),
 			text: "Ajouter une consigne",

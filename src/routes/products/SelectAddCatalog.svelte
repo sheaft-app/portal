@@ -1,40 +1,29 @@
 <script>
     import { GET_CATALOGS } from "./../catalogs/queries";
     import Select from "./../../components/controls/select/Select";
-    import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
     import SheaftErrors from "../../services/SheaftErrors";
-    import { onMount } from "svelte";
+    import { onMount, getContext } from "svelte";
     import { faPlus } from "@fortawesome/free-solid-svg-icons";
     import SelectAddCatalogItem from "./SelectAddCatalogItem.svelte";
     
     export let catalogs;
 
     const errorsHandler = new SheaftErrors();
+    const { query, isLoading } = getContext('api');
 
-    let isLoading = true;
     let allCatalogs = [];
     let displayedCatalogs = [];
-
     let handleClear;
 
-    const graphQLInstance = GetGraphQLInstance();
-    
     onMount(async () => {
-        await loadCatalogs();
+        await query({
+            query: GET_CATALOGS,
+            variables: { first: 50 },
+            errorsHandler,
+            success: (res) => allCatalogs = res.filter((c) => !catalogs.map((c1) => c1.id).includes(c.id)),
+            errorNotification: "Un problème est survenu pendant la récupération des catalogues."
+        });
     })
-
-    const loadCatalogs = async (ids) => {
-        var res = await graphQLInstance.query(GET_CATALOGS, {first:50}, errorsHandler.Uuid);
-
-        if (!res.success) {
-        // todo
-            isLoading = false;
-            return;
-        }
-
-        allCatalogs = res.data.filter((c) => !catalogs.map((c1) => c1.id).includes(c.id));
-        isLoading = false;
-    }
 
     const addCatalog = (catalog) => {
         catalogs = [
@@ -55,7 +44,7 @@
 </script>
 
 
-{#if !isLoading}
+{#if !$isLoading}
     <div class="themed w-full">
         <Select
         items={displayedCatalogs}

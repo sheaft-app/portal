@@ -15,33 +15,38 @@
 		faTrash,
 		faTimesCircle,
 		faPlus,
-		faFileImport,
-faInfo,
+		faFileImport
 	} from "@fortawesome/free-solid-svg-icons";
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
-	import Modal from "./../../components/modal/Modal.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import { GET_PRODUCTS, HAS_PRODUCTS_IMPORT_INPROGRESS } from "./queries.js";
-	import { SET_PRODUCTS_AVAILABILITY } from "./mutations.js";
 	import ProductRoutes from "./routes.js";
 	import JobRoutes from "./../jobs/routes.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import { formatMoney } from "./../../helpers/app";
 	import { toggleMoreActions } from "./../../stores/app";
 import JobKind from "../../enums/JobKind";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
 	let items = [];
 	let selectedItems = [];
-	$: isLoading = true;
+	let isLoading = true;
+
+	onMount(async () => {
+		hasPendingJobs = await query({
+			query: HAS_PRODUCTS_IMPORT_INPROGRESS,
+			variables: { kinds: [JobKind.ImportProducts.Value] },
+			errorsHandler,
+			error: () => hasPendingJobs = false,
+			errorNotification: "Un problème est survenu pendant la récupération des informations d'import."
+		});
+	});
 
 	const headers = [
 		{ name: "Produit", sortLabel: "name" },
@@ -50,29 +55,13 @@ import JobKind from "../../enums/JobKind";
 		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
 	];
 
-	const checkHasImportInProgress = async () => {
-		var res = await graphQLInstance.query(
-			HAS_PRODUCTS_IMPORT_INPROGRESS,
-			{kinds:[JobKind.ImportProducts.Value]},
-			errorsHandler.Uuid
-		);
-		if (!res.success) {
-			hasPendingJobs = false;
-		}
-
-		hasPendingJobs = res.data;
-	};
-
 	const showDeleteModal = () => {
 		open(DeleteProducts, {
 			selectedItems: selectedItems,
-			onClose: async (res) => {
-				if (res.success) {
-					routerInstance.refresh();
-					graphQLInstance.clearApolloCache(GET_PRODUCTS);
-					toggleMoreActions.set(false);
-					selectedItems = [];
-				}
+			onClose: async () => {
+				routerInstance.refresh();
+				toggleMoreActions.set(false);
+				selectedItems = [];
 			},
 		});
 	};
@@ -81,12 +70,10 @@ import JobKind from "../../enums/JobKind";
 		open(SetProductsAvailability, {
 			selectedItems: selectedItems,
 			status: status,
-			onClose: async (res) => {
-				if (res.success) {
-					toggleMoreActions.set(false);
-					routerInstance.refresh();
-					selectedItems = [];
-				}
+			onClose: async () => {
+				toggleMoreActions.set(false);
+				routerInstance.refresh();
+				selectedItems = [];
 			},
 		});
 	};
@@ -94,11 +81,9 @@ import JobKind from "../../enums/JobKind";
 	const showImportModal = () => {
 		open(ImportProducts, {
 			onClose: async (res) => {
-				if (res.success) {
-					toggleMoreActions.set(false);
-					hasPendingJobs = true;
-					selectedItems = [];
-				}
+				toggleMoreActions.set(false);
+				hasPendingJobs = true;
+				selectedItems = [];
 			},
 		});
 	};
@@ -133,11 +118,7 @@ import JobKind from "../../enums/JobKind";
 		return visibleTo;
 	}
 
-	onMount(async () => {
-		await checkHasImportInProgress();
-	});
-
-	$: hasPendingJobs = false;
+	let hasPendingJobs = false;
 	$: hasSelectedOneItem = selectedItems.length > 0;
 	$: hasSelectedDisabledItem =
 		selectedItems.filter((i) => !i.available).length > 0;

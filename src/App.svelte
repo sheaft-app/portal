@@ -7,6 +7,7 @@
   import { InitGraphQL } from "./services/SheaftGraphQL.js";
   import SheaftErrors from "./services/SheaftErrors.js";
   import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
+  import GraphQLContext from "./components/GraphQLContext.svelte";
   import { allDepartmentsProgress } from "./stores/app";
   import cart from "./stores/cart";
   import { authRegistered } from "./stores/auth";
@@ -226,13 +227,15 @@
   {/if}
   <Nav />
   <AcceptCookiePlaceholder />
-  <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
-    <Modal>
-      <div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
-        <Router routes={guardInstance.routes} />
-      </div>
-    </Modal>
-  </main>
+  <GraphQLContext>
+  	<main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
+    	<Modal>
+      	<div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
+        	<Router routes={guardInstance.routes} />
+      	</div>
+    	</Modal>
+  	</main>
+  </GraphQLContext>
 {/if}
 
 <Tailwindcss />

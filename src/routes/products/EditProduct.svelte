@@ -5,7 +5,6 @@
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import ProductForm from "./ProductForm.svelte";
   import { GET_PRODUCT_DETAILS, GET_PRODUCTS } from "./queries.js";
@@ -14,99 +13,51 @@
   import ExternalRoutes from "./../external/routes.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import DeleteProducts from "./DeleteProducts.svelte";
-  import SetProductsAvailability from "./SetProductsAvailability.svelte";
+  import form from "../../stores/form";
+  import { normalizeProductsForUpdate } from "./productForm";
 
   export let params = {};
 
   const { open } = getContext("modal");
-  const graphQLInstance = GetGraphQLInstance();
+  const { query, mutate } = getContext("api");
   const routerInstance = GetRouterInstance();
   const errorsHandler = new SheaftErrors();
-  const notificationsInstance = new GetNotificationsInstance();
 
   let product = null;
-  let isLoading = false;
 
   onMount(async () => {
-    await getProduct();
+    product = await query({
+      query: GET_PRODUCT_DETAILS,
+      variables: { id: params.id }, 
+      errorsHandler,
+      error: () => routerInstance.goTo(ProductRoutes.List),
+			errorNotification: "Le produit auquel vous essayez d'accéder n'existe plus."
+    });
   });
+
+  const handleSubmit = async () => {
+    return mutate({
+			mutation: UPDATE_PRODUCT,
+			variables: {
+        id: params.id,
+        ...normalizeProductsForUpdate(form.values())
+      },
+			errorsHandler,
+			success: () => routerInstance.goTo(ProductRoutes.List),
+			successNotification: "Le produit a bien été modifié",
+			errorNotification: "Impossible de mettre à jour les informations de ce produit",
+			clearCache: [GET_PRODUCTS]
+    });
+  };
 
 	const showDeleteModal = () => {
 		open(DeleteProducts, {
 			selectedItems: [product],
-			onClose: async (res) => {
-				if (res.success) {
-          graphQLInstance.clearApolloCache(GET_PRODUCTS);
-					routerInstance.goTo(ProductRoutes.List);
-				}
+			onClose: () => {
+				routerInstance.goTo(ProductRoutes.List);
 			},
 		});
-  };
-
-  const showSetAvailabilityModal = (status) => {
-		open(SetProductsAvailability, {
-			selectedItems: [product],
-			status: !product.available,
-			onClose: async (res) => {
-				if (res.success) {
-          graphQLInstance.clearApolloCache(GET_PRODUCT_DETAILS);
-					routerInstance.goTo(ProductRoutes.List);
-				}
-			},
-		});
-  };
-
-  const getProduct = async () => {
-    isLoading = true;
-    var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, {
-      id: params.id
-    }, errorsHandler.Uuid);
-    isLoading = false;
-
-    if (!res.success) {
-      notificationsInstance.warning("Le produit est introuvable");
-      routerInstance.goTo(ProductRoutes.List);
-      return;
-    }
-
-    product = res.data;
-  };
-
-  const handleSubmit = async () => {
-    isLoading = true;
-    var res = await graphQLInstance.mutate(UPDATE_PRODUCT, {
-      id: product.id,
-      description: product.description,
-      catalogs: product.catalogs.filter((c) => !c.markForDeletion).map((c) => ({
-        id: c.id,
-        wholeSalePricePerUnit: c.wholeSalePricePerUnit
-      })),
-      name: product.name,
-      returnableId: product.returnable ? product.returnable.id : null,
-      quantityPerUnit: product.quantityPerUnit,
-      unit: product.unit,
-      conditioning: product.conditioning,
-      reference: product.reference,
-      picture: product.picture ? product.picture : null,
-      originalPicture: product.originalPicture ? product.originalPicture : null,
-      tags: product.tags.map(i => i.id),
-      vat: product.vat,
-      available: product.available
-    }, errorsHandler.Uuid, GET_PRODUCTS);
-    isLoading = false;
-
-    if (!res.success) {
-      //TODO
-        return;
-    }
-
-    notificationsInstance.success(
-      "Vos modifications ont bien été appliquées."
-    );
-
-    routerInstance.goTo(ProductRoutes.List);
   };
 </script>
 
@@ -180,6 +131,6 @@
     <ProductForm
       submit={handleSubmit}
       {product}
-      {isLoading} />
+      {errorsHandler} />
   {/if}
 </TransitionWrapper>
