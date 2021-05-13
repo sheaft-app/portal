@@ -5,15 +5,14 @@
 	import { toggleMoreActions } from "../../stores/app";
 
 	export let actions = [],
-		show = true,
 		selectedItemsNumber = 0;
 
 	let action = actions && actions.length == 1 ? actions[0] : null;
 </script>
 
-{#if show}
+{#if actions.some(c => !c.disabled || (c.disabled && !c.hideIfDisabled))}
 	<div
-		class="p-4 py-3 bg-white shadow-lg fixed -mx-4 md:mx-0 actions-bar rounded hidden md:block border border-gray-400" style="z-index: 1; max-width: fit-content;">
+		class="p-2 mb-4 bg-white actions-bar rounded hidden md:block border border-gray-400" style="z-index: 1; max-width: fit-content;">
 		<div class="flex justify-between">
 			{#each actions as act}
 				<Action
@@ -71,11 +70,3 @@
 	</div>
 {/if}
 
-<style lang="scss">
-.actions-bar {
-	top: 90px;
-
-	@media (max-width: 1024px) {
-		top: 71px;
-	}
-}</style>

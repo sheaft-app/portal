@@ -1,20 +1,26 @@
 <script>
 	import Paginate from "./../../enums/Paginate";
 	import OrderByDirection from "./../../enums/OrderByDirection";
-	import { PurchaseOrderStatus } from "../../enums/PurchaseOrderStatusKind";
+	import {PurchaseOrderStatus} from "../../enums/PurchaseOrderStatusKind";
 	import Loader from "./../Loader.svelte";
 	import Icon from "svelte-awesome";
-	import { querystring } from "svelte-spa-router";
+	import {querystring} from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import { faLongArrowAltDown } from "@fortawesome/free-solid-svg-icons";
+	import {faLongArrowAltDown} from "@fortawesome/free-solid-svg-icons";
 	import InputCheckbox from "../controls/InputCheckbox.svelte";
-	import { toggleMoreActions } from "../../stores/app";
+	import {toggleMoreActions} from "../../stores/app";
+	import PageEmpty from "../PageEmpty.svelte";
+	import Actions from "./Actions.svelte";
 
 	export let items,
 		headers,
 		isLoading,
+		loadingMessage,
+		hideIfNoResults = false,
+		noResultsPage,
 		graphQuery,
+		actions = [],
 		errorsHandler,
 		noResults,
 		disableRowSelection = () => false,
@@ -90,9 +96,9 @@
 			variables,
 			errorsHandler.Uuid
 		);
-		isLoading = false;
 		if (!result.success) {
 			//TODO
+			isLoading = false;
 			return;
 		}
 
@@ -101,6 +107,7 @@
 
 		items = result.data;
 		window.scrollTo(0, 0);
+		isLoading = false;
 	};
 
 	const goToFirstPage = () => {
@@ -244,63 +251,64 @@
 	$: refetch($querystring);
 </script>
 
-{#if isLoading}
-	<Loader />
-{:else if !noResults}
+{#if !hideIfNoResults}
 	{#if $toggleMoreActions}
-		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;" on:click={() => toggleMoreActions.set(false)}></div>
+		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;"
+				 on:click={() => toggleMoreActions.set(false)}></div>
 	{/if}
-	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0 table-container">
+	<Actions {actions}/>
+	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0"
+			 class:table-container={actions.some(c => !c.disabled || (c.disabled && !c.hideIfDisabled))}>
 		<slot name="filters"></slot>
-		<slot name="globalActions"></slot>
 		<table class={classes}>
 			<thead>
-				<tr class="bg-white">
-					{#if canSelect}
-						<th
-							class="px-3 md:px-6 py-3 border-b border-gray-300
+			<tr class="bg-white">
+				{#if canSelect}
+					<th
+						class="px-3 md:px-6 py-3 border-b border-gray-300
 							text-left text-xs leading-4 font-medium text-gray-500 uppercase
 							tracking-wider"
-							style="width:30px;">
-							<InputCheckbox
-								onClick={() => toggleSelectAll()}
-								checked={hasSelectedAllItems} />
-						</th>
-					{/if}
-					{#each headers as header}
-						{#if header.sortLabel}
-							<th
-								class:px-3={!header.noMobilePadding}
-								on:click={sort(header.sortLabel)}
-								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
+						style="width:30px;">
+						<InputCheckbox
+							onClick={() => toggleSelectAll()}
+							checked={hasSelectedAllItems}/>
+					</th>
+				{/if}
+				{#each headers as header}
+					{#if header.sortLabel}
+						<th
+							class:px-3={!header.noMobilePadding}
+							on:click={sort(header.sortLabel)}
+							class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
 								md:px-6 py-3 cursor-pointer hover:text-gray-700 border-b
 								border-gray-300 text-left text-xs leading-4
 								font-medium text-gray-600 uppercase tracking-wider">
-								{header.name}
-								<Icon
-									data={faLongArrowAltDown}
-									class="{getArrowClass(header.sortLabel, OrderByDirection.DESC)}
-									inline ml-2 transition duration-200 ease-linear" />
-								<Icon
-									data={faLongArrowAltDown}
-									class="{getArrowClass(header.sortLabel, OrderByDirection.ASC)}
+							{header.name}
+							<Icon
+								data={faLongArrowAltDown}
+								class="{getArrowClass(header.sortLabel, OrderByDirection.DESC)}
+									inline ml-2 transition duration-200 ease-linear"/>
+							<Icon
+								data={faLongArrowAltDown}
+								class="{getArrowClass(header.sortLabel, OrderByDirection.ASC)}
 									inline transition duration-200 ease-linear transform
-									rotate-180" />
-							</th>
-						{:else}
-							<th
-								class:px-3={!header.noMobilePadding}
-								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
+									rotate-180"/>
+						</th>
+					{:else}
+						<th
+							class:px-3={!header.noMobilePadding}
+							class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
 								md:px-6 py-3 border-b border-gray-300 text-left
 								text-xs leading-4 font-medium text-gray-600 uppercase
 								tracking-wider">
-								{header.name}
-							</th>
-						{/if}
-					{/each}
-				</tr>
+							{header.name}
+						</th>
+					{/if}
+				{/each}
+			</tr>
 			</thead>
 			<tbody>
+			{#if !isLoading}
 				{#if items.length > 0}
 					{#each items as item}
 						<tr
@@ -319,40 +327,39 @@
 									}}>
 									<div class="flex items-center">
 										<div class="flex-shrink-0">
-											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)} />
+											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)}/>
 										</div>
 									</div>
 								</td>
 							{/if}
-							<slot rowItem={item} />
+							<slot rowItem={item}/>
 						</tr>
 					{/each}
 				{:else}
 					<tr>
 						<td colspan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
 						border-gray-200 hover:bg-white">
-							Aucun résultat à afficher
+							{#if noResultsPage}
+								<PageEmpty {noResultsPage}/>
+							{:else}
+								Aucun résultat
+							{/if}
 						</td>
 					</tr>
 				{/if}
+			{:else}
+				<tr>
+					<td colSpan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 p-4 whitespace-no-wrap border-b
+						border-gray-200 hover:bg-white">
+						<Loader text={loadingMessage}/>
+					</td>
+				</tr>
+			{/if}
 			</tbody>
 		</table>
 		{#if _pageInfo.hasPreviousPage || _pageInfo.hasNextPage}
 			<div class="px-4 py-3 flex items-center justify-between sm:px-6">
 				<div class="flex-1 flex justify-center">
-					<!-- {#if _pageInfo && _pageInfo.hasPreviousPage}
-        <button
-          on:click={() => goToFirstPage()}
-          class:disabled={!_pageInfo.hasPreviousPage}
-          disabled={!_pageInfo.hasPreviousPage}
-          class="relative inline-flex items-center px-4 py-2 border border-gray-400
-          text-sm leading-5 font-medium rounded-md text-gray-700 bg-white
-          hover:text-gray-500 focus:outline-none focus:shadow-outline-blue
-          focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition
-          ease-in-out duration-150">
-          Revenir au début
-        </button>
-        {/if} -->
 					<button
 						on:click={() => goToPreviousPage()}
 						class:disabled={!_pageInfo.hasPreviousPage}
@@ -375,17 +382,6 @@
 						active:text-gray-700 transition ease-in-out duration-150">
 						Suivant
 					</button>
-					<!-- <button
-          on:click={() => goToLastPage()}
-          class:disabled={!_pageInfo.hasNextPage}
-          disabled={!_pageInfo.hasNextPage}
-          class="ml-3 relative inline-flex items-center px-4 py-2 border
-          border-gray-400 text-sm leading-5 font-medium rounded-md text-gray-700
-          bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue
-          focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition
-          ease-in-out duration-150">
-          Fin
-        </button> -->
 				</div>
 			</div>
 		{/if}
@@ -399,11 +395,11 @@
 		}
 
 		@media (min-width: 768px) and (max-width: 1024px) {
-			margin-top: 86px;
+			margin-top: 95px;
 		}
 
 		@media (min-width: 1025px) {
-			margin-top: 71px;
+			margin-top: 80px;
 		}
 	}
 

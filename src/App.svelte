@@ -228,7 +228,7 @@
   <AcceptCookiePlaceholder />
   <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
     <Modal>
-      <div class="p-4 md:p-6 lg:p-8 h-full" id="main-content" class:noNav={!$authRegistered}>
+      <div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
         <Router routes={guardInstance.routes} />
       </div>
     </Modal>

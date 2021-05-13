@@ -6,13 +6,15 @@
 	const routerInstance = GetRouterInstance();
 </script>
 
-<section class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
+<div class="flex justify-center">
 	<div class="text-xl text-gray-600">
-		<p class="mb-3">{noResultsPage.Text}</p>
-		<button
-			on:click={() => routerInstance.goTo(noResultsPage)}
-			class="btn btn-lg btn-accent justify-center">
-			{noResultsPage.Name}
-		</button>
+		<p class="my-3">{noResultsPage.Text}</p>
+		{#if noResultsPage.Name}
+			<button
+				on:click={() => routerInstance.goTo(noResultsPage)}
+				class="btn btn-lg btn-accent m-auto">
+				{noResultsPage.Name}
+			</button>
+		{/if}
 	</div>
-</section>
+</div>
