@@ -137,7 +137,7 @@
 					<div class="flex border-gray-300 py-2"
 								class:pb-2={index !== agreement.delivery.deliveryHours.length - 1}
 								class:border-b={index !== agreement.delivery.deliveryHours.length - 1}>
-								
+
 						<p style="min-width: 100px;">
 							{DayOfWeekKind.label(deliveryHour.day)}
 						</p>
@@ -151,7 +151,7 @@
 			{/if}
 		</div>
 		<div class="w-full lg:w-2/4 p-3 lg:p-6">
-			<p class="text-sm">Catalogue sélectionné</p>
+			<p class="text-sm">Catalogue assigné</p>
 			{#if agreement.catalog}
 				<p class="font-semibold mb-2">{agreement.catalog.name}</p>
 				{#each agreement.catalog.products as product}

@@ -19,6 +19,8 @@
 	import {GetDistanceInfos} from "../../helpers/distances";
 	import ProducerAgreement from "./ProducerAgreement.svelte";
 	import StoreAgreement from "./StoreAgreement.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	export let params = {};
 
@@ -30,8 +32,13 @@
 
 	let agreement = null;
 	let distanceInfos = null;
+	let isLoading = true;
+	let loadingMessage = 'Chargement du partenariat en cours... veuillez patienter';
 
 	const getAgreement = async id => {
+		loadingMessage = 'Chargement du partenariat en cours... veuillez patienter';
+		isLoading = true;
+
 		var res = await graphQLInstance.query(GET_AGREEMENT_DETAILS, {
 			id: id
 		}, errorsHandler.Uuid);
@@ -50,17 +57,21 @@
 		);
 
 		agreement = res.data;
+		isLoading = false;
 	};
 
 	const showCancelAgreementModal = () => {
+		loadingMessage = 'Annulation du partenariat en cours... veuillez patienter';
 		handleAgreementModal(CancelAgreementModal, agreement);
 	};
 
 	const showAcceptAgreementModal = () => {
+		loadingMessage = 'Acceptation du partenariat en cours... veuillez patienter';
 		handleAgreementModal(AcceptAgreementModal, agreement);
 	};
 
 	const showRefuseAgreementModal = () => {
+		loadingMessage = 'Refus du partenariat en cours... veuillez patienter';
 		handleAgreementModal(RefuseAgreementModal, agreement);
 	};
 
@@ -101,25 +112,8 @@
 </svelte:head>
 
 <TransitionWrapper>
-	<ErrorCard {errorsHandler}/>
-	{#if !agreement}
-		<Loader/>
-	{:else}
-		<section class="mx-0 pb-5">
-			<div class="mb-3">
-				<button
-					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goTo(AgreementRoutes.List)}>
-					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline"/>
-					Accords
-				</button>
-			</div>
-			<div class="flex flex-wrap items-center">
-				<div>
-					<h1 class="text-2xl lg:text-3xl mb-0">Détails de l'accord</h1>
-				</div>
-			</div>
-		</section>
+	<PageHeader name="Détails du partenariat" previousPage={AgreementRoutes.List}/>
+	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<div class="w-full xl:w-8/12">
 			{#if agreement.status == AgreementStatusKind.Accepted.Value}
 				<div
@@ -204,5 +198,5 @@
 				<StoreAgreement agreement={agreement} {distanceInfos}/>
 			{/if}
 		</div>
-	{/if}
+	</PageBody>
 </TransitionWrapper>

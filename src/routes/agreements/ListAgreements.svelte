@@ -25,6 +25,8 @@
 	import AcceptAgreementModal from "./AcceptAgreementModal.svelte";
 	import RefuseAgreementModal from "./RefuseAgreementModal.svelte";
 	import CancelAgreementModal from "./CancelAgreementModal.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
@@ -165,29 +167,21 @@
 			selectedStatus = values["whereValues"].split(',').map((v) => filterStatus.find((o) => o.value == v));
 		}
 	});
-
-
 </script>
 
-<svelte:head>
-	<title>Partenariats</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler}/>
-	<h1
-		class="font-semibold uppercase">{authInstance.isInRole(Roles.Store.Value) ? "Producteurs partenaires" : "Magasins partenaires"}</h1>
-	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-
-	{#if !noResults}
+	<PageHeader name="{authInstance.isInRole(Roles.Store.Value) ? 'Producteurs partenaires' : 'Magasins partenaires'}"/>
+	<PageBody {errorsHandler}>
 		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
 		<Table
+			noResultsPage={authInstance.isInRole(Roles.Store.Value) ? SearchProducerRoutes.NoResultsPage : SearchStoreRoutes.NoResultsPage}
 			graphQuery={GET_AGREEMENTS}
 			{errorsHandler}
 			bind:items
 			bind:noResults
 			bind:selectedItems
-			{isLoading}
+			bind:isLoading
+			loadingMessage="Récupération des partenariats en cours... veuillez patienter"
 			headers={headers}
 			let:rowItem={agreement}
 			defaultSearchValues={AgreementRoutes.List.Params.Query}
@@ -199,6 +193,7 @@
 						isMulti={true}
 						bind:selectedValue={selectedStatus}
 						optionIdentifier="value"
+						isDisabled={isLoading}
 						placeholder="N'afficher que les accords avec le statut..."
 						items={filterStatus}
 					/>
@@ -234,31 +229,5 @@
 				{/if}
 			</td>
 		</Table>
-	{:else}
-		<div
-			class="text-gray-600">
-			<div>
-				<p class="text-2xl">Vous n'avez aucun accord.</p>
-				{#if authInstance.isInRole([Roles.Producer.Value])}
-					<p class="mb-5 text-2xl">Première étape, trouver des magasins !</p>
-					<button
-						on:click={() => routerInstance.goTo(SearchStoreRoutes.Search)}
-						aria-label="Accéder à la recherche de magasins"
-						class="btn btn-lg btn-accent mt-3">
-						Je me lance
-					</button>
-				{/if}
-
-				{#if authInstance.isInRole([Roles.Store.Value])}
-					<p class="mb-5 text-2xl">Première étape, trouver des producteurs !</p>
-					<button
-						on:click={() => routerInstance.goTo(SearchProducerRoutes.Search)}
-						aria-label="Accéder à la recherche de producteurs"
-						class="btn btn-lg btn-accent mt-3">
-						Je me lance
-					</button>
-				{/if}
-			</div>
-		</div>
-	{/if}
+	</PageBody>
 </TransitionWrapper>

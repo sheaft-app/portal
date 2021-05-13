@@ -11,7 +11,7 @@ const AgreementRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Store.Value, Roles.Producer.Value],
 	List: {
-		Name: "Accords",
+		Name: "Partenariats",
 		Icon: faHandshake,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
