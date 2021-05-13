@@ -1,7 +1,7 @@
 <script>
-	import { getContext } from "svelte";
+	import {getContext} from "svelte";
 	import Icon from "svelte-awesome";
-	import { format } from "date-fns";
+	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -18,18 +18,19 @@
 		faPlay,
 		faRedoAlt,
 	} from "@fortawesome/free-solid-svg-icons";
-	import { PAUSE_JOBS, RESUME_JOBS } from "./mutations.js";
-	import { GET_JOBS } from "./queries.js";
+	import {PAUSE_JOBS, RESUME_JOBS} from "./mutations.js";
+	import {GET_JOBS} from "./queries.js";
 	import CancelJobs from "./CancelJobs.svelte";
 	import RetryJobs from "./RetryJobs.svelte";
 	import ArchiveJobs from "./ArchiveJobs.svelte";
 	import JobRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
@@ -39,11 +40,11 @@
 	$: isLoading = true;
 
 	const headers = [
-		{ name: "Nom", sortLabel: "name" },
-		{ name: "Type", displayOn: "md" },
-		{ name: "Créée le", sortLabel: "createdOn" },
-		{ name: "Statut", displayOn: "md", sortLabel: "status" },
-		{ name: "Dernière mise à jour", displayOn: "md" },
+		{name: "Nom", sortLabel: "name"},
+		{name: "Type", displayOn: "md"},
+		{name: "Créée le", sortLabel: "createdOn"},
+		{name: "Statut", displayOn: "md", sortLabel: "status"},
+		{name: "Dernière mise à jour", displayOn: "md"},
 	];
 
 	const getLastUpdate = (job) => {
@@ -112,7 +113,7 @@
 	};
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(JobRoutes.Details, { id: item.id });
+		routerInstance.goTo(JobRoutes.Details, {id: item.id});
 	};
 
 	$: hasOneSelectedItem =
@@ -161,6 +162,7 @@
 			text: "Réinitialiser",
 			icon: faRedoAlt,
 			color: "teal",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true
 		},
 		{
@@ -169,6 +171,7 @@
 			text: "Mettre en pause",
 			icon: faPause,
 			color: "orange",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true
 		},
 		{
@@ -177,6 +180,7 @@
 			text: "Reprendre",
 			icon: faPlay,
 			color: "green",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true
 		},
 		{
@@ -185,6 +189,7 @@
 			text: "Annuler",
 			icon: faTimes,
 			color: "red",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true
 		},
 		{
@@ -193,29 +198,27 @@
 			text: "Archiver",
 			icon: faArchive,
 			color: "normal",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true
 		},
-  ];
+	];
+
+	const noResultsPage = {Text: 'Aucune tâche en cours.'};
 </script>
 
-<svelte:head>
-	<title>Tâches de fonds</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-    <h1 class="font-semibold uppercase mb-0">Tâches de fond</h1>
-    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-	{#if !noResults}
-		<Actions {actions} selectedItemsNumber={selectedItems.length} />
-
+	<PageHeader name="Mes tâches"/>
+	<PageBody {errorsHandler}>
+		<Actions {actions}/>
 		<Table
 			graphQuery={GET_JOBS}
 			{errorsHandler}
 			bind:items
 			bind:noResults
 			bind:selectedItems
-			{isLoading}
+			bind:isLoading
+			loadingMessage="Récupération des tâches en cours... veuillez patienter"
+			{actions}
 			{headers}
 			let:rowItem={job}
 			defaultSearchValues={JobRoutes.List.Params.Query}
@@ -266,39 +269,5 @@
 				</div>
 			</td>
 		</Table>
-	{/if}
-	{#if noResults}
-	<div class="text-xl text-gray-600 px-6">
-		<p class="mb-10">Aucune tâche en cours.</p>
-		<img
-			src="/img/no_tasks.svg"
-			style="width: 200px; height: auto"
-			alt="Aucune tâche ici" />
-	</div>
-	{/if}
+	</PageBody>
 </TransitionWrapper>
-
-<style lang="scss">
-	tr {
-		&:hover {
-			box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0,
-				0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-		}
-	}
-
-	/* Ripple effect */
-	.ripple {
-		background-position: center;
-		transition: background 0.8s;
-
-		&:hover {
-			background: #f7fafc radial-gradient(circle, transparent 1%, #edf2f7 1%)
-				center/15000%;
-		}
-
-		&:active {
-			background-size: 100%;
-			transition: background 0s;
-		}
-	}
-</style>

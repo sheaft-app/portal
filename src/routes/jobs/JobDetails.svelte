@@ -1,8 +1,8 @@
 <script>
 	import Loader from "./../../components/Loader.svelte";
-	import { onMount, getContext } from "svelte";
+	import {onMount, getContext} from "svelte";
 	import Icon from "svelte-awesome";
-	import { format } from "date-fns";
+	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
@@ -20,7 +20,7 @@
 		CANCEL_JOBS,
 		ARCHIVE_JOBS,
 	} from "./mutations.js";
-	import { GET_JOBS, GET_JOB_DETAILS } from "./queries.js";
+	import {GET_JOBS, GET_JOB_DETAILS} from "./queries.js";
 	import {
 		faArchive,
 		faCircleNotch,
@@ -41,30 +41,33 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Roles from "./../../enums/Roles";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	export let params = {};
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
-	const { open } = getContext("modal");
+	const {open} = getContext("modal");
 	const routerInstance = GetRouterInstance();
 	const graphQLInstance = GetGraphQLInstance();
 
 	let job = null;
-	$: isLoading = false;
+	$: isLoading = true;
+	let loadingMessage = 'Chargement de la tâche en cours... veuillez patienter';
 
 	onMount(async () => {
 		await getJob(params.id);
 	});
 
 	const getJob = async (id) => {
+		loadingMessage = 'Chargement de la tâche en cours... veuillez patienter';
 		isLoading = true;
 		var res = await graphQLInstance.query(
 			GET_JOB_DETAILS,
-			{ id },
+			{id},
 			errorsHandler.Uuid
 		);
-		isLoading = false;
 
 		if (!res.success) {
 			//TODO
@@ -73,25 +76,31 @@
 		}
 
 		job = res.data;
+		isLoading = false;
 	};
 
 	const pauseJob = async () => {
+		loadingMessage = 'Mise en pause de la tâche en cours... veuillez patienter';
 		await handleJobsCommand(PAUSE_JOBS, job);
 	};
 
 	const resumeJob = async () => {
+		loadingMessage = 'Reprise de la tâche en cours... veuillez patienter';
 		await handleJobsCommand(RESUME_JOBS, job);
 	};
 
 	const showArchiveModal = () => {
+		loadingMessage = 'Archivage de la tâche en cours... veuillez patienter';
 		showModal(ArchiveJobs, job);
 	};
 
 	const showCancelModal = () => {
+		loadingMessage = 'Annulation de la tâche en cours... veuillez patienter';
 		showModal(CancelJobs, job);
 	};
 
 	const showRetryModal = () => {
+		loadingMessage = 'Réinitialisation de la tâche en cours... veuillez patienter';
 		showModal(RetryJobs, job);
 	};
 
@@ -106,14 +115,13 @@
 			GET_JOBS
 		);
 
-		isLoading = false;
-
 		if (!res.success) {
 			//TODO
 			return;
 		}
 
-    await getJob(currentJob.id);
+		await getJob(currentJob.id);
+		isLoading = false;
 	};
 
 	const showModal = (modal, currentJob) => {
@@ -148,33 +156,14 @@
 </script>
 
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-	{#if !job}
-		<Loader />
-	{:else}
-		<section class="mx-0 pb-5">
-			{#if !authInstance.isInRole([Roles.Consumer.Value])}
-				<div class="mb-3">
-					<button
-						class="text-gray-600 items-center flex uppercase"
-						on:click={() => routerInstance.goBack()}>
-						<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-						Tâches
-					</button>
-				</div>
-			{/if}
-			<div class="flex flex-wrap items-center">
-				<div>
-					<h1 class="text-3xl mb-0 text-gray-700">Détails de la tâche</h1>
-				</div>
-			</div>
-		</section>
+	<PageHeader name="Détails de la tâche"/>
+	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		{#if job.status == ProcessStatusKind.Cancelled.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-orange-400 text-white">
 				<div class="flex">
-					<Icon data={faBackspace} scale="1.5" class="mr-5" />
+					<Icon data={faBackspace} scale="1.5" class="mr-5"/>
 					<div>
 						<p class="uppercase font-bold leading-none">Tâche annulée</p>
 						<div class="mt-2">
@@ -191,7 +180,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={faHourglass} scale="1.5" class="mr-5 text-orange-400" />
+					<Icon data={faHourglass} scale="1.5" class="mr-5 text-orange-400"/>
 					<div>
 						<p class="uppercase font-bold leading-none">En attente</p>
 						<div class="mt-2">
@@ -207,7 +196,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={faCheck} scale="1.5" class="mr-5 text-green-500" />
+					<Icon data={faCheck} scale="1.5" class="mr-5 text-green-500"/>
 					<div>
 						<p class="uppercase font-bold leading-none">Terminée</p>
 						<div class="mt-2">
@@ -222,7 +211,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-red-400 text-white">
 				<div class="flex">
-					<Icon data={faTimesCircle} scale="1.5" class="mr-5 " />
+					<Icon data={faTimesCircle} scale="1.5" class="mr-5 "/>
 					<div>
 						<p class="uppercase font-bold leading-none">Erreur</p>
 						<div class="mt-2">
@@ -238,7 +227,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={faCircleNotch} scale="1.5" class="mr-5 text-teal-400" />
+					<Icon data={faCircleNotch} scale="1.5" class="mr-5 text-teal-400"/>
 					<div>
 						<p class="uppercase font-bold leading-none">En cours</p>
 						<div class="mt-2">
@@ -253,7 +242,7 @@
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 shadow rounded
 				mb-5 bg-white">
 				<div class="flex">
-					<Icon data={faPause} scale="1.5" class="mr-5 text-yellow-400" />
+					<Icon data={faPause} scale="1.5" class="mr-5 text-yellow-400"/>
 					<div>
 						<p class="uppercase font-bold leading-none">En pause</p>
 						<div class="mt-2">
@@ -272,7 +261,7 @@
 					class:hidden={!canRetryJob}
 					class="py-1 px-3 rounded items-center flex transition duration-300
 					ease-in-out text-teal-500">
-					<Icon data={faRedoAlt} class="mr-2 hidden lg:inline" />
+					<Icon data={faRedoAlt} class="mr-2 hidden lg:inline"/>
 					<span>Réinitialiser la tâche</span>
 				</button>
 				<button
@@ -280,7 +269,7 @@
 					class:hidden={!canPauseJob}
 					class="py-1 px-3 rounded items-center flex transition duration-300
 					ease-in-out text-orange-500">
-					<Icon data={faPause} class="mr-2 hidden lg:inline" />
+					<Icon data={faPause} class="mr-2 hidden lg:inline"/>
 					<span>Mettre en pause</span>
 				</button>
 				<button
@@ -288,7 +277,7 @@
 					class:hidden={!canResumeJob}
 					class="py-1 px-3 rounded items-center flex transition duration-300
 					ease-in-out text-green-500">
-					<Icon data={faPlay} class="mr-2 hidden lg:inline" />
+					<Icon data={faPlay} class="mr-2 hidden lg:inline"/>
 					<span>Reprendre l'execution de la tâche</span>
 				</button>
 				<button
@@ -296,7 +285,7 @@
 					class:hidden={!canCancelJob}
 					class="py-1 px-3 rounded items-center flex transition duration-300
 					ease-in-out text-red-500">
-					<Icon data={faTimes} class="mr-2 hidden lg:inline" />
+					<Icon data={faTimes} class="mr-2 hidden lg:inline"/>
 					<span>Annuler la tâche</span>
 				</button>
 				<button
@@ -304,7 +293,7 @@
 					class:hidden={!canArchiveJob}
 					class="py-1 px-3 rounded items-center flex transition duration-300
 					ease-in-out text-gray-600">
-					<Icon data={faArchive} class="mr-2 hidden lg:inline" />
+					<Icon data={faArchive} class="mr-2 hidden lg:inline"/>
 					<span>Archiver la tâche</span>
 				</button>
 			</div>
@@ -340,15 +329,16 @@
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Créée le :</span>
-								{format(new Date(job.createdOn), 'PPPPp', { locale: fr })}
+								{format(new Date(job.createdOn), 'PPPPp', {locale: fr})}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Démarrée le :</span>
 								{#if job.startedOn}
-									{format(new Date(job.startedOn), 'PPPPp', { locale: fr })}
-								{:else}en attente{/if}
+									{format(new Date(job.startedOn), 'PPPPp', {locale: fr})}
+								{:else}en attente
+								{/if}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
@@ -368,7 +358,7 @@
 							<div class="flex items-center mb-2">
 								<p>
 									<span class="text-gray-600">Terminée le :</span>
-									{format(new Date(job.completedOn), 'PPPPp', { locale: fr })}
+									{format(new Date(job.completedOn), 'PPPPp', {locale: fr})}
 								</p>
 							</div>
 							{#if job.file}
@@ -398,5 +388,5 @@
 				{/if}
 			</div>
 		</div>
-	{/if}
+	</PageBody>
 </TransitionWrapper>
