@@ -23,6 +23,22 @@ const SearchStoreRoutes = {
 				paginate: Paginate.First
 			}
 		},
+	},
+	NoResultsPage: {
+		Name: "Trouver des magasins",
+		Icon: faStore,
+		Path: `${prefix}${search}`,
+		SubPart: `${search}`,
+		Params: {
+			Query: {
+				cursor: null,
+				orderBy: "createdOn",
+				direction: OrderByDirection.DESC,
+				take: 20,
+				paginate: Paginate.First
+			}
+		},
+		Text: "Aucun partenariat avec des magasins"
 	}
 };
 
