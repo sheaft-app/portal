@@ -43,6 +43,14 @@ const ReturnableRoutes = {
 			id: null,
 		}
 	},
+	NoResults: {
+		Name: "Créer une consigne",
+		Icon: faPlus,
+		Path: `${prefix}${create}`,
+		SubPart: `${create}`,
+		Params: null,
+		Text:"Vous n'avez aucune consigne"
+	},
 };
 
 export default ReturnableRoutes;

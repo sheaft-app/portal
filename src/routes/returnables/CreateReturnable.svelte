@@ -1,16 +1,18 @@
 <script>
 	import Icon from "svelte-awesome";
-	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import ReturnableForm from "./ReturnableForm.svelte";
-	import { CREATE_RETURNABLE } from "./mutations";
+	import {CREATE_RETURNABLE} from "./mutations";
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "../../components/ErrorCard.svelte";
-	import { GET_RETURNABLES } from "./queries";
+	import {GET_RETURNABLES} from "./queries";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	export let isInModal = false,
 		onClose,
@@ -19,7 +21,7 @@
 	const graphQLInstance = GetGraphQLInstance();
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
-  const notificationsInstance = GetNotificationsInstance();
+	const notificationsInstance = GetNotificationsInstance();
 
 	let isLoading = false;
 
@@ -57,30 +59,16 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Créer une nouvelle consigne</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-	<section
-		class="mb-4 pb-4 border-b border-gray-400 border-solid md:pt-12 lg:pt-2">
-		{#if !isInModal}
-			<div class="mb-3">
-				<button
-					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goBack()}>
-					<Icon data={faChevronLeft} class="mr-2 inline" />
-					Consignes
-				</button>
-			</div>
-		{/if}
-    <h1 class="font-semibold uppercase mb-0">Créer une nouvelle consigne</h1>
-	</section>
-	<ReturnableForm
-		{isInModal}
-		submit={handleSubmit}
-		{returnable}
-		{isLoading}
-		close={handleClose} />
+	{#if !isInModal}
+		<PageHeader name="Détails du partenariat" previousPage={ReturnableRoutes.List}/>
+	{/if}
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Création de votre consigne en cours... veuillez patienter.">
+		<ReturnableForm
+			{isInModal}
+			submit={handleSubmit}
+			{returnable}
+			{isLoading}
+			close={handleClose}/>
+	</PageBody>
 </TransitionWrapper>
