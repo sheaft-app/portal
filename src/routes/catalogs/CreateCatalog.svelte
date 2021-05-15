@@ -55,6 +55,8 @@
 		}
 
 		notificationsInstance.success("Votre catalogue a bien été créée.");
+		isLoading = false;
+
 		if (isInModal) await handleClose(res);
 		else routerInstance.goTo(CatalogRoutes.List);
 	};
@@ -66,13 +68,9 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Créer un nouveau catalogue</title>
-</svelte:head>
-
 <TransitionWrapper>
 	<PageHeader name="Créer un nouveau catalogue" previousPage={CatalogRoutes.List}/>
-	<PageBody {errorsHandler}>
+	<PageBody {errorsHandler} {isLoading}>
 		<CatalogForm
 			submit={handleSubmit}
 			{catalog}

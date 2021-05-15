@@ -8,6 +8,8 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import CatalogKind from "../../enums/CatalogKind";
 	import PageBody from "../../components/PageBody.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import Actions from "../../components/table/Actions.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -43,11 +45,14 @@
 </script>
 
 <TransitionWrapper>
-	<PageBody {errorsHandler} {actions} {noResults} noResultsPage={CatalogRoutes.NoResults}>
+	<PageHeader name="Mes catalogues"/>
+	<PageBody {errorsHandler} {noResults} noResultsPage={CatalogRoutes.NoResults}>
+		<Actions {actions}/>
 		<Table
 			bind:items
 			bind:isLoading
 			bind:noResults
+			loadingMessage="Récupération des catalogues en cours... veuillez patienter"
 			{errorsHandler}
 			{headers}
 			let:rowItem={catalog}
