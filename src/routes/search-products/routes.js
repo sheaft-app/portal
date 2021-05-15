@@ -24,6 +24,23 @@ const SearchProductRoutes = {
 				producerId: null
 			}
 		},
+	},
+	NoResults: {
+		Name: "Constituer un panier",
+		Icon: faSearch,
+		Path: `${prefix}${search}`,
+		SubPart: `${search}`,
+		Params: {
+			Query: {
+				cursor: null,
+				sort: "producer_geolocation asc",
+				direction: OrderByDirection.ASC,
+				take: 20,
+				paginate: Paginate.First,
+				producerId: null
+			}
+		},
+		Text:"Vous n'avez aucune commande."
 	}
 };
 

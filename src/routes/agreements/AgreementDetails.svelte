@@ -107,10 +107,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Détails de l'accord</title>
-</svelte:head>
-
 <TransitionWrapper>
 	<PageHeader name="Détails du partenariat" previousPage={AgreementRoutes.List}/>
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
