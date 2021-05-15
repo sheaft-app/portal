@@ -1,5 +1,6 @@
 import { getDefaultFields } from "../../stores/form";
 import ConditioningKind from "../../enums/ConditioningKind";
+import omit from "lodash/omit";
 
 export const initialValues = {
     reference: null,
@@ -41,24 +42,19 @@ export const validators = (product) => ({
     }
 });
 
-export const normalizeCreateProduct = product => ({
-    description: product.description,
-    name: product.name,
-    catalogs: product.catalogs.map((c) => ({
+export const normalizeCreateProduct = product => {
+    product.returnableId = product.returnable ? product.returnable.id : null;
+    product.catalogs = product.catalogs.map((c) => ({
         id: c.id,
         wholeSalePricePerUnit: c.wholeSalePricePerUnit
-    })),
-    returnableId: product.returnable ? product.returnable.id : null,
-    quantityPerUnit: product.quantityPerUnit,
-    unit: product.unit,
-    conditioning: product.conditioning,
-    reference: product.reference,
-    picture: product.picture ? product.picture : null,
-    originalPicture: product.originalPicture ? product.originalPicture : null,
-    tags: product.tags.map(i => i.id),
-    vat: product.vat,
-    available: product.available
-});
+    }));
+    product.picture = product.picture ?? null;
+    product.originalPicture = product.originalPicture ?? null;
+    product.tags =  product.tags.map(i => i.id);
+
+
+    return omit(product, ['producer', 'createdOn', 'rating', 'ratingsCount', 'returnable', 'weight']);
+};
 
 export const normalizeUpdateProduct = product => ({
     ...normalizeCreateProduct(product),

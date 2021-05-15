@@ -39,7 +39,7 @@
 	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) =>  i && TagKind.get(i.kind).Value == TagKind.Category.Value);
 	$: quantityPerUnitLabel = isBasketType ? "Nombre de personnes (adultes) *" : (product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *");
 
-	(() => form.initialize(product, validators))();
+	(() => product = form.initialize(product, validators, initialValues))();
 
 	onMount(async () => {
 		returnables = await query({

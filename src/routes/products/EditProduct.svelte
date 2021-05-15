@@ -39,10 +39,7 @@
   const handleSubmit = async () => {
     return mutate({
 			mutation: UPDATE_PRODUCT,
-			variables: {
-        id: params.id,
-        ...normalizeUpdateProduct(form.values())
-      },
+			variables: normalizeUpdateProduct(product),
 			errorsHandler,
 			success: () => routerInstance.goTo(ProductRoutes.List),
 			successNotification: "Le produit a bien été modifié",
@@ -130,7 +127,7 @@
     </section>
     <ProductForm
       submit={handleSubmit}
-      {product}
+      bind:product
       {errorsHandler} />
   {/if}
 </TransitionWrapper>
