@@ -28,19 +28,13 @@ export const initialValues = {
     available: true
 };
 
-export const validators = (values) => {
-    const obj = {
+export const validators = (values) => ({
     ...getDefaultFields(values, initialValues, ['name', 'maxPurchaseOrdersPerTimeSlot', 'deliveryHours', 'lockOrderHoursBeforeDelivery', 'closings', 'denormalizedClosings']),
     kind: { value: values.kind, validators: ["required", "min:3"], enabled: true },
     openings: { value: values.denormalizedDeliveryHours, validators: ["required", "openingsDays", "openingsDates"], enabled: true },
     maxPurchaseOrders: { value: values.maxPurchaseOrdersPerTimeSlot, validators: ["min:1"], enabled: values.limitOrders },
     lockPurchaseOrders: { value: values.lockOrderHoursBeforeDelivery, validators: ["min:0"], enabled: values.limitOrders },
-    };
-
-    console.log(obj);
-
-    return obj;
-}
+});
 
 export const normalizeCreateSellingPoint = sellingPoint => {
     if (!sellingPoint.limitOrders) {
