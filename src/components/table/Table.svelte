@@ -18,6 +18,7 @@
 		isLoading,
 		loadingMessage,
 		noResultsPage,
+		hideIfNoResults = false,
 		graphQuery,
 		errorsHandler,
 		noResults,
