@@ -459,15 +459,17 @@
 			bind:isChecked={product.available}>
 		</Toggle>
 	</div>
-	<div class="form-control" style="display: block;">
-		<label>Evaluations client</label>
-		<RatingStars rating={product.rating} />
-		{#if product.ratingsCount > 0}
-			<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
-				Voir les {product.ratingsCount} avis
-			</a>
-		{/if}
-	</div>
+	{#if product.id && product.id.length > 0}
+		<div class="form-control" style="display: block;">
+			<label>Evaluations client</label>
+			<RatingStars rating={product.rating}/>
+			{#if product.ratingsCount > 0}
+				<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
+					Voir les {product.ratingsCount} avis
+				</a>
+			{/if}
+		</div>
+	{/if}
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">
 		<button
