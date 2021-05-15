@@ -26,8 +26,6 @@
 
 	$: if (sellingPoint.limitOrders && !sellingPoint.lockOrderHoursBeforeDelivery) sellingPoint.lockOrderHoursBeforeDelivery = 24;
 	$: if (sellingPoint.limitOrders && !sellingPoint.maxPurchaseOrdersPerTimeSlot) sellingPoint.maxPurchaseOrdersPerTimeSlot = 5;
-
-	const selectKind = (kind) => !$form.isSubmitting ? sellingPoint.kind = kind : console.error("Form should be initialized");
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -52,22 +50,25 @@
 					class="w-full justify-center button-group"
 					use:bindClass={{ form, name: 'kind' }}>
 					<button
-						on:click={() => selectKind('MARKET')}
+						on:click={() => sellingPoint.kind = 'MARKET'}
 						type="button"
+						disabled={$form.isSubmitting}
 						class:selected={sellingPoint.kind === 'MARKET'}
 						class:disabled={$form.isSubmitting}>
 						Marché ouvert
 					</button>
 					<button
-						on:click={() => selectKind('FARM')}
+						on:click={() => sellingPoint.kind = 'FARM'}
 						type="button"
+						disabled={$form.isSubmitting}
 						class:selected={sellingPoint.kind === 'FARM'}
 						class:disabled={$form.isSubmitting}>
 						Site de production
 					</button>
 					<button
-						on:click={() => selectKind('COLLECTIVE')}
+						on:click={() => sellingPoint.kind = 'COLLECTIVE'}
 						type="button"
+						disabled={$form.isSubmitting}
 						class:selected={sellingPoint.kind === 'COLLECTIVE'}
 						class:disabled={$form.isSubmitting}>
 						Magasin de producteurs

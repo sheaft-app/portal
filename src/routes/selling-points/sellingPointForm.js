@@ -36,7 +36,8 @@ export const validators = (values) => ({
     lockPurchaseOrders: { value: values.lockOrderHoursBeforeDelivery, validators: ["min:0"], enabled: values.limitOrders },
 });
 
-export const normalizeCreateSellingPoint = sellingPoint => {
+export const normalizeSellingPoint = sellingPoint => {
+    console.log(sellingPoint);
     if (!sellingPoint.limitOrders) {
         sellingPoint.lockOrderHoursBeforeDelivery = null;
         sellingPoint.maxPurchaseOrdersPerTimeSlot = null;
@@ -48,8 +49,3 @@ export const normalizeCreateSellingPoint = sellingPoint => {
     
     return omit(sellingPoint, ['denormalizedDeliveryHours', 'denormalizedClosings', 'openings', 'limitOrders']);
 }
-
-export const normalizeUpdateSellingPoint = sellingPoint => ({
-    ...normalizeCreateSellingPoint(sellingPoint),
-    available: sellingPoint.available
-})

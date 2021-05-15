@@ -11,7 +11,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import { GET_SELLING_POINTS } from "./queries";
   import form from "../../stores/form";
-  import { normalizeCreateSellingPoint } from "./sellingPointForm";
+  import { normalizeSellingPoint } from "./sellingPointForm";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -20,7 +20,7 @@
   const handleSubmit = async () => {
     return mutate({
 			mutation: CREATE_SELLING_POINT,
-			variables: normalizeCreateSellingPoint(form.values()),
+			variables: normalizeSellingPoint(form.values()),
 			errorsHandler,
 			success: () => routerInstance.goTo(SellingPointRoutes.List),
 			successNotification: "Votre point de vente a bien été créé",

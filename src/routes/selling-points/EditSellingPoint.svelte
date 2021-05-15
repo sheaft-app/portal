@@ -13,7 +13,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import SetSellingPointAvailability from "./SetSellingPointAvailability.svelte";
-  import { normalizeUpdateSellingPoint } from "./sellingPointForm";
+  import { normalizeSellingPoint } from "./sellingPointForm";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
@@ -37,7 +37,7 @@
   const handleSubmit = async () => {
     return mutate({
 			mutation: UPDATE_SELLING_POINT,
-			variables: normalizeUpdateSellingPoint(sellingPoint),
+			variables: normalizeSellingPoint(sellingPoint),
 			errorsHandler,
 			success: () => routerInstance.goTo(SellingPointRoutes.List),
 			successNotification: "Vos modifications ont bien été appliquées au point de vente",
@@ -105,6 +105,6 @@
         </button>
       </div>
     </section>
-    <SellingPointForm submit={handleSubmit} {sellingPoint}/>
+    <SellingPointForm submit={handleSubmit} bind:sellingPoint />
   {/if}
 </TransitionWrapper>
