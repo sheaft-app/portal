@@ -94,8 +94,6 @@
 
 	onDestroy(() => (delivery = null));
 
-	$: tags = !delivery || delivery.available ? [] : [{text: 'Indisponible', color: 'orange'}];
-
 	const removeButton = {
 		text: 'Supprimer',
 		color: 'red',
@@ -110,7 +108,7 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Modifier un créneau de livraison" previousPage={DeliveryRoutes.List} {buttons} {tags}/>
+	<PageHeader name="Modifier un créneau de livraison" previousPage={DeliveryRoutes.List} {buttons}/>
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<DeliveryForm
 			submit={handleSubmit}
