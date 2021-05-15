@@ -17,10 +17,8 @@
 		headers,
 		isLoading,
 		loadingMessage,
-		hideIfNoResults = false,
 		noResultsPage,
 		graphQuery,
-		actions = [],
 		errorsHandler,
 		noResults,
 		disableRowSelection = () => false,
@@ -256,9 +254,7 @@
 		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;"
 				 on:click={() => toggleMoreActions.set(false)}></div>
 	{/if}
-	<Actions {actions}/>
-	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0"
-			 class:table-container={actions.some(c => !c.disabled || (c.disabled && !c.hideIfDisabled))}>
+	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0">
 		<slot name="filters"></slot>
 		<table class={classes}>
 			<thead>
