@@ -24,7 +24,7 @@
 	let closings = sellingPoint.closings ? denormalizeClosingDates(sellingPoint.closings) : [];
 	let openings = denormalizeOpeningHours(sellingPoint.deliveryHours);
 	let limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
-    
+
 	let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
 	let maxOrders = sellingPoint.maxPurchaseOrdersPerTimeSlot != null || sellingPoint.id != null ? sellingPoint.maxPurchaseOrdersPerTimeSlot : 10;
 
@@ -50,7 +50,7 @@
 			if (!limitOrders) {
 				sellingPoint.lockOrderHoursBeforeDelivery = null;
 				sellingPoint.maxPurchaseOrdersPerTimeSlot = null;
-			} else if (lockOrders < 0 || maxOrders < 0){        
+			} else if (lockOrders < 0 || maxOrders < 0){
 				return;
 			}
 			else{
@@ -89,6 +89,11 @@
 				validators: ["min:0"],
 				enabled: limitOrders,
 			},
+			name: {
+				value: sellingPoint.name,
+				validators: ["required", "min:3"],
+				enabled: true,
+			}
 		}),
 		{
 			initCheck: false,
@@ -102,10 +107,11 @@
 		<div class="w-full lg:w-1/2">
 			<div class="form-control">
 				<div class="w-full">
-					<label for="grid-name">Nom du point</label>
+					<label for="grid-name">Nom *</label>
 					<input
 						bind:value={sellingPoint.name}
 						class:disabled={isLoading}
+						use:bindClass={{ form: sellingPointForm, name: 'name' }}
 						disabled={isLoading}
 						id="grid-name"
 						type="text"
@@ -142,18 +148,27 @@
 				<ErrorContainer field={$sellingPointForm.fields.kind} />
 			</div>
 			<div class="form-control w-full" style="display: block;">
-				<label for="grid-address">Adresse *</label>
+				<label>Adresse *</label>
 				<CitySearch
 					invalid={$sellingPointForm && $sellingPointForm.fields.address ? !$sellingPointForm.fields.address.valid && $sellingPointForm.fields.address.dirty : false}
 					bind:selectedAddress={sellingPoint.address}
 					bindClassData={{ form: sellingPointForm, name: 'address' }} />
 				<ErrorContainer field={$sellingPointForm.fields.address} />
 			</div>
+			<div class="form-control" style="display: block;">
+				<label>Actif</label>
+				<Toggle
+					labelPosition="left"
+					disabled={isLoading}
+					classNames="ml-1"
+					bind:isChecked={sellingPoint.available}>
+				</Toggle>
+			</div>
 			<div class="form-control">
 				<div
 					class="w-full"
 					use:bindClass={{ form: sellingPointForm, name: 'openings' }}>
-					<label for="grid-timestamp">Horaires de vente *</label>
+					<label>Horaires de vente *</label>
 					<OpeningHoursContainer bind:openings />
 					<ErrorContainer field={$sellingPointForm.fields.openings} />
 				</div>

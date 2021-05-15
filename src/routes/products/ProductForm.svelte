@@ -459,7 +459,7 @@
 			bind:isChecked={product.available}>
 		</Toggle>
 	</div>
-	{#if product.id && product.id.length > 0}
+	{#if product.ratingsCount > 0}
 		<div class="form-control" style="display: block;">
 			<label>Evaluations client</label>
 			<RatingStars rating={product.rating}/>

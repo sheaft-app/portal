@@ -9,10 +9,12 @@
 
 	const {open} = getContext('modal');
 
-	let headers = [{label: 'Nom', mobile: true}, {label: 'Affichage', mobile: false}, {
-		label: 'Prix HT',
-		mobile: true
-	}, {label: 'Ajouté le', mobile: false}, {label: 'Actions', mobile: false}]
+	let headers = [
+		{label: 'Nom', mobile: true},
+		{label: 'Visible par', mobile: true},
+		{label: 'Prix HT', mobile: true},
+		{label: 'Ajouté le', mobile: false},
+		{label: 'Actions', mobile: false}]
 	let isLoading = true;
 
 	const removeCatalog = catalog => {
@@ -64,7 +66,7 @@
 					{/if}
 				</div>
 			</td>
-			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 table-cell">
 				<div
 					class="text-sm leading-5 font-medium truncate"
 					style="max-width: 180px;">

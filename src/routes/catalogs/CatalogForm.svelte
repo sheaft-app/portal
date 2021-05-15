@@ -49,7 +49,7 @@ import CatalogKind from "../../enums/CatalogKind";
     <div class={`mb-6 lg:mb-0`}>
       <div class="form-control">
         <div class="w-full">
-          <label for="type-catalog">Affichage</label>
+          <label for="type-catalog">Visible par les</label>
           <input
             value={CatalogKind.label(catalog.kind)}
             class="disabled"
@@ -62,7 +62,7 @@ import CatalogKind from "../../enums/CatalogKind";
     </div>
   {/if}
   <div class="form-control" style="display: block;">
-		<label>Disponible</label>
+		<label>Actif</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}

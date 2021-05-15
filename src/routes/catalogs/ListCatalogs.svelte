@@ -21,7 +21,7 @@
 
 	const headers = [
 		{name: "Nom"},
-		{name: "Affichage"},
+		{name: "Visible par"},
 		{name: "Statut"},
 		{name: "Nombre de produits"},
 	];

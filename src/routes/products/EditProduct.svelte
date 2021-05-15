@@ -52,7 +52,6 @@
 
 		if (!res.success) {
 			notificationsInstance.warning("Le produit est introuvable");
-			isLoading = false;
 			routerInstance.goTo(ProductRoutes.List);
 			return;
 		}

@@ -117,11 +117,7 @@
 		click: () => showDeleteModal()
 	};
 
-	$: buttons = sellingPoint ? [ {
-		text: sellingPoint.available ? 'Désactiver' : 'Activer',
-		color: sellingPoint.available ? 'orange' : 'green',
-		click: () => showSetAvailabilityModal()
-	}, removeButton] : [removeButton];
+	$: buttons = [removeButton];
 </script>
 
 <TransitionWrapper>

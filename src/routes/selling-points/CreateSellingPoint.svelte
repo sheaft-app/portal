@@ -25,6 +25,7 @@
 		name: "",
 		kind: "",
 		address: null,
+		available: true,
 		maxPurchaseOrdersPerTimeSlot: null,
 		autoAcceptRelatedPurchaseOrder: false,
 		autoCompleteRelatedPurchaseOrder: false,

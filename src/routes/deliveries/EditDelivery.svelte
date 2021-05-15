@@ -100,11 +100,7 @@
 		click: () => showDeleteModal()
 	};
 
-	$: buttons = delivery ? [ {
-		text: delivery.available ? 'Désactiver' : 'Activer',
-		color: delivery.available ? 'orange' : 'green',
-		click: () => showSetAvailabilityModal()
-	}, removeButton] : [removeButton];
+	$: buttons = [removeButton];
 </script>
 
 <TransitionWrapper>
