@@ -24,7 +24,7 @@ const SearchProducerRoutes = {
 			}
 		},
 	},
-	NoResultsPage: {
+	NoResults: {
 		Name: "Trouver des producteurs",
 		Icon: faTractor,
 		Path: `${prefix}${search}`,
