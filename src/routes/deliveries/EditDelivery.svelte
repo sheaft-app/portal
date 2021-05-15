@@ -22,7 +22,7 @@
 
 	export let params;
 
-	let isLoading = false;
+	let isLoading = true;
 	let delivery = null;
 	let loadingMessage = "Chargement des informations de votre créneau de livraison en cours... veuillez patienter.";
 
@@ -31,6 +31,7 @@
 	});
 
 	const fetchDelivery = async id => {
+		isLoading = true;
 		loadingMessage = "Chargement des informations de votre créneau de livraison en cours... veuillez patienter.";
 		var res = await graphQLInstance.query(
 			GET_DELIVERY_DETAILS,
@@ -45,6 +46,7 @@
 		}
 
 		delivery = res.data;
+		isLoading = false;
 	};
 
 	const handleSubmit = async () => {
@@ -92,17 +94,19 @@
 
 	onDestroy(() => (delivery = null));
 
-	$: tags = delivery.available ? [] : [{text: 'Indisponible', color: 'orange'}];
+	$: tags = !delivery || delivery.available ? [] : [{text: 'Indisponible', color: 'orange'}];
 
-	$: buttons = [{
-		text: delivery.available ? 'Désactiver' : 'Activer',
-		color: delivery.available ? 'orange' : 'green',
-		click: () => showSetAvailabilityModal()
-	}, {
+	const removeButton = {
 		text: 'Supprimer',
 		color: 'red',
 		click: () => showDeleteModal()
-	}];
+	};
+
+	$: buttons = delivery ? [ {
+		text: delivery.available ? 'Désactiver' : 'Activer',
+		color: delivery.available ? 'orange' : 'green',
+		click: () => showSetAvailabilityModal()
+	}, removeButton] : [removeButton];
 </script>
 
 <TransitionWrapper>

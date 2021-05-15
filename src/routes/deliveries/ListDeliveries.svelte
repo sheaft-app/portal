@@ -39,7 +39,7 @@
 <TransitionWrapper>
 	<PageHeader name="Mes créneaux de livraison"/>
 	<PageBody {errorsHandler}>
-		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		<Actions {actions}/>
 		<Table
 			bind:items
 			bind:isLoading
