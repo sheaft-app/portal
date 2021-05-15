@@ -1,6 +1,7 @@
 <script>
 	import {onMount, getContext} from "svelte";
 	import {fly, slide} from "svelte/transition";
+	import ProductRoutes from "./routes";
 	import Icon from "svelte-awesome";
 	import {
 		faPaperPlane,
@@ -23,6 +24,7 @@
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import {config} from "../../configs/config";
 	import ProductCatalogs from "./ProductCatalogs.svelte";
+	import RatingStars from "../../components/rating/RatingStars.svelte";
 
 	export let submit, product, isLoading;
 
@@ -235,35 +237,35 @@
 			<div class="form-control">
 				<div class="flex w-full">
 					<div class="w-full" class:hidden={notSubjectToVat}>
-						<label for="grid-vat">TVA quand applicable *</label>
+						<label>TVA quand applicable *</label>
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={isLoading}
 							use:bindClass={{ form: productForm, name: 'vat' }}>
-								<button
-									on:click={() => selectVat(5.5)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 5.5}
-									class:skeleton-box={isLoading}>
-									5,5%
-								</button>
-								<button
-									on:click={() => selectVat(10)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 10}
-									class:skeleton-box={isLoading}>
-									10%
-								</button>
-								<button
-									on:click={() => selectVat(20)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 20}
-									class:skeleton-box={isLoading}>
-									20%
-								</button>
+							<button
+								on:click={() => selectVat(5.5)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 5.5}
+								class:skeleton-box={isLoading}>
+								5,5%
+							</button>
+							<button
+								on:click={() => selectVat(10)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 10}
+								class:skeleton-box={isLoading}>
+								10%
+							</button>
+							<button
+								on:click={() => selectVat(20)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 20}
+								class:skeleton-box={isLoading}>
+								20%
+							</button>
 						</div>
 						<ErrorContainer field={$productForm.fields.vat}/>
 					</div>
@@ -284,7 +286,7 @@
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="height: 300px;">
 				<div class="w-full" on:click={() => changeImage()}>
-					<label for="grid-image">Image</label>
+					<label>Image</label>
 					<div class="border border-gray-400 cursor-pointer text-center h-full">
 						{#if product.picture}
 							<div
@@ -313,7 +315,7 @@
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues *</label>
-		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
+		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs/>
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>
@@ -456,6 +458,15 @@
 			classNames="ml-1"
 			bind:isChecked={product.available}>
 		</Toggle>
+	</div>
+	<div class="form-control" style="display: block;">
+		<label>Evaluations client</label>
+		<RatingStars rating={product.rating} />
+		{#if product.ratingsCount > 0}
+			<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
+				Voir les {product.ratingsCount} avis
+			</a>
+		{/if}
 	</div>
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">
