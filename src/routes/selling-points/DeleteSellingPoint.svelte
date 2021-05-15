@@ -1,42 +1,35 @@
 <script>
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import { DELETE_SELLING_POINT } from "./mutations";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import GetRouterInstance from "./../../services/SheaftRouter.js";
   import SheaftErrors from "./../../services/SheaftErrors";
-import { GET_SELLING_POINTS } from "./queries";
+  import { GET_SELLING_POINTS } from "./queries";
+  import { getContext } from "svelte";
 
   const errorsHandler = new SheaftErrors();
+  const { mutate, isLoading } = getContext('api');
 
   export let sellingPoint, close, onClose;
 
-  const graphQLInstance = GetGraphQLInstance();
-  const routerInstance = GetRouterInstance();
-
-	const closeModal = async (obj) => {
-		close();
-		if (onClose) await onClose(obj);
-	}
 
   const handleSubmit = async () => {
-    var res = await graphQLInstance.mutate(
-      DELETE_SELLING_POINT, 
-      {
-      id: sellingPoint.id
-    }, 
-    errorsHandler.Uuid,
-    GET_SELLING_POINTS);
+		mutate({
+			mutation: DELETE_SELLING_POINT,
+			variables: { id: sellingPoint.id },
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			successNotification: "Le point de vente a été supprimé avec succès",
+			errorNotification: "Impossible de supprimer le point de vente",
+			clearCache: [GET_SELLING_POINTS]
+		});
+	};
 
-    if (!res.success) {
-      // todo
-      return;
-    }
-    
-    return await closeModal(res);
-  }
+	const handleClose = async (res) => {
+		if (onClose) await onClose(res);
+		close();
+	};
 </script>
 
-<ActionConfirm title="Suppression" level="danger" submit={handleSubmit} close={() => closeModal({ success: false, data: null })} {errorsHandler}>
+<ActionConfirm title="Suppression" level="danger" isLoading={$isLoading} submit={handleSubmit} close={() => handleClose({ success: false, data: null })} {errorsHandler}>
   <p class="leading-5 text-gray-600">
     Vous vous apprêtez à <span class="text-gray-700">supprimer ce point de vente</span>
   </p>

@@ -1,103 +1,37 @@
 <script>
-	import { onMount } from "svelte";
 	import Icon from "svelte-awesome";
-	import {
-		faPaperPlane,
-		faCircleNotch,
-		faInfoCircle,
-	} from "@fortawesome/free-solid-svg-icons";
+	import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
-	import {
-		normalizeOpeningHours,
-		denormalizeOpeningHours,
-		normalizeClosingDates,
-		denormalizeClosingDates
-	} from "./../../helpers/app";
-	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
+	import { denormalizeOpeningHours, denormalizeClosingDates } from "./../../helpers/app";
+	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import ClosingDates from "./../../components/ClosingDates.svelte";
+	import form from "../../stores/form";
+	import { validators, initialValues } from "./sellingPointForm";
+	import { onDestroy } from "svelte";
 
-	export let submit, initialValues, isLoading;
-	let sellingPoint = initialValues;
-	let closings = sellingPoint.closings ? denormalizeClosingDates(sellingPoint.closings) : [];
-	let openings = denormalizeOpeningHours(sellingPoint.deliveryHours);
-	let limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
-    
-	let lockOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.id != null ? sellingPoint.lockOrderHoursBeforeDelivery : 24;
-	let maxOrders = sellingPoint.maxPurchaseOrdersPerTimeSlot != null || sellingPoint.id != null ? sellingPoint.maxPurchaseOrdersPerTimeSlot : 10;
+	export let submit, sellingPoint = { ...initialValues };
 
-	$: if(limitOrders && lockOrders == null) lockOrders = 24;
-	$: if(limitOrders && maxOrders == null) maxOrders = 5;
+	(() => sellingPoint = form.initialize(sellingPoint, validators, initialValues))();
 
-	const selectKind = (kind) => {
-		if (!isLoading) return (sellingPoint.kind = kind);
+	onDestroy(async () => {
+		await form.destroy();
+	});
+	
+	sellingPoint.denormalizedDeliveryHours = denormalizeOpeningHours(sellingPoint.deliveryHours);
+	sellingPoint.denormalizedClosings = denormalizeClosingDates(sellingPoint.closings);
+	sellingPoint.limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
 
-		return console.error(
-			"Can't change kind when form hasn't been initialized."
-		);
-	};
+	$: if (sellingPoint.limitOrders && !sellingPoint.lockOrderHoursBeforeDelivery) sellingPoint.lockOrderHoursBeforeDelivery = 24;
+	$: if (sellingPoint.limitOrders && !sellingPoint.maxPurchaseOrdersPerTimeSlot) sellingPoint.maxPurchaseOrdersPerTimeSlot = 5;
 
-	const handleSubmit = () => {
-		sellingPointForm.validate();
-
-		if ($sellingPointForm.valid && !isLoading) {
-			sellingPoint.deliveryHours = normalizeOpeningHours(openings);
-			sellingPoint.closings = normalizeClosingDates(closings);
-			delete sellingPoint.address["insee"];
-
-			if (!limitOrders) {
-				sellingPoint.lockOrderHoursBeforeDelivery = null;
-				sellingPoint.maxPurchaseOrdersPerTimeSlot = null;
-			} else if (lockOrders < 0 || maxOrders < 0){        
-				return;
-			}
-			else{
-				sellingPoint.lockOrderHoursBeforeDelivery = lockOrders;
-				sellingPoint.maxPurchaseOrdersPerTimeSlot = maxOrders;
-			}
-
-			submit();
-		}
-	};
-
-	const sellingPointForm = form(
-		() => ({
-			kind: {
-				value: sellingPoint.kind,
-				validators: ["required", "min:3"],
-				enabled: true,
-			},
-			address: {
-				value: sellingPoint.address,
-				validators: ["required"],
-				enabled: true,
-			},
-			openings: {
-				value: openings,
-				validators: ["required", "openingsDays", "openingsDates"],
-				enabled: true,
-			},
-			maxPurchaseOrders: {
-				value: maxOrders,
-				validators: ["min:1"],
-				enabled: limitOrders,
-			},
-			lockPurchaseOrders: {
-				value: lockOrders,
-				validators: ["min:0"],
-				enabled: limitOrders,
-			},
-		}),
-		{
-			initCheck: false,
-		}
-	);
+	const selectKind = (kind) => !$form.isSubmitting ? sellingPoint.kind = kind : console.error("Form should be initialized");
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
-<form class="w-full pb-5" on:submit|preventDefault={handleSubmit}>
+<form class="w-full pb-5" on:submit|preventDefault={() => form.validateAndSubmit(submit)}>
 	<div class="flex flex-wrap mb-6 lg:mb-0">
 		<div class="w-full lg:w-1/2">
 			<div class="form-control">
@@ -105,8 +39,8 @@
 					<label for="grid-name">Nom du point</label>
 					<input
 						bind:value={sellingPoint.name}
-						class:disabled={isLoading}
-						disabled={isLoading}
+						class:disabled={$form.isSubmitting}
+						disabled={$form.isSubmitting}
 						id="grid-name"
 						type="text"
 						placeholder="ex : Marché d'Annecy (vieille ville)" />
@@ -116,75 +50,75 @@
 				<label>Type de point de vente *</label>
 				<div
 					class="w-full justify-center button-group"
-					use:bindClass={{ form: sellingPointForm, name: 'kind' }}>
+					use:bindClass={{ form, name: 'kind' }}>
 					<button
 						on:click={() => selectKind('MARKET')}
 						type="button"
 						class:selected={sellingPoint.kind === 'MARKET'}
-						class:disabled={isLoading}>
+						class:disabled={$form.isSubmitting}>
 						Marché ouvert
 					</button>
 					<button
 						on:click={() => selectKind('FARM')}
 						type="button"
 						class:selected={sellingPoint.kind === 'FARM'}
-						class:disabled={isLoading}>
+						class:disabled={$form.isSubmitting}>
 						Site de production
 					</button>
 					<button
 						on:click={() => selectKind('COLLECTIVE')}
 						type="button"
 						class:selected={sellingPoint.kind === 'COLLECTIVE'}
-						class:disabled={isLoading}>
+						class:disabled={$form.isSubmitting}>
 						Magasin de producteurs
 					</button>
 				</div>
-				<ErrorContainer field={$sellingPointForm.fields.kind} />
+				<ErrorContainer field={$form.fields.kind} />
 			</div>
 			<div class="form-control w-full" style="display: block;">
 				<label for="grid-address">Adresse *</label>
 				<CitySearch
-					invalid={$sellingPointForm && $sellingPointForm.fields.address ? !$sellingPointForm.fields.address.valid && $sellingPointForm.fields.address.dirty : false}
+					invalid={$form && $form.fields.address ? !$form.fields.address.valid && $form.fields.address.dirty : false}
 					bind:selectedAddress={sellingPoint.address}
-					bindClassData={{ form: sellingPointForm, name: 'address' }} />
-				<ErrorContainer field={$sellingPointForm.fields.address} />
+					bindClassData={{ form, name: 'address' }} />
+				<ErrorContainer field={$form.fields.address} />
 			</div>
 			<div class="form-control">
 				<div
 					class="w-full"
-					use:bindClass={{ form: sellingPointForm, name: 'openings' }}>
+					use:bindClass={{ form, name: 'openings' }}>
 					<label for="grid-timestamp">Horaires de vente *</label>
-					<OpeningHoursContainer bind:openings />
-					<ErrorContainer field={$sellingPointForm.fields.openings} />
+					<OpeningHoursContainer bind:openings={sellingPoint.denormalizedDeliveryHours} />
+					<ErrorContainer field={$form.fields.openings} />
 				</div>
 			</div>
 			<hr class="my-5" />
 			<div class="form-control">
 				<label>Plages de fermeture</label>
 				<p class="text-gray-600 mb-2">Si ce point de vente est fermé durant certaines périodes de l'année, renseignez les dates pour que vos clients ne puissent pas placer de commandes avec retrait sur ces périodes.</p>
-				<ClosingDates bind:closings />
+				<ClosingDates bind:closings={sellingPoint.denormalizedClosings} />
 			</div>
 			<hr class="my-5" />
       		<div class="form-control mt-6" style="display: block;">
 				<label>Limiter les commandes</label>
 				<Toggle
 					labelPosition="left"
-					disabled={isLoading}
+					disabled={$form.isSubmitting}
 					classNames="ml-1"
-					bind:isChecked={limitOrders} />
+					bind:isChecked={sellingPoint.limitOrders} />
 			</div>
-			{#if limitOrders}
+			{#if sellingPoint.limitOrders}
 				<div class="form-control">
 					<div class="w-full">
             <span class="mr-1">Autoriser la prise de commandes jusqu'à</span>
-            <input id="lockOrders" type="number" style="width: 70px; display: inline-block;" bind:value={lockOrders}>
+            <input id="lockOrders" type="number" style="width: 70px; display: inline-block;" bind:value={sellingPoint.lockOrderHoursBeforeDelivery}>
             <span class="ml-1">heures avant l'horaire de vente.</span>
 					</div>
 				</div>
 				<div class="form-control">
 					<div class="w-full">
             <span class="mr-1">Autoriser un maximum de </span>
-            <input id="maxOrders" type="number" style="width: 70px; display: inline-block;" bind:value={maxOrders}>
+            <input id="maxOrders" type="number" style="width: 70px; display: inline-block;" bind:value={sellingPoint.maxPurchaseOrdersPerTimeSlot}>
             <span class="ml-1">commandes par horaire de vente.</span>
 					</div>
 				</div>
@@ -197,7 +131,7 @@
 				<label>Accepter automatiquement les nouvelles commandes</label>
 				<Toggle
 					labelPosition="left"
-					disabled={isLoading}
+					disabled={$form.isSubmitting}
 					classNames="ml-1"
 					bind:isChecked={sellingPoint.autoAcceptRelatedPurchaseOrder} />
 			</div>
@@ -205,7 +139,7 @@
 				<label>Marquer automatiquement les commandes acceptées comme terminées</label>
 				<Toggle
 					labelPosition="left"
-					disabled={isLoading}
+					disabled={$form.isSubmitting}
 					classNames="ml-1"
 					bind:isChecked={sellingPoint.autoCompleteRelatedPurchaseOrder} />
 			</div>
@@ -215,12 +149,12 @@
 	<div class="form-control mt-5 mb-5">
 		<button
 			type="submit"
-			class:disabled={isLoading || !$sellingPointForm.valid}
+			class:disabled={$form.isSubmitting || !$form.valid}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto">
 			<Icon
-				data={isLoading ? faCircleNotch : faPaperPlane}
+				data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
 				class="mr-2 inline"
-				spin={isLoading} />
+				spin={$form.isSubmitting} />
 			Valider
 		</button>
 	</div>

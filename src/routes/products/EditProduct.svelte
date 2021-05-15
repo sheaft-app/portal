@@ -15,7 +15,7 @@
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import DeleteProducts from "./DeleteProducts.svelte";
   import form from "../../stores/form";
-  import { normalizeProductsForUpdate } from "./productForm";
+  import { normalizeUpdateProduct } from "./productForm";
 
   export let params = {};
 
@@ -41,7 +41,7 @@
 			mutation: UPDATE_PRODUCT,
 			variables: {
         id: params.id,
-        ...normalizeProductsForUpdate(form.values())
+        ...normalizeUpdateProduct(form.values())
       },
 			errorsHandler,
 			success: () => routerInstance.goTo(ProductRoutes.List),

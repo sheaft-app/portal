@@ -96,14 +96,14 @@ export const normalizeClosingDates = (closings) => closings ? closings.map((c) =
 }) : [];
 
 
-export const denormalizeClosingDates = (closings) => closings.map((c) => ({
+export const denormalizeClosingDates = (closings) => closings ? closings.map((c) => ({
 	...c,
 	from: new Date(c.from),
 	to: new Date(c.to),
 	isInterval: c.to !== c.from,
 	dirtyFrom: true,
 	dirtyTo: c.to !== c.from
-}))
+})) : [];
 
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {

@@ -34,7 +34,12 @@
 	let returnables = [];
 	let organicTag;
 
-	(async() => { return await form.initialize(product, validators); })();
+	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
+	$: isBio = organicTag && product.tags.find((i) => i.kind == organicTag.kind && i.value == organicTag.value);
+	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) =>  i && TagKind.get(i.kind).Value == TagKind.Category.Value);
+	$: quantityPerUnitLabel = isBasketType ? "Nombre de personnes (adultes) *" : (product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *");
+
+	(() => form.initialize(product, validators))();
 
 	onMount(async () => {
 		returnables = await query({
@@ -58,7 +63,6 @@
 		await form.destroy();
 	});
 
-	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
 
 	const handleSubmit = async () => {
 		if (product.conditioning != ConditioningKind.Bulk.Value) {
@@ -71,9 +75,6 @@
 
 		return submit();
 	};
-	$: console.log(product);
-	$: isBio = organicTag && product.tags.find((i) => i.kind == organicTag.kind && i.value == organicTag.value);
-	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) =>  i && TagKind.get(i.kind).Value == TagKind.Category.Value);
 
 	const toggleBio = () => {
 		if (!isBio) {
@@ -128,14 +129,6 @@
 			},
 		});
 	};
-
-	$: getQuantityPerUnitLabel = () => {
-		if (isBasketType) {
-			return "Nombre de personnes (adultes)*";
-		}
-
-		return product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *";
-	}
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -300,7 +293,7 @@
 	{#if product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value}
 		<div class="form-control">
 			<div class="w-full">
-				<label for="grid-quantityPerUnit">{getQuantityPerUnitLabel()}</label>
+				<label for="grid-quantityPerUnit">{quantityPerUnitLabel}</label>
 				<div class="flex w-full">
 					<div class="mr-2">
 						<input

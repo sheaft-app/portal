@@ -5,11 +5,10 @@
 	import Icon from "svelte-awesome";
 	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 	import { UPDATE_RETURNABLE } from "./mutations";
-	import { GET_RETURNABLES, GET_RETURNABLE_DETAILS } from "./queries";
+	import { GET_RETURNABLE_DETAILS } from "./queries";
 	import ReturnableForm from "./ReturnableForm.svelte";
 	import DeleteReturnable from "./DeleteReturnable.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "../../components/ErrorCard.svelte";
@@ -19,7 +18,6 @@
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
 	const { query, mutate, isLoading } = getContext("api");
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
 	let returnable = null;
@@ -48,9 +46,7 @@
 	const showDeleteModal = () => {
 		open(DeleteReturnable, {
 			returnable,
-			onClose: () => {
-				routerInstance.goTo(ReturnableRoutes.List);
-			},
+			onClose: () => routerInstance.goTo(ReturnableRoutes.List),
 		});
 	};
 </script>

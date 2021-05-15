@@ -8,96 +8,54 @@
   import { GET_SELLING_POINTS, GET_SELLING_POINT_DETAILS } from "./queries";
   import SellingPointForm from "./SellingPointForm.svelte";
   import DeleteSellingPoint from "./DeleteSellingPoint.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import SetSellingPointAvailability from "./SetSellingPointAvailability.svelte";
+  import { normalizeUpdateSellingPoint } from "./sellingPointForm";
 
   const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
-  const graphQLInstance = GetGraphQLInstance();
-  const notificationsInstance = new GetNotificationsInstance();
+  const { query, mutate } = getContext("api");
   const routerInstance = GetRouterInstance();
 
   export let params;
 
-  let isUpdatingSellingPoint = false;
   let sellingPoint = null;
 
   onMount(async () => {
-    await fetchSellingPoint(params.id);
+    sellingPoint = await query({
+      query: GET_SELLING_POINT_DETAILS,
+      variables: { id: params.id }, 
+      errorsHandler,
+      error: () => routerInstance.goTo(SellingPointRoutes.List),
+			errorNotification: "Le point de vente auquel vous essayez d'accéder n'existe plus."
+    });
   });
 
-  const fetchSellingPoint = async id => {
-    var res = await graphQLInstance.query(
-      GET_SELLING_POINT_DETAILS,
-      {
-        id: id
-      },
-      errorsHandler.Uuid
-    );
-
-    if (!res.success) {
-      //TODO
-      routerInstance.goTo(SellingPointRoutes.List);
-      return;
-    }
-
-    sellingPoint = res.data;
-  };
-
   const handleSubmit = async () => {
-    isUpdatingSellingPoint = true;
-
-    var res = await graphQLInstance.mutate(
-      UPDATE_SELLING_POINT,
-      {
-        ...sellingPoint,
-        address: {
-          ...sellingPoint.address,
-          country: "FR"
-        }
-      },
-      errorsHandler.Uuid
-    );
-
-    if (!res.success) {
-      // todo
-      isUpdatingSellingPoint = false;
-      return;
-    }
-
-    notificationsInstance.success(
-      "Vos modifications ont bien été appliquées."
-    );
-
-    isUpdatingSellingPoint = false;
-    routerInstance.goTo(SellingPointRoutes.List);
+    return mutate({
+			mutation: UPDATE_SELLING_POINT,
+			variables: normalizeUpdateSellingPoint(sellingPoint),
+			errorsHandler,
+			success: () => routerInstance.goTo(SellingPointRoutes.List),
+			successNotification: "Vos modifications ont bien été appliquées au point de vente",
+			errorNotification: "Impossible de modifier le point de vente",
+			clearCache: [GET_SELLING_POINTS]
+    });
   };
 
   const showDeleteModal = () => {
     open(DeleteSellingPoint, {
-      onClose: async res => {
-        if (res.success) {
-          graphQLInstance.clearApolloCache(GET_SELLING_POINTS);
-          routerInstance.goTo(SellingPointRoutes.List);
-        }
-      },
+      onClose: () => routerInstance.goTo(SellingPointRoutes.List),
       sellingPoint
     });
   };
 
   const showSetAvailabilityModal = () => {
     open(SetSellingPointAvailability, {
-      onClose: async res => {
-        if (res.success) {
-          graphQLInstance.clearApolloCache(GET_SELLING_POINTS);
-          routerInstance.goTo(SellingPointRoutes.List);
-        }
-      },
+      onClose: () => routerInstance.goTo(SellingPointRoutes.List),
       sellingPoint
     });
   };
@@ -147,9 +105,6 @@
         </button>
       </div>
     </section>
-    <SellingPointForm
-      submit={handleSubmit}
-      initialValues={sellingPoint}
-      isLoading={isUpdatingSellingPoint} />
+    <SellingPointForm submit={handleSubmit} {sellingPoint}/>
   {/if}
 </TransitionWrapper>

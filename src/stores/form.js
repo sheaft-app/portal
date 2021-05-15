@@ -23,7 +23,14 @@ const store = () => {
 	const { subscribe, set, update } = writable(state);
 
 	const methods = {
-		initialize(values, getFields) {
+		initialize(values, getFields, initialValues) {
+
+            // complete object with missing values
+            values = {
+                ...initialValues,
+                ...values
+            };
+
             formBind = form(() => getFields(values), {
                 initCheck: false
             });
@@ -41,7 +48,9 @@ const store = () => {
             update(state => {
                 state.isInitializing = false;
                 return state;
-			})
+            })
+            
+            return values;
         },
         async validateAndSubmit(submit) {
             formBind.validate();

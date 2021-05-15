@@ -11,7 +11,7 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import form from "../../stores/form";
-  import { initialValues, normalizeProduct } from "./productForm";
+  import { initialValues, normalizeCreateProduct } from "./productForm";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
@@ -30,7 +30,7 @@
   const handleSubmit = async () => {
     return mutate({
 			mutation: CREATE_PRODUCT,
-			variables: normalizeProduct(form.values()),
+			variables: normalizeCreateProduct(form.values()),
 			errorsHandler,
 			success: () => routerInstance.goTo(ProductRoutes.List),
 			successNotification: "Votre produit a bien été créé",

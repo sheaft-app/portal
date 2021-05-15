@@ -41,7 +41,7 @@ export const validators = (product) => ({
     }
 });
 
-export const normalizeProduct = product => ({
+export const normalizeCreateProduct = product => ({
     description: product.description,
     name: product.name,
     catalogs: product.catalogs.map((c) => ({
@@ -60,8 +60,8 @@ export const normalizeProduct = product => ({
     available: product.available
 });
 
-export const normalizeProductsForUpdate = product => ({
-    ...normalizeProduct(product),
+export const normalizeUpdateProduct = product => ({
+    ...normalizeCreateProduct(product),
     catalogs: product.catalogs.filter((c) => !c.markForDeletion).map((c) => ({
         id: c.id,
         wholeSalePricePerUnit: c.wholeSalePricePerUnit
