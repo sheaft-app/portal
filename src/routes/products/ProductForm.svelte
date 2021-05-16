@@ -73,7 +73,7 @@
 			product.quantityPerUnit = 1;
 		}
 
-		return submit();
+		return form.validateAndSubmit(submit);
 	};
 
 	const toggleBio = () => {

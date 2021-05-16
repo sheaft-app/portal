@@ -14,7 +14,6 @@
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import DeleteProducts from "./DeleteProducts.svelte";
-  import form from "../../stores/form";
   import { normalizeUpdateProduct } from "./productForm";
 
   export let params = {};
