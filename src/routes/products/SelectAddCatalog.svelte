@@ -44,6 +44,7 @@
                 name: catalog.name,
                 wholeSalePricePerUnit: 0,
                 addedOn: Date.now(),
+							  kind: catalog.kind,
                 checked: true
             }
         ];

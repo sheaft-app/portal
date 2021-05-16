@@ -122,6 +122,7 @@ export const GET_AGREEMENT_DETAILS = gql`
 					name
 					reference
 					wholeSalePricePerUnit
+					picture
 				}
 			}
 		}

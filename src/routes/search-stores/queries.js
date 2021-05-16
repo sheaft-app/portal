@@ -42,7 +42,7 @@ export const GET_STORE_DETAILS = gql`
 				to
 			}
 			agreement{
-				id 
+				id
 				status
 			}
 			summary
@@ -104,7 +104,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_CATALOGS = gql`
 	query GetCatalogs {
-		catalogs(where: { kind: { in: [STORES] }}) {
+		catalogs(where: { kind: { in: [STORES] }}, first:50) {
 			nodes {
 				id
 				name

@@ -38,7 +38,7 @@ const SearchProducerRoutes = {
 				paginate: Paginate.First
 			}
 		},
-		Text: "Aucun partenariat avec des magasins"
+		Text: "Vous n'avez aucun partenariat avec des producteurs"
 	}
 };
 

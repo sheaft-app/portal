@@ -26,7 +26,7 @@ export const GET_DEFAULT_QUICK_ORDER = gql`
 
 export const GET_ALL_PRODUCTS = gql`
 	query GetAllProducts {
-		products (first:50){
+		storeOrderableProducts (first:50){
 			nodes {
 				id
 				name

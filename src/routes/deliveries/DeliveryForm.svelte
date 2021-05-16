@@ -89,7 +89,7 @@
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
-		<label>Active</label>
+		<label>Actif</label>
 		<Toggle
 			labelPosition="left"
 			disabled={isLoading}
