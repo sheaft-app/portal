@@ -36,16 +36,12 @@ export const validators = (values) => ({
     lockPurchaseOrders: { value: values.lockOrderHoursBeforeDelivery, validators: ["min:0"], enabled: values.limitOrders },
 });
 
-export const normalizeSellingPoint = sellingPoint => {
-    console.log(sellingPoint);
-    if (!sellingPoint.limitOrders) {
-        sellingPoint.lockOrderHoursBeforeDelivery = null;
-        sellingPoint.maxPurchaseOrdersPerTimeSlot = null;
-    } 
-    
-    sellingPoint.address = { ...omit(sellingPoint.address, ['insee']), country: "FR" },
-    sellingPoint.deliveryHours = normalizeOpeningHours(sellingPoint.denormalizedDeliveryHours),
-    sellingPoint.closings = normalizeClosingDates(sellingPoint.denormalizedClosings)
-    
-    return omit(sellingPoint, ['denormalizedDeliveryHours', 'denormalizedClosings', 'openings', 'limitOrders']);
-}
+export const normalizeSellingPoint = sellingPoint => omit({
+    ...sellingPoint,
+    address: { ...omit(sellingPoint.address, ['insee']), country: "FR" },
+    deliveryHours: normalizeOpeningHours(sellingPoint.denormalizedDeliveryHours),
+    closings: normalizeClosingDates(sellingPoint.denormalizedClosings),
+    lockOrderHoursBeforeDelivery: sellingPoint.limitOrders ? sellingPoint.lockOrderHoursBeforeDelivery : null,
+    maxPurchaseOrdersPerTimeSlot: sellingPoint.limitOrders ? sellingPoint.maxPurchaseOrdersPerTimeSlot : null
+  }, ['denormalizedDeliveryHours', 'denormalizedClosings', 'openings', 'limitOrders']);
+;
