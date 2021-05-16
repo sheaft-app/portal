@@ -80,7 +80,7 @@
 			agreements: [obj],
 			onClose: async res => {
 				if (res.success) {
-					await getAgreement(agreement.id);
+					routerInstance.reload();
 				}
 			}
 		});

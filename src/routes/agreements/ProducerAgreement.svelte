@@ -31,7 +31,7 @@
 
 		if (!agreement.delivery || !agreement.delivery.deliveryHours || agreement.delivery.deliveryHours.length < 1) {
 			var deliveryRes = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: ids
+				input: [agreement.producer.id]
 			});
 
 			if (!deliveryRes.success) {
