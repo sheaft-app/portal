@@ -24,7 +24,7 @@
   	import form from "../../stores/form";
   	import { validators, initialValues } from "./productForm";
 
-	export let submit, product = { ...initialValues }, errorsHandler;	
+	export let submit, product = { ...initialValues }, errorsHandler;
 
 	const { open } = getContext("modal");
 	const { query, isLoading } = getContext("api");
@@ -52,13 +52,13 @@
 		await query({
 			query: GET_TAGS,
 			errorsHandler,
-			success: (res) => organicTag = res.find((t) => t.name.toLowerCase() === "bio" 
+			success: (res) => organicTag = res.find((t) => t.name.toLowerCase() === "bio"
 				&& TagKind.Label.Value == TagKind.get(t.kind).Value),
 			error: () => routerInstance.goTo(ProductRoutes.List),
 			errorNotification: "Un problème est survenu pendant la récupération des informations du produit."
 		});
 	});
-  
+
 	onDestroy(async () => {
 		await form.destroy();
 	});
@@ -242,7 +242,7 @@
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
-		<label>Présent dans les catalogues *</label>
+		<label>Présent dans les catalogues</label>
 		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
 	</div>
 	<div class="form-control" style="display: block;">

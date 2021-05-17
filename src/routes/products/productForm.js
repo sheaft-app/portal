@@ -14,8 +14,6 @@ export const initialValues = {
     picture: null,
     tags: [],
     available: true,
-    visibleToStores: true,
-    visibleToConsumers: true,
     catalogs:[],
     producer: {
         notSubjectToVat: false
@@ -23,7 +21,7 @@ export const initialValues = {
 };
 
 export const validators = (product) => ({
-    ...getDefaultFields(product, initialValues, ['reference', 'returnableId', 'description', 'picture']),
+    ...getDefaultFields(product, initialValues, ['catalogs','reference', 'returnableId', 'description', 'picture']),
     name: {
         value: product.name,
         validators: ["required", "min:3"],
@@ -48,12 +46,11 @@ export const normalizeCreateProduct = product => omit({
         catalogs: product.catalogs.map((c) => ({
             id: c.id,
             wholeSalePricePerUnit: c.wholeSalePricePerUnit
-        })), 
+        })),
         picture: product.picture ?? null,
         originalPicture: product.originalPicture ?? null,
         tags: product.tags.map(i => i.id)
     }, ['producer', 'createdOn', 'rating', 'ratingsCount', 'returnable', 'weight']);
-;
 
 export const normalizeUpdateProduct = product => ({
     ...normalizeCreateProduct(product),
