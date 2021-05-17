@@ -10,6 +10,7 @@
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
 	import Loader from "../../components/Loader.svelte";
 	import ChangeCatalogModal from "./ChangeCatalogModal.svelte";
+	import ChangeDeliveryModal from "./ChangeDeliveryModal.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 
 	const {open} = getContext("modal");
@@ -27,7 +28,19 @@
 		openings = groupBy(agreement.store.openingHours, item => [item.day]);
 		store = agreement.store;
 		isLoading = false;
-	})
+	});
+
+	const showChangeDeliveryModal = () => {
+		open(ChangeDeliveryModal, {
+			agreement: agreement,
+			onClose: async res => {
+				if (res.success) {
+					routerInstance.reload();
+				}
+			}
+		});
+	};
+
 	const showChangeCatalogModal = () => {
 		open(ChangeCatalogModal, {
 			agreement: agreement,
@@ -146,7 +159,7 @@
 	</div>
 	<div class="flex justify-between flex-wrap mt-5 card shadow rounded-lg bg-white">
 		<div class="w-full lg:w-2/4 p-3 lg:p-6 border-b lg:border-b-0 lg:border-r border-gray-300">
-			<p class="text-sm">Créneau de livraison</p>
+			<p class="text-sm">Créneau de livraison (<a href="javascript:void(0)" on:click={showChangeDeliveryModal}>Changer le créneau</a>)</p>
 			{#if agreement.delivery}
 				<p class="font-semibold mb-2">{agreement.delivery.name}</p>
 				{#each agreement.delivery.deliveryHours as deliveryHour, index}
