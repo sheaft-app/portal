@@ -1,6 +1,7 @@
 <script>
 	import {onMount, onDestroy, getContext} from "svelte";
 	import {fly} from "svelte/transition";
+	import ProductRoutes from "./routes";
 	import Icon from "svelte-awesome";
 	import {
 		faPaperPlane,
@@ -23,6 +24,7 @@
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   	import form from "../../stores/form";
   	import { validators, initialValues } from "./productForm";
+	import RatingStars from "../../components/rating/RatingStars.svelte";
 
 	export let submit, product = { ...initialValues }, errorsHandler;
 
@@ -165,7 +167,7 @@
 			<div class="form-control">
 				<div class="flex w-full">
 					<div class="w-full" class:hidden={product.producer?.notSubjectToVat}>
-						<label for="grid-vat">TVA quand applicable *</label>
+						<label>TVA quand applicable *</label>
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={$isLoading}
@@ -214,7 +216,7 @@
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="height: 300px;">
 				<div class="w-full" on:click={() => changeImage()}>
-					<label for="grid-image">Image</label>
+					<label>Image</label>
 					<div class="border border-gray-400 cursor-pointer text-center h-full">
 						{#if product.picture}
 							<div
@@ -387,6 +389,17 @@
 			bind:isChecked={product.available}>
 		</Toggle>
 	</div>
+	{#if product.ratingsCount > 0}
+		<div class="form-control" style="display: block;">
+			<label>Evaluations client</label>
+			<RatingStars rating={product.rating}/>
+			{#if product.ratingsCount > 0}
+				<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
+					Voir les {product.ratingsCount} avis
+				</a>
+			{/if}
+		</div>
+	{/if}
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">
 		<button

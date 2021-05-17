@@ -10,7 +10,7 @@
   export let submit, returnable = { ...initialValues }, isInModal = false, close = null;
 
   (() => form.initialize(returnable, validators))();
-  
+
   onDestroy(async () => {
     await form.destroy();
   });
@@ -36,7 +36,7 @@
           placeholder="Pot en verre" />
       </div>
       <ErrorContainer field={$form.fields.name}/>
-    </div>  
+    </div>
     <div class="form-control">
       <div class="flex w-full">
         <div class="w-full pr-2">
@@ -53,7 +53,7 @@
           <ErrorContainer field={$form.fields.wholeSalePrice}/>
         </div>
         <div class="w-full">
-          <label for="grid-vat">TVA *</label>
+          <label>TVA *</label>
           <div class="w-full text-lg justify-center button-group" use:bindClass={{ form: form, name: "vat" }}>
             <button
               on:click={() => selectVat(5.5)}
@@ -97,7 +97,7 @@
       </div>
     </div>
   </div>
-  <p class="text-sm mt-5">* champs requis</p>   
+  <p class="text-sm mt-5">* champs requis</p>
   <div class="form-control mt-5">
     {#if isInModal && close}
       <button

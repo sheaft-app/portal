@@ -51,6 +51,7 @@ export const GET_PRODUCT_DETAILS = gql`
 				wholeSalePricePerUnit
 				addedOn
 				id
+				kind
 				name
 			}
 			quantityPerUnit

@@ -19,6 +19,8 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Meta from "../../components/Meta.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -173,10 +175,8 @@
 <Meta/>
 
 <TransitionWrapper>
-	<div class="search-producers">
-		<h1 class="font-semibold uppercase mb-0">Trouver des producteurs</h1>
-    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-		<ErrorCard {errorsHandler} />
+	<PageHeader name="Trouver des producteurs"/>
+	<PageBody {errorsHandler}>
 		<div
 			class="inline-flex items-center mb-3 themed text-center sticky -mx-4 px-4
 			filter-bar"
@@ -311,7 +311,7 @@
 				{/if}
 			</div>
 		{/if}
-	</div>
+	</PageBody>
 </TransitionWrapper>
 
 {#if $selectedItem}

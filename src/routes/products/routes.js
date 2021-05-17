@@ -53,6 +53,14 @@ const ProductRoutes = {
 			id: null,
 		}
 	},
+	NoResults: {
+		Name: "Créer un produit",
+		Icon: faPlus,
+		Path: `${prefix}${create}`,
+		SubPart: `${create}`,
+		Params: null,
+		Text:"Vous n'avez pas encore de produits dans votre catalogue."
+	},
 };
 
 export default ProductRoutes;

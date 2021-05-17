@@ -54,7 +54,9 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import {toggleMoreActions} from "./../../stores/app";
-import JobKind from "../../enums/JobKind";
+	import JobKind from "../../enums/JobKind";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
@@ -94,7 +96,7 @@ import JobKind from "../../enums/JobKind";
 	const checkHasExportInProgress = async () => {
 		var res = await graphQLInstance.query(
 			HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
-			{kinds:[JobKind.ExportPickingOrders.Value]},
+			{kinds: [JobKind.ExportPickingOrders.Value]},
 			errorsHandler.Uuid
 		);
 		if (!res.success) {
@@ -239,52 +241,47 @@ import JobKind from "../../enums/JobKind";
 	];
 </script>
 
-<svelte:head>
-	<title>Commandes</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler}/>
-    <h1 class="font-semibold uppercase mb-0">Commandes</h1>
-    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-	{#if hasPendingJobs}
-		<div
-			class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
+	<PageHeader name="Mes commandes"/>
+	<PageBody {errorsHandler}>
+		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		{#if !isLoading && hasPendingJobs}
+			<div
+				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
 			text-gray-600 shadow rounded mb-5">
-			<div class="flex">
-				<Icon data={faCircleNotch} spin scale="1.3" class="mr-5"/>
-				<div>
-					<p class="uppercase font-bold leading-none mb-2">
-						Génération de bons de préparations
-					</p>
-					<p>
-						Plusieurs bons de préparations sont en train d'être générés. Nous
-						vous informerons quand ce sera terminé.
-					</p>
-					<div class="mt-2">
-						<a
-							href="javascript:void(0)"
-							on:click={() => routerInstance.goTo(JobRoutes.List)}
-							class="btn btn-large bg-white shadow font-semibold text-normal
+				<div class="flex">
+					<Icon data={faCircleNotch} spin scale="1.3" class="mr-5"/>
+					<div>
+						<p class="uppercase font-bold leading-none mb-2">
+							Génération de bons de préparations
+						</p>
+						<p>
+							Plusieurs bons de préparations sont en train d'être générés. Nous
+							vous informerons quand ce sera terminé.
+						</p>
+						<div class="mt-2">
+							<a
+								href="javascript:void(0)"
+								on:click={() => routerInstance.goTo(JobRoutes.List)}
+								class="btn btn-large bg-white shadow font-semibold text-normal
 							hover:bg-gray-100"
-							style="width: fit-content;">
-							Voir les tâches en cours
-						</a>
+								style="width: fit-content;">
+								Voir les tâches en cours
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{/if}
-	{#if !noResults}
-		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		{/if}
 		<Table
 			let:rowItem={order}
 			bind:items
 			bind:noResults
 			{headers}
-			{isLoading}
+			bind:isLoading
 			graphQuery={GET_ORDERS}
 			{errorsHandler}
+			loadingMessage="Chargement de vos commandes en cours... veuillez patienter."
 			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
 			bind:selectedItems
 			disableRowSelection={(order) => order && (order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Refused.Value || order.status == PurchaseOrderStatusKind.Delivered.Value)}
@@ -296,6 +293,7 @@ import JobKind from "../../enums/JobKind";
 						isMulti={true}
 						bind:selectedValue={selectedStatus}
 						optionIdentifier="value"
+						isDisabled={isLoading}
 						placeholder="N'afficher que les commandes avec le statut..."
 						items={filterStatus}
 					/>
@@ -362,16 +360,7 @@ import JobKind from "../../enums/JobKind";
 				</div>
 			</td>
 		</Table>
-	{:else}
-		<div class="text-xl text-gray-600">
-			<p>Aucune commande pour le moment.</p>
-			<p class="mb-5">Ne vous en faites pas, ça ne va pas tarder !</p>
-			<img
-				src="/img/no_orders.svg"
-				style="width: 200px; height: auto"
-				alt="Aucune commande ici"/>
-		</div>
-	{/if}
+	</PageBody>
 </TransitionWrapper>
 
 <style lang="scss">

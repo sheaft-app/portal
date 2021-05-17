@@ -19,7 +19,7 @@
 	onDestroy(async () => {
 		await form.destroy();
 	});
-	
+
 	sellingPoint.denormalizedDeliveryHours = denormalizeOpeningHours(sellingPoint.deliveryHours);
 	sellingPoint.denormalizedClosings = denormalizeClosingDates(sellingPoint.closings);
 	sellingPoint.limitOrders = sellingPoint.lockOrderHoursBeforeDelivery != null || sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
@@ -34,7 +34,7 @@
 		<div class="w-full lg:w-1/2">
 			<div class="form-control">
 				<div class="w-full">
-					<label for="grid-name">Nom du point</label>
+					<label for="grid-name">Nom *</label>
 					<input
 						bind:value={sellingPoint.name}
 						class:disabled={$form.isSubmitting}
@@ -77,18 +77,27 @@
 				<ErrorContainer field={$form.fields.kind} />
 			</div>
 			<div class="form-control w-full" style="display: block;">
-				<label for="grid-address">Adresse *</label>
+				<label>Adresse *</label>
 				<CitySearch
 					invalid={$form && $form.fields.address ? !$form.fields.address.valid && $form.fields.address.dirty : false}
 					bind:selectedAddress={sellingPoint.address}
 					bindClassData={{ form, name: 'address' }} />
 				<ErrorContainer field={$form.fields.address} />
 			</div>
+			<div class="form-control" style="display: block;">
+				<label>Actif</label>
+				<Toggle
+					labelPosition="left"
+					disabled={$form.isSubmitting}
+					classNames="ml-1"
+					bind:isChecked={sellingPoint.available}>
+				</Toggle>
+			</div>
 			<div class="form-control">
 				<div
 					class="w-full"
 					use:bindClass={{ form, name: 'openings' }}>
-					<label for="grid-timestamp">Horaires de vente *</label>
+					<label>Horaires de vente *</label>
 					<OpeningHoursContainer bind:openings={sellingPoint.denormalizedDeliveryHours} />
 					<ErrorContainer field={$form.fields.openings} />
 				</div>

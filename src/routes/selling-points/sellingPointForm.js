@@ -44,4 +44,3 @@ export const normalizeSellingPoint = sellingPoint => omit({
     lockOrderHoursBeforeDelivery: sellingPoint.limitOrders ? sellingPoint.lockOrderHoursBeforeDelivery : null,
     maxPurchaseOrdersPerTimeSlot: sellingPoint.limitOrders ? sellingPoint.maxPurchaseOrdersPerTimeSlot : null
   }, ['denormalizedDeliveryHours', 'denormalizedClosings', 'openings', 'limitOrders']);
-;

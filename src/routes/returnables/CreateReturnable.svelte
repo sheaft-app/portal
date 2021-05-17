@@ -11,19 +11,24 @@
 	import ErrorCard from "../../components/ErrorCard.svelte";
 	import form from "../../stores/form";
 	import { getContext } from "svelte";
-	  
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
+
 	export let isInModal = false, onClose, close;
 
 	const errorsHandler = new SheaftErrors();
 	const { mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
+	let isLoading = false;
+
 	const handleSubmit = async () => {
-		return mutate({
+		isLoading = true;
+		return await mutate({
 			mutation: CREATE_RETURNABLE,
 			variables: form.values(),
 			errorsHandler,
-			success: async () => {
+			success: async (res) => {
 				if (isInModal) await handleClose(res);
 				else routerInstance.goTo(ReturnableRoutes.List);
 			},
@@ -39,28 +44,15 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Créer une nouvelle consigne</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-	<section
-		class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
-		{#if !isInModal}
-			<div class="mb-3">
-				<button
-					class="text-gray-600 items-center flex uppercase"
-					on:click={() => routerInstance.goBack()}>
-					<Icon data={faChevronLeft} class="mr-2 inline" />
-					Consignes
-				</button>
-			</div>
-		{/if}
-    <h1 class="font-semibold uppercase mb-0">Créer une nouvelle consigne</h1>
-	</section>
-	<ReturnableForm
-		{isInModal}
-		submit={handleSubmit}
-		close={handleClose} />
+	{#if !isInModal}
+		<PageHeader name="Créer une consigne" previousPage={ReturnableRoutes.List}/>
+	{/if}
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Création de votre consigne en cours... veuillez patienter.">
+		<ReturnableForm
+			{isInModal}
+			submit={handleSubmit}
+			{isLoading}
+			close={handleClose}/>
+	</PageBody>
 </TransitionWrapper>

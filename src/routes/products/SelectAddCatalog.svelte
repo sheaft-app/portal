@@ -5,7 +5,7 @@
     import { onMount, getContext } from "svelte";
     import { faPlus } from "@fortawesome/free-solid-svg-icons";
     import SelectAddCatalogItem from "./SelectAddCatalogItem.svelte";
-    
+
     export let catalogs;
 
     const errorsHandler = new SheaftErrors();
@@ -33,6 +33,7 @@
                 name: catalog.name,
                 wholeSalePricePerUnit: 0,
                 addedOn: Date.now(),
+				kind: catalog.kind,
                 checked: true
             }
         ];
@@ -58,10 +59,11 @@
         hideSelectedOnFocus={true}
         on:select={(v) => addCatalog(v.detail)}
         optionIdentifier="id"
-        placeholder="Ajouter à un autre catalogue"
+        placeholder="{allCatalogs.length > 0 ? 'Ajouter à un autre catalogue' : 'Aucun autre catalogue disponible'}"
         noOptionsMessage="Aucun catalogue trouvé"
         isSearchable={true}
         isClearable={false}
+				isDisabled={allCatalogs.length < 1}
         containerStyles="font-weight: 600; color: #4a5568;" />
     </div>
 {/if}

@@ -24,7 +24,7 @@ const SearchProducerRoutes = {
 			}
 		},
 	},
-	NoResultsPage: {
+	NoResults: {
 		Name: "Trouver des producteurs",
 		Icon: faTractor,
 		Path: `${prefix}${search}`,
@@ -38,7 +38,7 @@ const SearchProducerRoutes = {
 				paginate: Paginate.First
 			}
 		},
-		Text: "Aucun partenariat avec des magasins"
+		Text: "Vous n'avez aucun partenariat avec des producteurs"
 	}
 };
 

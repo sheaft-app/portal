@@ -21,6 +21,8 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Meta from "../../components/Meta.svelte";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -166,148 +168,147 @@
 <Meta/>
 
 <TransitionWrapper>
-  <div class="search-stores">
-    <h1 class="font-semibold uppercase mb-0">Trouver des magasins</h1>
-    <span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
-    <ErrorCard {errorsHandler} />
-    <div
-      class="inline-flex items-center mb-3 themed text-center sticky -mx-4 px-4 filter-bar"
-      style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
+	<PageHeader name="Trouver des magasins"/>
+	<PageBody {errorsHandler}>
+		<div
+			class="inline-flex items-center mb-3 themed text-center sticky -mx-4 px-4 filter-bar"
+			style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
       width: -webkit-fill-available; width: fill-available;">
-      <SearchInput placeholder="Rechercher un magasin" />
-      <button
-        class="filter-btn bg-white py-2 px-3 rounded
+			<SearchInput placeholder="Rechercher un magasin"/>
+			<button
+				class="filter-btn bg-white py-2 px-3 rounded
         text-sm shadow-md flex flex-nowrap items-center ml-2"
-        class:text-white={$filters.tags && $filters.tags.length > 0}
-        class:bg-accent={$filters.tags && $filters.tags.length > 0}
-        on:click={showFiltersModal}>
-        <Icon class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}" data={faFilter} />
-        {#if $filters.tags && $filters.tags.length > 0}
-          <span class="text-white">{$filters.tags.length}</span>
-        {/if}
-      </button>
-    </div>
-    {#if $isLoading}
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-3">
-        {#each Array(9) as _i}
-          <SkeletonStoreCard  />
-        {/each}
-      </div>
-    {:else}
-      <div class="flex flex-wrap mb-3">
-        {#if $filters.tags && $filters.tags.length > 0}
-          {#each $filters.tags as tag}
+				class:text-white={$filters.tags && $filters.tags.length > 0}
+				class:bg-accent={$filters.tags && $filters.tags.length > 0}
+				on:click={showFiltersModal}>
+				<Icon class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+							data={faFilter}/>
+				{#if $filters.tags && $filters.tags.length > 0}
+					<span class="text-white">{$filters.tags.length}</span>
+				{/if}
+			</button>
+		</div>
+		{#if $isLoading}
+			<div
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-3">
+				{#each Array(9) as _i}
+					<SkeletonStoreCard/>
+				{/each}
+			</div>
+		{:else}
+			<div class="flex flex-wrap mb-3">
+				{#if $filters.tags && $filters.tags.length > 0}
+					{#each $filters.tags as tag}
             <span
-              style="font-size: .6rem"
-              class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+							style="font-size: .6rem"
+							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
               items-center bg-gray-200">
               {tag}
             </span>
-          {/each}
-        {/if}
-        {#if $filters.text}
+					{/each}
+				{/if}
+				{#if $filters.text}
           <span
-            style="font-size: .6rem"
-            class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
+						style="font-size: .6rem"
+						class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
             items-center bg-gray-200">
             termes: '{$filters.text}'
           </span>
-        {/if}
-      </div>
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+				{/if}
+			</div>
+			<div
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
         md:gap-3 -mx-4 md:mx-0">
-        {#each $items as store, index}
-          <StoreCard {store} bind:hoveredStore {businessLocation} />
-          {#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
-            <div use:fetchMoreOnIntersect>
-              <SkeletonStoreCard />
-            </div>
-          {/if}
-        {/each}
-        {#if $isFetchingMore}
-          {#each Array(3) as _i}
-            <SkeletonStoreCard />
-          {/each}
-        {/if}
-      </div>
-    {/if}
-  </div>
+				{#each $items as store, index}
+					<StoreCard {store} bind:hoveredStore {businessLocation}/>
+					{#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
+						<div use:fetchMoreOnIntersect>
+							<SkeletonStoreCard/>
+						</div>
+					{/if}
+				{/each}
+				{#if $isFetchingMore}
+					{#each Array(3) as _i}
+						<SkeletonStoreCard/>
+					{/each}
+				{/if}
+			</div>
+		{/if}
+	</PageBody>
 </TransitionWrapper>
 {#if $selectedItem}
-  <div
-    id="store-details"
-    class="fixed overflow-y-scroll overflow-x-hidden shadow right-0 top-0 h-screen
+	<div
+		id="store-details"
+		class="fixed overflow-y-scroll overflow-x-hidden shadow right-0 top-0 h-screen
     store-details bg-white"
-    transition:fly={{ x: 600, duration: 300 }}
-    style="z-index: 10; padding-bottom: 60px;">
-      <StoreDetails />
-  </div>
+		transition:fly={{ x: 600, duration: 300 }}
+		style="z-index: 10; padding-bottom: 60px;">
+		<StoreDetails/>
+	</div>
 {/if}
 
 <style lang="scss">
-  .filter-btn {
-    min-height: 44px;
-  }
+	.filter-btn {
+		min-height: 44px;
+	}
 
-  .search-stores {
-    @media (min-width: 768px) {
-      margin-bottom: 65px;
-    }
-  }
+	.search-stores {
+		@media (min-width: 768px) {
+			margin-bottom: 65px;
+		}
+	}
 
-  $store-details-panel-size: 600px;
+	$store-details-panel-size: 600px;
 
-  .filter-bar {
-    top: 64px;
-  }
+	.filter-bar {
+		top: 64px;
+	}
 
-  @media (max-width: 1024px) {
+	@media (max-width: 1024px) {
 
-    .filter-btn {
-      max-width:55px;
-    }
+		.filter-btn {
+			max-width: 55px;
+		}
 
-    .filter-bar {
-      top: 45px;
-    }
+		.filter-bar {
+			top: 45px;
+		}
 
-    .cart-panel {
-      top: 45px;
-      transform: translateY(100%);
+		.cart-panel {
+			top: 45px;
+			transform: translateY(100%);
 
-      &.active {
-        width: 100%;
-        transform: translateY(0px);
+			&.active {
+				width: 100%;
+				transform: translateY(0px);
 
-        .bottom-items {
-          width: 100%;
-        }
-      }
-    }
-  }
+				.bottom-items {
+					width: 100%;
+				}
+			}
+		}
+	}
 
-  .store-details {
-    width: $store-details-panel-size;
+	.store-details {
+		width: $store-details-panel-size;
 
-    @media (max-width: 1024px) {
-      top: 45px;
-      padding-bottom: 115px !important;
-      width: 100%;
-    }
-  }
+		@media (max-width: 1024px) {
+			top: 45px;
+			padding-bottom: 115px !important;
+			width: 100%;
+		}
+	}
 
-  .bottom-mobile-cta {
-    @media (min-width: 1025px) {
-      display: none;
-    }
+	.bottom-mobile-cta {
+		@media (min-width: 1025px) {
+			display: none;
+		}
 
-    transform: translateY(64px);
-    z-index: 4;
+		transform: translateY(64px);
+		z-index: 4;
 
-    &.active {
-      transform: translateY(0px);
-    }
-  }
+		&.active {
+			transform: translateY(0px);
+		}
+	}
 </style>

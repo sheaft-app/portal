@@ -76,7 +76,7 @@
       return [];
     }
 
-    return res.data;
+    return res.data[0].deliveries;
   }
 
   const openAgreement = () => {
@@ -87,7 +87,7 @@
   const showCreateAgreementModal = () => {
     open(CreateAgreementModal, {
       submit: () => {},
-      producerId: producer.id,
+      producer: producer,
       storeId: GetAuthInstance().user.profile.id,
       onClosed: (res) => {
         if (res.success) {

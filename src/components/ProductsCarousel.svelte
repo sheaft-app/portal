@@ -1,5 +1,5 @@
 <script>
-	import {onMount, createEventDispatcher} from "svelte";
+	import {createEventDispatcher} from "svelte";
 	import Icon from "svelte-awesome";
 	import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 	import SwiperCore, {Navigation} from 'swiper';
@@ -11,34 +11,16 @@
 	import RatingStars from "./rating/RatingStars.svelte";
 	import GetAuthInstance from "./../services/SheaftAuth.js";
 	import GetGraphQLInstance from "./../services/SheaftGraphQL.js";
-	import {GET_PRODUCER_PRODUCTS} from "./queries.js";
-	import Loader from "./Loader.svelte";
 
-	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
+	export let products, producerName, breakpoints = null;
 
 	const graphQLInstance = GetGraphQLInstance();
 	const dispatch = createEventDispatcher();
 	const authInstance = GetAuthInstance();
 
-	let products = [];
 	let ref = null;
-	let isLoading = true;
 
 	SwiperCore.use([Navigation]);
-
-	onMount(async () => {
-		isLoading = true;
-		if (producerId) {
-			const result = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {id: producerId}, errorsHandler.Uuid);
-			if (!result.success) {
-				isLoading = false;
-				return;
-			}
-
-			products = result.data.products.filter((p) => p.id !== productParentId);
-		}
-		isLoading = false;
-	});
 
 	const handleSlideChange = (e) => {
 		const nextButton = ref.$$.ctx[6]; // todo : find a better way
@@ -74,11 +56,9 @@
 	$: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
 </script>
 
-{#if isLoading}
-	<Loader/>
-{:else if products.length > 0}
+{#if products.length > 0}
 	<p
-		class="font-semibold pt-5 mb-3">{productParentId ? `Autres produits de ${producerName}` : `Produits de ${producerName}`}</p>
+		class="font-semibold pt-5 mb-3">{`Produits de ${producerName}`}</p>
 	<Swiper
 		navigation
 		threshold={6}
@@ -103,8 +83,7 @@
 		spaceBetween={20}
 		slidesPerView={2}
 		on:swiper={(e) => handleSlideChange(e)}
-		on:slideChange={(e) => handleSlideChange(e)}
-	>
+		on:slideChange={(e) => handleSlideChange(e)}>
 		{#each products as product}
 			<SwiperSlide let:data="{{ isNext }}">
 				<div class="border border-light rounded-lg h-full bg-white cursor-pointer"

@@ -4,13 +4,13 @@
     import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
     import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
     import { products } from "./stores";
-  
+
     export let alreadyPresentProducts = [], close;
 
     const graphQLInstance = GetGraphQLInstance();
 
     let allProducts = [];
-  
+
     const handleSubmit = async () => {
         const temp = allProducts.filter((p) => p.checked);
 
@@ -24,16 +24,17 @@
         close();
     };
 
-    const selectAll = () => {
+    const toggleAll = () => {
+    	let checked = !hasSelectedAll;
         allProducts = allProducts.map((p) => ({
             ...p,
-            checked: true
+            checked: checked
         }));
     }
 
     onMount(async() => {
         const result = await graphQLInstance.query(GET_PRODUCTS);
-        
+
         allProducts = result.data.filter((p) => !alreadyPresentProducts.includes(p.id)).map((p) => ({
             ...p,
             checked: false
@@ -45,14 +46,14 @@
 
     $: hasSelectedAll = allProducts.filter((p) => !p.checked).length == 0;
   </script>
-  
+
   <div class="pb-2">
     <div class="flex justify-between bg-primary -mx-6 px-6 py-2 -mt-2 items-center md:rounded-t-l">
       <h3 class="text-lg font-semibold text-white mb-0">
         Choisir des produits à ajouter
       </h3>
     </div>
-    <div class="flex items-center cursor-pointer mt-3 mb-2" on:click={() => selectAll()}>
+    <div class="flex items-center cursor-pointer mt-3 mb-2" on:click={() => toggleAll()}>
         <div class="w-1/12">
             <InputCheckbox
             checked={hasSelectedAll} />
@@ -70,5 +71,4 @@
     {/each}
     <button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}>Ajouter ces produits</button>
   </div>
-  
-    
+

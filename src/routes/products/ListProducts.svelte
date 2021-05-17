@@ -3,8 +3,8 @@
 	import ImportProducts from "./ImportProducts.svelte";
 	import SetProductsAvailability from "./SetProductsAvailability.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
-	import { onMount, getContext } from "svelte";
-	import { format } from "date-fns";
+	import {onMount, getContext} from "svelte";
+	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import Icon from "svelte-awesome";
 	import {
@@ -15,28 +15,34 @@
 		faTrash,
 		faTimesCircle,
 		faPlus,
-		faFileImport
+		faFileImport,
+		faInfo,
 	} from "@fortawesome/free-solid-svg-icons";
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
-	import { GET_PRODUCTS, HAS_PRODUCTS_IMPORT_INPROGRESS } from "./queries.js";
+	import {GET_PRODUCTS, HAS_PRODUCTS_IMPORT_INPROGRESS} from "./queries.js";
+	import {SET_PRODUCTS_AVAILABILITY} from "./mutations.js";
 	import ProductRoutes from "./routes.js";
 	import JobRoutes from "./../jobs/routes.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import { toggleMoreActions } from "./../../stores/app";
-import JobKind from "../../enums/JobKind";
+	import {formatMoney} from "./../../helpers/app";
+	import {toggleMoreActions} from "./../../stores/app";
+	import JobKind from "../../enums/JobKind";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const { open } = getContext("modal");
-	const { query } = getContext("api");
+	const {open} = getContext("modal");
 	const routerInstance = GetRouterInstance();
+	const { query } = getContext("api");
 
 	let items = [];
 	let selectedItems = [];
 	let isLoading = true;
+	let noResults = true;
 
 	onMount(async () => {
 		hasPendingJobs = await query({
@@ -49,10 +55,10 @@ import JobKind from "../../enums/JobKind";
 	});
 
 	const headers = [
-		{ name: "Produit", sortLabel: "name" },
-		{ name: "Visible pour", displayOn: "md" },
-		{ name: "Notation", displayOn: "md" },
-		{ name: "Créé le", sortLabel: "createdOn", displayOn: "md" },
+		{name: "Produit", sortLabel: "name"},
+		{name: "Visible pour", displayOn: "md"},
+		{name: "Notation", displayOn: "md"},
+		{name: "Créé le", sortLabel: "createdOn", displayOn: "md"},
 	];
 
 	const showDeleteModal = () => {
@@ -99,20 +105,20 @@ import JobKind from "../../enums/JobKind";
 	};
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(ProductRoutes.Details, { id: item.id });
+		routerInstance.goTo(ProductRoutes.Details, {id: item.id});
 	};
 
-	const getProductVisibility = product =>{
+	const getProductVisibility = product => {
 		var visibleTo = [];
-		if(product.visibleToStores)
+		if (product.visibleToStores)
 			visibleTo.push("Magasins");
-		if(product.visibleToConsumers)
+		if (product.visibleToConsumers)
 			visibleTo.push("Consommateurs");
 
-		if(visibleTo.length == 2)
+		if (visibleTo.length == 2)
 			return ["Tous"];
 
-		if(visibleTo.length == 0)
+		if (visibleTo.length == 0)
 			return ["Personne"];
 
 		return visibleTo;
@@ -165,129 +171,98 @@ import JobKind from "../../enums/JobKind";
 			color: "blue",
 		},
 	];
-
-	$: displayNoResults = !isLoading && items.length < 1;
 </script>
 
-<svelte:head>
-	<title>Mes produits</title>
-</svelte:head>
-
 <TransitionWrapper>
-	<ErrorCard {errorsHandler} />
-	{#if hasPendingJobs}
-		<div
-			class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
+	<PageHeader name="Mes produits"/>
+	<PageBody {errorsHandler}>
+		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		{#if !isLoading && hasPendingJobs}
+			<div
+				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
 				text-gray-600 shadow rounded mb-5">
-			<div class="flex">
-				<Icon data={faCircleNotch} spin scale="1.3" class="mr-5" />
-				<div>
-					<p class="uppercase font-bold leading-none mb-2">
-						Imports de produits
-					</p>
-					<p>
-						Plusieurs imports de produits dans votre catalogue sont en cours.
-						Nous vous informerons quand ce sera terminé.
-					</p>
-					<div class="mt-2">
-						<a
-							href="javascript:void(0)"
-							on:click={() => goToJobs()}
-							class="btn py-2 px-3 bg-white shadow font-semibold
+				<div class="flex">
+					<Icon data={faCircleNotch} spin scale="1.3" class="mr-5"/>
+					<div>
+						<p class="uppercase font-bold leading-none mb-2">
+							Imports de produits
+						</p>
+						<p>
+							Plusieurs imports de produits dans votre catalogue sont en cours.
+							Nous vous informerons quand ce sera terminé.
+						</p>
+						<div class="mt-2">
+							<a
+								href="javascript:void(0)"
+								on:click={() => goToJobs()}
+								class="btn py-2 px-3 bg-white shadow font-semibold
 								hover:bg-gray-100"
-							style="width: max-content;">
-							Voir les tâches en cours
-						</a>
+								style="width: max-content;">
+								Voir les tâches en cours
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{/if}
-
-	{#if !displayNoResults}
-		<Actions {actions} selectedItemsNumber={selectedItems.length} />
-	{/if}
-	<Table
-		let:rowItem={product}
-		bind:items
-		{headers}
-		bind:isLoading
-		graphQuery={GET_PRODUCTS}
-		{errorsHandler}
-		defaultSearchValues={ProductRoutes.List.Params.Query}
-		bind:selectedItems
-		{onRowClick}>
-		<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-			<div
-				class="text-sm leading-5 font-medium truncate"
-				style="max-width: 180px;" class:text-orange-500={!product.available}>
-				{product.name}
-			</div>
-			<div class="text-sm leading-5 text-gray-600">#{product.reference}</div>
-			<div class="block md:hidden">
-				<RatingStars rating={product.rating} />
-			</div>
-		</td>
-		<td
-			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
+		{/if}
+		<Table
+			let:rowItem={product}
+			bind:items
+			{headers}
+			bind:isLoading
+			graphQuery={GET_PRODUCTS}
+			loadingMessage="Chargement de vos produits en cours... veuillez patienter"
+			noResultsPage={ProductRoutes.NoResults}
+			{errorsHandler}
+			defaultSearchValues={ProductRoutes.List.Params.Query}
+			bind:selectedItems
+			bind:noResults
+			{onRowClick}>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+				<div
+					class="text-sm leading-5 font-medium truncate"
+					style="max-width: 180px;" class:text-orange-500={!product.available}>
+					{product.name}
+				</div>
+				<div class="text-sm leading-5 text-gray-600">#{product.reference}</div>
+				<div class="block md:hidden">
+					<RatingStars rating={product.rating}/>
+				</div>
+			</td>
+			<td
+				class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				hidden md:table-cell">
-			<div class="text-sm leading-5">
-				<ul class="text-sm mt-2 font-semibold">
-					{#each getProductVisibility(product) as target}
-					  <li>{target}</li>
-					{/each}
-				</ul>
-			</div>
-		</td>
-		<td
-			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
+				<div class="text-sm leading-5">
+					<ul class="text-sm mt-2 font-semibold">
+						{#each getProductVisibility(product) as target}
+							<li>{target}</li>
+						{/each}
+					</ul>
+				</div>
+			</td>
+			<td
+				class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				hidden md:table-cell">
-			<div class="text-sm leading-5 font-medium">
-				<RatingStars rating={product.rating} />
-			</div>
-		</td>
-		<td
-			class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
+				<div class="text-sm leading-5 font-medium">
+					<RatingStars rating={product.rating}/>
+				</div>
+			</td>
+			<td
+				class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				text-sm leading-5 hidden md:table-cell">
-			<div>
-				<p>
-					<Icon data={faCalendarAlt} scale=".8" class="inline" />
-					{format(new Date(product.createdOn), 'PP', { locale: fr })}
-				</p>
-				<p class="text-gray-600">
-					<Icon data={faClock} scale=".8" class="inline" />
-					{format(new Date(product.createdOn), 'p', { locale: fr })}
-				</p>
-			</div>
-		</td>
-	</Table>
-
-	{#if displayNoResults}
-		<div class="text-xl text-gray-600">
-			<p class="mb-3">
-				Vous n'avez pas encore de produits dans votre catalogue.
-			</p>
-			<div
-				class="flex flex-wrap mb-5 justify-center w-full flex-col-reverse
-					md:flex-row">
-				<button
-					class="btn btn-lg bg-white shadow md:mr-5 justify-center text-normal"
-					on:click={createNewProduct}>
-					Créer un produit
-				</button>
-				<button
-					class="btn btn-lg btn-primary mb-3 md:mb-0 justify-center"
-					on:click={showImportModal}>
-					Importer plusieurs produits
-				</button>
-			</div>
-			<img
-				src="./img/start_importing.svg"
-				class="hidden md:block pt-10"
-				style="width: 200px; height: auto"
-				alt="Commençons à importer des produits !" />
-		</div>
-	{/if}
+				<div>
+					<p>
+						<Icon data={faCalendarAlt} scale=".8" class="inline"/>
+						{format(new Date(product.createdOn), 'PP', {locale: fr})}
+					</p>
+					<p class="text-gray-600">
+						<Icon data={faClock} scale=".8" class="inline"/>
+						{format(new Date(product.createdOn), 'p', {locale: fr})}
+					</p>
+				</div>
+			</td>
+		</Table>
+	</PageBody>
 </TransitionWrapper>
 
 <style lang="scss">

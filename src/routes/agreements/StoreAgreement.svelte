@@ -165,7 +165,7 @@
 						<div
 							class="leading-5 font-medium truncate"
 							style="max-width: 100px;">
-							<span>{product.wholeSalePricePerUnit}€</span>
+							<span>{product.wholeSalePricePerUnit}€ HT</span>
 						</div>
 					</div>
 				{/each}

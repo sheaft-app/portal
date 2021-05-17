@@ -14,6 +14,7 @@
 	import {GET_PRODUCER_DELIVERIES} from "../search-producers/queries";
 	import DeliveryKind from "../../enums/DeliveryKind";
 	import Loader from "../../components/Loader.svelte";
+	import ProductsCarousel from "../../components/ProductsCarousel.svelte";
 
 	export let agreement, distanceInfos;
 
@@ -30,7 +31,7 @@
 
 		if (!agreement.delivery || !agreement.delivery.deliveryHours || agreement.delivery.deliveryHours.length < 1) {
 			var deliveryRes = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: ids
+				input: [agreement.producer.id]
 			});
 
 			if (!deliveryRes.success) {
@@ -127,8 +128,11 @@
 				</div>
 			{/if}
 			<div class="w-full">
-				<ProducerOtherProducts producerName={producer.name}
-															 producerId={producer.id} {errorsHandler}/>
+				{#if agreement.catalog && agreement.catalog.products}
+					<ProductsCarousel producerName={producer.name} products={agreement.catalog.products}/>
+				{:else}
+					<ProducerOtherProducts producerName={producer.name} producerId={producer.id} {errorsHandler}/>
+				{/if}
 			</div>
 
 			{#if agreement.delivery && agreement.delivery.deliveryHours && agreement.delivery.deliveryHours.length > 0}
@@ -139,12 +143,12 @@
 							<div class="flex mb-2 border-gray-300"
 									 class:pb-2={index !== agreement.delivery.deliveryHours.length - 1}
 									 class:border-b={index !== agreement.delivery.deliveryHours.length - 1}>
-									 
+
 								<p style="min-width: 100px;">
 									{DayOfWeekKind.label(deliveryHour.day)}
 								</p>
 								<div>
-										<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+									<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
 								</div>
 							</div>
 						{/each}

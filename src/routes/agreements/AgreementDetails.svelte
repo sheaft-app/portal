@@ -80,7 +80,7 @@
 			agreements: [obj],
 			onClose: async res => {
 				if (res.success) {
-					await getAgreement(agreement.id);
+					routerInstance.reload();
 				}
 			}
 		});
@@ -106,10 +106,6 @@
 		await getAgreement(params.id);
 	});
 </script>
-
-<svelte:head>
-	<title>Détails de l'accord</title>
-</svelte:head>
 
 <TransitionWrapper>
 	<PageHeader name="Détails du partenariat" previousPage={AgreementRoutes.List}/>

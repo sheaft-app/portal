@@ -42,7 +42,15 @@ const DeliveryRoutes = {
 		Params: {
 			id: null,
 		}
-	}
+	},
+	NoResults: {
+		Name: "Ajouter un nouveau créneau",
+		Icon: faTruck,
+		Path: `${prefix}${create}`,
+		SubPart: `${create}`,
+		Params: null,
+		Text:"Aucun créneau de livraison disponible"
+	},
 };
 
 export default DeliveryRoutes;

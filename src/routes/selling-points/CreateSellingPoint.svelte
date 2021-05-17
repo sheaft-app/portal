@@ -12,13 +12,18 @@
   import { GET_SELLING_POINTS } from "./queries";
   import form from "../../stores/form";
   import { normalizeSellingPoint } from "./sellingPointForm";
+	import PageHeader from "../../components/PageHeader.svelte";
+	import PageBody from "../../components/PageBody.svelte";
 
   const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
   const { mutate } = getContext('api');
 
+  let isLoading = false;
+
   const handleSubmit = async () => {
-    return mutate({
+		isLoading = true;
+    return await mutate({
 			mutation: CREATE_SELLING_POINT,
 			variables: normalizeSellingPoint(form.values()),
 			errorsHandler,
@@ -30,21 +35,12 @@
   };
 </script>
 
-<svelte:head>
-  <title>Ajouter un point de vente directe</title>
-</svelte:head>
-
 <TransitionWrapper>
-  <ErrorCard {errorsHandler} />
-  <section
-    class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
-    <div class="mb-3">
-        <button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goBack()}>
-        <Icon data={faChevronLeft} class="mr-2 inline" />
-        Points de vente
-        </button>
-    </div>
-        <h1 class="font-semibold uppercase mb-0">Créer un nouveau point de vente</h1>
-  </section>
-  <SellingPointForm submit={handleSubmit} />
+	<PageHeader name="Créer un point de vente" previousPage={SellingPointRoutes.List}/>
+	<PageBody {errorsHandler} {isLoading}
+						loadingMessage="Création de votre point de vente en cours... veuillez patienter.">
+		<SellingPointForm
+			submit={handleSubmit}
+			{isLoading}/>
+	</PageBody>
 </TransitionWrapper>
