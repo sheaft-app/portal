@@ -1,9 +1,6 @@
 <script>
 	import {onMount, onDestroy, getContext} from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import Loader from "./../../components/Loader.svelte";
-	import Icon from "svelte-awesome";
-	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 	import {UPDATE_SELLING_POINT} from "./mutations";
 	import {GET_SELLING_POINTS, GET_SELLING_POINT_DETAILS} from "./queries";
 	import SellingPointForm from "./SellingPointForm.svelte";
@@ -11,7 +8,6 @@
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import SellingPointRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import SetSellingPointAvailability from "./SetSellingPointAvailability.svelte";
 	import {normalizeSellingPoint} from "./sellingPointForm";
 	import PageHeader from "../../components/PageHeader.svelte";
@@ -26,7 +22,6 @@
 
 	let isLoading = true;
 	let sellingPoint = null;
-	let loadingMessage = "Chargement des informations de votre point de vente en cours... veuillez patienter.";
 
 	onMount(async () => {
 		isLoading = true;
@@ -41,7 +36,6 @@
 	});
 
 	const handleSubmit = async () => {
-		isLoading = true;
 		return await mutate({
 			mutation: UPDATE_SELLING_POINT,
 			variables: normalizeSellingPoint(sellingPoint),
@@ -78,10 +72,9 @@
 
 <TransitionWrapper>
 	<PageHeader name="Modifier un point de vente" previousPage={SellingPointRoutes.List} {buttons}/>
-	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre point de vente en cours... veuillez patienter.">
 		<SellingPointForm
 			submit={handleSubmit}
-			bind:sellingPoint
-			{isLoading}/>
+			bind:sellingPoint/>
 	</PageBody>
 </TransitionWrapper>

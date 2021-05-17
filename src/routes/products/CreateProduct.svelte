@@ -17,10 +17,8 @@
 	const {query, mutate} = getContext("api");
 
 	let isLoading = true;
-	let loadingMessage = null;
 
 	onMount(async () => {
-		loadingMessage = "Initialisation en cours... veuillez patienter.";
 		isLoading = true;
 		await query({
 			query: GET_PRODUCER_DETAILS,
@@ -33,8 +31,6 @@
 	});
 
 	const handleSubmit = async () => {
-		loadingMessage = "Création de votre produit en cours... veuillez patienter.";
-		isLoading = true;
 		return await mutate({
 			mutation: CREATE_PRODUCT,
 			variables: normalizeCreateProduct(form.values()),
@@ -49,10 +45,9 @@
 
 <TransitionWrapper>
 	<PageHeader name="Créer un produit" previousPage={ProductRoutes.List}/>
-	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Initialisation en cours... veuillez patienter.">
 		<ProductForm
 			submit={handleSubmit}
-			{isLoading}
 			{errorsHandler} />
 	</PageBody>
 </TransitionWrapper>

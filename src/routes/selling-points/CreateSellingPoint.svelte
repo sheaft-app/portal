@@ -2,13 +2,10 @@
   import { getContext } from "svelte";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { CREATE_SELLING_POINT } from "./mutations";
-  import Icon from "svelte-awesome";
-  import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import SellingPointForm from "./SellingPointForm.svelte";
   import SellingPointRoutes from "./routes";
   import SheaftErrors from "../../services/SheaftErrors";
-  import ErrorCard from "./../../components/ErrorCard.svelte";
   import { GET_SELLING_POINTS } from "./queries";
   import form from "../../stores/form";
   import { normalizeSellingPoint } from "./sellingPointForm";
@@ -19,10 +16,7 @@
   const routerInstance = GetRouterInstance();
   const { mutate } = getContext('api');
 
-  let isLoading = false;
-
   const handleSubmit = async () => {
-		isLoading = true;
     return await mutate({
 			mutation: CREATE_SELLING_POINT,
 			variables: normalizeSellingPoint(form.values()),
@@ -37,10 +31,8 @@
 
 <TransitionWrapper>
 	<PageHeader name="Créer un point de vente" previousPage={SellingPointRoutes.List}/>
-	<PageBody {errorsHandler} {isLoading}
-						loadingMessage="Création de votre point de vente en cours... veuillez patienter.">
+	<PageBody {errorsHandler} >
 		<SellingPointForm
-			submit={handleSubmit}
-			{isLoading}/>
+			submit={handleSubmit}/>
 	</PageBody>
 </TransitionWrapper>

@@ -25,7 +25,6 @@
 
 	let returnable = null;
 	let isLoading = true;
-	let loadingMessage = "Récupération des informations de votre consigne en cours... veuillez patienter";
 
 	onMount(async () => {
 		isLoading = true;
@@ -40,7 +39,6 @@
 	});
 
 	const handleSubmit = async () => {
-		isLoading = true;
 		return await mutate({
 			mutation: UPDATE_RETURNABLE,
 			variables: returnable,
@@ -68,7 +66,7 @@
 
 <TransitionWrapper>
 	<PageHeader name="Modifier la consigne" previousPage={ReturnableRoutes.List} {buttons}/>
-	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
-		<ReturnableForm submit={handleSubmit} {returnable} {isLoading}/>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Récupération des informations de votre consigne en cours... veuillez patienter">
+		<ReturnableForm submit={handleSubmit} {returnable}/>
 	</PageBody>
 </TransitionWrapper>

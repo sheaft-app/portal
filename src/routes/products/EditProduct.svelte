@@ -21,7 +21,6 @@
 	const errorsHandler = new SheaftErrors();
 
 	let product = null;
-	let loadingMessage = "Chargement des informations de votre produit en cours... veuillez patienter.";
 	let isLoading = true;
 
 	onMount(async () => {
@@ -37,7 +36,6 @@
 	});
 
 	const handleSubmit = async () => {
-		isLoading = true;
 		return await mutate({
 			mutation: UPDATE_PRODUCT,
 			variables: normalizeUpdateProduct(product),
@@ -74,11 +72,10 @@
 
 <TransitionWrapper>
 	<PageHeader name="Modifier le produit" previousPage={ProductRoutes.List} {buttons}/>
-	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre produit en cours... veuillez patienter.">
 		<ProductForm
 			submit={handleSubmit}
 			{product}
-			{isLoading}
 			{errorsHandler} />
 	</PageBody>
 </TransitionWrapper>
