@@ -26,3 +26,11 @@ export const REFUSE_AGREEMENTS = gql`
 		}
 	}
 `
+export const UPDATE_AGREEMENT_CATALOG = gql`
+	mutation updateAgreementCatalog($input: ChangeAgreementCatalogInput!) {
+		changeAgreementCatalog(input: $input) {
+				id
+				status
+		}
+	}
+`
