@@ -37,7 +37,7 @@
 	let items = [];
 	let noResults = false;
 	let selectedItems = [];
-	$: isLoading = true;
+	let isLoading = true;
 	let selectedStatus = null;
 
 	let isProducer = authInstance.isInRole(Roles.Producer.Value);
