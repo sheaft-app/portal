@@ -2,14 +2,14 @@
   "private": true,
   "name": "sheaft",
   "scripts": {
-    "autobuild": "rollup -c -w",
+    "autobuild": "nollup -c --hot --port 4200 --content-base ./public",
     "sprint": "set NODE_ENV=PRODUCTION && rollup -c",
     "staging": "set NODE_ENV=PRODUCTION && rollup -c",
     "production": "set NODE_ENV=PRODUCTION && rollup -c",
-    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "start:dev": "sirv public --dev --single --port 4200"
+    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
+    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
+    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
+    "start:dev": "sirv public"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "~7.13.17",
@@ -99,6 +99,8 @@
     "rollup-plugin-svelte-svg": "~0.2.3",
     "rollup-plugin-terser": "~7.0.2",
     "rollup-plugin-workbox": "~6.1.1",
+    "rollup-plugin-svelte-hot": "~0.13.0",
+    "rollup-plugin-hot": "~0.1.1",
     "sirv-cli": "~1.0.11",
     "stylelint": "~13.12.0",
     "stylelint-config-recommended": "~3.0.0",

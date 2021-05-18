@@ -12,7 +12,6 @@
 	import {form, bindClass} from '../../../vendors/svelte-forms/src/index';
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import ClosingDates from "./../../components/ClosingDates.svelte";
-	import {product} from "../products/ProductForm.svelte";
 
 	export let submit, initialValues, isLoading;
 	let delivery = initialValues;

@@ -1,4 +1,4 @@
-import svelte from "rollup-plugin-svelte";
+import svelte from "rollup-plugin-svelte-hot";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
@@ -11,19 +11,58 @@ import { generateSW } from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
 import alias from "rollup-plugin-alias";
 import define from 'rollup-plugin-define';
+import hmr from 'rollup-plugin-hot';
 
-const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
+const isNollup = !!process.env.NOLLUP
+const isWatch = !!process.env.ROLLUP_WATCH
+const isLiveReload = !!process.env.LIVERELOAD
 
+const isDev = isWatch || isLiveReload
+const production = !isDev
+
+const isHot = isWatch && !isLiveReload
+
+function serve() {
+	let server
+
+	function toExit() {
+		if (server) server.kill(0)
+	}
+
+	return {
+		name: 'svelte/template:serve',
+		writeBundle() {
+			if (server) return
+			server = require('child_process').spawn(
+				'npm',
+				['run', 'start', '--', '--dev'],
+				{
+					stdio: ['ignore', 'inherit', 'inherit'],
+					shell: true,
+				}
+			)
+
+			process.on('SIGTERM', toExit)
+			process.on('exit', toExit)
+		},
+	}
+}
 export default {
 	input: "src/index.js",
 	output: [
-		{
+		!production ?{
+			format: 'iife',
+			name: 'app',
+			file: 'public/dist/index.js',
+			sourcemap: !production,
+			compact: production,
+		} : {
 			name: "module",
 			dir: `${buildDir}`,
 			format: "es",
-			sourcemap: !production,
-			compact: production,
+				sourcemap: !production,
+				compact: production,
 		},
 		// {
 		// 	name: "nomodule",
@@ -34,7 +73,7 @@ export default {
 		// },
 	],
 	manualChunks(id) {
-		if (id.includes("node_modules")) {
+		if (production && id.includes("node_modules")) {
 			return "vendor";
 		}
 	},
@@ -68,6 +107,18 @@ export default {
 				},
 				scss: true,
 			}),
+			hot: isHot && {
+				// Optimistic will try to recover from runtime
+				// errors during component init
+				optimistic: true,
+				// Turn on to disable preservation of local component
+				// state -- i.e. non exported `let` variables
+				noPreserveState: false,
+
+				// See docs of rollup-plugin-svelte-hot for all available options:
+				//
+				// https://github.com/rixo/rollup-plugin-svelte-hot#usage
+			},
 		}),
 		svelteSVG(),
 		postcss(),
@@ -134,8 +185,32 @@ export default {
 			browser: true,
 			dedupe: ["svelte"],
 		}),
-		commonjs({
-			include: "node_modules/**",
+		commonjs(),
+		isDev && !isNollup && serve(),
+
+		// Watch the `public` directory and refresh the
+		// browser on changes when not in production
+		isLiveReload && livereload('public'),
+
+		// If we're building for production (npm run build
+		// instead of npm run dev), minify
+		production && terser(),
+
+		hmr({
+			public: 'public',
+			inMemory: true,
+
+			// Default host for the HMR server is localhost, change this option if
+			// you want to serve over the network
+			// host: '0.0.0.0',
+			// You can also change the default HMR server port, if you fancy
+			// port: '12345'
+
+			// This is needed, otherwise Terser (in npm run build) chokes
+			// on import.meta. With this option, the plugin will replace
+			// import.meta.hot in your code with module.hot, and will do
+			// nothing else.
+			compatModuleHot: !isHot,
 		}),
 		production && generateSW({
 			swDest: "public/sw.js",
@@ -263,15 +338,7 @@ export default {
 					},
 				},
 			],
-		}),
-		!production &&
-			livereload({
-				watch: "public/dist",
-			}),
-		production &&
-			terser({
-				module: false,
-			}),
+		})
 	],
 	watch: {
 		clearScreen: false,
