@@ -34,8 +34,7 @@ export const CREATE_PRODUCT = gql`
 				kind
 			}
 			available
-			visibleToStores
-			visibleToConsumers
+			visibleTo
 		}
 	}
 `;
@@ -82,8 +81,7 @@ export const UPDATE_PRODUCT = gql`
 				name
 			}
 			available
-			visibleToStores
-			visibleToConsumers
+			visibleTo
 		}
 	}
 `;

@@ -36,8 +36,6 @@
 		picture: null,
 		tags: [],
     available: true,
-    visibleToStores: true,
-    visibleToConsumers: true,
     catalogs:[]
   };
 
