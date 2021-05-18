@@ -41,6 +41,7 @@ export const GET_AGREEMENTS = gql`
 							name
 						}
 						delivery {
+							id
 							name
 							deliveryHours{
 							from
