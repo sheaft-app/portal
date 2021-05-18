@@ -75,7 +75,7 @@
 	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre produit en cours... veuillez patienter.">
 		<ProductForm
 			submit={handleSubmit}
-			{product}
+			bind:product
 			{errorsHandler} />
 	</PageBody>
 </TransitionWrapper>

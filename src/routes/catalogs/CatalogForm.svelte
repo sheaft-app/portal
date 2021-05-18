@@ -1,48 +1,41 @@
 <script>
+  import { onDestroy } from "svelte";
   import Icon from "svelte-awesome";
   import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
+  import form from "../../stores/form";
+  import { validators, initialValues } from "./catalogForm";
 	import Toggle from "./../../components/controls/Toggle.svelte";
   import ErrorContainer from "../../components/ErrorContainer.svelte";
   import CatalogProducts from "./CatalogProducts.svelte";
-import CatalogKind from "../../enums/CatalogKind";
+  import CatalogKind from "../../enums/CatalogKind";
 
-  export let submit, catalog, isLoading;
-
-  const catalogForm = form(() => ({
-    name: { value: catalog.name, validators: ['required', 'min:3'], enabled: true },
-    available: { value: catalog.available, validators: ['required'], enabled: true },
-    isDefault: { value: catalog.isDefault, validators: ['required'], enabled: true }
-	}), {
-    initCheck: false
-  });
+  export let submit, catalog = { ...initialValues };
+  
+	(() => catalog = form.initialize(catalog, validators, initialValues))();
 
   let invalidCatalogProducts = false;
 
-  const handleSubmit = () => {
-    catalogForm.validate();
-
-    if ($catalogForm.valid && !isLoading) {
-      submit();
-    }
-  }
+  onDestroy(async () => {
+		await form.destroy();
+	});
 </script>
 
-<form class="w-full" on:submit|preventDefault={handleSubmit}>
+<form class="w-full" on:submit|preventDefault={() => form.validateAndSubmit(submit)}>
   <div class={`mb-6 lg:mb-0`}>
     <div class="form-control">
       <div class="w-full">
         <label for="grid-product">Nom du catalogue *</label>
         <input
           bind:value={catalog.name}
-          class:disabled={isLoading}
-          use:bindClass={{ form: catalogForm, name: "name" }}
-          disabled={isLoading}
+          class:disabled={$form.isSubmitting}
+          use:bindClass={{ form, name: "name" }}
+          disabled={$form.isSubmitting}
           id="grid-product"
           type="text"
           placeholder="Catalogue petits magasins été" />
       </div>
-      <ErrorContainer field={$catalogForm.fields.name}/>
+      <ErrorContainer field={$form.fields.name}/>
     </div>
   </div>
   {#if catalog.id && catalog.id.length > 0}
@@ -65,7 +58,7 @@ import CatalogKind from "../../enums/CatalogKind";
 		<label>Actif</label>
 		<Toggle
 			labelPosition="left"
-			disabled={isLoading}
+			disabled={$form.isSubmitting}
 			classNames="ml-1"
 			bind:isChecked={catalog.available}>
 		</Toggle>
@@ -76,24 +69,24 @@ import CatalogKind from "../../enums/CatalogKind";
       <label>Utiliser comme catalogue par défaut pour les professionels</label>
       <Toggle
         labelPosition="left"
-        disabled={isLoading}
+        disabled={$form.isSubmitting}
         classNames="ml-1"
         bind:isChecked={catalog.isDefault}>
       </Toggle>
     </div>
   {/if}
-  <CatalogProducts catalog={catalog} bind:invalidCatalogProducts />
+  <CatalogProducts {catalog} bind:invalidCatalogProducts />
   <p class="text-sm mt-5">* champs requis</p>
   <div class="form-control mt-5">
     <button
       type="submit"
-      disabled={isLoading || invalidCatalogProducts}
-      class:disabled={isLoading || !$catalogForm.valid || invalidCatalogProducts}
+      disabled={$form.isSubmitting || invalidCatalogProducts}
+      class:disabled={$form.isSubmitting || !$form.valid || invalidCatalogProducts}
       class="btn btn-primary btn-xl justify-center w-full md:w-auto">
       <Icon
-        data={isLoading ? faCircleNotch : faPaperPlane}
+        data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
         class="mr-2 inline"
-        spin={isLoading} />
+        spin={$form.isSubmitting} />
       Valider
     </button>
   </div>

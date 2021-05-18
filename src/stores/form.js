@@ -1,7 +1,7 @@
 import { get, writable } from "svelte/store";
 import { form } from '../../vendors/svelte-forms/src/index';
 
-export const getDefaultFields = (values, initialValues, notRequiredValues) => Object.keys(values).reduce((acc, k) => {
+export const getDefaultFields = (values, initialValues, notRequiredValues = []) => Object.keys(values).reduce((acc, k) => {
     if (Object.keys(initialValues).includes(k)) 
         acc[k] = { value: values[k], validators: ['required'], enabled: !notRequiredValues.includes(k) };
     return acc;

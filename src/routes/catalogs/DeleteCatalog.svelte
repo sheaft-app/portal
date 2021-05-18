@@ -1,34 +1,25 @@
 <script>
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import { DELETE_CATALOGS } from "./mutations";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_CATALOGS } from "./queries";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 
 	export let catalog, close, onClose;
 
-	let isLoading = false;
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate, isLoading } = getContext("api");
 
-	const handleSubmit = async () => {
-		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			DELETE_CATALOGS, { ids: [catalog.id] },
-			errorsHandler.Uuid,
-			GET_CATALOGS
-    );
-    
-		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		return await handleClose(res);
-	};
+	const handleSubmit = async () => await mutate({
+		mutation: DELETE_CATALOGS,
+		variables: { ids: [catalog.id] },
+		errorsHandler,
+		success: (res) => handleClose(res),
+		successNotification: "Le catalogue a bien été supprimé",
+		errorNotification: "Impossible de supprimer ce catalogue",
+		clearCache: [GET_CATALOGS]
+	});
 
 	const handleClose = async (res) => {
 		close();
@@ -39,10 +30,10 @@
 <ActionConfirm
 	title="Suppression"
 	level="danger"
-	{isLoading}
+	isLoading={$isLoading}
 	submit={handleSubmit}
 	{errorsHandler}
-	close={() => handleClose({ success: false, data: null })}>
+	{close}>
 	<p class="leading-5">
 		Vous vous apprêtez à
 		<span class="text-gray-700">supprimer le catalogue {catalog.name}</span>
