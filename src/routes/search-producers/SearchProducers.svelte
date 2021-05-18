@@ -1,9 +1,7 @@
 <script>
 	import {onMount, onDestroy, getContext} from "svelte";
-	import AgreementStatusKind from "./../../enums/AgreementStatusKind.js";
 	import {fly} from "svelte/transition";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
-	import {SEARCH_PRODUCERS, GET_AGREEMENTS, GET_MY_BUSINESS_LOCATION} from "./queries.js";
+	import {SEARCH_PRODUCERS, GET_MY_BUSINESS_LOCATION} from "./queries.js";
 	import {isLoading, filters, isFetchingMore, items} from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import {selectedItem} from "./../../stores/app.js";
@@ -14,28 +12,20 @@
 	import {faFilter} from "@fortawesome/free-solid-svg-icons";
 	import {querystring} from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import Loader from "./../../components/Loader.svelte";
 	import SearchInput from "./../../components/controls/SearchInput.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Meta from "../../components/Meta.svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { normalizeSearchProducers } from "./searchProducersForm";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 	const {open} = getContext("modal");
 	const observer = new IntersectionObserver(onIntersect);
-	const defaultSearchValues = {
-		text: null,
-		tags: [],
-		sort: "producer_geolocation asc",
-		maxDistance: null,
-	};
 	const QUERY_SIZE = 20;
 
-	let totalProducers = 0;
 	let hoveredProducer = null;
 	let prevFeed = [];
 	let currentPage = 0;
@@ -63,80 +53,28 @@
 		}
 	}
 
-	const showFiltersModal = () => {
-		open(FiltersModal, {filters, visibleNav: true});
-	};
-
-	const createVariables = (page = 1) => {
-		let values = routerInstance.getQueryParams();
-		let tags = [];
-
-		if (Object.keys(values).length == 0) {
-			values = defaultSearchValues;
-		}
-
-		if (!values["sort"]) {
-			values["sort"] = defaultSearchValues.sort;
-		}
-
-		if (values["maxDistance"]) {
-			values["maxDistance"] = parseInt(values["maxDistance"]);
-		}
-
-		if (values["category"]) {
-			values["category"] = values["category"];
-			tags = [...tags, values["category"]];
-		}
-
-		if (values["labels"]) {
-			values["labels"] = values["labels"].split(",");
-			tags = [...tags, ...values["labels"]];
-		}
-
-		filters.set({
-			...values,
-			tags,
-		});
-
-		return {
-			input: {
-				text: $filters.text,
-				tags: $filters.tags,
-				sort: $filters.sort,
-				maxDistance: $filters.maxDistance,
-				page: page,
-				take: 20,
-			},
-		};
-	};
+	const showFiltersModal = () => open(FiltersModal, {filters, visibleNav: true});
 
 	async function refetch() {
 		isLoading.set(true);
 		await searchProducers(0);
-
 		isLoading.set(false);
 	}
 
 
 	const searchProducers = async (page) => {
 		currentPage = ++page;
-		var variables = createVariables(currentPage);
-
-		var response = await graphQLInstance.query(
-			SEARCH_PRODUCERS,
-			variables,
-			errorsHandler.Uuid
-		);
-
-		if (!response.success) {
-			//TODO
-			return;
-		}
-
-		totalProducers = response.data.count;
-		prevFeed = response.data.producers;
-		lastFetchLength = prevFeed.length;
-		items.set(prevFeed);
+		await query({
+			query: SEARCH_PRODUCERS,
+			variables: normalizeSearchProducers(routerInstance.getQueryParams(), currentPage),
+			errorsHandler,
+			success: (res) => {
+				prevFeed = res.producers;
+				lastFetchLength = prevFeed.length;
+				items.set(prevFeed);
+			},
+			errorNotification: "Impossible de récupérer les informations des producteurs."
+		});
 	};
 
 	var popStateListener = (event) => {
@@ -148,18 +86,12 @@
 	onMount(async () => {
 		items.set([]);
 
-		var response = await graphQLInstance.query(
-			GET_MY_BUSINESS_LOCATION,
-			null,
-			errorsHandler.Uuid
-		);
-
-		if (!response.success) {
-			// todo
-			return;
-		}
-
-		businessLocation = response.data.address;
+		await query({
+			query: GET_MY_BUSINESS_LOCATION,
+			errorsHandler,
+			success: (res) => { businessLocation = res.address; },
+			errorNotification: "Impossible de récupérer la localisation de votre société."
+		});
 
 		window.addEventListener("popstate", popStateListener, false);
 	});
