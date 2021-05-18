@@ -1,20 +1,17 @@
 <script>
 	import Loader from './../../components/Loader.svelte';
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import TransitionWrapper from "../../components/TransitionWrapper.svelte";
   import Icon from "svelte-awesome";
   import { faShareAlt } from "@fortawesome/free-solid-svg-icons";
   import { faClipboard } from "@fortawesome/free-solid-svg-icons";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import { GENERATE_USER_SPONSORING_CODE } from "./mutations.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
 
   const errorsHandler = new SheaftErrors();
-  const notificationsInstance = GetNotificationsInstance();
-  const graphQLInstance = GetGraphQLInstance();
+  const { mutate } = getContext("api");
   const auth = GetAuthInstance();
 
   let code = null;
@@ -24,23 +21,18 @@
 
   onMount(async () => {
     isLoading = true;
-
-    var res = await graphQLInstance.mutate(GENERATE_USER_SPONSORING_CODE, {
-      id: auth.user.profile.id
-    }, errorsHandler.Uuid);
-
-    if (!res.success) {
-      //todo
-      notificationsInstance.error(
-        "Une erreur est survenue lors de la récupération de votre code de parrainage, veuillez rafraichir la page ou contactez notre support si l'erreur subsiste."
-      );
-      return;
-    }
-
-    code = res.data;
-    link = `${window.location.protocol}//${window.location.hostname}${
-      window.location.port ? `:${window.location.port}` : ""
-    }/#/register?sponsoring=${code}`;
+    await mutate({
+			mutation: GENERATE_USER_SPONSORING_CODE,
+			variables: { id: auth.user.profile.id },
+			errorsHandler,
+			success: async (res) => {
+        code = res;
+        link = `${window.location.protocol}//${window.location.hostname}${
+          window.location.port ? `:${window.location.port}` : ""
+        }/#/register?sponsoring=${code}`;
+      },
+			errorNotification: "Impossible de récupérer votre code de parrainage."
+    });
     isLoading = false;
   });
 
