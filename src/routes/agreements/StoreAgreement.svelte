@@ -17,8 +17,6 @@
 	let isLoading = true;
 
 	onMount(() => {
-		isLoading = true;
-
 		openings = groupBy(agreement.store.openingHours, item => [item.day]);
 		store = agreement.store;
 		isLoading = false;

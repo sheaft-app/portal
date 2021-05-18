@@ -8,59 +8,43 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import {groupBy, timeSpanToFrenchHour} from "./../../helpers/app";
-	import {onMount} from "svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+	import {onMount, getContext} from "svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import {GET_PRODUCER_DELIVERIES} from "../search-producers/queries";
-	import DeliveryKind from "../../enums/DeliveryKind";
 	import Loader from "../../components/Loader.svelte";
 	import ProductsCarousel from "../../components/ProductsCarousel.svelte";
 
 	export let agreement, distanceInfos;
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 
 	let isLoading = true;
 	let producer = null;
 	let deliveries = [];
-	let deliveryHours = [];
 
-	const getProducer = async () => {
+	const getDeliveryHours = deliveryHours => groupBy(deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+		index === self.findIndex((d) => (
+			d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+		))
+	));
+
+	onMount(async () => {
 		isLoading = true;
-
+		
 		if (!agreement.delivery || !agreement.delivery.deliveryHours || agreement.delivery.deliveryHours.length < 1) {
-			var deliveryRes = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: [agreement.producer.id]
+			await query({
+				query: GET_PRODUCER_DELIVERIES,
+				variables: {input: [agreement.producer.id]},
+				errorsHandler,
+				success: (res) => deliveries = res[0].deliveries,
+				error: () => routerInstance.goTo(AgreementRoutes.List),
+				errorNotification: "Impossible de récupérer les informations de livraison."
 			});
-
-			if (!deliveryRes.success) {
-				//TODO
-			} else {
-				deliveries = deliveryRes.data[0].deliveries
-			}
-		} else {
-			deliveryHours = groupBy(agreement.delivery.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-				index === self.findIndex((d) => (
-					d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-				))
-			));
 		}
 
 		producer = agreement.producer;
 		isLoading = false;
-	};
-
-	const getDeliveryHours = deliveryHours => {
-		return groupBy(deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-			index === self.findIndex((d) => (
-				d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-			))
-		));
-	}
-
-	onMount(async () => {
-		await getProducer();
 	})
 </script>
 
