@@ -366,7 +366,8 @@ class SheaftGuard {
 	};
 
 	unregister() {
-		this.initializedSub.unsubscribe();
+		if (this.initializedSub && this.initializedSub.unsubscribe)
+			this.initializedSub.unsubscribe();
 	}
 }
 

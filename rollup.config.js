@@ -2,16 +2,16 @@ import svelte from "rollup-plugin-svelte-hot";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
-import postcss from "rollup-plugin-postcss";
-import { terser } from "rollup-plugin-terser";
+import {terser} from "rollup-plugin-terser";
 import del from "rollup-plugin-delete";
 import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
-import { generateSW } from "rollup-plugin-workbox";
+import {generateSW} from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
 import alias from "rollup-plugin-alias";
 import define from 'rollup-plugin-define';
 import hmr from 'rollup-plugin-hot';
+import postcss from 'rollup-plugin-postcss';
 
 const buildDir = "public/dist";
 const isNollup = !!process.env.NOLLUP
@@ -48,29 +48,23 @@ function serve() {
 		},
 	}
 }
+
 export default {
 	input: "src/index.js",
 	output: [
-		!production ?{
+		!production ? {
 			format: 'iife',
-			name: 'app',
+			name: 'dev',
 			file: 'public/dist/index.js',
 			sourcemap: !production,
 			compact: production,
 		} : {
-			name: "module",
+			name: "prod",
 			dir: `${buildDir}`,
 			format: "es",
-				sourcemap: !production,
-				compact: production,
+			sourcemap: !production,
+			compact: production,
 		},
-		// {
-		// 	name: "nomodule",
-		// 	dir: `${buildDir}/nomodule`,
-		// 	format: "system",
-		// 	sourcemap: !production,
-		// 	compact: production
-		// },
 	],
 	manualChunks(id) {
 		if (production && id.includes("node_modules")) {
@@ -81,44 +75,35 @@ export default {
 		alias({
 			forms: __dirname + "vendors/svelte-forms",
 		}),
-		del({
+		production && del({
 			targets: "public/dist/*",
 			runOnce: true,
 		}),
 		define({
 			replacements: {
-			  'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
-			  __buildDate__: () => JSON.stringify(new Date()),
+				'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
+				__buildDate__: () => JSON.stringify(new Date()),
 			}
-		  }),
+		}),
 		// typescript({
 		// 	removeComments: production,
 		// 	sourceMap: !production,
 		// }),
 		svelte({
+			compilerOptions: {
+				dev: !production
+			},
 			emitCss: true,
 			preprocess: autoPreprocess({
-				postcss: {
-					plugins: [
-						require("tailwindcss"),
-						require("autoprefixer"),
-						require("postcss-nesting"),
-					],
-				},
+				globalStyle: true,
+				postcss: true,
 				scss: true,
+				sourceMap: !production
 			}),
 			hot: isHot && {
-				// Optimistic will try to recover from runtime
-				// errors during component init
 				optimistic: true,
-				// Turn on to disable preservation of local component
-				// state -- i.e. non exported `let` variables
-				noPreserveState: false,
-
-				// See docs of rollup-plugin-svelte-hot for all available options:
-				//
-				// https://github.com/rixo/rollup-plugin-svelte-hot#usage
-			},
+				preserveLocalState: true
+			}
 		}),
 		svelteSVG(),
 		postcss(),
@@ -170,7 +155,7 @@ export default {
 					},
 				],
 				"@babel/plugin-transform-named-capturing-groups-regex",
-				["@babel/plugin-transform-arrow-functions", { spec: true }],
+				["@babel/plugin-transform-arrow-functions", {spec: true}],
 				"@babel/plugin-syntax-dynamic-import",
 				[
 					"@babel/plugin-transform-runtime",
@@ -187,29 +172,11 @@ export default {
 		}),
 		commonjs(),
 		isDev && !isNollup && serve(),
-
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
 		isLiveReload && livereload('public'),
-
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
 		production && terser(),
-
 		hmr({
 			public: 'public',
 			inMemory: true,
-
-			// Default host for the HMR server is localhost, change this option if
-			// you want to serve over the network
-			// host: '0.0.0.0',
-			// You can also change the default HMR server port, if you fancy
-			// port: '12345'
-
-			// This is needed, otherwise Terser (in npm run build) chokes
-			// on import.meta. With this option, the plugin will replace
-			// import.meta.hot in your code with module.hot, and will do
-			// nothing else.
 			compatModuleHot: !isHot,
 		}),
 		production && generateSW({
@@ -317,7 +284,7 @@ export default {
 				{
 					handler: "CacheFirst",
 					urlPattern: new RegExp(
-						/^https:\/\/app.sheaft.com\/[assets|img]+\/.*/,
+						/^https:\/\/app\.sheaft\.com\/[assets|img]+\/.*/,
 						"iyg"
 					),
 					options: {
@@ -329,7 +296,7 @@ export default {
 				},
 				{
 					handler: "CacheFirst",
-					urlPattern: new RegExp(/^https:\/\/images.unsplash.com.*/, "iyg"),
+					urlPattern: new RegExp(/^https:\/\/images\.unsplash\.com.*/, "iyg"),
 					options: {
 						cacheName: "local-cache",
 						cacheableResponse: {

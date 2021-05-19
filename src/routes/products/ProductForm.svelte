@@ -25,12 +25,14 @@
 	import {config} from "../../configs/config";
 	import ProductCatalogs from "./ProductCatalogs.svelte";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	export let submit, product, isLoading;
 
 	const {open} = getContext("modal");
 	const graphQLInstance = GetGraphQLInstance();
 	const authInstance = GetAuthInstance();
+	const routerInstance = GetRouterInstance();
 
 	let isLoadingTags = false;
 	let isLoadingReturnables = false;
@@ -134,7 +136,7 @@
 
 	onMount(async () => {
 		isLoading = true;
-		notSubjectToVat = product.producer.notSubjectToVat;
+		notSubjectToVat = product.producer?.notSubjectToVat ?? false;
 		await getTags();
 		await getReturnables();
 		isLoading = false;
@@ -486,7 +488,7 @@
 	</div>
 </form>
 
-<style>
+<style lang="scss">
 	.product-picture {
 		background-size: cover !important;
 		background-position: center !important;
