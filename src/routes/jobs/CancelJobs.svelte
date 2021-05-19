@@ -1,47 +1,35 @@
 <script>
-	import Icon from "svelte-awesome";
+	import { getContext } from "svelte";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { CANCEL_JOBS } from "./mutations.js";
-	import GetNotificationsInstance from "./../../services/SheaftNotifications";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_JOBS } from "./queries";
 
-	const errorsHandler = new SheaftErrors();
-
 	export let onClose, close, jobs;
-	const notificationsInstance = GetNotificationsInstance();
-	const graphQLInstance = GetGraphQLInstance();
+	
+	const errorsHandler = new SheaftErrors();
+	const { mutate } = getContext("api");
 
 	let reason = null;
 	let isLoading = false;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			CANCEL_JOBS,
-			{
-				ids: jobs.map((j) => j.id),
-				reason: reason,
-			},
-			errorsHandler.Uuid,
-			GET_JOBS
-    );
-    
+		await mutate({
+			mutation: CANCEL_JOBS,
+			variables: { ids: jobs.map((j) => j.id), reason },
+			errorsHandler,
+			success: async (res) => handleClose(res),
+			successNotification: "La tâche a bien été annulée",
+			errorNotification: "Impossible d'annuler la tâche",
+			clearCache: [GET_JOBS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		await handleClose(res);
 	};
 
 	const handleClose = async (res) => {
 		close();
-
 		if (onClose) await onClose(res);
 	};
 </script>
@@ -50,7 +38,7 @@
 	{errorsHandler}
 	title={jobs.length > 1 ? 'Annuler les tâches' : 'Annuler la tâche'}
 	submit={handleSubmit}
-	close={() => handleClose({ success: false, data: null })}
+	{close}
 	level="danger"
 	submitText="Oui"
 	icon={faTimes}

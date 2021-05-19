@@ -1,13 +1,10 @@
 <script>
-	import Loader from "./../../components/Loader.svelte";
 	import {onMount, getContext} from "svelte";
 	import Icon from "svelte-awesome";
 	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import GetAuthInstance from "./../../services/SheaftAuth";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import JobKind from "./../../enums/JobKind";
 	import ProcessStatusKind from "./../../enums/ProcessStatusKind";
 	import CancelJobs from "./CancelJobs.svelte";
@@ -16,9 +13,7 @@
 	import JobRoutes from "./routes";
 	import {
 		PAUSE_JOBS,
-		RESUME_JOBS,
-		CANCEL_JOBS,
-		ARCHIVE_JOBS,
+		RESUME_JOBS
 	} from "./mutations.js";
 	import {GET_JOBS, GET_JOB_DETAILS} from "./queries.js";
 	import {
@@ -26,34 +21,26 @@
 		faCircleNotch,
 		faTimesCircle,
 		faPause,
-		faPlayCircle,
-		faCheckDouble,
-		faChevronLeft,
 		faHourglass,
 		faCheck,
 		faTimes,
 		faBackspace,
 		faPlay,
-		faClipboardCheck,
-		faRedoAlt,
-		faDownload,
+		faRedoAlt
 	} from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import Roles from "./../../enums/Roles";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	export let params = {};
 
 	const errorsHandler = new SheaftErrors();
-	const authInstance = GetAuthInstance();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
+	const { query, mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
 
 	let job = null;
-	$: isLoading = true;
+	let isLoading = true;
 	let loadingMessage = 'Chargement de la tâche en cours... veuillez patienter';
 
 	onMount(async () => {
@@ -61,23 +48,16 @@
 	});
 
 	const getJob = async (id) => {
-		loadingMessage = 'Chargement de la tâche en cours... veuillez patienter';
 		isLoading = true;
-		var res = await graphQLInstance.query(
-			GET_JOB_DETAILS,
-			{id},
-			errorsHandler.Uuid
-		);
-
-		if (!res.success) {
-			//TODO
-			routerInstance.goTo(JobRoutes.List);
-			return;
-		}
-
-		job = res.data;
+		job = await query({
+			query: GET_JOB_DETAILS,
+			variables: { id },
+			errorsHandler,
+			error: () => routerInstance.goTo(JobRoutes.List),
+			errorNotification: "La tâche à laquelle vous essayez d'accéder n'existe plus"
+		});
 		isLoading = false;
-	};
+	}
 
 	const pauseJob = async () => {
 		loadingMessage = 'Mise en pause de la tâche en cours... veuillez patienter';
@@ -106,36 +86,25 @@
 
 	const handleJobsCommand = async (mutation, currentJob) => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
+		await mutate({
 			mutation,
-			{
-				ids: [currentJob.id],
-			},
-			errorsHandler.Uuid,
-			GET_JOBS
-		);
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		await getJob(currentJob.id);
+			variables: { ids: [currentJob.id] },
+			errorsHandler,
+			success: async () => await getJob(currentJob.id),
+			successNotification: "Succès !",
+			errorNotification: "Un problème est survenu",
+			clearCache: [GET_JOBS]
+		});
 		isLoading = false;
 	};
 
-	const showModal = (modal, currentJob) => {
-		open(modal, {
-			jobs: [currentJob],
-			onClose: async (res) => {
-				if (res.success) {
-					await getJob(currentJob.id);
-					graphQLInstance.clearApolloCache(GET_JOBS);
-					routerInstance.goTo(JobRoutes.List);
-				}
-			},
-		});
-	};
+	const showModal = (modal, currentJob) => open(modal, {
+		jobs: [currentJob],
+		onClose: async () => {
+			await getJob(currentJob.id);
+			routerInstance.goTo(JobRoutes.List);
+		},
+	});
 
 	$: canPauseJob = job && job.status == ProcessStatusKind.Processing.Value;
 
