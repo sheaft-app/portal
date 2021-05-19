@@ -11,20 +11,19 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import CreateAgreementModal from "./CreateAgreementModal.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import { GET_STORE_DETAILS } from "./queries.js";
 	import {selectedItem} from "./../../stores/app.js";
 	import { encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
 	import AgreementRoutes from "../agreements/routes";
-	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import {config} from "../../configs/config.js";
   	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
+  	import SheaftErrors from "../../services/SheaftErrors";
 
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
-	const notificationsInstance = new GetNotificationsInstance();
+  	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 
 	let store = null;
 	let storeDoesntExist = false;
@@ -32,7 +31,6 @@
 
 	const handleKeyup = ({key}) => {
 		if ($selectedItem && key === "Escape") {
-			event.preventDefault();
 			selectedItem.set(null);
 		}
 	};
@@ -46,19 +44,14 @@
 			storeDetails.scrollTop = 0;
 		}
 
-		let res = await graphQLInstance.query(GET_STORE_DETAILS, {
-			id: $selectedItem.id
+		store = await query({
+			query: GET_STORE_DETAILS,
+			variables: { id: $selectedItem.id },
+			errorsHandler,
+			success: (res) => openings = groupBy(res.openingHours, item => [item.day]),
+			error: () => storeDoesntExist = true,
+			errorNotification: "Impossible de récupérer les informations de ce magasin."
 		});
-
-		if (!res.success) {
-			//TODO
-			console.error("No store found for this ID");
-			storeDoesntExist = true;
-			return;
-		}
-
-		openings = groupBy(res.data.openingHours, item => [item.day]);
-		store = res.data;
 	}
 
 	const openAgreement = () => {
@@ -66,28 +59,18 @@
 		routerInstance.goTo(AgreementRoutes.Details, {id: store.agreement.id})
 	}
 
-	const showCreateAgreementModal = () => {
-		open(CreateAgreementModal, {
-			submit: () => {
-			},
-			store,
-			producerId: GetAuthInstance().user.profile.id,
-			storeId: store.id,
-			onClosed: res => {
-				if (res.success) {
-					store.agreement = {id: res.data.id, status: res.data.status};
-					store.hasAgreement = true;
-					notificationsInstance.success("Votre demande d'accord commercial a bien été envoyée.");
-				}
-			}
-		});
-	};
+	const showCreateAgreementModal = () => open(CreateAgreementModal, {
+		submit: () => {},
+		store,
+		producerId: GetAuthInstance().user.profile.id,
+		storeId: store.id,
+		onClosed: res => {
+			store.agreement = {id: res.id, status: res.status};
+			store.hasAgreement = true;
+		}
+	});
 
-	const openReadMoreModal = () => {
-		open(ProducerReadMoreModal, {
-			producer
-		})
-	}
+	const openReadMoreModal = () => open(ProducerReadMoreModal, { producer })
 
 	onDestroy(() => openings = []);
 

@@ -76,7 +76,7 @@
 				</ul>
 			</div>
 
-			<SelectTime bind:selectedDelivery/>
+			<SelectTime bind:selectedDelivery {errorsHandler} />
 		{/if}
 
 		{#if isProducer && requireCatalogSelection}
@@ -89,7 +89,7 @@
 				</ul>
 			</div>
 
-			<SelectCatalog bind:selectedCatalog/>
+			<SelectCatalog bind:selectedCatalog {errorsHandler} />
 		{/if}
 	</ActionConfirm>
 {:else}
@@ -108,11 +108,11 @@
 		</div>
 
 		{#if isProducer && requireDeliverySelection}
-			<SelectTime bind:selectedDelivery/>
+			<SelectTime bind:selectedDelivery {errorsHandler} />
 		{/if}
 
 		{#if isProducer && requireCatalogSelection}
-			<SelectCatalog bind:selectedCatalog/>
+			<SelectCatalog bind:selectedCatalog {errorsHandler} />
 		{/if}
 	</ActionConfirm>
 {/if}

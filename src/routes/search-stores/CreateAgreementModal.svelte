@@ -3,16 +3,15 @@
 	import SelectTime from "./SelectTime.svelte";
 	import SelectCatalog from "./SelectCatalog.svelte";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import { CREATE_AGREEMENT } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_AGREEMENTS } from "./queries";
-
-	const errorsHandler = new SheaftErrors();
+	import { getContext } from "svelte";
 
 	export let onClosed, close, store, producerId;
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
+	const errorsHandler = new SheaftErrors();
 
 	let selectedDelivery = null;
 	let selectedCatalog = null;
@@ -22,26 +21,16 @@
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			CREATE_AGREEMENT,
-			{
-				storeId: store.id,
-				catalogId: selectedCatalog.id,
-				producerId,
-				deliveryId: selectedDelivery.id,
-			},
-			errorsHandler.Uuid,
-			GET_AGREEMENTS
-		);
-
+		await mutate({
+			mutation: CREATE_AGREEMENT,
+			variables: { storeId: store.id, catalogId: selectedCatalog.id, producerId, deliveryId: selectedDelivery.id },
+			errorsHandler,
+			success: async (res) => closeModal(res),
+			successNotification: "Demande de partenariat envoyée !",
+			errorNotification: "Impossible de faire une demande de partenariat.",
+			clearCache: [GET_AGREEMENTS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		return await closeModal(res);
 	};
 
 	async function closeModal(obj) {
@@ -66,6 +55,6 @@
 	<p class="leading-5 mb-5">
 		Le magasin sera automatiquement notifié de votre demande.
 	</p>
-	<SelectTime bind:selectedDelivery />
-	<SelectCatalog bind:selectedCatalog />
+	<SelectTime bind:selectedDelivery {errorsHandler} />
+	<SelectCatalog bind:selectedCatalog {errorsHandler} />
 </ActionConfirm>

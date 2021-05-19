@@ -1,33 +1,23 @@
 <script>
-	import {onMount} from "svelte";
+	import {getContext, onMount} from "svelte";
 	import { GET_CATALOGS } from "./queries";
 	import Loader from "../../components/Loader.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 
 	let catalogs = [];
 	let isLoading = true;
 
-	export let selectedCatalog = null;
+	export let selectedCatalog = null, errorsHandler;
 
 	onMount(async () => {
-		await fetchCatalogs();
+		catalogs = await query({
+			query: GET_CATALOGS,
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les informations des catalogues."
+		});
+		isLoading = false;
 	})
-
-	const fetchCatalogs = async () => {
-		const res = await graphQLInstance.query(GET_CATALOGS);
-
-		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		catalogs = res.data;
-		isLoading = false;
-	}
 </script>
 
 <div class="form-control mt-2" style="display: block;">
