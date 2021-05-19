@@ -35,9 +35,6 @@
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
 	import CatalogRoutes from "./../../routes/catalogs/routes.js";
-	import SponsorshipRoutes from "./../../routes/sponsorship/routes.js";
-	import LeaderboardRoutes from "./../../routes/leaderboard/routes.js";
-	import SearchProductRoutes from "./../../routes/search-products/routes.js";
 	import PurchaseOrderRoutes from "./../../routes/purchase-orders/routes.js";
 	import MyOrderRoutes from "./../../routes/my-orders/routes.js";
 	import SellingPointRoutes from "./../../routes/selling-points/routes.js";
@@ -310,11 +307,6 @@
 					<NavLink route={AgreementRoutes.List}/>
 					<NavLink route={JobRoutes.List}/>
 				{/if}
-				<!-- {#if !$authAuthenticated || $authRegistered && isInRole($authUserAccount, [
-						Roles.Consumer.Value
-					])}
-					<NavLink route={LeaderboardRoutes.Country} />
-				{/if} -->
 				<!-- {#if $authAuthenticated && $authRegistered}
 					<NavLink route={SponsorshipRoutes.Share} />
 				{/if} -->

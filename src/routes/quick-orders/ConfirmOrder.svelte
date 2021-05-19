@@ -1,38 +1,30 @@
 <script>
-  import GetRouterInstance from "../../services/SheaftRouter.js";
-  import { format } from "date-fns";
-  import { timeSpanToFrenchHour } from "./../../helpers/app.js";
-  import fr from "date-fns/locale/fr";
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import { CREATE_BUSINESS_ORDER } from "./mutations.js";
   import ProducerCardWithProducts from "./ProducerCardWithProducts.svelte";
   import SheaftErrors from "./../../services/SheaftErrors";
+  import { getContext } from "svelte";
+  import { MY_ORDERS } from "./queries";
 
   const errorsHandler = new SheaftErrors();
-  const graphQLInstance = GetGraphQLInstance();
-  const routerInstance = GetRouterInstance();
+  const { mutate } = getContext("api");
 
   export let close, onClose, data;
 
   let isLoading = false;
 
-  const handleSubmit = async (delivery, deliveryHour) => {
+  const handleSubmit = async () => {
     isLoading = true;
-
-    var res = await graphQLInstance.mutate(CREATE_BUSINESS_ORDER, {
-      products: data.products,
-      producersExpectedDeliveries: data.producersExpectedDeliveries
-    }, errorsHandler.Uuid);
-
+    await mutate({
+			mutation: CREATE_BUSINESS_ORDER,
+			variables: { products: data.products, producersExpectedDeliveries: data.producersExpectedDeliveries },
+			errorsHandler,
+			success: async () => onClose && await onClose(),
+			successNotification: "La commande a été envoyée",
+			errorNotification: "Impossible d'envoyer la commande",
+			clearCache: [MY_ORDERS]
+    });
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-    if (onClose) await onClose();
   }
 
   const getProducerInfo = (producerId) => {

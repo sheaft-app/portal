@@ -1,10 +1,8 @@
 <script>
 	import {getContext, onMount} from "svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import SheaftErrors from "./../../services/SheaftErrors.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
-	import FilterProducersModal from './FilterProducersModal.svelte';
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import {formatMoney} from "./../../helpers/app.js";
 	import {GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS} from "./queries.js";
@@ -12,63 +10,53 @@
 	import Select from "./../../components/controls/select/Select";
 	import MyOrdersRoutes from "../my-orders/routes";
 	import SearchProducerRoutes from "../search-producers/routes";
-	import {MY_ORDERS} from "./../my-orders/queries.js";
 	import orderBy from "lodash/orderBy";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	const {open} = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
 	let normalizedProducts = [];
 	let producerDeliveries = [];
 	let producersDisplayed = [];
-	let selectedDeliveries = [];
 	let isLoading = false;
 	let dirty = false;
 	let isLoadingDeliveries = true;
-	let comment = "";
 
 	$: isValid = normalizedProducts.filter((p) => (p.quantity >= 1 && !p.producer.deliveryHour)).length == 0;
 
 	const getAllAvailableProducts = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.query(GET_ALL_PRODUCTS, null, errorsHandler.Uuid);
+		await query({
+			query: GET_ALL_PRODUCTS,
+			errorsHandler,
+			success: async (res) => {
+				normalizedProducts = orderBy(res.map((i) => ({
+					...i,
+					quantity: 0
+				}), i => i.producer.name, ['asc']));
+
+				if (normalizedProducts.length > 1) {
+					await loadDeliveries(res.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
+				}
+			},
+			errorNotification: "Impossible de récupérer les produits commandables."
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		normalizedProducts = orderBy(res.data.map((i) => {
-			return {
-				...i,
-				quantity: 0
-			}
-		}), i => i.producer.name, ['asc']);
-
-		if (normalizedProducts.length > 1) {
-			await loadDeliveries(res.data.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
-		}
-
 		dirty = false;
 	}
 
 	const loadDeliveries = async (ids) => {
-		var res = await graphQLInstance.query(GET_STORE_DELIVERIES_FOR_PRODUCERS, {
-			input: ids
-		}, errorsHandler.Uuid);
-
-		if (!res.success) {
-			// todo
-			isLoadingDeliveries = false;
-			return;
-		}
-
-		producerDeliveries = res.data;
+		isLoadingDeliveries = true;
+		producerDeliveries = await query({
+			query: GET_STORE_DELIVERIES_FOR_PRODUCERS,
+			variables: { input: ids },
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les informations de livraison."
+		});
 		isLoadingDeliveries = false;
 	}
 
@@ -110,32 +98,15 @@
 		open(ConfirmOrder, {
 			data: {
 				allProducts: productsFiltered,
-				products: productsFiltered.map(product => {
-					return {
-						id: product.id,
-						quantity: product.quantity
-					};
-				}),
+				products: productsFiltered.map(product => ({
+					id: product.id,
+					quantity: product.quantity
+				})),
 				producersExpectedDeliveries
 			},
-			onClose: () => {
-				graphQLInstance.clearApolloCache(MY_ORDERS);
-				routerInstance.goTo(MyOrdersRoutes.List);
-			}
+			onClose: () => routerInstance.goTo(MyOrdersRoutes.List)
 		});
 	}
-
-	const showFilterProducersModal = () => {
-		open(FilterProducersModal, {
-			submit: () => {
-			},
-			producers: producerDeliveries,
-			producersDisplayed,
-			onClose: (res) => {
-				producersDisplayed = res;
-			}
-		});
-	};
 
 	onMount(async () => {
 		await getAllAvailableProducts();
