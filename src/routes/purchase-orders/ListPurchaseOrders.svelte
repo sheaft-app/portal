@@ -38,7 +38,6 @@
 	import {
 		faTimes,
 		faBackspace,
-		faCheckDouble,
 		faCheck,
 		faClipboardCheck,
 		faTruckLoading,
@@ -46,23 +45,20 @@
 		faCircleNotch,
 		faClock,
 		faCalendarAlt,
-		faFileImport,
 		faFileExport,
 		faMapMarkerAlt
 	} from "@fortawesome/free-solid-svg-icons";
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import {toggleMoreActions} from "./../../stores/app";
 	import JobKind from "../../enums/JobKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 
 	const headers = [
 		{name: "Commande", sortLabel: "reference"},
@@ -94,16 +90,14 @@
 	}).filter((o) => o && o.value && o.value !== "NONE");
 
 	const checkHasExportInProgress = async () => {
-		var res = await graphQLInstance.query(
-			HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
-			{kinds: [JobKind.ExportPickingOrders.Value]},
-			errorsHandler.Uuid
-		);
-		if (!res.success) {
-			hasPendingJobs = false;
-		}
-
-		hasPendingJobs = res.data;
+		hasPendingJobs = await query({
+			query: HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
+			variables: { kinds: [JobKind.ExportPickingOrders.Value] },
+			errorsHandler,
+			error: () => hasPendingJobs = false,
+			errorNotification: "Impossible de terminer la commande.",
+			clearCache: [GET_ORDERS]
+		});
 	};
 
 	onMount(async () => {
@@ -120,61 +114,32 @@
 		await checkHasExportInProgress();
 	};
 
-	const cancelOrders = () => {
-		handleOrdersModal(CancelPurchaseOrders);
-	};
+	const cancelOrders = () => handleOrdersModal(CancelPurchaseOrders);
 
-	const refuseOrders = () => {
-		handleOrdersModal(RefusePurchaseOrders);
-	};
+	const refuseOrders = () => handleOrdersModal(RefusePurchaseOrders);
 
-	const acceptOrders = () => {
-		handleOrdersModal(AcceptPurchaseOrders);
-	};
+	const acceptOrders = () => handleOrdersModal(AcceptPurchaseOrders);
 
-	const processOrders = () => {
-		handleOrdersModal(ProcessPurchaseOrders);
-	};
+	const processOrders = () => handleOrdersModal(ProcessPurchaseOrders);
 
-	const completeOrders = () => {
-		handleOrdersModal(CompletePurchaseOrders);
-	};
+	const completeOrders = () => handleOrdersModal(CompletePurchaseOrders);
 
-	const deliverOrders = () => {
-		handleOrdersModal(DeliverPurchaseOrders);
-	};
+	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
 
-	const handleOrdersModal = (modal) => {
-		open(modal, {
-			purchaseOrders: selectedItems,
-			onClose: async (res) => {
-				if (res.success) {
-					routerInstance.refresh();
-					toggleMoreActions.set(false);
-					graphQLInstance.clearApolloCache(GET_ORDERS);
-					selectedItems = [];
-				}
-			},
-		});
-	};
+	const handleOrdersModal = (modal) => open(modal, {
+		purchaseOrders: selectedItems,
+		onClose: () => {
+			routerInstance.refresh();
+			toggleMoreActions.set(false);
+			selectedItems = [];
+		},
+	});
 
-	const getRowBackgroundColor = (item) => {
-		return "";
-	};
+	const getRowBackgroundColor = (item) => "";
 
 	const onRowClick = (item) => {
 		routerInstance.goTo(PurchaseOrderRoutes.Details, {id: item.id});
 	};
-
-	$: hasSelectedOneItem =
-		canCancelOrders(selectedItems) ||
-		canProcessOrders(selectedItems) ||
-		canRefuseOrders(selectedItems) ||
-		canAcceptOrders(selectedItems) ||
-		canShipOrders(selectedItems) ||
-		canDeliverOrders(selectedItems) ||
-		canCreatePickingOrders(selectedItems) ||
-		canCompleteOrders(selectedItems);
 
 	$: actions = [
 		{

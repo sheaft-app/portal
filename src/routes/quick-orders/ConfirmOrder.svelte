@@ -4,7 +4,7 @@
   import ProducerCardWithProducts from "./ProducerCardWithProducts.svelte";
   import SheaftErrors from "./../../services/SheaftErrors";
   import { getContext } from "svelte";
-  import { MY_ORDERS } from "./queries";
+  import { MY_ORDERS } from "../my-orders/queries";
 
   const errorsHandler = new SheaftErrors();
   const { mutate } = getContext("api");

@@ -2,38 +2,30 @@
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { CANCEL_PURCHASE_ORDERS } from "./mutations.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
+	import { getContext } from "svelte";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_ORDERS } from "./queries";
 
 	export let onClose, close, purchaseOrders;
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
 
 	let isLoading = false;
 	let reason = null;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			CANCEL_PURCHASE_ORDERS,
-			{
-				ids: purchaseOrders.map((o) => o.id),
-				reason: reason,
-			},
-			errorsHandler.Uuid,
-			GET_ORDERS
-		);
-
+		await mutate({
+			mutation: CANCEL_PURCHASE_ORDERS,
+			variables: { ids: purchaseOrders.map((o) => o.id), reason },
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			successNotification: "Commande annulée",
+			errorNotification: "Impossible d'annuler la commande.",
+			clearCache: [GET_ORDERS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		await handleClose(res);
 	};
 
 	const handleClose = async (obj) => {

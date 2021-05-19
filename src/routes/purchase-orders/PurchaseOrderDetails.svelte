@@ -25,29 +25,22 @@
 		canRefuseOrder,
 		canProcessOrder,
 		canCompleteOrder,
-		canDeliverOrder,
-		canShipOrder
+		canDeliverOrder
 	} from "./validators";
 	import {
 		faTimes,
 		faBackspace,
-		faCheckDouble,
 		faCheck,
 		faTruck,
 		faTruckLoading,
 		faClipboardCheck,
 		faPlay,
-		faChevronLeft,
-		faTimesCircle,
-		faHourglass,
-		faCircleNotch,
 		faFileExport
 	} from "@fortawesome/free-solid-svg-icons";
 	import PurchaseOrderRoutes from "./routes";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
@@ -55,6 +48,7 @@
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
@@ -63,66 +57,39 @@
 
 	const getPurchaseOrder = async id => {
 		isLoading = true;
-		var res = await graphQLInstance.query(
-			GET_ORDER_DETAILS,
-			{id},
-			errorsHandler.Uuid
-		);
-
+		order = await query({
+			query: GET_ORDER_DETAILS,
+			variables: { id },
+			errorsHandler,
+			error: () => routerInstance.goTo(PurchaseOrderRoutes.List),
+			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus.",
+			clearCache: [GET_ORDERS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO;
-			routerInstance.goTo(PurchaseOrderRoutes.List);
-			return;
-		}
-
-		order = res.data;
 	};
 
 	onMount(async () => {
 		await getPurchaseOrder(params.id);
 	});
 
-	function createPickingOrder() {
-		handleOrdersModal(CreatePickingOrders, order);
-	}
+	const createPickingOrder = () => handleOrdersModal(CreatePickingOrders, order);
 
-	const cancelOrder = () => {
-		handleOrdersModal(CancelPurchaseOrders, order);
-	};
+	const cancelOrder = () => handleOrdersModal(CancelPurchaseOrders, order);
 
-	const refuseOrder = () => {
-		handleOrdersModal(RefusePurchaseOrders, order);
-	};
+	const refuseOrder = () => handleOrdersModal(RefusePurchaseOrders, order);
 
-	const acceptOrder = () => {
-		handleOrdersModal(AcceptPurchaseOrders, order);
-	};
+	const acceptOrder = () => handleOrdersModal(AcceptPurchaseOrders, order);
 
-	const processOrder = () => {
-		handleOrdersModal(ProcessPurchaseOrders, order);
-	};
+	const processOrder = () => handleOrdersModal(ProcessPurchaseOrders, order);
 
-	const completeOrder = () => {
-		handleOrdersModal(CompletePurchaseOrders, order);
-	};
+	const completeOrder = () => handleOrdersModal(CompletePurchaseOrders, order);
 
-	const deliverOrder = () => {
-		handleOrdersModal(DeliverPurchaseOrders, order);
-	};
+	const deliverOrder = () => handleOrdersModal(DeliverPurchaseOrders, order);
 
-	const handleOrdersModal = (modal, item) => {
-		open(modal, {
-			purchaseOrders: [item],
-			onClose: async res => {
-				if (res.success) {
-					await getPurchaseOrder(item.id);
-					graphQLInstance.clearApolloCache(GET_ORDERS);
-				}
-			}
-		});
-	};
+	const handleOrdersModal = (modal, item) => open(modal, {
+		purchaseOrders: [item],
+		onClose: async () => await getPurchaseOrder(item.id)
+	});
 </script>
 
 <TransitionWrapper>
