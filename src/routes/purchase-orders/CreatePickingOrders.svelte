@@ -5,6 +5,7 @@
   import { EXPORT_PICKING_FROM_ORDERS } from "./mutations.js";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import SheaftErrors from "./../../services/SheaftErrors";
+  import { GET_ORDERS } from "./queries";
   import { getContext } from "svelte";
 
   export let onClose, close, purchaseOrders;
@@ -56,8 +57,6 @@
 			clearCache: [GET_ORDERS]
 		});
 		isLoading = false;
-
-    return await closeModal(result);
   }
 
   async function closeModal(res) {

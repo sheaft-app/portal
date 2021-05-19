@@ -1,5 +1,4 @@
 <script>
-	import Loader from "./../../components/Loader.svelte";
 	import {onMount, getContext} from "svelte";
 	import Icon from "svelte-awesome";
 	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
@@ -12,7 +11,6 @@
 	import {format} from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 
 	``
@@ -49,11 +47,10 @@
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
 	const { query } = getContext("api");
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
 	let order = null;
-	let isLoading = false;
+	let isLoading = true;
 
 	const getPurchaseOrder = async id => {
 		isLoading = true;
