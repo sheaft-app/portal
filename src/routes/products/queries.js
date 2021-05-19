@@ -27,8 +27,6 @@ export const GET_PRODUCTS = gql`
 					vat
 					createdOn
 					available
-					visibleToStores
-					visibleToConsumers
 				}
 			}
 		}
@@ -74,8 +72,6 @@ export const GET_PRODUCT_DETAILS = gql`
 				kind
 			}
 			available
-			visibleToStores
-			visibleToConsumers
 		}
 	}
 `;

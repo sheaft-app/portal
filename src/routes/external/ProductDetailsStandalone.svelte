@@ -1,5 +1,5 @@
 <script>
-	import {onDestroy, onMount} from "svelte";
+	import {getContext, onDestroy, onMount} from "svelte";
 	import {slide, fly} from "svelte/transition";
 	import Icon from "svelte-awesome";
 	import {faCircleNotch, faChevronUp, faChevronDown, faChevronLeft, faEye} from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +16,6 @@
 	import Rating from "./../../components/rating/Rating.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import {timeSpanToFrenchHour, formatMoney} from "./../../helpers/app.js";
 	import TagKind from "./../../enums/TagKind";
 	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
@@ -36,7 +35,7 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
+	const { query, mutate } = getContext("api");
 
 	export let params = {};
 
@@ -94,35 +93,33 @@
 
 	const getProductDetails = async id => {
 		isLoading = true;
-		var res = await graphQLInstance.query(GET_PRODUCT_DETAILS, {id: id}, errorsHandler.Uuid);
-		if (!res.success) {
-			isLoading = false;
-			//TODO
-			return;
-		}
-
-		product = res.data;
-
-		var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-			input: [res.data.producer.id]
-		}, errorsHandler.Uuid);
-
-		if (!deliveriesResult.success || deliveriesResult.data.length == 0) {
-			deliveries = [];
-		} else {
-			deliveries = deliveriesResult.data[0].deliveries.map((d) => {
-				return {
-					...d,
-					deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-						index === self.findIndex((d) => (
-							d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-						))
-					))
-				}
-			});
-		}
-
-		ratings = product.ratings.nodes.map(r => r);
+		product = await query({
+			query: GET_PRODUCT_DETAILS,
+			variables: { id },
+			errorsHandler,
+			success: async (res) => {
+				await query({
+					query: GET_PRODUCER_DELIVERIES,
+					variables: { input: [res.producer.id] },
+					errorsHandler,
+					success: (res) => {
+						if (res[0] && res[0].deliveries)
+							deliveries = res[0].deliveries.map((d) => ({
+								...d,
+								deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+									index === self.findIndex((d) => (
+										d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+									))
+								))
+							}));
+					},
+					error: () => deliveries = [],
+					errorNotification: "Impossible de récupérer les informations de livraison du producteur."
+				});
+				ratings = res.ratings.nodes.map(r => r);
+			},
+			errorNotification: "Impossible de récupérer les informations du produit."
+		});
 		isLoading = false;
 	};
 
@@ -142,24 +139,19 @@
 
 	const handleRatingSubmit = async () => {
 		isSubmittingRate = true;
-		var res = await graphQLInstance.mutate(RATE_PRODUCT, {
-			id: params.id,
-			value: rating,
-			comment
-		}, errorsHandler.Uuid);
-
+		product = await mutate({
+			mutation: RATE_PRODUCT,
+			variables: { id: params.id, value: rating, comment },
+			errorsHandler,
+			success: async (res) => {
+				ratings = res.ratings.nodes.map(r => r);
+				rating = null;
+				comment = null;
+			},
+			successNotification: "Vous avez noté le produit. Merci !",
+			errorNotification: "Un problème est survenu pendant que vous essayiez de noter le produit."
+		});
 		isSubmittingRate = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		product = res.data;
-		ratings = product.ratings.nodes.map(r => r);
-		isSubmittingRate = false;
-		rating = null;
-		comment = null;
 	};
 
 	$: metadata = {
