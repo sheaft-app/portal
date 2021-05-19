@@ -1,88 +1,42 @@
 <script>
+	import { onDestroy } from "svelte";
 	import Icon from "svelte-awesome";
-	import {faPaperPlane, faCircleNotch, faInfoCircle} from "@fortawesome/free-solid-svg-icons";
+	import {faPaperPlane, faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
-	import {
-		normalizeOpeningHours,
-		denormalizeOpeningHours,
-		normalizeClosingDates,
-		denormalizeClosingDates
-	} from "../../helpers/app";
-	import {form, bindClass} from '../../../vendors/svelte-forms/src/index';
+	import { denormalizeOpeningHours, denormalizeClosingDates } from "../../helpers/app";
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import ClosingDates from "./../../components/ClosingDates.svelte";
-	import {product} from "../products/ProductForm.svelte";
+	import form from "../../stores/form";
+	import { initialValues, validators } from "./deliveryForm";
 
-	export let submit, initialValues, isLoading;
-	let delivery = initialValues;
-	let closings = delivery.closings ? denormalizeClosingDates(delivery.closings) : [];
-	let openings = denormalizeOpeningHours(delivery.deliveryHours);
-	let limitOrders = delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null;
+	export let submit, delivery = { ...initialValues };
 
-	let lockOrders = delivery.lockOrderHoursBeforeDelivery != null || delivery.id != null ? delivery.lockOrderHoursBeforeDelivery : 24;
-	let maxOrders = delivery.maxPurchaseOrdersPerTimeSlot != null || delivery.id != null ? delivery.maxPurchaseOrdersPerTimeSlot : 10;
+	(() => delivery = form.initialize(delivery, validators, initialValues))();
 
-	$: if (limitOrders && lockOrders == null) lockOrders = 24;
-	$: if (limitOrders && maxOrders == null) maxOrders = 5;
-
-	const handleSubmit = () => {
-		deliveryForm.validate();
-
-		if ($deliveryForm.valid && !isLoading) {
-			delivery.deliveryHours = normalizeOpeningHours(openings);
-			delivery.closings = normalizeClosingDates(closings);
-
-			if (!limitOrders) {
-				delivery.lockOrderHoursBeforeDelivery = null;
-				delivery.maxPurchaseOrdersPerTimeSlot = null;
-			} else if (lockOrders < 0 || maxOrders < 0) {
-				return;
-			} else {
-				delivery.lockOrderHoursBeforeDelivery = lockOrders;
-				delivery.maxPurchaseOrdersPerTimeSlot = maxOrders;
-			}
-
-			submit();
-		}
-	}
-
-	const deliveryForm = form(() => ({
-		deliveryHours: {value: openings, validators: ['required', 'openingsDays', 'openingsDates'], enabled: true},
-		openings: {
-			value: openings,
-			validators: ["required", "openingsDays", "openingsDates"],
-			enabled: true,
-		},
-		maxPurchaseOrders: {
-			value: maxOrders,
-			validators: ["min:1"],
-			enabled: limitOrders,
-		},
-		lockPurchaseOrders: {
-			value: lockOrders,
-			validators: ["min:0"],
-			enabled: limitOrders,
-		},
-		name: {
-			value: delivery.name,
-			validators: ["required", "min:3"],
-			enabled: true,
-		}
-	}), {
-		initCheck: false
+	onDestroy(async () => {
+		await form.destroy();
 	});
+
+	delivery.denormalizedDeliveryHours = denormalizeOpeningHours(delivery.deliveryHours);
+	delivery.denormalizedClosings = denormalizeClosingDates(delivery.closings);
+	delivery.limitOrders = delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null;
+
+	$: if (delivery.limitOrders && !delivery.lockOrderHoursBeforeDelivery) delivery.lockOrderHoursBeforeDelivery = 24;
+	$: if (delivery.limitOrders && !delivery.maxPurchaseOrdersPerTimeSlot) delivery.maxPurchaseOrdersPerTimeSlot = 5;
 </script>
 
-<form class="w-full" on:submit|preventDefault={handleSubmit}>
+<!-- svelte-ignore component-name-lowercase -->
+<form class="w-full" on:submit|preventDefault={() => form.validateAndSubmit(submit)}>
 	<div class="form-control">
 		<div class="w-full">
 			<label for="grid-name">Nom *</label>
 			<input
 				bind:value={delivery.name}
-				use:bindClass={{ form: deliveryForm, name: 'name' }}
-				class:disabled={isLoading}
-				disabled={isLoading}
+				use:bindClass={{ form, name: 'name' }}
+				class:disabled={$form.isSubmitting}
+				disabled={$form.isSubmitting}
 				id="grid-name"
 				type="text"
 				placeholder="ex : Livraison bassin Annecien"/>
@@ -92,16 +46,16 @@
 		<label>Actif</label>
 		<Toggle
 			labelPosition="left"
-			disabled={isLoading}
+			disabled={$form.isSubmitting}
 			classNames="ml-1"
 			bind:isChecked={delivery.available}>
 		</Toggle>
 	</div>
 	<div class="form-control">
-		<div class="w-full" use:bindClass={{ form: deliveryForm, name: "deliveryHours" }}>
+		<div class="w-full" use:bindClass={{ form, name: "denormalizedDeliveryHours" }}>
 			<label>Horaires de livraison *</label>
-			<OpeningHoursContainer bind:openings={openings}/>
-			<ErrorContainer field={$deliveryForm.fields.deliveryHours}/>
+			<OpeningHoursContainer bind:openings={delivery.denormalizedDeliveryHours}/>
+			<ErrorContainer field={$form.fields.deliveryHours}/>
 		</div>
 	</div>
 	<hr class="my-5"/>
@@ -109,29 +63,29 @@
 		<label>Plages de fermeture</label>
 		<p class="text-gray-600 mb-2">Si cette n'est pas assurée durant certaines périodes de l'année, renseignez les dates
 			pour que les magasins ne puissent pas placer de commandes avec livraison sur ces périodes.</p>
-		<ClosingDates bind:closings/>
+		<ClosingDates bind:closings={delivery.denormalizedClosings}/>
 	</div>
 	<hr class="my-5"/>
 	<div class="form-control mt-6" style="display: block;">
 		<label>Limiter les commandes</label>
 		<Toggle
 			labelPosition="left"
-			disabled={isLoading}
+			disabled={$form.isSubmitting}
 			classNames="ml-1"
-			bind:isChecked={limitOrders}/>
+			bind:isChecked={delivery.limitOrders}/>
 	</div>
-	{#if limitOrders}
+	{#if delivery.limitOrders}
 		<div class="form-control">
 			<div class="w-full">
 				<span class="mr-1">Autoriser la prise de commandes jusqu'à</span>
-				<input id="lockOrders" type="number" style="width: 70px; display: inline-block;" bind:value={lockOrders}>
+				<input id="lockOrders" type="number" style="width: 70px; display: inline-block;" bind:value={delivery.lockOrderHoursBeforeDelivery}>
 				<span class="ml-1">heures avant l'horaire de livraison.</span>
 			</div>
 		</div>
 		<div class="form-control">
 			<div class="w-full">
 				<span class="mr-1">Autoriser un maximum de </span>
-				<input id="maxOrders" type="number" style="width: 70px; display: inline-block;" bind:value={maxOrders}>
+				<input id="maxOrders" type="number" style="width: 70px; display: inline-block;" bind:value={delivery.maxPurchaseOrdersPerTimeSlot}>
 				<span class="ml-1">commandes par horaire de livraison.</span>
 			</div>
 		</div>
@@ -144,7 +98,7 @@
 		<label>Accepter automatiquement les nouvelles commandes</label>
 		<Toggle
 			labelPosition="left"
-			disabled={isLoading}
+			disabled={$form.isSubmitting}
 			classNames="ml-1"
 			bind:isChecked={delivery.autoAcceptRelatedPurchaseOrder}/>
 	</div>
@@ -152,7 +106,7 @@
 		<label>Marquer automatiquement les commandes acceptées comme terminées</label>
 		<Toggle
 			labelPosition="left"
-			disabled={isLoading}
+			disabled={$form.isSubmitting}
 			classNames="ml-1"
 			bind:isChecked={delivery.autoCompleteRelatedPurchaseOrder}/>
 	</div>
@@ -160,13 +114,13 @@
 	<div class="form-control mt-5">
 		<button
 			type="submit"
-			class:disabled={!$deliveryForm.valid || isLoading}
-			disabled={isLoading}
+			class:disabled={!$form.valid || $form.isSubmitting}
+			disabled={$form.isSubmitting}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto">
 			<Icon
-				data={isLoading ? faCircleNotch : faPaperPlane}
+				data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
 				class="mr-2 inline"
-				spin={isLoading}/>
+				spin={$form.isSubmitting}/>
 			Valider
 		</button>
 	</div>

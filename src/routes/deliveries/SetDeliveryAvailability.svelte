@@ -1,33 +1,23 @@
 <script>
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+  import { getContext } from "svelte";
   import { SET_DELIVERY_AVAILABILITY } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
 
-  const errorsHandler = new SheaftErrors();
-
   export let close, onClose, delivery;
-  const graphQLInstance = GetGraphQLInstance();
 
-  let isLoading = false;
+  const errorsHandler = new SheaftErrors();
+  const { mutate, isLoading } = getContext("api");
 
-  const handleSubmit = async () => {
-    isLoading = true;
-
-    var res = await graphQLInstance.mutate(SET_DELIVERY_AVAILABILITY, {
-      ids: [delivery.id],
-      available: !delivery.available
-    }, errorsHandler.Uuid);
-
-    isLoading = false;
-
-    if (!res.success) {
-      //TODO
-    }
-
-    await handleClose(res);
-  };
-
+  const handleSubmit = async () => await mutate({
+    mutation: SET_DELIVERY_AVAILABILITY,
+    variables: { ids: [delivery.id], available: !delivery.available },
+    errorsHandler,
+    success: (res) => handleClose(res),
+    successNotification: `Le créneau a bien été ${delivery.available ? 'désactivé' : 'activé'}`,
+    errorNotification: `Impossible ${delivery.available ? 'de désactiver' : 'd\'activer'} ce créneau`
+  });
+    
   const handleClose = async res => {
     close();
     await onClose(res);
@@ -37,7 +27,7 @@
 <ActionConfirm
   title={delivery.available ? 'Désactiver' : 'Activer'}
   level={delivery.available ? 'warning' : "success"}
-  isLoading={isLoading}
+  isLoading={$isLoading}
   {errorsHandler}
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>  
