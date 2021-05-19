@@ -1,30 +1,23 @@
 <script>
-	import {onMount} from "svelte";
+	import {getContext, onMount} from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import {formatMoney} from "./../../helpers/app";
-	import GetRouterInstance from "./../../services/SheaftRouter";
-	import GetAuthInstance from "./../../services/SheaftAuth";
 	import {items} from "./store";
 	import MyOrderListItem from "./MyOrderListItem.svelte";
 	import {MY_ORDERS, MY_VALIDATING_ORDERS} from "./queries.js";
 	import OrderByDirection from "./../../enums/OrderByDirection";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import SearchProductRoutes from "./../search-products/routes";
-	import QuickOrderRoutes from "./../quick-orders/routes";
-	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import Icon from "svelte-awesome";
-	import {faCircleNotch, faClock, faPlay, faPlus} from "@fortawesome/free-solid-svg-icons";
+	import {faCircleNotch, faClock, faPlay} from "@fortawesome/free-solid-svg-icons";
 	import OrderStatus from "../../enums/OrderStatusKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import Actions from "../../components/table/Actions.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const authInstance = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
-	const routerInstance = GetRouterInstance();
+	const { query } = getContext("api");
 
 	let selected = null;
 	let orders = [];
@@ -32,55 +25,37 @@
 	let isLoading = true;
 
 	const getMyOrders = async () => {
-		var res = await graphQLInstance.query(
-			MY_ORDERS,
-			{
-				orderBy: {createdOn: OrderByDirection.DESC},
+		isLoading = true;
+		await query({
+			query: MY_ORDERS,
+			variables: { orderBy: {createdOn: OrderByDirection.DESC} },
+			errorsHandler,
+			success: (res) => {
+				items.set(
+					res.map((p) => ({
+						...p,
+						active:
+							p.status !== PurchaseOrderStatusKind.Cancelled.Value &&
+							p.status !== PurchaseOrderStatusKind.Withdrawned.Value &&
+							p.status !== PurchaseOrderStatusKind.Refused.Value &&
+							p.status !== PurchaseOrderStatusKind.Delivered.Value,
+					})
+				));
 			},
-			errorsHandler.Uuid
-		);
-
-
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			return;
-		}
-
-		items.set(
-			res.data.map((p) => {
-				return {
-					...p,
-					active:
-						p.status !== PurchaseOrderStatusKind.Cancelled.Value &&
-						p.status !== PurchaseOrderStatusKind.Withdrawned.Value &&
-						p.status !== PurchaseOrderStatusKind.Refused.Value &&
-						p.status !== PurchaseOrderStatusKind.Delivered.Value,
-				};
-			})
-		);
+			errorNotification: "Impossible de récupérer les commandes"
+		});
+		isLoading = false;
 	};
 
 	const getValidatingOrders = async () => {
-		var res = await graphQLInstance.query(MY_VALIDATING_ORDERS, {}, errorsHandler.Uuid);
-
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			return;
-		}
-
-		validatingOrders = res.data;
+		isLoading = true;
+		validatingOrders = await query({
+			query: MY_VALIDATING_ORDERS,
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les commandes validées"
+		});
+		isLoading = false;
 	}
-
-	const goToOrderProducts = () => {
-		if (authInstance.isInRole([Roles.Store.Value])) {
-			routerInstance.goTo(QuickOrderRoutes.Purchase);
-			return;
-		}
-
-		routerInstance.goTo(SearchProductRoutes.Search);
-	};
 
 	const changeOrdersDisplay = () => {
 		switch (selected) {
@@ -142,7 +117,7 @@
 
 <TransitionWrapper>
 	<PageHeader name="Mes commandes"/>
-	<PageBody {errorsHandler} noResultsPage={SearchProductRoutes.NoResults} noResults={$items.length < 1 && validatingOrders.length < 1}>
+	<PageBody {errorsHandler} noResultsPage={SearchProductRoutes.NoResults} {isLoading} noResults={$items.length < 1 && validatingOrders.length < 1}>
 			<Actions {actions} show={!hiddenNavigation}/>
 			<div class="mb-5">
 				{#each validatingOrders as validatingOrder}

@@ -14,7 +14,6 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import Roles from "./../../enums/Roles";
 	import MyOrderRoutes from "./routes";
@@ -28,9 +27,9 @@
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
 
 	let order = null;
 	let isLoading = true;
@@ -53,34 +52,21 @@
 		}
 	};
 
-	const getMyOrder = async id => {
-		isLoading = true;
-		var res = await graphQLInstance.query(GET_MY_ORDER_DETAILS, {id}, errorsHandler.Uuid);
-
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			routerInstance.goTo(MyOrderRoutes.List);
-			return;
-		}
-
-		order = res.data;
-		isLoading = false;
-	}
-
-	const cancelOrder = () => {
-		open(CancelMyOrders, {
-			orders: [order],
-			onClose: async res => {
-				if (res.success) {
-					routerInstance.goTo(MyOrderRoutes.List);
-				}
-			}
-		});
-	}
+	const cancelOrder = () => open(CancelMyOrders, {
+		orders: [order],
+		onClose: () => routerInstance.goTo(MyOrderRoutes.List)
+	});
 
 	onMount(async () => {
-		await getMyOrder(params.id);
+		isLoading = true;
+		order = await query({
+			query: GET_MY_ORDER_DETAILS,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(MyOrderRoutes.List),
+			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus"
+		});
+		isLoading = false;
 	})
 
 	$: canCancelOrder =
