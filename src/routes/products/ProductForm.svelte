@@ -35,6 +35,7 @@
 	let selectedCategory = null;
 	let returnables = [];
 	let organicTag;
+	let productPicture = product.picture;
 
 	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
 	$: isBio = organicTag && product.tags.find((i) => i.kind == organicTag.kind && i.value == organicTag.value);
@@ -123,10 +124,11 @@
 	const changeImage = () => {
 		open(ChangeImage, {
 			product,
+			productPicture,
 			onClose: (res) => {
 				if (res.success) {
-					product.picture = res.data;
-					product.originalPicture = res.original;
+					product.pictures = [{data:res.data, position: 0}];
+					productPicture = res.data;
 				}
 			},
 		});
@@ -167,7 +169,7 @@
 			<div class="form-control">
 				<div class="flex w-full">
 					<div class="w-full" class:hidden={product.producer?.notSubjectToVat}>
-						<label>TVA quand applicable *</label>
+						<label>TVA *</label>
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={$isLoading}
@@ -217,11 +219,11 @@
 			<div class="form-control" style="height: 300px;">
 				<div class="w-full" on:click={() => changeImage()}>
 					<label>Image</label>
-					<div class="border border-gray-400 cursor-pointer text-center h-full">
+					<div class="border border-gray-400 cursor-pointer text-center h-full" style="max-height: 256px; max-width: 620px;">
 						{#if product.picture}
 							<div
 								class="h-full product-picture relative"
-								style="background: url('{product.picture}'); margin:auto;">
+								style="background: url('{productPicture}'); margin:auto;">
 								{#if product.picture.includes("pictures/tags/images/")}
 									<div class="absolute" style="bottom: 0%; z-index: 1;">
 										<div class="text-white text-lg p-1 bg-gray-800">
@@ -418,7 +420,7 @@
 
 <style>
 	.product-picture {
-		background-size: cover !important;
+		background-size: contain !important;
 		background-position: center !important;
 		background-repeat: no-repeat !important;
 	}

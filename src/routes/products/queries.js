@@ -72,6 +72,11 @@ export const GET_PRODUCT_DETAILS = gql`
 				kind
 			}
 			available
+			pictures{
+				id
+				position
+				large
+			}
 		}
 	}
 `;
