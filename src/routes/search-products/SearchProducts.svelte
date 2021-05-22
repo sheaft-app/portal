@@ -18,7 +18,6 @@
 	import FiltersModal from "./FiltersModal.svelte";
 	import ProductDetails from "./ProductDetails.svelte";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import Icon from "svelte-awesome";
 	import {
@@ -27,39 +26,27 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import SkeletonCard from "./SkeletonCard.svelte";
 	import Roles from "./../../enums/Roles";
-	import CartRoutes from "../cart/routes";
 	import QuickOrderRoutes from "../quick-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Meta from "../../components/Meta.svelte";
+	import { normalizeSearchProducts, retrieveUserLocationInQueryString, retrieveUserLocationInStorage, updateUserLocationInQueryString, QUERY_SIZE } from "./searchProductsForm";
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 	const authManager = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 
 	let hoveredProduct = null;
 	let errors = [];
 	let prevFeed = [];
-	let loadToCart = false;
 	let currentPage = 0;
 	let lastFetchLength = 0;
 	let departmentProgress = null;
 	let totalProducts = 0;
 	let isLoadingCitySearch = false;
 	let producer = null;
-	const QUERY_SIZE = 25;
-
-	let defaultSearchValues = {
-		text: null,
-		tags: [],
-		sort: "producer_geolocation asc",
-		latitude: null,
-		longitude: null,
-		maxDistance: null,
-		producerId: null,
-	};
 
 	const clearProducer = () => {
 		producer = null;
@@ -70,12 +57,7 @@
 	};
 
 	const observer = new IntersectionObserver(async (entries) => {
-		if (
-			!$isLoading &&
-			lastFetchLength >= QUERY_SIZE &&
-			!$isFetchingMore &&
-			entries[0].isIntersecting
-		) {
+		if (!$isLoading && lastFetchLength >= QUERY_SIZE && !$isFetchingMore && entries[0].isIntersecting) {
 			isFetchingMore.set(true);
 			await searchProducts(currentPage);
 			isFetchingMore.set(false);
@@ -91,9 +73,7 @@
 		};
 	};
 
-	const showFiltersModal = () => {
-		open(FiltersModal, {filters, visibleNav: true, producer});
-	};
+	const showFiltersModal = () => open(FiltersModal, {filters, visibleNav: true, producer});
 
 	const renderSort = (sort) => {
 		switch (sort) {
@@ -108,69 +88,6 @@
 		}
 	};
 
-	const createVariables = (page) => {
-		let values = routerInstance.getQueryParams();
-		let tags = [];
-
-		if (Object.keys(values).length == 0) {
-			values = defaultSearchValues;
-		}
-
-		if (!values["sort"]) {
-			values["sort"] = defaultSearchValues.sort;
-		}
-
-		var newPosition = retrieveUserLocationInQueryString();
-		if (newPosition) {
-			values["latitude"] = newPosition.latitude;
-			values["longitude"] = newPosition.longitude;
-		} else {
-			newPosition = retrieveUserLocationInStorage();
-			if (newPosition) {
-				updateUserLocationInQueryString(newPosition);
-				return null;
-			}
-		}
-
-		if (values["producerId"] && values["producerId"] <= 0) {
-			values["producerId"] = null;
-			producer = null;
-		}
-
-		if (values["maxDistance"] && values["maxDistance"].length > 0) {
-			values["maxDistance"] = parseInt(values["maxDistance"]);
-		}
-
-		if (values["category"] && values["category"].length > 0) {
-			values["category"] = values["category"];
-			tags = [...tags, values["category"]];
-		}
-
-		if (values["labels"] && values["labels"].length > 0) {
-			values["labels"] = values["labels"].split(",");
-			tags = [...tags, ...values["labels"]];
-		}
-
-		filters.set({
-			...values,
-			tags,
-		});
-
-		return {
-			input: {
-				text: $filters.text,
-				tags: $filters.tags,
-				sort: $filters.sort,
-				latitude: $filters.latitude,
-				longitude: $filters.longitude,
-				maxDistance: $filters.maxDistance,
-				page: page,
-				take: QUERY_SIZE,
-				producerId: $filters.producerId,
-			},
-		};
-	};
-
 	const refetch = async () => {
 		isLoading.set(true);
 		await searchProducts(0);
@@ -178,65 +95,39 @@
 
 	const searchProducts = async (page) => {
 		currentPage = ++page;
-		var variables = createVariables(currentPage);
-		if (!variables) return;
 
-		var response = await graphQLInstance.query(
-			SEARCH_PRODUCTS,
-			variables,
-			errorsHandler.Uuid
-		);
-
-		if (!response.success) {
-			//TODO
-			return;
+		let newPosition = retrieveUserLocationInQueryString();
+		if (newPosition) {
+			values["latitude"] = newPosition.latitude;
+			values["longitude"] = newPosition.longitude;
+		} else {
+			newPosition = retrieveUserLocationInStorage();
+			if (newPosition) {
+				updateUserLocationInQueryString(newPosition, routerInstance);
+			}
 		}
 
-		// on reset le feed pour les nouvelles query
-		if (page === 1) {
-			prevFeed = [];
-		}
+		await query({
+			query: SEARCH_PRODUCTS,
+			variables: normalizeSearchProducts(routerInstance.getQueryParams(), currentPage),
+			errorsHandler,
+			success: (res) => {
+				totalProducts = res.count;
+				prevFeed = [...prevFeed, ...res.products];
+				lastFetchLength = res.products.length;
+				searchResults.set(prevFeed);
 
-		totalProducts = response.data.count;
-		prevFeed = [...prevFeed, ...response.data.products];
-		lastFetchLength = response.data.products.length;
-
-		searchResults.set(prevFeed);
+				// on reset le feed pour les nouvelles query
+				if (page === 1) prevFeed = [];
+			},
+			errorNotification: "Impossible de récupérer les informations des produits."
+		});
 		isLoading.set(false);
-	};
-
-	const retrieveUserLocationInStorage = () => {
-		var position = localStorage.getItem("user_location");
-		if (position) {
-			var parsed = JSON.parse(position);
-			if (parsed.hasOwnProperty("latitude")) return parsed;
-
-			return null;
-		}
-
-		return null;
-	};
-
-	const retrieveUserLocationInQueryString = () => {
-		let values = routerInstance.getQueryParams();
-		if (!values["latitude"] || !values["longitude"]) return null;
-
-		return {
-			latitude: parseFloat(values["latitude"]),
-			longitude: parseFloat(values["longitude"]),
-		};
 	};
 
 	const updateUserLocation = (position) => {
 		updateUserLocationInStorage(position);
-		return updateUserLocationInQueryString(position);
-	};
-
-	const updateUserLocationInQueryString = (position) => {
-		if (!position) return false;
-
-		routerInstance.replaceQueryParams(position);
-		return true;
+		return updateUserLocationInQueryString(position, routerInstance);
 	};
 
 	const updateUserLocationInStorage = (position) => {
@@ -294,14 +185,15 @@
 	};
 
 	onMount(async () => {
-		var newPosition = retrieveUserLocationInQueryString();
+		const values = routerInstance.getQueryParams();
+		var newPosition = retrieveUserLocationInQueryString(values);
 		if (newPosition) {
 			updateUserLocationInStorage(newPosition);
 			initLocation = newPosition;
 		} else {
 			var localPosition = retrieveUserLocationInStorage();
 			if (localPosition) {
-				updateUserLocationInQueryString(localPosition);
+				updateUserLocationInQueryString(localPosition, routerInstance);
 				initLocation = localPosition;
 			} else {
 				isLoadingCitySearch = true;
@@ -350,15 +242,13 @@
 		}
 
 		currentProducerId = producerId;
-		var result = await graphQLInstance.query(
-			GET_PRODUCER_NAME,
-			{id: producerId},
-			errorsHandler.Uuid
-		);
-
-		if (!result.success) return;
-
-		producer = result.data;
+		
+		producer = await query({
+			query: GET_PRODUCER_NAME,
+			variables: {id: producerId},
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les producteurs"
+		});
 	};
 
 	$: getProducerFilter($filters.producerId);

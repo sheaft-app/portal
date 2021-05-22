@@ -1,7 +1,6 @@
 <script>
 	import Select from "./../../components/controls/select/Select.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import CategorySelect from "./../../components/controls/CategorySelect.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import SortingSelect from "./SortingSelect.svelte";
@@ -9,35 +8,38 @@
 	import ProducerItem from "./ProducerItem.svelte";
 	import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 	import { SUGGEST_PRODUCER } from "./queries";
+	import { getContext } from "svelte";
+	import SheaftErrors from "../../services/SheaftErrors";
 
-	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
 	export let close, filters, producer;
+	
+	const routerInstance = GetRouterInstance();
+	const { query } = getContext("api");
+	const errorsHandler = new SheaftErrors();
+
 	let isLoading = false;
 
-	const getOptionLabel = (option) => {
-		if (
-			!option ||
-			!option.address ||
-			!option.address.city ||
-			!option.address.zipcode
-		)
-			return "";
-
-		return `<p class="leading-none mt-1 uppercase">${option.name}</p><p class="leading-none text-xs mt-1 uppercase">${option.address.zipcode} ${option.address.city}</p>`;
-	};
+	const getOptionLabel = (option) =>
+		!option ||
+		!option.address ||
+		!option.address.city ||
+		!option.address.zipcode 
+			? "" 
+			: `<p class="leading-none mt-1 uppercase">${option.name}</p><p class="leading-none text-xs mt-1 uppercase">${option.address.zipcode} ${option.address.city}</p>`; 
+	
 	const getSelectionLabel = (option) => option.name;
 
 	const loadData = async (filterText) => {
-		var res = await graphQLInstance.query(SUGGEST_PRODUCER, {
-			input: { text: filterText },
+		let data = [];
+		await query({
+			query: SUGGEST_PRODUCER,
+			variables: { input: { text: filterText }},
+			errorsHandler,
+			success: (res) => data = res,
+			error: () => data = [],
+			errorNotification: "Impossible de récupérer les producteurs."
 		});
-		if (!res.success) {
-			//TODO
-			return [];
-		}
-
-		return res.data;
+		return data;
 	};
 
 	const handleSelect = (selectedItem) => {
@@ -73,9 +75,7 @@
 	};
 
 	$: if (!producer) {
-		routerInstance.replaceQueryParams({
-			producerId: producer,
-		});
+		routerInstance.replaceQueryParams({ producerId: producer });
 	}
 
 	$: activeLabels = routerInstance.getQueryParams()["labels"]

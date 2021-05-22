@@ -31,7 +31,7 @@
 	let currentPage = 0;
 	let lastFetchLength = 0;
 	let businessLocation = null;
-
+	
 	function fetchMoreOnIntersect(node, params) {
 		observer.observe(node);
 		return {
