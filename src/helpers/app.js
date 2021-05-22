@@ -41,6 +41,15 @@ export const groupBy = (array, f) => {
 	return Object.keys(groups).map((group) => groups[group]);
 }
 
+export const getDefaultDenormalizedOpeningHours = () => denormalizeOpeningHours([
+	{
+		id: 0,
+		days: [],
+		from: null,
+		to: null
+	}
+]);
+
 export const denormalizeOpeningHours = (openingHours) => 
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];

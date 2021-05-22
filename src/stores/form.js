@@ -12,7 +12,7 @@ const store = () => {
     let unsubscribe;
 
 	const state = {
-        isInitializing: true,
+        hasInitialized: false,
         isSubmitting: false,
         fields: {},
         oldFields: {},
@@ -46,7 +46,7 @@ const store = () => {
             });
 
             update(state => {
-                state.isInitializing = false;
+                state.hasInitialized = true;
                 return state;
             })
             
@@ -55,7 +55,7 @@ const store = () => {
         async validateAndSubmit(submit) {
             formBind.validate();
             
-            if (state.valid && !state.isInitializing && !state.isSubmitting) {
+            if (state.valid && state.hasInitialized && !state.isSubmitting) {
                 update((state) => {
                     state.isSubmitting = true;
                     return state;

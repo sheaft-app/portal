@@ -1,32 +1,19 @@
 <script>
 	import { UPDATE_CONSUMER } from "./mutations.js";
 	import { GET_CONSUMER_DETAILS } from "./queries.js";
-	import { form } from '../../../vendors/svelte-forms/src/index';
 	import ProfileForm from "./ProfileForm.svelte";
+	import { initialValues, validators, normalizeConsumer } from "./consumerForm";
 
 	export let errorsHandler;
 
-	let consumer = {
-		id: null,
-		firstName: null,
-		lastName: null,
-		email: null,
-		facebook: null,
-		instagram: null,
-	};
-
-	const consumerForm = form(() => ({
-    firstName: { value: consumer.firstName, validators: ['required'], enabled: true },
-    lastName: { value: consumer.lastName, validators: ['required'], enabled: true },
-    email: { value: consumer.email, validators: ['required', 'email'], enabled: true },
-	}), {
-    initCheck: false
-	});
+	let consumer = { ... initialValues };
 </script>
 
 <ProfileForm
 	bind:user={consumer}
-	form={consumerForm}
+	{validators}
+	normalizer={normalizeConsumer}
+	{initialValues}
 	updateQuery={UPDATE_CONSUMER}
 	getQuery={GET_CONSUMER_DETAILS}
 	{errorsHandler}>

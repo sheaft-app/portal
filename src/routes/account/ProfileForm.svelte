@@ -1,98 +1,44 @@
 <script>
-	import { onMount } from "svelte";
-	import Loader from "./../../components/Loader.svelte";
+	import { getContext, onMount, onDestroy } from "svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import Icon from "svelte-awesome";
 	import { faCircleNotch, faCheck } from "@fortawesome/free-solid-svg-icons";
 	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
-  import { normalizeOpeningHours, denormalizeOpeningHours } from "./../../helpers/app";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+  import { denormalizeOpeningHours } from "./../../helpers/app";
   import Cleave from "cleave.js";
   import "cleave.js/dist/addons/cleave-phone.fr";
   import {loginFreshdesk} from "./../../services/SheaftFreshdesk";
-import { authUserAccount } from "../../stores/auth";
+  import form from "../../stores/form";
 
-  export let user, form, updateQuery, getQuery, errorsHandler, isLoading = false;
+  export let user, updateQuery, getQuery, errorsHandler, isLoading = true;
+  export let validators, initialValues, normalizer;
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { query, mutate } = getContext("api");
   const authInstance = GetAuthInstance();
-  const notificationsInstance = new GetNotificationsInstance();
+
+  $: if (!isLoading && !$form.hasInitialized) {
+    user = form.initialize(user, validators, initialValues);
+  }
+  
+  onDestroy(async () => {
+		await form.destroy();
+	});
+
   let cleave = null;
 
-  const handleGet = async () => {
-		isLoading = true;
-		var res = await graphQLInstance.query(getQuery, errorsHandler.Uuid);
-		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-    user = res.data;
-
-    if (user.openingHours) {
-      if (user.openingHours.length == 0) {
-        user.openingHours = denormalizeOpeningHours([
-          {
-            id: 0,
-            days: [],
-            start: {
-              hours: 0,
-              minutes: 0
-            },
-            end: {
-              hours: 0,
-              minutes: 0
-            }
-          }
-        ]);
-      } else {
-        user.openingHours = denormalizeOpeningHours(user.openingHours);
-      }
-    }
-	};
-
 	const handleUpdate = async () => {
-		form.validate();
-
-		if ($form.valid) {
-      isLoading = true;
-      let variables = user;
-
-      let tags = user.tags;
-      if(tags){
-      	tags = user.tags.map(t => t.id);
-			}
-
-      let openingHours = user.openingHours;
-      if (openingHours) {
-        openingHours = normalizeOpeningHours(user.openingHours);
-      };
-
-        variables = {
-          ...user,
-          tags,
-          openingHours
-        }
-
-			var res = await graphQLInstance.mutate(updateQuery, variables, errorsHandler.Uuid);
-			isLoading = false;
-
-			if (!res.success) {
-				//TODO
-				return;
-      }
-
-      notificationsInstance.success(
-        "Vos modifications ont bien été appliquées."
-      );
-
-      await authInstance.refreshLogin();
-      await loginFreshdesk();
-		}
+    await mutate({
+			mutation: updateQuery,
+      variables: normalizer(user),
+			errorsHandler,
+      success: async () => {
+        await authInstance.refreshLogin();
+        await loginFreshdesk();
+      }, 
+      successNotification: "Vos modifications ont bien été appliquées",
+			errorNotification: "Impossible de mettre à jour vos informations. Veuillez réessayer ultérieurement"
+    });
   };
 
   const initializeCleave = () => {
@@ -103,12 +49,24 @@ import { authUserAccount } from "../../stores/auth";
   }
 
 	onMount(async () => {
-		await handleGet();
+		isLoading = true;
+    await query({
+			query: getQuery,
+			errorsHandler,
+      success: async (res) => {
+        user = res;
+        if (res.openingHours && res.openingHours.length > 0) {
+          user.openingHours = denormalizeOpeningHours(res.openingHours);
+        }
+      }, 
+			errorNotification: "Impossible de récupérer vos informations. Veuillez réessayer ultérieurement"
+    });
+		isLoading = false;
 	});
 </script>
 
 <div class="bg-white shadow px-5 py-3">
-  <form class="w-full" on:submit|preventDefault={handleUpdate}>
+  <form class="w-full" on:submit|preventDefault={() => form.validateAndSubmit(handleUpdate)}>
     <div class="form-control">
       <div class="w-full md:w-1/2 pr-0 md:pr-2 mb-3 md:mb-0">
         <label for="grid-first-name">Prénom *</label>
@@ -165,12 +123,12 @@ import { authUserAccount } from "../../stores/auth";
     <div class="form-control mt-5">
       <button
         type="submit"
-        class:disabled={isLoading || !$form.valid}
+        class:disabled={isLoading || $form.isSubmitting || !$form.valid}
         class="btn btn-lg btn-primary w-full md:w-auto justify-center">
         <Icon
-          data={isLoading ? faCircleNotch : faCheck}
+          data={$form.isSubmitting ? faCircleNotch : faCheck}
           class="mr-1 inline"
-          spin={isLoading} />
+          spin={$form.isSubmitting} />
         Valider
       </button>
     </div>
