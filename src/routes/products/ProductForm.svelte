@@ -253,6 +253,7 @@
 			disabled={$isLoading}
 			on:change={(c) => changeCategory(c)}
 			bindClassData={{ form, name: 'selectedCategory' }}
+			{errorsHandler}
 			{selectedCategory}
 			displayOptionAllProducts={false}
 			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"/>

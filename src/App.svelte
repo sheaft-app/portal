@@ -225,16 +225,16 @@
       lg:block"
       style="z-index: 7;" />
   {/if}
-  <Nav />
-  <AcceptCookiePlaceholder />
   <GraphQLContext>
-  	<main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
-    	<Modal>
-      	<div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
-        	<Router routes={guardInstance.routes} />
-      	</div>
-    	</Modal>
-  	</main>
+    <Nav />
+    <AcceptCookiePlaceholder />
+    <main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
+      <Modal>
+        <div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
+          <Router routes={guardInstance.routes} />
+        </div>
+      </Modal>
+    </main>
   </GraphQLContext>
 {/if}
 

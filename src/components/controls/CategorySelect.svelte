@@ -1,17 +1,13 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
   import { onMount } from "svelte";
-  import InputCheckbox from "./InputCheckbox.svelte";
   import { GET_CATEGORIES } from "../queries.js";
   import GetRouterInstance from "../../services/SheaftRouter.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
   import { bindClass } from '../../../vendors/svelte-forms/src/index';
-  import Icon from "svelte-awesome";
-
   import allProducts from "../icons/allProducts.svg";
 
   const routerInstance = GetRouterInstance();
-  const graphQLInstance = GetGraphQLInstance();
+  const { query } = getContext("api");
   const dispatch = createEventDispatcher();
 
   export let withSearch = false,
@@ -20,32 +16,29 @@
     disabled = false,
     selectedCategory = null,
     grid = null,
-    bindClassData = null;
+    bindClassData = null,
+    errorsHandler;
 
   let isLoading = false;
   let categories = [];
 
   onMount(async () => {
-    categories = await getCategories();
+    isLoading = true;
+    await query({
+      query: GET_CATEGORIES,
+      errorsHandler,
+      success: (res) => categories = res,
+      error: () => categories = [],
+      errorNotification: "Impossible de récupérer les autres produits du producteur"
+    });
 
     if (withSearch) {
       setInitialSelectedCategory(categories);
     }
+
+    isLoading = false;
   })
 
-  const getCategories = async () => {
-    isLoading = true;
-    var res = await graphQLInstance.query(GET_CATEGORIES);
-    isLoading = false;
-
-    if (!res.success) {
-      // todo
-      return [];
-    }
-
-    return res.data;
-  }
-  
   const setInitialSelectedCategory = (categories) => {
     const values = routerInstance.getQueryParams();
 
@@ -66,8 +59,6 @@
     selectedCategory = category;
 
     if (withSearch) {
-      const values = routerInstance.getQueryParams();
-      
       routerInstance.replaceQueryParams({
         category: selectedCategory ? selectedCategory.name.toLowerCase() : null
       });

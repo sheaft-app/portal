@@ -139,6 +139,7 @@
 	</label>
 	<CategorySelect
 		callback={close}
+		{errorsHandler}
 		withSearch={true}
 		grid="grid grid-cols-2 lg:grid-cols-3 gap-2" />
 </div>

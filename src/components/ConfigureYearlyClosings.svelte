@@ -1,7 +1,6 @@
 <script>
     import { GET_BUSINESS_CLOSINGS } from "./queries";
     import Icon from "svelte-awesome";
-	import GetGraphQLInstance from "./../services/SheaftGraphQL.js";
 	import { faEdit } from "@fortawesome/free-solid-svg-icons";
     import ManageYearlyClosingsModal from "./ManageYearlyClosingsModal.svelte";
 	import { format } from "date-fns";
@@ -12,29 +11,22 @@
 	export let container = "";
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
 	const { open } = getContext('modal');
+	const { query } = getContext('api');
 	
     let closings = [];
 
 	onMount(async () => {
-		const result = await graphQLInstance.query(GET_BUSINESS_CLOSINGS, errorsHandler.Uuid);
-
-		if (!result.success) {
-			// todo
-			return;
-		}
-
-		closings = result.data;
+		closings = await query({
+            query: GET_BUSINESS_CLOSINGS,
+            errorsHandler,
+            errorNotification: "Impossible de récupérer les informations de fermetures"
+		});
 	});
     
-    const openManageClosingsModal = () => {
-		open(ManageYearlyClosingsModal, {
-			onClose: (res) => {
-				closings = res;
-			}
-		});
-	}
+    const openManageClosingsModal = () => open(ManageYearlyClosingsModal, {
+		onClose: (res) => closings = res
+	});
 </script>
 
 <div class={container}>

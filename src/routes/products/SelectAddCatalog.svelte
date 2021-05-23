@@ -20,7 +20,7 @@
             query: GET_CATALOGS,
             variables: { first: 50 },
             errorsHandler,
-            success: (res) => allCatalogs = res.filter((c) => !catalogs.map((c1) => c1.id).includes(c.id)),
+            success: (res) => allCatalogs = res.data.filter((c) => !catalogs.map((c1) => c1.id).includes(c.id)),
             errorNotification: "Un problème est survenu pendant la récupération des catalogues."
         });
     })

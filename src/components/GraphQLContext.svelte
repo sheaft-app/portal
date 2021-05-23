@@ -31,9 +31,13 @@
             return;
         }
 
-        await success(res.data);
-
-        return res.data;
+        if (res.pageInfo) {
+            await success(res);
+            return res;
+        } else {
+            await success(res.data);
+            return res.data;
+        }
     }
 
     const mutate = async ({ mutation, variables, errorsHandler, success, successNotification, error = () => {}, errorNotification, clearCache = [] }) => {

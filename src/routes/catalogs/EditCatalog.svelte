@@ -12,6 +12,7 @@
 	import CloneCatalog from "./CloneCatalog.svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { normalizeCatalog } from "./catalogForm";
 
 	export let params;
 
@@ -40,7 +41,7 @@
 		loadingMessage = 'Enregistrement du catalogue en cours... veuillez patienter';
 		return await mutate({
 			mutation: UPDATE_CATALOG,
-			variables: normalizeCatalog(form.values()),
+			variables: normalizeCatalog(catalog),
 			errorsHandler,
 			success: async () => {
 				products.set($products.filter((p) => !p.markForDeletion));

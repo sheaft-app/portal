@@ -178,7 +178,6 @@
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
-		console.log(legalId);
 		await mutate({
 			mutation: legalId ? UPDATE_CONSUMER_LEGALS : CREATE_CONSUMER_LEGALS,
 			variables: legalId ? normalizeUpdateLegals({ user, id: legalId }) : normalizeCreateLegals(user),
