@@ -149,8 +149,6 @@ const store = () => {
 					state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
 					return state;
 				});
-
-				return false;
 			}
 
 			setters.updateWholeCart(response.data);
