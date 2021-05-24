@@ -1,22 +1,13 @@
 <script>
 	import {faCheck} from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import SheaftErrors from "./../../services/SheaftErrors";
 	import Cropper from 'cropperjs';
-	import {onMount} from "svelte";
 	import "cropperjs/dist/cropper.min.css";
 
-	const errorsHandler = new SheaftErrors();
+	export let close, onClose;
 
-	export let product, productPicture, close, onClose;
-
-	let src = productPicture;
-
+	let src = null;
 	let imageChosen = false;
-	let realTime = false;
-	let showResult = true;
-	$: valid = productPicture !== src;
-
 	let reader = new FileReader();
 	let cropper = null;
 
@@ -34,7 +25,7 @@
 
 	const handleSubmit = async () => {
 		if(!imageChosen)
-			return await handleClose({success: true, data: productPicture});
+			return await handleClose({success: false, data: null});
 
 		let res = cropper.getCroppedCanvas({
 			minWidth: 620,
@@ -42,11 +33,10 @@
 			maxWidth: 620,
 			maxHeight: 256,
 			imageSmoothingEnabled: true,
-			imageSmoothingQuality: 'low',
+			imageSmoothingQuality: 'high',
 		});
 
 		res.toBlob(blob => {
-			let reader = new FileReader();
 			reader.readAsDataURL(blob);
 			reader.onloadend = async () => {
 				await handleClose({success: true, data: reader.result});
@@ -59,12 +49,6 @@
 		await onClose(res);
 		cropper.destroy();
 	}
-
-	onMount(() => {
-		if(src)
-			return;
-
-	});
 
 	const initCropper = () => {
 		const image = document.getElementById('image');
@@ -83,11 +67,10 @@
 </script>
 
 <ActionConfirm
-	{errorsHandler}
 	class="modal"
 	title="Modifier l'image du produit"
 	icon={faCheck}
-	{valid}
+	valid={imageChosen}
 	submit={handleSubmit}
 	submitText="Modifier"
 	closeText="Annuler"
@@ -124,15 +107,13 @@
 	}
 
 	.image-container{
-		max-height: 400px;
+		max-height: 600px;
 		max-width: 800px;
 	}
 
 	img {
 		display: block;
 		margin:auto;
-
-		/* This rule is very important, please don't ignore this */
 		max-width: 100%;
 	}
 

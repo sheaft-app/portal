@@ -46,6 +46,7 @@ export const normalizeCreateProduct = product => omit({
             id: c.id,
             wholeSalePricePerUnit: c.wholeSalePricePerUnit
         })),
+				pictures: product.pictures.map(p => ({id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position})),
         tags: product.tags.map(i => i.id)
     }, ['producer', 'createdOn', 'rating', 'ratingsCount', 'returnable', 'weight']);
 

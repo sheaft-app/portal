@@ -7,11 +7,11 @@ export const timeSpanToFrenchHour = (timeSpan) => {
 	if (!timeSpan) {
 		return;
 	}
-	
+
 	const result = /^P(?!$)((?<years>\d+)Y)?((?<months>\d+)M)?((?<weeks>\d+)W)?((?<days>\d+)D)?(T(?=\d+[HMS])((?<hours>\d+)H)?((?<minutes>\d+)M)?((?<seconds>\d+)S)?)?$/.exec(timeSpan)
 	return `${result.groups.hours}h${result.groups.minutes ?? ''}`;
 }
-export const timeToTimeSpan = (time) => 
+export const timeToTimeSpan = (time) =>
 	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S`: ''}`;
 
 export const timeSpanToTime = (timeSpan) => {
@@ -30,7 +30,7 @@ export const timeSpanToTime = (timeSpan) => {
 export const groupBy = (array, f) => {
 	if(!array || array.length < 1)
 		return [];
-		
+
 	var groups = {};
 	array.forEach((o) => {
 		var group = JSON.stringify(f(o));
@@ -41,7 +41,7 @@ export const groupBy = (array, f) => {
 	return Object.keys(groups).map((group) => groups[group]);
 }
 
-export const denormalizeOpeningHours = (openingHours) => 
+export const denormalizeOpeningHours = (openingHours) =>
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];
 
@@ -89,7 +89,7 @@ export const normalizeClosingDates = (closings) => closings ? closings.map((c) =
 		to: c.isInterval ? c.to : c.from,
 		reason: c.reason
 	};
-	
+
 	// les ids locaux sont générés par le composant ClosingDates et ne servent qu'au front
 	if (c.id.includes('local-')) delete data['id'];
 	return data;
@@ -129,6 +129,15 @@ export const removeKeys = (obj, keys) => {
 export const encodeQuerySearchUrl = address => {
 	return address ? encodeURI(`${address.latitude}+${address.longitude}`) : '';
 };
+
+// Define a generator function that increments by one
+export function* getNextId() {
+	let i = 0
+
+	while (true) {
+		yield i++
+	}
+}
 
 export const freezeBody = () => {
 	const scroll = window.scrollY;

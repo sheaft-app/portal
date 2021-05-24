@@ -105,7 +105,7 @@
 							style="height: 95px; background-image: url({product.picture}); background-size: cover; background-position: top;"
 							class:opacity-50={suggestedProductIsInCart(product)}
 							class="transition duration-200 ease-in-out w-full rounded-t-md">
-							{#if product.picture.includes("pictures/tags/images/") && !suggestedProductIsInCart(product)}
+							{#if product.picture.includes("pictures/tags/") && !suggestedProductIsInCart(product)}
 								<div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -94px;">
 									<div class="text-white text-sm p-2 bg-gray-800 text-center">
 										Aucune image disponible

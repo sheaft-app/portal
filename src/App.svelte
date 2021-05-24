@@ -33,11 +33,11 @@
   import { notificationsCount } from "./components/notifications/store";
   import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
   import mangoPay from './../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
-  
-  
+
+
   mangoPay.cardRegistration.baseURL = config.psp.url;
   mangoPay.cardRegistration.clientId = config.psp.clientId;
-  
+
   $: isLoading = true;
 
 
@@ -532,6 +532,9 @@
       color: #ff4081;
       background-color: transparent;
       box-shadow: none;
+			&:hover {
+				@apply btn-accent;
+			}
     }
     &.disabled {
       border: none;
