@@ -1,18 +1,18 @@
 <script>
 	import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import {REFUSE_AGREEMENTS} from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import {GET_AGREEMENTS} from "./queries.js";
 	import Roles from "../../enums/Roles";
 	import GetAuthInstance from "../../services/SheaftAuth";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 
 	export let onClose, close, agreements;
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
 	const authInstance = GetAuthInstance();
 
 	let reason = null;
@@ -21,21 +21,19 @@
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(REFUSE_AGREEMENTS, {
+		await mutate({
+			mutation: REFUSE_AGREEMENTS,
+			variables: {
 				ids: agreements.map(a => a.id),
 				reason
 			},
-			errorsHandler.Uuid,
-			GET_AGREEMENTS);
-
+			errorsHandler,
+			success: async (res) => handleClose(res),
+			successNotification: "L'accord a bien été refusé",
+			errorNotification: "Impossible de traiter l'accord",
+			clearCache: [GET_AGREEMENTS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		await handleClose(res);
 	}
 
 	const handleClose = async (res) => {
@@ -53,7 +51,7 @@
 	{isLoading}
 	submitText="Confirmer"
 	closeText="Annuler"
-	close={() => handleClose({success:false, data:null})}>
+	{close}>
 	{#if agreements.length > 1}
 		<p class="leading-5">
 			Vous vous apprêtez à refuser les demandes d'accords des {isProducer ? "magasins" : "producteurs"} suivants:

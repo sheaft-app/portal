@@ -1,84 +1,53 @@
 <script>
-	import {onMount, getContext} from "svelte";
-	import Icon from "svelte-awesome";
-	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+	import {getContext, onMount} from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import ProductForm from "./ProductForm.svelte";
 	import {CREATE_PRODUCT} from "./mutations.js";
-	import {GET_PRODUCTS} from "./queries.js";
+	import {GET_PRODUCTS, GET_PRODUCER_DETAILS} from "./queries.js";
 	import ProductRoutes from "./routes.js";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import ConditioningKind from "../../enums/ConditioningKind";
-	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
+	import form from "../../stores/form";
+	import {initialValues, normalizeCreateProduct} from "./productForm";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const {open} = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
-	const notificationsInstance = new GetNotificationsInstance();
+	const {query, mutate} = getContext("api");
 
-	let isLoading = false;
+	let isLoading = true;
 
-	let product = {
-		reference: null,
-		unit: null,
-		quantityPerUnit: null,
-		vat: null,
-		name: null,
-		conditioning: ConditioningKind.Bulk.Value,
-		returnableId: null,
-		description: null,
-		picture: null,
-		tags: [],
-    available: true,
-    catalogs:[]
-  };
-
-  const handleSubmit = async () => {
-    isLoading = true;
-    var res = await graphQLInstance.mutate(CREATE_PRODUCT, {
-      description: product.description,
-      name: product.name,
-			catalogs: product.catalogs.map((c) => ({
-				id: c.id,
-				wholeSalePricePerUnit: c.wholeSalePricePerUnit
-			})),
-			returnableId: product.returnable ? product.returnable.id : null,
-			quantityPerUnit: product.quantityPerUnit,
-			unit: product.unit,
-			conditioning: product.conditioning,
-			reference: product.reference,
-			picture: product.picture ? product.picture : null,
-			originalPicture: product.originalPicture ? product.originalPicture : null,
-			tags: product.tags.map(i => i.id),
-			vat: product.vat,
-			available: product.available,
-		}, errorsHandler.Uuid, GET_PRODUCTS);
-
-		if (!res.success) {
-			//TODO
-			isLoading = false;
-			return;
-		}
-
-		notificationsInstance.success("Le produit a bien été ajouté à votre catalogue");
-
+	onMount(async () => {
+		isLoading = true;
+		await query({
+			query: GET_PRODUCER_DETAILS,
+			errorsHandler,
+			success: (res) => initialValues.producer.notSubjectToVat = res.notSubjectToVat,
+			error: () => routerInstance.goTo(ProductRoutes.List),
+			errorNotification: "Un problème est survenu pendant la récupération des informations du produit."
+		});
 		isLoading = false;
-		routerInstance.goTo(ProductRoutes.List);
-	};
+	});
+
+	const handleSubmit = async () => {
+		return await mutate({
+			mutation: CREATE_PRODUCT,
+			variables: normalizeCreateProduct(form.values()),
+			errorsHandler,
+			success: () => routerInstance.goTo(ProductRoutes.List),
+			successNotification: "Votre produit a bien été créé",
+			errorNotification: "Impossible de créer votre produit",
+			clearCache: [GET_PRODUCTS]
+		});
+	}
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Créer un produit" previousPage={ProductRoutes.List}/>
-	<PageBody {errorsHandler} {isLoading} loadingMessage="Création de votre produit en cours... veuillez patienter.">
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Initialisation en cours... veuillez patienter.">
 		<ProductForm
 			submit={handleSubmit}
-			{product}
-			{isLoading}/>
+			{errorsHandler} />
 	</PageBody>
 </TransitionWrapper>

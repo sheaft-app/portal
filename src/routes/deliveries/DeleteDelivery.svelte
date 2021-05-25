@@ -1,52 +1,37 @@
 <script>
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import GetRouterInstance from "./../../services/SheaftRouter.js";
+	import { getContext } from "svelte";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { DELETE_DELIVERY } from "./mutations";
-	import DeliveryRoutes from "./routes";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_DELIVERIES } from "./queries.js";
 
-	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
-	const routerInstance = GetRouterInstance();
-
 	export let delivery, close, onClose;
 
-	let isLoading = false;
+  	const { mutate, isLoading } = getContext("api");
+	const errorsHandler = new SheaftErrors();
 
-	const closeModal = async (obj) => {
+	const handleSubmit = async () => await mutate({
+		mutation: DELETE_DELIVERY,
+		variables: { id: delivery.id },
+		errorsHandler,
+		success: (res) => handleClose(res),
+		successNotification: `Le créneau a bien été supprimé`,
+		errorNotification: `Impossible de supprimer ce créneau`,
+		clearCache: [GET_DELIVERIES]
+	});
+
+	const handleClose = async (obj) => {
 		close();
 		if (onClose) await onClose(obj);
 	}
-
-	const handleSubmit = async () => {
-		isLoading = true;
-
-		var res = await graphQLInstance.mutate(
-			DELETE_DELIVERY,
-			{ id: delivery.id },
-			errorsHandler.Uuid,
-			GET_DELIVERIES
-		);
-
-		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		return await closeModal(res);
-	};
 </script>
 
 <ActionConfirm
 	title="Suppression"
 	level="danger"
 	submit={handleSubmit}
-	{isLoading}
-	close={() => closeModal({ success: false, data: null })} 
+	isLoading={$isLoading}
+	{close}
 	{errorsHandler}>
 	<p class="leading-5">
 		Vous vous apprêtez à

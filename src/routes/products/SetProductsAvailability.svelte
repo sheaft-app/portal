@@ -1,30 +1,25 @@
 <script>
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-  import { SET_PRODUCTS_AVAILABILITY } from "./mutations.js";
+  import { GET_PRODUCTS } from "./queries";
+  import { SET_PRODUCTS_AVAILABILITY } from "./mutations";
   import SheaftErrors from "./../../services/SheaftErrors";
-
-  const errorsHandler = new SheaftErrors();
+  import { getContext } from "svelte";
 
   export let selectedItems, close, onClose, status;
-  const graphQLInstance = GetGraphQLInstance();
 
-  let isLoading = false;
+  const errorsHandler = new SheaftErrors();
+  const { mutate, isLoading } = getContext('api');
 
   const handleSubmit = async () => {
-    isLoading = true;
-
-    var res = await graphQLInstance.mutate(SET_PRODUCTS_AVAILABILITY, {
-      ids: selectedItems.map(s => s.id),
-      available: status
-    }, errorsHandler.Uuid);
-
-    isLoading = false;
-    if (!res.success) {
-      //TODO
-    }
-
-    await handleClose(res);
+    return mutate({
+			mutation: SET_PRODUCTS_AVAILABILITY,
+			variables: { ids: selectedItems.map(s => s.id), available: status },
+			errorsHandler,
+			success: (res) => handleClose(res),
+			successNotification: `Le produit a bien été ${status ? 'activé' : 'désactivé'}`,
+			errorNotification: `Impossible ${status ? 'd\'activer' : 'de désactiver'} ce produit`,
+			clearCache: [GET_PRODUCTS]
+    });
   };
 
   const handleClose = async res => {
@@ -36,7 +31,7 @@
 <ActionConfirm
   title={status ? 'Rendre disponible' : 'Rendre indisponible'}
   level={status ? 'success' : "warning"}
-  isLoading={isLoading}
+  isLoading={$isLoading}
   {errorsHandler}
   submit={handleSubmit}
   close={() => handleClose({ success: false, data: null })}>  

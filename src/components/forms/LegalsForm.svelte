@@ -1,13 +1,10 @@
 <script>
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { slide } from "svelte/transition";
 	import Loader from "../../components/Loader.svelte";
 	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import Cleave from "cleave.js";
-  import Select from "./../../components/controls/select/Select.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL";
-  import SheaftErrors from "../../services/SheaftErrors";
   import { GET_COUNTRIES, GET_NATIONALITIES } from "../queries";
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
@@ -39,12 +36,10 @@
   selectedAccordeon = null,
   validatedInfoOnce = false;
 
-  const graphQLInstance = GetGraphQLInstance();
+  const { query } = getContext("api");
 
-  let cleave = null;
-  let countries = [];
-  let nationalities = [];
   let isLoadingLists = true;
+  let cleave = null;
 
   facturationForm = form(() => ({
     firstName: { value: user.firstName, validators: ['required'], enabled: true },
@@ -61,33 +56,28 @@
     initCheck: false
   });
 
-  const getLabel = option => option.name;
-
   onMount(async () => {
-    const resCountries = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
+    await query({
+      query: GET_COUNTRIES,
+      errorsHandler,
+      success: (res) => {
+        if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = res.find((c) => c.code == user.countryOfResidence);
+        if (user.address.country && typeof user.address.country == "string") user.address.country = res.find((c) => c.code == user.address.country);
+      },
+      errorNotification: "Impossible de récupérer la liste des pays"
+    });
 
-		if (!resCountries.success) {
-      // todo
-      isLoadingLists = false;
-			return;
-    }
-
-    countries = resCountries.data;
-    
-    const resNationalities = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
-
-    if (!resNationalities.success) {
-      // todo
-      isLoadingLists = false;
-			return;
-    }
-
-    nationalities = resNationalities.data;
+    await query({
+      query: GET_NATIONALITIES,
+      errorsHandler,
+      success: (res) => {
+        if (user.nationality && typeof user.nationality == "string") user.nationality = res.find((c) => c.code == user.nationality);
+      },
+      errorNotification: "Impossible de récupérer la liste des nationalités"
+    });
+    isLoadingLists = false;
 
     // restaurer les valeurs initiales quand elles viennent du serveur sous format ISOCode
-    if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = countries.find((c) => c.code == user.countryOfResidence);
-    if (user.address.country && typeof user.address.country == "string") user.address.country = countries.find((c) => c.code == user.address.country);
-    if (user.nationality && typeof user.nationality == "string") user.nationality = nationalities.find((c) => c.code == user.nationality);
     
     if (user.birthDate) {
       if (typeof user.birthDate == "object" || user.birthDate.includes("-")) {
@@ -97,8 +87,6 @@
         user.birthDate = format(new Date(dateParts[2], dateParts[1] - 1, dateParts[0]), 'P', { locale: fr });
       }
     }
-
-    isLoadingLists = false;
   })
 
   const initializeCleave = () => {

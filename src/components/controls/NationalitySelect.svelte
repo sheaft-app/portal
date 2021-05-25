@@ -1,33 +1,28 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, getContext } from "svelte";
 	import Loader from "../../components/Loader.svelte";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import Select from "./../../components/controls/select/Select.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import { GET_NATIONALITIES } from "../queries";
 
   export let formName = null, name = null, selectedValue = null, displayError = true, errorsHandler = null;
   
-  const graphQLInstance = GetGraphQLInstance();
+  const { query } = getContext("api");
   const getLabel = option => option.name;
 
   let isLoading = true;
   let nationalities = [];
 
   onMount(async () => {
-    const res = await graphQLInstance.query(GET_NATIONALITIES, {}, errorsHandler.Uuid);
-
-		if (!res.success) {
-      // todo
-      isLoading = false;
-			return;
-    }
-
-    nationalities = res.data;
-
-    if (selectedValue && typeof selectedValue == "string") selectedValue = nationalities.find((c) => c.code == selectedValue);
-
+    nationalities = await query({
+      query: GET_NATIONALITIES,
+      errorsHandler,
+      success: (res) => {
+        if (selectedValue && typeof selectedValue == "string") selectedValue = nationalities.find((n) => n.code == selectedValue);
+      },
+      errorNotification: "Impossible de récupérer la liste des nationalités"
+    });
     isLoading = false;
   })
 </script>

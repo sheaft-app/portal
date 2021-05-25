@@ -1,33 +1,28 @@
 <script>
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
 	import Loader from "../../components/Loader.svelte";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
   import Select from "./../../components/controls/select/Select.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import { GET_COUNTRIES } from "../queries";
 
   export let formName = null, name = null, selectedValue = null, displayError = true, errorsHandler = null;
   
-  const graphQLInstance = GetGraphQLInstance();
+  const { query } = getContext("api");
   const getLabel = option => option.name;
 
   let isLoading = true;
   let countries = [];
 
   onMount(async () => {
-    const res = await graphQLInstance.query(GET_COUNTRIES, {}, errorsHandler.Uuid);
-
-		if (!res.success) {
-      // todo
-      isLoading = false;
-			return;
-    }
-
-    countries = res.data;
-
-    if (selectedValue && typeof selectedValue == "string") selectedValue = countries.find((c) => c.code == selectedValue);
-
+    countries = await query({
+      query: GET_COUNTRIES,
+      errorsHandler,
+      success: (res) => {
+        if (selectedValue && typeof selectedValue == "string") selectedValue = res.find((c) => c.code == selectedValue)
+      },
+      errorNotification: "Impossible de récupérer la liste des pays"
+    });
     isLoading = false;
   })
 </script>

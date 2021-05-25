@@ -1,39 +1,31 @@
 <script>
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { CREATE_AGREEMENT } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_AGREEMENTS } from "./queries.js";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 
 	export let onClosed, close, producer, storeId;
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");;
 
 	let isLoading = false;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			CREATE_AGREEMENT,
-			{
-				storeId,
-				producerId: producer.id
-			},
-			errorsHandler.Uuid,
-			GET_AGREEMENTS
-		);
-
+		await mutate({
+			mutation: CREATE_AGREEMENT,
+			variables: { storeId, producerId: producer.id},
+			errorsHandler,
+			success: async (res) => closeModal(res),
+			successNotification: "Demande de partenariat envoyée !",
+			errorNotification: "Impossible de faire une demande de partenariat.",
+			clearCache: [GET_AGREEMENTS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		return await closeModal(res);
 	};
 
 	async function closeModal(obj) {

@@ -17,7 +17,7 @@
     const routerInstance = GetRouterInstance();
     const { open } = getContext('modal');
 
-    let headers = [{ label: 'Nom', mobile: true }, {label: 'Prix HT', mobile: true}, {label:'Ajouté le', mobile: false}, {label: 'Actions', mobile:false}]
+    const headers = [{ label: 'Nom', mobile: true }, {label: 'Prix HT', mobile: true}, {label:'Ajouté le', mobile: false}, {label: 'Actions', mobile:false}]
 
     onMount(async () => {
         $products = catalog.products;
@@ -47,15 +47,14 @@
         open(UpdateCatalogPrices, {
             catalog: catalog,
 			onClose: async(res) => {
-				if (res.success) {
 					graphQLInstance.clearApolloCache(GET_CATALOGS);
                     routerInstance.reload();
-				}
 			},
         })
     }
-
-    $: invalidCatalogProducts = $products.length > 0 && $products.filter((p) => !p.wholeSalePricePerUnit).length > 0;
+    
+    $: $products = catalog.products;
+    $: invalidCatalogProducts = $products.length == 0 || ($products.length > 0 && $products.filter((p) => !p.wholeSalePricePerUnit).length);
 </script>
 
 <table class="shadow">

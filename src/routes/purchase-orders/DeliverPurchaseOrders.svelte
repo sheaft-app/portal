@@ -2,36 +2,28 @@
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { DELIVER_PURCHASE_ORDERS } from "./mutations.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_ORDERS } from "./queries";
 
 	export let onClose, close, purchaseOrders;
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
 
 	let isLoading = false;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			DELIVER_PURCHASE_ORDERS,
-			{
-				ids: purchaseOrders.map((o) => o.id),
-			},
-			errorsHandler.Uuid,
-			GET_ORDERS
-		);
-
+		await mutate({
+			mutation: DELIVER_PURCHASE_ORDERS,
+			variables: { ids: purchaseOrders.map((o) => o.id) },
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			successNotification: "Commande livrée",
+			errorNotification: "Impossible de marquer la commande comme livrée.",
+			clearCache: [GET_ORDERS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		await handleClose(res);
 	};
 
 	const handleClose = async (obj) => {
@@ -48,7 +40,7 @@
 	closeText="Non"
 	icon={faCheck}
 	{isLoading}
-	close={() => handleClose({ success: false, data: null })}>
+	{close}>
 	<p class="leading-5">
 		Marquer {purchaseOrders.length > 1 ? 'ces commandes comme livrées' : 'cette commande comme livrée'}
 		indiquera au client que la commande a été réceptionnée.

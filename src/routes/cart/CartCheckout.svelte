@@ -23,15 +23,16 @@
 	import ErrorCard from "../../components/ErrorCard.svelte";
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-	import formatISO from "date-fns/formatISO";
 	import PreAuthorizationStatus from "../../enums/PreAuthorizationStatus";
 	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
 	import CreditCard from "./CreditCard.svelte";
+	import { normalizeUpdateLegals, normalizeCreateLegals } from "./cartForm";
 
 	const errorsHandler = new SheaftErrors();
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 	const { open } = getContext("modal");
+	const { query, mutate } = getContext("api");
 
 	let step = 1;
 
@@ -60,9 +61,7 @@
 		},
 	};
 
-	const showTransactionInfo = () => {
-		open(MangoPayInfo, {});
-	};
+	const showTransactionInfo = () => open(MangoPayInfo, {});
 
 	$: if (!$cart.isInitializing && (!$cart.userCurrentOrder || $cart.products.length <= 0)) {
 		// todo : terminée, envoyer une notif
@@ -77,23 +76,17 @@
 		const values = routerInstance.getQueryParams();
 
 		paymentError = values["message"] || null;
-
-		var resLegals = await graphQLInstance.query(
-			GET_MY_CONSUMER_LEGALS,
-			{},
-			errorsHandler.Uuid
-		);
-
-		if (!resLegals.success) {
-			userLegalsFound = false;
-			isLoading = false;
-			return;
-		}
-
-		user = resLegals.data.owner;
-		legalId = resLegals.data.id;
-		userLegalsFound = true;
-		step = 2;
+		await query({
+			query: GET_MY_CONSUMER_LEGALS,
+			errorsHandler,
+			success: (res) => {
+				user = res.owner;
+				legalId = res.id;
+				userLegalsFound = true;
+				step = 2;
+			},
+			error: () => userLegalsFound = false
+		});
 		isLoading = false;
 	});
 
@@ -110,46 +103,48 @@
 			...$card.data,
 			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
 		}, async (res) => {
-			const preAuthorizationResult = await graphQLInstance.mutate(CREATE_PRE_AUTHORIZATION, {
-				id: $cart.userCurrentOrder,
-				cardIdentifier: res.CardId,
-				browserInfo: {
-					colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
-					javaEnabled: navigator.javaEnabled(),
-					javascriptEnabled: true,
-					language: navigator.language,
-					screenHeight: window.screen.height,
-					screenWidth: window.screen.width,
-					timeZoneOffset: new Date().getTimezoneOffset().toString(),
-					userAgent: navigator.userAgent
-				}
-			}, errorsHandler.Uuid);
-
-			if (!preAuthorizationResult.success) {
-				isPaying = false;
-				//TODO handle server error
-				return;
-			}
-			if(preAuthorizationResult.data.status == PreAuthorizationStatus.Failed){
-				isPaying = false;
-				//TODO handle authorization error
-				return;
-			}
-
-			if (preAuthorizationResult.data.secureModeRedirectURL) {
-				window.location = preAuthorizationResult.data.secureModeRedirectURL;
-				return;
-			} else {
-				isPaying = false;
-				return routerInstance.goTo({ 
-					Path: CartRoutes.Success.Path, 
-					Params: {
-						Query: {
-							id: $cart.userCurrentOrder
-						}
+			await mutate({
+				mutation: CREATE_PRE_AUTHORIZATION,
+				variables: {
+					id: $cart.userCurrentOrder,
+					cardIdentifier: res.CardId,
+					browserInfo: {
+						colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
+						javaEnabled: navigator.javaEnabled(),
+						javascriptEnabled: true,
+						language: navigator.language,
+						screenHeight: window.screen.height,
+						screenWidth: window.screen.width,
+						timeZoneOffset: new Date().getTimezoneOffset().toString(),
+						userAgent: navigator.userAgent
 					}
-				})
-			}
+				},
+				errorsHandler,
+				success: (result) => {
+					if(result.status == PreAuthorizationStatus.Failed){
+						isPaying = false;
+						//TODO handle authorization error
+						return;
+					}
+					
+					if (result.secureModeRedirectURL) {
+						window.location = result.secureModeRedirectURL;
+						return;
+					} else {
+						isPaying = false;
+						return routerInstance.goTo({ 
+							Path: CartRoutes.Success.Path, 
+							Params: {
+								Query: {
+									id: $cart.userCurrentOrder
+								}
+							}
+						})
+					}
+				},
+				errorNotification: "Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support."
+			});
+			isPaying = false;
 		}, async (response) => {
 			isPaying = false;
 
@@ -166,66 +161,36 @@
 		});
 	};
 
-	const createCardRegistration = async (userId) => {
-		var cardRegistrationResult = await graphQLInstance.mutate(CREATE_CARD_REGISTRATION, { userId }, errorsHandler.Uuid);
-		if (!cardRegistrationResult.success) {
-			//TODO handle error
-			return;
-		}
-
-		await mangoPay.cardRegistration.init({
-			cardRegistrationURL: cardRegistrationResult.data.url,
-			preregistrationData: cardRegistrationResult.data.preRegistrationData,
-			accessKey: cardRegistrationResult.data.accessKey,
-			Id: cardRegistrationResult.data.identifier,
-		});
-
-		console.log(mangoPay);
-  	}
+	const createCardRegistration = async (userId) => await mutate({
+		mutation: CREATE_CARD_REGISTRATION,
+		variables: { userId },
+		errorsHandler,
+		success: async (res) => {
+			await mangoPay.cardRegistration.init({
+				cardRegistrationURL: res.url,
+				preregistrationData: res.preRegistrationData,
+				accessKey: res.accessKey,
+				Id: res.identifier,
+			});
+		},
+		errorNotification: "Impossible de traiter les informations de votre carte."
+	});
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
-
-		const dateParts = user.birthDate.trim().split("/");
-		let consumerLegalsMutation = UPDATE_CONSUMER_LEGALS;
-
-		let variables = {
-			...user,
-			address: {
-				...user.address,
-				country: user.address.country.code,
+		await mutate({
+			mutation: legalId ? UPDATE_CONSUMER_LEGALS : CREATE_CONSUMER_LEGALS,
+			variables: legalId ? normalizeUpdateLegals({ user, id: legalId }) : normalizeCreateLegals(user),
+			errorsHandler,
+			success: (res) => {
+				legalId = res.id;
+				user = res.owner;
+				++step;
 			},
-			countryOfResidence: user.countryOfResidence.code,
-			nationality: user.nationality.code,
-			id: legalId,
-			birthDate: formatISO(
-				new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
-			),
-		};
+			errorNotification: "Impossible d'enregistrer vos informations de facturation"
+		})
 
-		if (!legalId) {
-			consumerLegalsMutation = CREATE_CONSUMER_LEGALS;			
-			delete variables["id"];
-		}
-
-		var res = await graphQLInstance.mutate(
-			consumerLegalsMutation,
-			variables,
-			errorsHandler.Uuid
-		);
-
-		if (!res.success) {
-			// todo
-			isSavingLegals = false;
-			return;
-		}
-
-		user = res.data.owner;
-		legalId = res.data.id;
-		isSavingLegals = false;
-		++step;
-
-		graphQLInstance.clearApolloCache(res.data.id);
+		graphQLInstance.clearApolloCache(user.id);
 	};
 </script>
 

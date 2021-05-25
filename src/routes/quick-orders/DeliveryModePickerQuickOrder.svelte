@@ -19,6 +19,10 @@
 
   $: oneOptionOnly = data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
 
+  onMount(() => { 
+    updateCartProducts();
+  })
+
   const showDeliveryPickModal = () => {
     if (disabled || (selected && selectedDeliveryHour && oneOptionOnly)) {
       return;
@@ -35,9 +39,6 @@
       }
     });
   };
-  onMount(() => { 
-    updateCartProducts();
-  })
   const updateCartProducts = () => {
     let items = businessQuickOrderProducts.sort((a, b) => a.producer.name > b.producer.name ? 1 : 0);
 

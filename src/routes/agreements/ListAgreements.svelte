@@ -1,7 +1,6 @@
 <script>
 	import Icon from "svelte-awesome";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import SearchStoreRoutes from "./../search-stores/routes.js";
 	import SearchProducerRoutes from "./../search-producers/routes.js";
@@ -9,7 +8,6 @@
 	import {GET_AGREEMENTS} from "./queries.js";
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import {faThumbsDown, faThumbsUp, faTimes} from "@fortawesome/free-solid-svg-icons";
 	import Actions from "../../components/table/Actions.svelte";
 	import Table from "../../components/table/Table.svelte";
@@ -30,7 +28,6 @@
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
 
@@ -50,12 +47,10 @@
 	const openModal = (modal, selectedAgreements) => {
 		open(modal, {
 			agreements: selectedAgreements,
-			onClose: async (res) => {
-				if (res.success) {
-					//TODO hack this refresh (not refreshing when acceptAgreements...)
-					routerInstance.refresh();
-					selectedItems = [];
-				}
+			onClose: (res) => {
+				//TODO hack this refresh (not refreshing when acceptAgreements...)
+				routerInstance.refresh();
+				selectedItems = [];
 			},
 		});
 	};

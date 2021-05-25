@@ -6,7 +6,6 @@
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import ProcessStatusKind from "./../../enums/ProcessStatusKind.js";
 	import JobKind from "./../../enums/JobKind.js";
 	import {
@@ -31,13 +30,13 @@
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
 	let selectedItems = [];
 	let items = [];
 	let noResults = false;
-	$: isLoading = true;
+	let isLoading = true;
 
 	const headers = [
 		{name: "Nom", sortLabel: "name"},
@@ -47,22 +46,10 @@
 		{name: "Dernière mise à jour", displayOn: "md"},
 	];
 
-	const getLastUpdate = (job) => {
-		if (job.updatedOn) return job.updatedOn;
-		return job.createdOn;
-	};
-
-	const cancelJobs = () => {
-		openModal(CancelJobs, selectedItems);
-	};
-
-	const retryJobs = () => {
-		openModal(RetryJobs, selectedItems);
-	};
-
-	const archiveJobs = () => {
-		openModal(ArchiveJobs, selectedItems);
-	};
+	const getLastUpdate = (job) => job.updatedOn ?? job.createdOn;
+	const cancelJobs = () => openModal(CancelJobs, selectedItems);
+	const retryJobs = () => openModal(RetryJobs, selectedItems);
+	const archiveJobs = () => openModal(ArchiveJobs, selectedItems);
 
 	const pauseJobs = async () => {
 		await handleJobsCommand(PAUSE_JOBS);
@@ -74,54 +61,33 @@
 		routerInstance.refresh();
 	};
 
-	const openModal = (modal, selectedJobs) => {
-		open(modal, {
-			jobs: selectedJobs,
-			onClose: async (res) => {
-				if (res.success) {
-					routerInstance.refresh();
-					selectedItems = [];
-				}
-			},
-		});
-	};
+	const openModal = (modal, selectedJobs) => open(modal, {
+		jobs: selectedJobs,
+		onClose: async () => {
+			routerInstance.refresh();
+			selectedItems = [];
+		},
+	});
 
 	const handleJobsCommand = async (mutation) => {
 		isLoading = true;
-
-		var res = await graphQLInstance.mutate(
-			mutation,
-			{
-				ids: selectedItems.map((s) => s.id),
-			},
-			errorsHandler.Uuid,
-			GET_JOBS
-		);
-
+		await mutate({
+			mutation: mutation,
+			variables: { ids: selectedItems.map((s) => s.id) },
+			errorsHandler,
+			success: () => selectedItems = [],
+			successNotification: "Succès !",
+			errorNotification: "Un problème est survenu",
+			clearCache: [GET_JOBS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		selectedItems = [];
 	};
 
-	const getRowBackgroundColor = (item) => {
-		return "";
-	};
+	const getRowBackgroundColor = (item) => "";
 
 	const onRowClick = (item) => {
 		routerInstance.goTo(JobRoutes.Details, {id: item.id});
 	};
-
-	$: hasOneSelectedItem =
-		canArchiveJobs ||
-		canResumeJobs ||
-		canPauseJobs ||
-		canRetryJobs ||
-		canCancelJobs;
 
 	$: canArchiveJobs =
 		selectedItems.length > 0 &&
@@ -202,8 +168,6 @@
 			displaySelectedItemsNumber: true
 		},
 	];
-
-	const noResultsPage = {Text: 'Aucune tâche en cours.'};
 </script>
 
 <TransitionWrapper>

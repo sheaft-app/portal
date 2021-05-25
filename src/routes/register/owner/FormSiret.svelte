@@ -1,76 +1,43 @@
 <script>
   import InputSiret from "../InputSiret.svelte";
-  import GetGraphQLInstance from "./../../../services/SheaftGraphQL";
   import GetRouterInstance from "./../../../services/SheaftRouter";
-	import { form, bindClass } from '../../../../vendors/svelte-forms/src/index';
   import { SEARCH_COMPANY_SIRET } from "../queries.js";
-  import Loader from "./../../../components/Loader.svelte";
   import Icon from "svelte-awesome";
-  import CityService from "./../../../services/CityService.js";
   import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+  import form from "../../../stores/form";
+  import { siret, company, stepper } from "../registerCompanyForm";
+  import { getContext } from "svelte";
 
-  export let company, stepper = 0, invalidSiret = false;
+  export let siretWasNotFound = false, errorsHandler;
 
-  const graphQLInstance = GetGraphQLInstance();
+  const { query } = getContext("api");
   const routerInstance = GetRouterInstance();
-  const cityService = new CityService();
 
   let isSearchingSiret = false;
-  let isSearchingAddress = false;
-
-  const addressIsDefined = address =>
-    address.line1 &&
-    address.line1.length > 0 &&
-    address.zipcode &&
-    address.zipcode.length > 0 &&
-    address.city &&
-    address.city.length > 0;
-
-  const searchCompanyAddress = async text => {
-    isSearchingAddress = true;
-    var res = await cityService.SearchByAddress(text);
-    isSearchingAddress = false;
-    return res;
-  };
 
   const validateSiret = async () => {
-    invalidSiret = false;
-    siretForm.validate();
+    siretWasNotFound = false;
 
-    if ($siretForm.valid) {
-      var siret = company.legals.siret.toString();
-      if (siret.length < 14 || siret.length > 14) return;
+    if ($siret.length < 14 || $siret.length > 14) return;
 
-      isSearchingSiret = true;
-      var res = await graphQLInstance.query(SEARCH_COMPANY_SIRET, { input: siret });
-      if (!res.success) {
-        isSearchingSiret = false;
-        invalidSiret = true;
-        stepper++;
-        return;
-      }
+    isSearchingSiret = true;
+    await query({
+      query: SEARCH_COMPANY_SIRET,
+      variables: { input: $siret },
+      errorsHandler,
+      success: (res) => {
+        $company.address = res.address;
+        $company.kind = res.kind;
+        $company.name = res.name;
+        $company.firstName = $company.firstName ?? res.firstName;
+        $company.lastName = $company.lastName ?? res.lastName;
+      },
+      error: () => siretWasNotFound = true,
+      errorNotification: "Impossible de trouver des informations pour ce SIRET"
+    });
 
-    company.legals.address = res.data.address;
-    company.legals.kind = res.data.kind;
-    company.name = res.data.name;
-    company.firstName = company.firstName
-      ? company.firstName
-      : res.data.firstName;
-    company.lastName = company.lastName
-      ? company.lastName
-      : res.data.lastName;
-
-      // if (addressIsDefined(company.legals.address)) {
-      //   var res = await searchCompanyAddress(
-      //     `${company.legals.address.line1}, ${company.legals.address.zipcode} ${company.legals.address.city}`
-      //   );
-      //   if (res.success) {
-      //     company.legals.address = res.data;
-      //   }
-      // }
-      stepper++;
-      isSearchingSiret = false;
-    }
+    isSearchingSiret = false;
+    $stepper++;
   };
 
   const handleKeydown = (event) => {
@@ -80,18 +47,12 @@
     }
 	}
 
-  const siretForm = form(() => ({
-    siret: { value: company.legals.siret, validators: ['required'], enabled: true }
-	}), {
-    initCheck: false
-  });
-
   const cancel = () => {
     localStorage.removeItem("user_choosen_role");
     routerInstance.goBack();
   }
 
-  $: isValid = company.legals.siret && company.legals.siret.toString().length == 14;
+  $: isValid = $siret && $siret.toString().length == 14;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -107,8 +68,8 @@
       <div class="form-control w-full">
         <InputSiret
           disabled={isSearchingSiret}
-          bind:value={company.legals.siret}
-          bindClassData={{ form: siretForm, name: "siret" }}
+          bind:value={$siret}
+          bindClassData={{ form, name: "siret" }}
           placeholder="SIRET (14 chiffres)" />
       </div>
     </div>
@@ -126,7 +87,7 @@
     <div>
       <button
         class:disabled={isSearchingSiret || !isValid}
-        on:click={validateSiret}
+        on:click={() => validateSiret()}
         aria-label="Suivant"
         disabled={isSearchingSiret || !isValid}
         class="form-button uppercase text-sm cursor-pointer text-white

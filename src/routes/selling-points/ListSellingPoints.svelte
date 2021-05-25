@@ -51,8 +51,7 @@
 			{onRowClick}
 			getRowBackgroundColor={(i) => !i.available ? 'bg-orange-200' : ''}
 			headers={[{ name: 'Nom' }, { name: 'Adresse' }, { name: 'Type' }]}
-			let:rowItem={sellingPoint}
-		>
+			let:rowItem={sellingPoint}>
 			<div slot="globalActions" class="px-2 md:px-6 py-3 border-b border-gray-200">
 				<ConfigureYearlyClosings/>
 			</div>

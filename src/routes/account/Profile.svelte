@@ -4,7 +4,6 @@
   import { faEdit } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import UpdateImage from "./UpdateImage.svelte";
   import { UPDATE_USER_PICTURE, EXPORT_DATA } from "./mutations.js";
   import { authUserAccount } from "./../../stores/auth.js";
@@ -18,46 +17,36 @@
 
 	const errorsHandler = new SheaftErrors();
   const authInstance = GetAuthInstance();
-  const graphQLInstance = GetGraphQLInstance();
+  const { mutate } = getContext("api");
   const { open } = getContext("modal");
 
   let isLoading = false;
-  let isSendingRGPDRequest = false;
-  let hasSentRGPDRequest = false;
+  let isSendingGPDRRequest = false;
+  let hasSentGPDRRequest = false;
 
-  const handleExport = async () => {
-    isSendingRGPDRequest = true;
-    var res = await graphQLInstance.mutate(EXPORT_DATA, { id: $authUserAccount.profile.id }, errorsHandler.Uuid);
-    isSendingRGPDRequest = false;
-    if (!res.success) {
-      //TODO
-      return;
-    }
-    hasSentRGPDRequest = true;
-  };
-
-  const updateImage = () => {
-    open(UpdateImage, {
-      id: $authUserAccount.profile.id,
-      initialSrc: $authUserAccount.profile.picture,
-      mutation: UPDATE_USER_PICTURE,
-      onClose: async res => {
-        if (res.success) await authInstance.refreshLogin();
-      }
+  const handleExport = async () => {    
+    isSendingGPDRRequest = true;
+    await mutate({
+			mutation: EXPORT_DATA,
+			variables: {id: $authUserAccount.profile.id},
+			errorsHandler,
+			errorNotification: "Impossible d'exporter vos données RGPD, veuillez réessayer ultérieurement."
     });
+    hasSentGPDRRequest = true;
   };
 
-  const showRemoveConfirmation = () => {
-    open(ConfirmDeleteAccount, {
-      onClose: async res => {
-        if (res.success) await authInstance.logout();
-      }
-    });
-  };
+  const updateImage = () => open(UpdateImage, {
+    id: $authUserAccount.profile.id,
+    initialSrc: $authUserAccount.profile.picture,
+    mutation: UPDATE_USER_PICTURE,
+    onClose: async () => await authInstance.refreshLogin()
+  });
 
-  const isInRole = (role) => {
-    return authInstance.isInRole(role);
-  }
+  const showRemoveConfirmation = () => open(ConfirmDeleteAccount, {
+      onClose: async () => await authInstance.logout()
+  });
+
+  const isInRole = (role) => authInstance.isInRole(role);
 
   $: picture =
     $authUserAccount &&
@@ -113,12 +102,12 @@
       <button
         class="btn bg-white px-4 py-2 shadow mt-3 font-semibold
         hover:bg-gray-100"
-        class:disabled={isSendingRGPDRequest ||hasSentRGPDRequest}
-        disabled={isSendingRGPDRequest || hasSentRGPDRequest}
+        class:disabled={isSendingGPDRRequest ||hasSentGPDRRequest}
+        disabled={isSendingGPDRRequest || hasSentGPDRRequest}
         on:click={() => handleExport()}>
         Je demande une copie de mes données
       </button>
-      {#if hasSentRGPDRequest}
+      {#if hasSentGPDRRequest}
         <p class="text-green-500 mt-1">Votre demande a bien été envoyée. Vous recevrez une copie de vos données par mail sous 48h.</p>
       {/if}
     </div>

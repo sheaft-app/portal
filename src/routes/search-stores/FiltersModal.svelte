@@ -4,8 +4,11 @@
   import Toggle from "./../../components/controls/Toggle.svelte";
   import Icon from "svelte-awesome";
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import SheaftErrors from "./../../services/SheaftErrors";
 
+	const errorsHandler = new SheaftErrors();
   const routerInstance = GetRouterInstance();
+
   export let close, filters;
 
   const toggleBio = () => {
@@ -55,6 +58,7 @@
     Magasin proposant
   </label>
   <CategorySelect
+    {errorsHandler}
     callback={close}
     withSearch={true}
     grid="grid grid-cols-2 lg:grid-cols-3 gap-2" />

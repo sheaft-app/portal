@@ -20,7 +20,6 @@
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import {GET_PRODUCTS, HAS_PRODUCTS_IMPORT_INPROGRESS} from "./queries.js";
 	import ProductRoutes from "./routes.js";
@@ -34,13 +33,23 @@
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
+	const { query } = getContext("api");
 
 	let items = [];
 	let selectedItems = [];
 	let isLoading = true;
 	let noResults = true;
+
+	onMount(async () => {
+		hasPendingJobs = await query({
+			query: HAS_PRODUCTS_IMPORT_INPROGRESS,
+			variables: { kinds: [JobKind.ImportProducts.Value] },
+			errorsHandler,
+			error: () => hasPendingJobs = false,
+			errorNotification: "Un problème est survenu pendant la récupération des informations d'import."
+		});
+	});
 
 	const headers = [
 		{name: "Produit", sortLabel: "name"},
@@ -49,29 +58,13 @@
 		{name: "Créé le", sortLabel: "createdOn", displayOn: "md"},
 	];
 
-	const checkHasImportInProgress = async () => {
-		var res = await graphQLInstance.query(
-			HAS_PRODUCTS_IMPORT_INPROGRESS,
-			{kinds: [JobKind.ImportProducts.Value]},
-			errorsHandler.Uuid
-		);
-		if (!res.success) {
-			hasPendingJobs = false;
-		}
-
-		hasPendingJobs = res.data;
-	};
-
 	const showDeleteModal = () => {
 		open(DeleteProducts, {
 			selectedItems: selectedItems,
-			onClose: async (res) => {
-				if (res.success) {
-					routerInstance.refresh();
-					graphQLInstance.clearApolloCache(GET_PRODUCTS);
-					toggleMoreActions.set(false);
-					selectedItems = [];
-				}
+			onClose: async () => {
+				routerInstance.refresh();
+				toggleMoreActions.set(false);
+				selectedItems = [];
 			},
 		});
 	};
@@ -80,12 +73,10 @@
 		open(SetProductsAvailability, {
 			selectedItems: selectedItems,
 			status: status,
-			onClose: async (res) => {
-				if (res.success) {
-					toggleMoreActions.set(false);
-					routerInstance.refresh();
-					selectedItems = [];
-				}
+			onClose: async () => {
+				toggleMoreActions.set(false);
+				routerInstance.refresh();
+				selectedItems = [];
 			},
 		});
 	};
@@ -93,11 +84,9 @@
 	const showImportModal = () => {
 		open(ImportProducts, {
 			onClose: async (res) => {
-				if (res.success) {
-					toggleMoreActions.set(false);
-					hasPendingJobs = true;
-					selectedItems = [];
-				}
+				toggleMoreActions.set(false);
+				hasPendingJobs = true;
+				selectedItems = [];
 			},
 		});
 	};

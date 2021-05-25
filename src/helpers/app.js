@@ -41,6 +41,15 @@ export const groupBy = (array, f) => {
 	return Object.keys(groups).map((group) => groups[group]);
 }
 
+export const getDefaultDenormalizedOpeningHours = () => denormalizeOpeningHours([
+	{
+		id: 0,
+		days: [],
+		from: null,
+		to: null
+	}
+]);
+
 export const denormalizeOpeningHours = (openingHours) => 
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];
@@ -96,14 +105,14 @@ export const normalizeClosingDates = (closings) => closings ? closings.map((c) =
 }) : [];
 
 
-export const denormalizeClosingDates = (closings) => closings.map((c) => ({
+export const denormalizeClosingDates = (closings) => closings ? closings.map((c) => ({
 	...c,
 	from: new Date(c.from),
 	to: new Date(c.to),
 	isInterval: c.to !== c.from,
 	dirtyFrom: true,
 	dirtyTo: c.to !== c.from
-}))
+})) : [];
 
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {

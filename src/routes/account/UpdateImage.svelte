@@ -1,27 +1,28 @@
 <script>
 	import {faCheck} from "@fortawesome/free-solid-svg-icons";
-
-	;
 	import ImgEncoder from "svelte-image-encoder";
+  	import GetAuthInstance from "./../../services/SheaftAuth";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import {config} from "../../configs/config";
-
-	const errorsHandler = new SheaftErrors();
+	import { getContext } from "svelte";
 
 	export let id, mutation, close, onClose, initialSrc = config.content + "/pictures/users/profile.svg";
-	var graphQLInstance = GetGraphQLInstance();
+	
+	const errorsHandler = new SheaftErrors();
+  	const authInstance = GetAuthInstance();
+	const { mutate } = getContext("api");
+
 	let src = initialSrc;
 
 	let url;
 	let quality = 1;
 	let imageChosen = false;
 	let realTime = false;
-	let showResult = true;
-	$: valid = initialSrc !== src;
 	let isLoading = false;
 	let originalPicture = null;
+
+	$: valid = initialSrc !== src;
 
 	let reader = new FileReader();
 	reader.onloadend = function () {
@@ -29,22 +30,21 @@
 	}
 
 	function loadFile(e) {
-		var file = e.target.files[0];
+		let file = e.target.files[0];
 		src = URL.createObjectURL(file);
 		reader.readAsDataURL(file);
 	}
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(mutation, {id: id, picture: {resized: url, original: originalPicture}});
+		await mutate({
+			mutation,
+			variables: {id: authInstance.user.id, picture: { resized: url, original: originalPicture } },
+			errorsHandler,
+			success: (res) => handleClose(res), 
+			errorNotification: "Impossible de mettre à jour votre photo de profil."
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO error
-			return;
-		}
-
-		await handleClose(res);
 	};
 
 	const handleClose = async res => {
@@ -62,7 +62,7 @@
 	submit={handleSubmit}
 	submitText="Modifier"
 	closeText="Annuler"
-	close={() => handleClose({ success: false, data: null })}>
+	{close}>
 	<form>
 		<div class="pt-5 m-auto text-center">
 			<ImgEncoder

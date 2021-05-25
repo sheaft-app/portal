@@ -1,17 +1,15 @@
 <script>
 	import Paginate from "./../../enums/Paginate";
 	import OrderByDirection from "./../../enums/OrderByDirection";
-	import {PurchaseOrderStatus} from "../../enums/PurchaseOrderStatusKind";
 	import Loader from "./../Loader.svelte";
 	import Icon from "svelte-awesome";
 	import {querystring} from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import {faLongArrowAltDown} from "@fortawesome/free-solid-svg-icons";
 	import InputCheckbox from "../controls/InputCheckbox.svelte";
 	import {toggleMoreActions} from "../../stores/app";
 	import PageEmpty from "../PageEmpty.svelte";
-	import Actions from "./Actions.svelte";
+	import { getContext } from "svelte";
 
 	export let items,
 		headers,
@@ -36,7 +34,7 @@
 		classes = "";
 
 	const routerInstance = GetRouterInstance();
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 
 	let _pagination = [];
 	let _searchValues = null;
@@ -90,22 +88,19 @@
 			throw "Prop ErrorsHandler must be passed. Instanciate it in the parent and pass it to the Filters component.";
 
 		isLoading = true;
-		var result = await graphQLInstance.query(
-			graphQuery,
+		await query({
+			query: graphQuery,
 			variables,
-			errorsHandler.Uuid
-		);
-		if (!result.success) {
-			//TODO
-			isLoading = false;
-			return;
-		}
+			errorsHandler,
+			success: (res) => {
+				_pageInfo = res.pageInfo;
+				_pagination.push(_pageInfo);
 
-		_pageInfo = result.pageInfo;
-		_pagination.push(_pageInfo);
-
-		items = result.data;
-		window.scrollTo(0, 0);
+				items = res.data;
+				window.scrollTo(0, 0);
+			},
+			errorNotification: "Impossible de récupérer la liste"
+		});
 		isLoading = false;
 	};
 

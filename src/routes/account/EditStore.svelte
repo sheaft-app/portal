@@ -2,59 +2,25 @@
 	import {UPDATE_STORE} from "./mutations.js";
 	import {GET_STORE_DETAILS} from "./queries.js";
 	import {slide} from "svelte/transition";
-	import {form, bindClass} from '../../../vendors/svelte-forms/src/index';
+	import {bindClass} from '../../../vendors/svelte-forms/src/index';
 	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import ProfileForm from "./ProfileForm.svelte";
+	import { initialValues, validators, normalizeStore } from "./storeForm.js";
+	import form from "../../stores/form";
 
 	export let errorsHandler;
 
-	let store = {
-		id: null,
-		name: null,
-		firstName: null,
-		lastName: null,
-		email: null,
-		phone: null,
-		summary: "",
-		description: "",
-		facebook: null,
-		instagram: null,
-		website: null,
-		address: {
-			line1: null,
-			line2: null,
-			city: null,
-			zipcode: null,
-			country: "FR"
-		},
-		openingHours: [],
-		openForNewBusiness: true
-	};
-
-	const storeForm = form(() => ({
-		name: {value: store.name, validators: ['required'], enabled: true},
-		firstName: {value: store.firstName, validators: ['required'], enabled: true},
-		lastName: {value: store.lastName, validators: ['required'], enabled: true},
-		email: {value: store.email, validators: ['required', 'email'], enabled: true},
-		address: {value: store.address, validators: ['required'], enabled: true},
-		openingHours: {
-			value: store.openingHours,
-			validators: ['required', 'openingsDays', 'openingsDates'],
-			enabled: store.openForNewBusiness
-		},
-		summary: { value: store.summary, validators: ['maxLength:300'], enabled: store.summary && store.summary.length > 0 },
-		description: { value: store.description, validators: ['maxLength:1500'], enabled: store.description && store.description.length > 0 },
-	}), {
-		initCheck: false
-	});
+	let store = { ...initialValues };
 </script>
 
 <ProfileForm
 	bind:user={store}
-	form={storeForm}
+	{validators}
+	normalizer={normalizeStore}
+	{initialValues}
 	updateQuery={UPDATE_STORE}
 	getQuery={GET_STORE_DETAILS}
 	{errorsHandler}>
@@ -180,10 +146,10 @@
 	</div>
 	{#if store.openForNewBusiness}
 		<div class="form-control mt-5" transition:slide|local>
-			<div class="w-full" use:bindClass={{ form: storeForm, name: "openingHours" }}>
+			<div class="w-full" use:bindClass={{ form, name: "openingHours" }}>
 				<label>Horaires d'ouverture *</label>
 				<OpeningHoursContainer bind:openings={store.openingHours}/>
-				<ErrorContainer field={$storeForm.fields.openingHours}/>
+				<ErrorContainer field={$form.fields.openingHours}/>
 			</div>
 		</div>
 	{/if}

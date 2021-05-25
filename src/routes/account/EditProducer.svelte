@@ -1,51 +1,21 @@
 <script>
 	import { UPDATE_PRODUCER } from "./mutations.js";
 	import { GET_PRODUCER_DETAILS } from "./queries.js";
-	import { form } from '../../../vendors/svelte-forms/src/index';
   	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import ProfileForm from "./ProfileForm.svelte";
+	import { initialValues, validators, normalizeProducer } from "./producerForm";
 
 	export let errorsHandler;
 
-	let producer = {
-		id: null,
-		name: null,
-		firstName: null,
-		lastName: null,
-		email: null,
-		phone: null,
-		summary: "",
-		description: "",
-		facebook: null,
-		instagram: null,
-		website: null,
-		address: {
-			line1: null,
-			line2: null,
-			city: null,
-			zipcode: null,
-			country: "FR"
-		},
-		openForNewBusiness: true
-	};
-
-	const producerForm = form(() => ({
-		name: { value: producer.name, validators: ['required'], enabled: true },
-		firstName: { value: producer.firstName, validators: ['required'], enabled: true },
-		lastName: { value: producer.lastName, validators: ['required'], enabled: true },
-		email: { value: producer.email, validators: ['required', 'email'], enabled: true },
-		address: { value: producer.address, validators: ['required'], enabled: true },
-		summary: { value: producer.summary, validators: ['maxLength:300'], enabled: producer.summary && producer.summary.length > 0 },
-		description: { value: producer.description, validators: ['maxLength:1500'], enabled: producer.description && producer.description.length > 0 },
-	}), {
-    	initCheck: false
-	});
+	let producer = { ...initialValues };
 </script>
 
 <ProfileForm
 	bind:user={producer}
-	form={producerForm}
+	{validators}
+	normalizer={normalizeProducer}
+	{initialValues}
 	updateQuery={UPDATE_PRODUCER}
 	getQuery={GET_PRODUCER_DETAILS}
 	{errorsHandler}	>

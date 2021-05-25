@@ -10,9 +10,8 @@
 	import SearchProductsRoutes from "../search-products/routes";
 	import ProductDetails from "../search-products/ProductDetails.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import {GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE, GET_PRODUCER_PRODUCTS} from "./queries.js";
+	import {GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE} from "./queries.js";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
 	import {timeSpanToFrenchHour} from "../../helpers/app.js";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import Roles from "../../enums/Roles";
@@ -31,8 +30,8 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
 	const {open} = getContext('modal');
+	const { query } = getContext("api");
 
 	export let params = {};
 
@@ -47,51 +46,42 @@
 
 	onMount(async () => {
 		window.scrollTo(0, 0);
-		await getProducerDetails(params.id);
+		isLoading = true;
+		producer = await query({
+			query: GET_PRODUCER_PROFILE,
+			variables: { id: params.id },
+			errorsHandler,
+			success: async (res) => {
+				await query({
+					query: GET_PRODUCER_DELIVERIES,
+					variables: { input: [params.id] },
+					errorsHandler,
+					success: (res) => {
+						if (res[0] && res[0].deliveries)
+							deliveries = res[0].deliveries.map((d) => ({
+								...d,
+								deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+									index === self.findIndex((d) => (
+										d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+									))
+								))
+							}));
+					},
+					error: () => deliveries = [],
+					errorNotification: "Impossible de récupérer les informations de livraison du producteur."
+				});
+			},
+			errorNotification: "Impossible de récupérer les informations du producteur."
+		});
+		isLoading = false;
 	})
 
-	const getProducerDetails = async id => {
-		isLoading = true;
-		let res = await graphQLInstance.query(GET_PRODUCER_PROFILE, {id: id}, errorsHandler.Uuid);
-		if (!res.success) {
-			isLoading = false;
-			return;
-		}
-
-		producer = res.data;
-
-		let deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-			input: [params.id]
-		}, errorsHandler.Uuid);
-
-		if (!deliveriesResult.success || deliveriesResult.data.length == 0) {
-			deliveries = [];
-		} else {
-			deliveries = deliveriesResult.data[0].deliveries.map((d) => {
-				return {
-					...d,
-					deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-						index === self.findIndex((d) => (
-							d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-						))
-					))
-				}
-			});
-		}
-
-		isLoading = false;
-	};
-
-	const openReadMoreModal = () => {
-		open(ProducerReadMoreModal, {
-			producer
-		})
-	}
+	const openReadMoreModal = () => open(ProducerReadMoreModal, { producer });
 
 	$: metadata = {
-			title: producer ? producer.name : null,
-			description: producer && producer.summary ? producer.summary : null,
-			image: producer && producer.picture ? producer.picture : null,
+		title: producer ? producer.name : null,
+		description: producer && producer.summary ? producer.summary : null,
+		image: producer && producer.picture ? producer.picture : null,
 	};
 </script>
 

@@ -3,45 +3,33 @@
   import { format } from "date-fns";
   import fr from "date-fns/locale/fr";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
-  import { onMount } from "svelte";
+  import { onMount, getContext } from "svelte";
   import Icon from "svelte-awesome";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import GetRouterInstance from "./../../services/SheaftRouter.js";
   import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import { GET_PRODUCT_RATINGS } from "./queries.js";
   import SheaftErrors from "../../services/SheaftErrors";
   import ErrorCard from "./../../components/ErrorCard.svelte";
-import { config } from "../../configs/config";
+  import { config } from "../../configs/config";
 
   export let params = {};
 
-  const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
   const errorsHandler = new SheaftErrors();
+  const { query } = getContext('api');
 
-  let isLoading = false;
   let product = null;
 
-  const getProduct = async id => {
-    isLoading = true;
-    var res = await graphQLInstance.query(GET_PRODUCT_RATINGS, { id }, errorsHandler.Uuid);
-    isLoading = false;
-
-    if(!res.success){
-      //TODO
-      routerInstance.goBack();
-      return;
-    }
-
-    product = {
-      ...res.data,
-      ratings: res.data.ratings.nodes
-    };
-  };
-
   onMount(async () => {
-    await getProduct(params.id);
+    const res = await query({
+      query: GET_PRODUCT_RATINGS,
+      variables: { id },
+      errorsHandler,
+      success: (res) => product = { ...res, ratings: res.ratings.nodes },
+			error: () => routerInstance.goBack(),
+			errorNotification: "Un problème est survenu pendant la récupération des avis du produit."
+    });
   });
 
 </script>

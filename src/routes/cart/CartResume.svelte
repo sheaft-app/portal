@@ -6,14 +6,12 @@
   import CartMap from "./CartMap.svelte";
   import cart from "./../../stores/cart";
   import { formatMoney } from "./../../helpers/app.js";
-  import GetGraphQLInstance from "../../services/SheaftGraphQL";
   import GetRouterInstance from "../../services/SheaftRouter";
   import { GET_PRODUCER_DELIVERIES } from "./queries";
   import DeliveryModePicker from "./DeliveryModePicker.svelte";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import ErrorCard from "./../../components/ErrorCard.svelte";
   import ProductCartQuantity from "./../../components/controls/ProductCartQuantity.svelte";
-  import DeliveryKind from "../../enums/DeliveryKind";
   import CartRoutes from "./routes";
 	import SearchProductsRoutes from "../search-products/routes";
   import SheaftErrors from "../../services/SheaftErrors";
@@ -22,9 +20,9 @@
   import { fly } from "svelte/transition";
 
   const errorsHandler = new SheaftErrors();
-  const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
   const { open } = getContext("modal");
+  const { query } = getContext("api");
 
   let producersDeliveries = [];
   let producersHaveBeenRemoved = false;
@@ -60,37 +58,32 @@
     getProducerDeliveries();
   }
   
-  const showTransactionInfo = () => {
-    open(MangoPayInfo, {});
-  };
+  const showTransactionInfo = () => open(MangoPayInfo, {});
 
   const getProducerDeliveries = async () => {
     isLoadingDeliveries = true;
 
     const ids = cart.getProducersIds();
-    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-      input: ids
-    }, errorsHandler.Uuid);
+    producersDeliveries = await query({
+      query: GET_PRODUCER_DELIVERIES,
+      variables: { input: ids },
+      errorsHandler,
+      success: (res) => {
+        // l'utilisateur avait déjà choisi un lieu de récup pour le prod
+        // mais entre temps le prod a supprimé ce lieu
 
-    if (!res.success) {
-      // todo
-      return isLoadingDeliveries = false;
-    }
+        const deliveriesIds = res.map((r) => r.deliveries).flat().map((d) => d.id);
+        const cartItemWithProducerDeliveryNotFound = $cart.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
+        
+        if (cartItemWithProducerDeliveryNotFound) {
+          cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producerId);
+        }
 
-    // l'utilisateur avait déjà choisi un lieu de récup pour le prod
-    // mais entre temps le prod a supprimé ce lieu
-    const deliveriesIds = res.data.map((r) => r.deliveries).flat().map((d) => d.id);
-    const cartItemWithProducerDeliveryNotFound = $cart.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
-    
-    if (cartItemWithProducerDeliveryNotFound) {
-      cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producerId);
-    }
-
-    if (res.data.length !== ids.length) {
-      cart.disableProducers(ids.filter((i) => !res.data.map((r) => r.id).includes(i)));
-    }
-
-    producersDeliveries = res.data;
+        if (res.length !== ids.length) {
+          cart.disableProducers(ids.filter((i) => !res.map((r) => r.id).includes(i)));
+        }
+      }
+    })
     isLoadingDeliveries = false;
   }
 

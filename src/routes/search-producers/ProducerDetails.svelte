@@ -11,21 +11,20 @@
   } from "@fortawesome/free-solid-svg-icons";
   import GetRouterInstance from "../../services/SheaftRouter.js";
   import { GET_PRODUCER_DETAILS, GET_PRODUCER_DELIVERIES } from "./queries.js";
-  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
+  import { formatMoney, formatConditioningDisplay, encodeQuerySearchUrl, timeSpanToFrenchHour } from "./../../helpers/app";
   import CreateAgreementModal from "./CreateAgreementModal.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import { selectedItem } from "./../../stores/app.js";
   import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
   import AgreementRoutes from "../agreements/routes";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
   import { config } from "../../configs/config";
+  import SheaftErrors from "../../services/SheaftErrors";
 
-  const graphQLInstance = GetGraphQLInstance();
   const routerInstance = GetRouterInstance();
-  const notificationsInstance = new GetNotificationsInstance();
+  const errorsHandler = new SheaftErrors();
   const { open } = getContext("modal");
+  const { query } = getContext("api");
 
   let producer = null;
   let producerDoesntExist = false;
@@ -39,44 +38,29 @@
       producerDetails.scrollTop = 0;
     }
 
-    var res = await graphQLInstance.query(GET_PRODUCER_DETAILS, {
-      id: $selectedItem.id
+    await query({
+			query: GET_PRODUCER_DETAILS,
+			variables: { id: $selectedItem.id },
+      errorsHandler,
+      success: async (res) => {
+        const deliveries = res.agreement && res.agreement.delivery ? [res.agreement.delivery] : await loadDeliveries(res.id);
+        producer = { ...res, deliveries }
+      },
+			error: () => producerDoesntExist = true,
+			errorNotification: "Impossible de récupérer les informations du producteur."
     });
-
-    if (!res.success) {
-      // TODO
-      console.error("No producer found for this ID");
-      producerDoesntExist = true;
-      return;
-    }
-
-    let deliveries = [];
-    if(res.data.agreement && res.data.agreement.delivery)
-      deliveries = [res.data.agreement.delivery];
-    else
-      deliveries = await loadDeliveries(res.data.id);
-
-    producer = {
-      ...res.data,
-      deliveries: deliveries,
-    };
   }
 
   const loadDeliveries = async (id) =>  {
-    var res = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-      input: [id]
+    const res = await query({
+			query: GET_PRODUCER_DELIVERIES,
+			variables: { input: [id] },
+      errorsHandler,
+			error: () => routerInstance.goTo(ReturnableRoutes.List),
+			errorNotification: "Impossible de récupérer les informations de livraison."
     });
 
-    if (!res.success) {
-      // todo
-      return;
-    }
-
-    if (!res.data || res.data.length <= 0) {
-      return [];
-    }
-
-    return res.data[0].deliveries;
+    return res[0] ? res[0].deliveries : [] 
   }
 
   const openAgreement = () => {
@@ -84,33 +68,25 @@
     routerInstance.goTo(AgreementRoutes.Details, { id: producer.agreement.id })
   }
 
-  const showCreateAgreementModal = () => {
-    open(CreateAgreementModal, {
-      submit: () => {},
-      producer: producer,
-      storeId: GetAuthInstance().user.profile.id,
-      onClosed: (res) => {
-        if (res.success) {
-          producer.agreement = { id: res.data.id, status: res.data.status };
-          producer.hasAgreement = true;
-          notificationsInstance.success("Votre demande d'accord commercial a bien été envoyée.");
-        }
-      }
-    });
-  };
+  const showCreateAgreementModal = () => open(CreateAgreementModal, {
+    submit: () => {},
+    producer: producer,
+    storeId: GetAuthInstance().user.profile.id,
+    onClosed: (res) => {
+        producer.agreement = { id: res.id, status: res.status };
+        producer.hasAgreement = true;
+    }
+  });
 
   const handleKeyup = ({ key }) => {
     if ($selectedItem && key === "Escape") {
-      event.preventDefault();
       selectedItem.set(null);
     }
   };
 
-  const openReadMoreModal = () => {
-		open(ProducerReadMoreModal, {
-			producer
-		})
-	}
+  const openReadMoreModal = () =>	open(ProducerReadMoreModal, {
+    producer
+  });
 
   $: if ($selectedItem) openAndLoad($selectedItem);
 </script>

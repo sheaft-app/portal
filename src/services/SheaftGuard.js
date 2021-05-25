@@ -1,7 +1,6 @@
 import {wrap} from "svelte-spa-router/wrap";
 import Home from "./../routes/home/Home.svelte";
 import Cart from "./../routes/cart/Cart.svelte";
-import Leaderboard from "./../routes/leaderboard/Leaderboard.svelte";
 import Register from "./../routes/register/Register.svelte";
 import PurchaseOrders from "./../routes/purchase-orders/PurchaseOrders.svelte";
 import MyOrders from "./../routes/my-orders/MyOrders.svelte";
@@ -32,7 +31,6 @@ import SearchProducerRoutes from "./../routes/search-producers/routes.js";
 import AgreementRoutes from "./../routes/agreements/routes.js";
 import ReturnableRoutes from "./../routes/returnables/routes.js";
 import SponsorshipRoutes from "./../routes/sponsorship/routes.js";
-import LeaderboardRoutes from "./../routes/leaderboard/routes.js";
 import RegisterRoutes from "./../routes/register/routes.js";
 import CartRoutes from "./../routes/cart/routes.js";
 import AccountRoutes from "./../routes/account/routes.js";
@@ -210,20 +208,6 @@ class SheaftGuard {
 				() =>
 					this.handleRouteNavigation(
 						() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles),
-						true
-					),
-			],
-		});
-
-		this.routes[`${LeaderboardRoutes.Prefix}`] = wrap({
-			component: Leaderboard,
-			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() =>
-							this.authInstance.userIsAnonymous() ||
-							this.authInstance.userIsRegistered(),
 						true
 					),
 			],

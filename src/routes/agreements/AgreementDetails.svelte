@@ -1,11 +1,7 @@
 <script>
 	import AgreementStatusKind from "./../../enums/AgreementStatusKind.js";
-	import Loader from "./../../components/Loader.svelte";
 	import {onMount, getContext} from "svelte";
-	import Icon from "svelte-awesome";
-	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import {GET_AGREEMENT_DETAILS} from "./queries";
@@ -13,7 +9,6 @@
 	import AcceptAgreementModal from "./AcceptAgreementModal.svelte";
 	import RefuseAgreementModal from "./RefuseAgreementModal.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import AgreementRoutes from "./routes";
 	import Roles from "./../../enums/Roles";
 	import {GetDistanceInfos} from "../../helpers/distances";
@@ -26,39 +21,14 @@
 
 	const errorsHandler = new SheaftErrors();
 	const authManager = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 	const {open} = getContext("modal");
+	const { query } = getContext("api");
 
 	let agreement = null;
 	let distanceInfos = null;
 	let isLoading = true;
 	let loadingMessage = 'Chargement du partenariat en cours... veuillez patienter';
-
-	const getAgreement = async id => {
-		loadingMessage = 'Chargement du partenariat en cours... veuillez patienter';
-		isLoading = true;
-
-		var res = await graphQLInstance.query(GET_AGREEMENT_DETAILS, {
-			id: id
-		}, errorsHandler.Uuid);
-
-		if (!res.success) {
-			//TODO
-			routerInstance.goTo(AgreementRoutes.List);
-			return;
-		}
-
-		distanceInfos = GetDistanceInfos(
-			res.data.producer.address.latitude,
-			res.data.producer.address.longitude,
-			res.data.store.address.latitude,
-			res.data.store.address.longitude
-		);
-
-		agreement = res.data;
-		isLoading = false;
-	};
 
 	const showCancelAgreementModal = () => {
 		loadingMessage = 'Annulation du partenariat en cours... veuillez patienter';
@@ -75,16 +45,10 @@
 		handleAgreementModal(RefuseAgreementModal, agreement);
 	};
 
-	const handleAgreementModal = (Modal, obj) => {
-		open(Modal, {
-			agreements: [obj],
-			onClose: async res => {
-				if (res.success) {
-					routerInstance.reload();
-				}
-			}
-		});
-	};
+	const handleAgreementModal = (Modal, obj) => open(Modal, {
+		agreements: [obj],
+		onClose: () => routerInstance.reload()
+	});
 
 	const isSender = agreement => {
 		if (
@@ -103,7 +67,23 @@
 	};
 
 	onMount(async () => {
-		await getAgreement(params.id);
+		loadingMessage = 'Chargement du partenariat en cours... veuillez patienter';
+		isLoading = true;
+
+		agreement = await query({
+			query: GET_AGREEMENT_DETAILS,
+			variables: {id: params.id},
+			errorsHandler,
+			success: (res) => distanceInfos = GetDistanceInfos(
+				res.producer.address.latitude,
+				res.producer.address.longitude,
+				res.store.address.latitude,
+				res.store.address.longitude
+			),
+			error: () => routerInstance.goTo(AgreementRoutes.List),
+			errorNotification: "Le partenariat auquel vous essayez d'accéder n'existe plus."
+		});
+		isLoading = false;
 	});
 </script>
 

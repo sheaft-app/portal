@@ -1,38 +1,28 @@
 <script>
 	import DayOfWeekKind from './../../enums/DayOfWeekKind.js';
-	import {onMount, onDestroy} from "svelte";
+	import {onMount, getContext } from "svelte";
 	import {GET_DELIVERIES} from "./queries";
 	import Loader from "./../../components/Loader.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import {timeSpanToFrenchHour} from "./../../helpers/app";
 	import DeliveryRoutes from "./../deliveries/routes";
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
 	let deliveries = [];
 	let isLoading = true;
 
-	export let selectedDelivery = null;
+	export let selectedDelivery = null, errorsHandler;
 
 	onMount(async () => {
-		await fetchDeliveries();
+		deliveries = await query({
+			query: GET_DELIVERIES,
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les informations des créneaux."
+		});
+		isLoading = false;
 	})
-
-	const fetchDeliveries = async () => {
-		const res = await graphQLInstance.query(GET_DELIVERIES);
-
-		isLoading = false;
-
-		if (!res.success) {
-			// todo
-			return;
-		}
-
-		deliveries = res.data;
-		isLoading = false;
-	}
 
 	const getFormattedSelectedHours = (selectedHours) => {
 		if (!selectedHours || selectedHours.length < 1)
@@ -42,20 +32,15 @@
 			return getFormattedSelectedHour(selectedHours[0]);
 		}
 
-		var hours = '<br/>';
+		let hours = '<br/>';
 		for (let i = 0; i < selectedHours.length; i++) {
 			hours += getFormattedSelectedHour(selectedHours[i]) + "<br/>";
 		}
 		return hours;
 	}
 
-	const getFormattedSelectedHour = (selectedHour) => {
-		return `Le ${DayOfWeekKind.label(selectedHour.day).toLowerCase()} entre ${timeSpanToFrenchHour(selectedHour.from)} et ${timeSpanToFrenchHour(selectedHour.to)}`;
-	}
-
-	const selectDelivery = (delivery) => {
-		return selectedDelivery = delivery;
-	}
+	const getFormattedSelectedHour = (selectedHour) =>
+		`Le ${DayOfWeekKind.label(selectedHour.day).toLowerCase()} entre ${timeSpanToFrenchHour(selectedHour.from)} et ${timeSpanToFrenchHour(selectedHour.to)}`;
 </script>
 
 <div class="form-control mt-2" style="display: block;">
@@ -72,7 +57,7 @@
 		{#each deliveries as delivery}
 			<div
 				class:active={selectedDelivery && selectedDelivery.id == delivery.id}
-				on:click={() => selectDelivery(delivery)}
+				on:click={() => selectedDelivery = delivery}
 				class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded">
 				<b>{delivery.name}</b> : {@html getFormattedSelectedHours(delivery.deliveryHours)}
 			</div>

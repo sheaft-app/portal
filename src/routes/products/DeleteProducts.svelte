@@ -1,31 +1,25 @@
 <script>
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { DELETE_PRODUCTS } from "./mutations.js";
   import { GET_PRODUCTS } from "./queries.js";
+  import { getContext } from "svelte";
   import SheaftErrors from "./../../services/SheaftErrors";
 
   const errorsHandler = new SheaftErrors();
+  const { mutate, isLoading } = getContext('api');
 
   export let selectedItems, close, onClose;
 
-  const graphQLInstance = GetGraphQLInstance();
-
-  let isLoading = false;
-
   const handleSubmit = async () => {
-    isLoading = true;
-
-    var res = await graphQLInstance.mutate(DELETE_PRODUCTS, {
-      ids: selectedItems.map(s => s.id)
-    }, errorsHandler.Uuid, GET_PRODUCTS);
-
-    isLoading = false;
-    if (!res.success) {
-      //TODO
-    }
-
-    await handleClose(res);
+    return mutate({
+			mutation: DELETE_PRODUCTS,
+			variables: { ids: selectedItems.map(s => s.id) },
+			errorsHandler,
+			success: (res) => handleClose(res),
+			successNotification: "Le produit a bien été supprimé",
+			errorNotification: "Impossible de supprimer ce produit",
+			clearCache: [GET_PRODUCTS]
+    });
   };
 
   const handleClose = async res => {
@@ -37,7 +31,7 @@
 <ActionConfirm
   title="Suppression"
   level="danger"
-  isLoading={isLoading}
+  isLoading={$isLoading}
   submit={handleSubmit}
   {errorsHandler}
   close={() => handleClose({ success: false, data: null })}>

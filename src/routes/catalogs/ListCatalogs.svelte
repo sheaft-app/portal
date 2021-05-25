@@ -17,7 +17,6 @@
 	let isLoading = true;
 	let items = [];
 	let noResults = false;
-	let selectedItems = [];
 
 	const headers = [
 		{name: "Nom"},
@@ -26,15 +25,11 @@
 		{name: "Nombre de produits"},
 	];
 
-	const getRowBackgroundColor = (item) => {
-		return "";
-	};
-
 	const onRowClick = (item) => {
 		routerInstance.goTo(CatalogRoutes.Details, {id: item.id});
 	};
 
-	$: actions = [
+	const actions = [
 		{
 			click: () => routerInstance.goTo(CatalogRoutes.Create),
 			text: "Créer un catalogue",
@@ -58,7 +53,6 @@
 			let:rowItem={catalog}
 			graphQuery={GET_CATALOGS}
 			defaultSearchValues={CatalogRoutes.List.Params.Query}
-			{getRowBackgroundColor}
 			{onRowClick}>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div

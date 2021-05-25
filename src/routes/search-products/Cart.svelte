@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy, getContext } from "svelte";
   import { flip } from 'svelte/animate';
-  import { slide, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import GetRouterInstance from "../../services/SheaftRouter";
   import GetAuthInstance from "../../services/SheaftAuth";
   import { cartExpanded, selectedItem } from "./../../stores/app.js";
@@ -36,11 +36,7 @@
 		freezeBody();
 	};
 
-  var popStateListener = (event) => {
-    if ($cartExpanded) {
-      return hideCart();
-    }
-  }
+  const popStateListener = (event) => $cartExpanded && hideCart();
 
   const goToCart = () => {
     if (authInstance.authenticated) {
@@ -53,9 +49,7 @@
 
   $: if ($cartExpanded) { history.pushState({ cartExpanded: $cartExpanded }, "Aperçu du panier"); }
 
-  const openCartConflictResolveModal = () => {
-    open(CartConflictResolveModal);
-  }
+  const openCartConflictResolveModal = () => open(CartConflictResolveModal);
 
   onMount(() => {
     if (localStorage.getItem("user_location") && !userPosition) {

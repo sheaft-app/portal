@@ -19,6 +19,7 @@ export const GET_DELIVERIES = gql`
 				lockOrderHoursBeforeDelivery
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
+				maxPurchaseOrdersPerTimeSlot
 				deliveryHours {
 					day
 					from
@@ -44,6 +45,7 @@ export const GET_DELIVERY_DETAILS = gql`
 			available
 			lockOrderHoursBeforeDelivery
 			autoAcceptRelatedPurchaseOrder
+			maxPurchaseOrdersPerTimeSlot
 			autoCompleteRelatedPurchaseOrder
 			deliveryHours {
 				day

@@ -3,16 +3,15 @@
   import { faCheck } from "@fortawesome/free-solid-svg-icons";
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
   import { EXPORT_PICKING_FROM_ORDERS } from "./mutations.js";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import SheaftErrors from "./../../services/SheaftErrors";
-
-  const errorsHandler = new SheaftErrors();
+  import { GET_ORDERS } from "./queries";
+  import { getContext } from "svelte";
 
   export let onClose, close, purchaseOrders;
-  const notificationsInstance = GetNotificationsInstance();
-	const graphQLInstance = GetGraphQLInstance();
+
+  const errorsHandler = new SheaftErrors();
+  const { mutate } = getContext("api");
 
   let date = new Date(),
     moment = null,
@@ -44,48 +43,25 @@
     }
   }
 
-  function getUser(order) {
-    if (GetAuthInstance().isInRole(["PRODUCER"])) {
-      return order.sender;
-    } else {
-      return order.vendor;
-    }
-  }
+  const getUser = (order) => GetAuthInstance().isInRole(["PRODUCER"]) ? order.sender : order.vendor;
 
   async function submit() {
     isLoading = true;
-
-    var result = await graphQLInstance.mutate(
-      EXPORT_PICKING_FROM_ORDERS, 
-      {
-        purchaseOrderIds, name 
-      }, 
-      errorsHandler.Uuid);
-
-    if (
-      result &&
-      result.exportPickingFromOrders &&
-      result.exportPickingFromOrders.id
-    ) {
-      notificationsInstance.success(
-        "Votre demande de création d'un bon de préparation a bien été prise en compte, vous pouvez continuer à utiliser notre plateforme en attendant !"
-      );
-    } else {
-      notificationsInstance.error(
-        "Une erreur est survenue pendant la demande de création du bon de préparation."
-      );
-    }
-
-    isLoading = false;
-
-    return await closeModal(result);
+		await mutate({
+			mutation: EXPORT_PICKING_FROM_ORDERS,
+			variables: { purchaseOrderIds, name },
+			errorsHandler,
+			success: async (res) => closeModal(res),
+			successNotification: "Votre demande de création d'un bon a bien été prise en compte.",
+			errorNotification: "Impossible de faire la demande d'un bon.",
+			clearCache: [GET_ORDERS]
+		});
+		isLoading = false;
   }
 
-  async function closeModal(obj) {
+  async function closeModal(res) {
     close();
-    
-    if (obj)
-      await onClose(obj);
+    await onClose(res);
   }
 </script>
 
@@ -94,7 +70,7 @@
   title="Créer un bon de préparation"
   {submit}
   {isLoading}
-  close={closeModal}
+  {close}
   submitText="Préparer"
   icon={faCheck}
   {valid}

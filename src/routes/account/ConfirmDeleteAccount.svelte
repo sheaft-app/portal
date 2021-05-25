@@ -1,15 +1,15 @@
 <script>
   import { faTimes } from "@fortawesome/free-solid-svg-icons";
   import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
   import { DELETE_ACCOUNT } from "./mutations.js";
   import SheaftErrors from "./../../services/SheaftErrors";
-
-  const errorsHandler = new SheaftErrors();
+  import { getContext } from "svelte";
 
   export let onClose, close;
 
-  var graphQL = GetGraphQLInstance();
+  const errorsHandler = new SheaftErrors();
+  const { mutate } = getContext("api");
+
   let validationInput = null;
   let reason = null;
   let isRemoving = false;
@@ -18,19 +18,14 @@
 
   const handleSubmit = async () => {
     isRemoving = true;
-
-    var res = await graphQL.mutate(DELETE_ACCOUNT, {
-      input: { id: user.id, reason }
-    });
-
+    await mutate({
+			mutation: DELETE_ACCOUNT,
+			variables: { input: { id: user.id, reason } },
+			errorsHandler,
+			success: (res) => closeModal(res), 
+			errorNotification: "Impossible de supprimer votre compte, veuillez réessayer ultérieurement"
+		});
     isRemoving = false;
-
-    if (!res.success) {
-      //TODO error
-      return;
-    }
-
-    await closeModal(res);
   };
 
   const closeModal = async res => {
@@ -44,11 +39,12 @@
   title="Supprimer mon compte"
   level="danger"
   icon={faTimes}
+  isLoading={isRemoving}
   submitText="Supprimer"
   closeText="Annuler"
   submit={handleSubmit}
   {valid}
-  close={() => closeModal({ success: false, data: null })}>
+  {close}>
   <p class="leading-5" />
   <form class="mt-6">
     <p class="block uppercase tracking-wide text-red-500 text-xs font-bold">

@@ -1,49 +1,36 @@
 <script>
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import { CLONE_CATALOG } from "./mutations";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_CATALOGS } from "./queries";
-  import { format } from "date-fns";
-  import fr from "date-fns/locale/fr";
-import { formatMoney } from "../../helpers/app";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
+	import { formatMoney } from "../../helpers/app";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate, isLoading } = getContext("api");
 
 	export let catalog, close, onClose;
 
-	let isLoading = false;
 	let name = `${catalog.name} - duplicat du ${format(
-                    new Date(),
-                    'dd/MM/yyyy HH:mm',
-                    {
-                      locale: fr
-                    }
-                  )}`;
+		new Date(),
+		'dd/MM/yyyy HH:mm',
+		{ locale: fr }
+	)}`;
 	let percent = 0;
 
-	$: getNewProductPrice = (price, newPercent) => {
-		return newPercent == 0 ? price : price * (1 + newPercent / 100);
-	}
+	$: getNewProductPrice = (price, newPercent) => newPercent == 0 ? price : price * (1 + newPercent / 100)
 
-	const handleSubmit = async () => {
-		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			CLONE_CATALOG, { id: catalog.id, name: name, percent: percent },
-			errorsHandler.Uuid,
-			GET_CATALOGS
-    );
-    
-		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		return await handleClose(res);
-	};
+	const handleSubmit = async () => await mutate({
+		mutation: CLONE_CATALOG,
+		variables: { id: catalog.id, name: name, percent: percent },
+		errorsHandler,
+		success: async (res) => handleClose(res),
+		successNotification: "Votre catalogue a bien été dupliqué",
+		errorNotification: "Impossible de dupliquer votre catalogue",
+		clearCache: [GET_CATALOGS]
+	});
 
 	const handleClose = async (res) => {
 		close();
@@ -54,7 +41,7 @@ import { formatMoney } from "../../helpers/app";
 <ActionConfirm
 	title="Dupliquer le catalogue"
 	level="success"
-	{isLoading}
+	isLoading={$isLoading}
 	submit={handleSubmit}
 	{errorsHandler}
 	close={() => handleClose({ success: false, data: null })}>

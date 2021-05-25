@@ -3,8 +3,6 @@
 	import EditReturnable from "./EditReturnable.svelte";
 	import ListReturnables from "./ListReturnables.svelte";
 	import Router from "svelte-spa-router";
-
-	import {onMount} from "svelte";
 	import Meta from "../../components/Meta.svelte";
 
 	export let params;

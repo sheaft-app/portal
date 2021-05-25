@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from "svelte";
+	import { getContext, onMount } from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
@@ -13,6 +13,7 @@
 	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
+	const { query } = getContext("api");
 
 	let orders = [];
 
@@ -32,13 +33,13 @@
 
 		// quand il n'y a qu'un seul ID, le paramètre est lu comme une string et non un array
 		let ids = Array.isArray(values.id) ? values.id : [values.id];
-		let response = await graphQLInstance.query(GET_MY_ORDERS, { ids }, errorsHandler.Uuid);
-		
-		if (response.success) {
-			orders = response.data;
-		} else {
-			return routerInstance.goTo(MyOrderRoutes.List);
-		}
+
+		orders = await query({
+			query: GET_MY_ORDERS, 
+			variables: { ids }, 
+			errorsHandler,
+			error: () => routerInstance.goTo(MyOrderRoutes.List)
+		});
 	});
 </script>
 

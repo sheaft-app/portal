@@ -79,8 +79,8 @@ export const GET_PRODUCT_DETAILS = gql`
 `;
 
 export const GET_PRODUCER_DETAILS = gql`
-	query GetProducerDetails($id: ID!) {
-		producer(id: $id) {
+	query GetProducerDetails {
+		myProducerProfile {
 			notSubjectToVat
 		}
 	}

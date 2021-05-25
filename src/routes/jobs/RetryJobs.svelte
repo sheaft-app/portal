@@ -1,45 +1,34 @@
 <script>
-	import Icon from "svelte-awesome";
+	import { getContext } from "svelte";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import { RETRY_JOBS } from "./mutations.js";
-	import GetNotificationsInstance from "./../../services/SheaftNotifications";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import SheaftErrors from "./../../services/SheaftErrors";
-import { GET_JOBS } from "./queries";
-
-	const errorsHandler = new SheaftErrors();
+	import { GET_JOBS } from "./queries";
 
 	export let onClose, close, jobs;
-	const notificationsInstance = GetNotificationsInstance();
-	const graphQLInstance = GetGraphQLInstance();
+
+	const errorsHandler = new SheaftErrors();
+	const { mutate } = getContext("api");
 
 	let isLoading = false;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			RETRY_JOBS,
-			{
-				ids: jobs.map((j) => j.id),
-			},
-			errorsHandler.Uuid,
-			GET_JOBS
-		);
-
+		await mutate({
+			mutation: RETRY_JOBS,
+			variables: { ids: jobs.map((j) => j.id) },
+			errorsHandler,
+			success: async (res) => handleClose(res),
+			successNotification: "La tâche a bien été relancée",
+			errorNotification: "Impossible de relancer la tâche",
+			clearCache: [GET_JOBS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		await handleClose(res);
 	};
 
 	const handleClose = async (res) => {
 		close();
-
 		if (onClose) await onClose(res);
 	};
 </script>
@@ -48,7 +37,7 @@ import { GET_JOBS } from "./queries";
 	{errorsHandler}
 	title={jobs.length > 1 ? 'Réinitialiser les tâches' : 'Réinitialiser la tâche'}
 	submit={handleSubmit}
-	close={() => handleClose({ success: false, data: null })}
+	{close}
 	submitText="Oui"
 	icon={faCheck}
 	{isLoading}>

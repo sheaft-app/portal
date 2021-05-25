@@ -191,7 +191,6 @@ async function walkThroughFields(fn, observable, initialFieldsData, config, forc
       enabled: true
     };
     const initialFieldData = initialFieldsData[key];
-
     const value = getValue(field);
     const oldValue = getValue(oldField);
     const enabled = field.enabled;
