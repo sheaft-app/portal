@@ -1,13 +1,14 @@
 <script>
   import Toggle from "./../../../components/controls/Toggle.svelte";
   import OpeningHoursContainer from "./../../../components/opening-hours/OpeningHoursContainer.svelte";
+  import { businessHours, openForBusiness, stepper } from "../registerCompanyForm";
 
-  export let stepper = 3, isStore = false, company, openings = [];
+  export let isStore = false;
 
   const handleKeydown = (event) => {
     if (event.key == "Enter") {
       event.preventDefault();
-      stepper++;
+      $stepper++;
     }
 	}
 </script>
@@ -32,7 +33,7 @@
       <div class="mt-2">
         <Toggle
           classNames="ml-1 justify-center"
-          bind:isChecked={company.openForNewBusiness}>
+          bind:isChecked={$openForBusiness}>
           <span class="ml-1">
             Je veux être visible des {isStore ? 'producteurs' : 'magasins'}
             pour commercer avec eux.
@@ -40,7 +41,7 @@
         </Toggle>
       </div>
     </div>
-    {#if company.openForNewBusiness && isStore}
+    {#if $openForBusiness && isStore}
       <div class="form-control mt-5">
         <label style="margin: 0 !important;">
           Horaires d'ouverture *
@@ -54,14 +55,14 @@
           Ces horaires ne seront visibles que par les producteurs.
         </p>
       </div>
-      <OpeningHoursContainer bind:openings={openings} />
+      <OpeningHoursContainer bind:openings={$businessHours} />
     {/if}
   </fieldset>
 </form>
 <div class="flex w-full justify-center mt-5">
   <div>
     <button
-      on:click={() => stepper--}
+      on:click={() => $stepper--}
       aria-label="Retour"
       class="form-button uppercase text-sm cursor-pointer text-gray-600
       rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">
@@ -70,10 +71,10 @@
   </div>
   <div>
     <button
-      on:click={() => stepper++}
+      on:click={() => $stepper++}
       aria-label="Suivant"
-      disabled={(isStore && company.openForNewBusiness && (!openings || openings.length == 0))}
-      class:disabled={(isStore && company.openForNewBusiness && (!openings || openings.length == 0))}
+      disabled={(isStore && $openForBusiness && (!$businessHours || $businessHours.length == 0))}
+      class:disabled={(isStore && $openForBusiness && (!$businessHours || $businessHours.length == 0))}
       class="form-button uppercase text-sm cursor-pointer text-white
       shadow rounded-full px-6 py-2 flex items-center justify-center
       m-auto bg-primary">

@@ -1,5 +1,5 @@
 <script>
-	import {onMount, createEventDispatcher} from "svelte";
+	import {onMount, createEventDispatcher, getContext} from "svelte";
 	import Icon from "svelte-awesome";
 	import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 	import SwiperCore, {Navigation} from 'swiper';
@@ -16,7 +16,7 @@
 
 	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
 
-	const graphQLInstance = GetGraphQLInstance();
+	const { query } = getContext("api");
 	const dispatch = createEventDispatcher();
 	const authInstance = GetAuthInstance();
 
@@ -29,13 +29,13 @@
 	onMount(async () => {
 		isLoading = true;
 		if (producerId) {
-			const result = await graphQLInstance.query(GET_PRODUCER_PRODUCTS, {id: producerId}, errorsHandler.Uuid);
-			if (!result.success) {
-				isLoading = false;
-				return;
-			}
-
-			products = result.data.products.filter((p) => p.id !== productParentId);
+			await query({
+				query: GET_PRODUCER_PRODUCTS,
+				variables: { id: producerId },
+				errorsHandler,
+				success: (res) => products = res.products.filter((p) => p.id !== productParentId),
+				errorNotification: "Impossible de récupérer les autres produits du producteur"
+			});
 		}
 		isLoading = false;
 	});

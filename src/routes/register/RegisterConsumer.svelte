@@ -2,73 +2,48 @@
   import Loader from "./../../components/Loader.svelte";
   import InputCheckbox from "./../../components/controls/InputCheckbox.svelte";
   import { REGISTER_CONSUMER } from "./mutations.js";
-  import { GET_DEPARTMENTS } from "./queries.js";
   import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
   import GetAuthInstance from "./../../services/SheaftAuth";
-  import GetGraphQLInstance from "./../../services/SheaftGraphQL";
   import SheaftErrors from "./../../services/SheaftErrors";
   import GetRouterInstance from "./../../services/SheaftRouter";
-  import GetNotificationsInstance from "./../../services/SheaftNotifications";
-  import { onDestroy, onMount } from "svelte";
-  import { authRegistered } from "./../../stores/auth.js";
-  import { departments } from "./../../stores/app.js";
-  import Select from "./../../components/controls/select/Select.js";
+  import { getContext, onDestroy } from "svelte";
   import ErrorCard from "../../components/ErrorCard.svelte";
-	import { form, bindClass } from '../../../vendors/svelte-forms/src/index';
+	import { bindClass } from '../../../vendors/svelte-forms/src/index';
   import ErrorContainer from "./../../components/ErrorContainer.svelte";
-import { config } from "../../configs/config";
+  import { config } from "../../configs/config";
+  import form from "../../stores/form";
+  import { initialValues, validators } from "./registerConsumerForm";
+  import { authUserAccount } from "./../../stores/auth.js";
 
   const authInstance = GetAuthInstance();
   const routerInstance = GetRouterInstance();
-  const graphQLInstance = GetGraphQLInstance();
-  const notificationsInstance = GetNotificationsInstance();
+  const { mutate } = getContext("api");
   const errorsHandler = new SheaftErrors();
 
   let isRegistering = false;
   let acceptCgv = false;
   let acceptMangoCgv = false;
-  let sponsorShow = false;
-  let selectedDepartment = null;
   let sub = null;
+  let user = { ...initialValues($authUserAccount) }
 
-  let user = {
-    firstName: authInstance.user.profile.given_name || null,
-    lastName: authInstance.user.profile.family_name || null,
-    email: authInstance.user.profile.email || null,
-    phone: authInstance.user.profile.phone || null,
-    picture: authInstance.user.profile.picture || null,
-    sponsoringCode: JSON.parse(localStorage.getItem("user_sponsoring")) || null
-  };
-
-  const consumerForm = form(() => ({
-    firstName: { value: user.firstName, validators: ['required'], enabled: true },
-    lastName: { value: user.lastName, validators: ['required'], enabled: true },
-    email: { value: user.email, validators: ['required', 'email'], enabled: true }
-	}), {
-    initCheck: false
-  });
+  user = form.initialize(user, validators, initialValues());
 
   let isLoading = false;
 
   const handleSubmit = async () => {
-    consumerForm.validate();
-
-    if ($consumerForm.valid) {
-      // user.departmentId = selectedDepartment.id;
-      isRegistering = true;
-
-      var res = await graphQLInstance.mutate(REGISTER_CONSUMER, user, errorsHandler.Uuid);
-
-      if (!res.success) {
-        isRegistering = false;
-        //TODO
-        return;
-      }
-
-      localStorage.removeItem("user_choosen_role");
-      localStorage.removeItem("user_sponsoring");
-			await authInstance.refreshLogin('/');
-    }
+    isRegistering = true;
+    await mutate({
+      mutation: REGISTER_CONSUMER,
+      variables: user,
+      errorsHandler,
+      success: async () => {
+        localStorage.removeItem("user_choosen_role");
+        localStorage.removeItem("user_sponsoring");
+        await authInstance.refreshLogin('/');
+      },
+      errorNotification: "Impossible d'enregistrer le compte. Veuillez réessayer ou contacter le support technique."
+    });
+    isRegistering = false;
   };
 
   const handleCancel = () => {
@@ -76,29 +51,10 @@ import { config } from "../../configs/config";
     routerInstance.goBack();
   };
 
-  // const getDepartments = async () => {
-  //   isLoading = true;
-  //   var res = await graphQLInstance.query(GET_DEPARTMENTS);
-
-  //   if (!res.success) {
-  //     //TODO
-  //     return;
-  //   }
-
-  //   isLoading = false;
-  //   departments.set(res.data);
-  // };
-
-  onMount(async () => {
-    // await getDepartments();
-  });
-
   onDestroy(() => {
     if(sub != null)
       sub.unsubscribe();
   });
-
-  // const getLabel = option => `${option.code} - ${option.name}`;
 </script>
 
 <svelte:head>
@@ -121,18 +77,18 @@ import { config } from "../../configs/config";
                 <input
                   id="family_name"
                   type="text"
-                  use:bindClass={{ form: consumerForm, name: "lastName" }}
+                  use:bindClass={{ form, name: "lastName" }}
                   bind:value={user.lastName} />
-                <ErrorContainer field={$consumerForm.fields.lastName} />
+                <ErrorContainer field={$form.fields.lastName} />
               </div>
               <div class="mb-2 mt-2 form-control w-full">
                 <label for="given_name">Prénom*</label>
                 <input
                   id="given_name"
-                  use:bindClass={{ form: consumerForm, name: "firstName" }}
+                  use:bindClass={{ form, name: "firstName" }}
                   type="text"
                   bind:value={user.firstName} />
-                <ErrorContainer field={$consumerForm.fields.firstName} />
+                <ErrorContainer field={$form.fields.firstName} />
               </div>
             </div>
             <div class="w-full justify-center hidden">
@@ -146,18 +102,18 @@ import { config } from "../../configs/config";
                   id="email"
                   type="email"
                   disabled="disabled"
-                  use:bindClass={{ form: consumerForm, name: "email" }}
+                  use:bindClass={{ form, name: "email" }}
                   bind:value={user.email}
                   class="disabled appearance-none block w-full border back-bg-clr
                   rounded py-3 px-4 leading-tight focus:outline-none
                   focus:bg-white" />
-                  <ErrorContainer field={$consumerForm.fields.email} />
+                  <ErrorContainer field={$form.fields.email} />
               </div>
             </div>
             <!-- <div class="flex flex-wrap justify-center mb-2 mt-2">
               <div class="form-control w-full" style="display: block;">
                 <label for="dept">Département*</label>
-                <div class="themed" use:bindClass={{ form: consumerForm, name: "selectedDepartment" }}>
+                <div class="themed" use:bindClass={{ form, name: "selectedDepartment" }}>
                   <Select
                     getOptionLabel={getLabel}
                     getSelectionLabel={getLabel}
@@ -166,7 +122,7 @@ import { config } from "../../configs/config";
                     )}
                     iconClasses="mr-3"
                     isClearable={false}
-                    invalid={$consumerForm.fields.selectedDepartment.dirty && !$consumerForm.fields.selectedDepartment.valid}
+                    invalid={$form.fields.selectedDepartment.dirty && !$form.fields.selectedDepartment.valid}
                     showChevron={true}
                     hideSelectedOnFocus={true}
                     optionIdentifier="id"
@@ -174,7 +130,7 @@ import { config } from "../../configs/config";
                     bind:selectedValue={selectedDepartment}
                     containerStyles="font-weight: 600;" />
                 </div>
-                <ErrorContainer field={$consumerForm.fields.selectedDepartment} />
+                <ErrorContainer field={$form.fields.selectedDepartment} />
               </div>
             </div> -->
             <!-- <div class="w-full flex flex-wrap justify-center mb-5 mt-2">
@@ -248,9 +204,9 @@ import { config } from "../../configs/config";
           </div>
           <div>
             <button
-              class:disabled={!$consumerForm.valid || !acceptCgv || !acceptMangoCgv}
+              class:disabled={!$form.valid || !acceptCgv || !acceptMangoCgv}
               disabled={!acceptCgv || !acceptMangoCgv}
-              on:click={handleSubmit}
+              on:click={() => form.validateAndSubmit(handleSubmit)}
               aria-label="Valider"
               class="form-button uppercase text-sm cursor-pointer text-white
               shadow rounded-full px-6 py-2 flex items-center justify-center

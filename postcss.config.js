@@ -1,8 +1,10 @@
 const tailwind = require("tailwindcss");
-const autoprefixer = require("autoprefixer");
-const postcssImport = require("postcss-import");
+const autoPrefixer = require("autoprefixer");
+const cssImport = require("postcss-import");
+const cssNesting = require("postcss-nesting");
+
 const purgecss = require("@fullhuman/postcss-purgecss")({
-	safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, 'text-blue-500', 'bg-blue-500', 'text-green-500', 'bg-green-500', 'text-red-500','bg-red-500', 'text-gray-600', 'bg-gray-600'],		
+	safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/],
 	content: ["./src/**/*.html", "./src/**/*.svelte"],
 	defaultExtractor: (content) => {
 		const regExp = new RegExp(/[\w-/:]+(?<!:)/g);
@@ -30,10 +32,10 @@ const production = !process.env.ROLLUP_WATCH;
 module.exports = {
 	parser: "postcss-scss",
 	plugins: [
-		postcssImport,
-		tailwind(),
-		autoprefixer,
+		cssImport,
+		cssNesting,
+		tailwind,
+		production && autoPrefixer,
 		production && purgecss,
-	].filter(Boolean),
-	extract: true,
+	].filter(plugin => plugin)
 };

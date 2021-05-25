@@ -16,23 +16,20 @@
 		faTimesCircle,
 		faPlus,
 		faFileImport,
-		faInfo,
 	} from "@fortawesome/free-solid-svg-icons";
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import {GET_PRODUCTS, HAS_PRODUCTS_IMPORT_INPROGRESS} from "./queries.js";
-	import {SET_PRODUCTS_AVAILABILITY} from "./mutations.js";
 	import ProductRoutes from "./routes.js";
 	import JobRoutes from "./../jobs/routes.js";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import {formatMoney} from "./../../helpers/app";
 	import {toggleMoreActions} from "./../../stores/app";
 	import JobKind from "../../enums/JobKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import VisibleToKind from "../../enums/VisibleToKind";
 
 	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
@@ -40,9 +37,9 @@
 	const { query } = getContext("api");
 
 	let items = [];
-	let selectedItems = [];
+	let selectedItems = []; 
 	let isLoading = true;
-	let noResults = true;
+	let noResults = false;
 
 	onMount(async () => {
 		hasPendingJobs = await query({
@@ -108,23 +105,7 @@
 		routerInstance.goTo(ProductRoutes.Details, {id: item.id});
 	};
 
-	const getProductVisibility = product => {
-		var visibleTo = [];
-		if (product.visibleToStores)
-			visibleTo.push("Magasins");
-		if (product.visibleToConsumers)
-			visibleTo.push("Consommateurs");
-
-		if (visibleTo.length == 2)
-			return ["Tous"];
-
-		if (visibleTo.length == 0)
-			return ["Personne"];
-
-		return visibleTo;
-	}
-
-	let hasPendingJobs = false;
+	$: hasPendingJobs = false;
 	$: hasSelectedOneItem = selectedItems.length > 0;
 	$: hasSelectedDisabledItem =
 		selectedItems.filter((i) => !i.available).length > 0;
@@ -233,11 +214,9 @@
 				class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200
 				hidden md:table-cell">
 				<div class="text-sm leading-5">
-					<ul class="text-sm mt-2 font-semibold">
-						{#each getProductVisibility(product) as target}
-							<li>{target}</li>
-						{/each}
-					</ul>
+					<p class="text-sm mt-2 font-semibold">
+						{VisibleToKind.label(product.visibleTo)}
+					</p>
 				</div>
 			</td>
 			<td

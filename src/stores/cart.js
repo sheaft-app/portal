@@ -2,6 +2,8 @@ import {writable} from "svelte/store";
 import {GET_CART, GET_MOST_RECENT_CART} from "./queries";
 import {CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER} from "./mutations.js";
 import orderBy from "lodash/orderBy";
+import { get } from "svelte/store";
+import { authRegistered } from "./auth";
 
 export const card = writable({
     data: { 
@@ -41,7 +43,7 @@ const store = () => {
 
 	const methods = {
 		async initialize(apiInstance, errorsHandlerInstance, authenticated = false) {
-			if(initialized)
+			if(initialized || !get(authRegistered))
 				return;
 
 			let selectedCart = null;
@@ -147,8 +149,6 @@ const store = () => {
 					state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
 					return state;
 				});
-
-				return false;
 			}
 
 			setters.updateWholeCart(response.data);

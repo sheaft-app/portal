@@ -1,9 +1,6 @@
 <script>
 	import {onMount, getContext} from "svelte";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
-	import Loader from "../../components/Loader.svelte";
-	import Icon from "svelte-awesome";
-	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 	import { UPDATE_RETURNABLE } from "./mutations";
 	import {GET_RETURNABLE_DETAILS, GET_RETURNABLES} from "./queries";
 	import ReturnableForm from "./ReturnableForm.svelte";
@@ -11,8 +8,6 @@
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import ErrorCard from "../../components/ErrorCard.svelte";
-	import GetNotificationsInstance from "./../../services/SheaftNotifications.js";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
@@ -38,30 +33,22 @@
 		isLoading = false;
 	});
 
-	const handleSubmit = async () => {
-		return await mutate({
-			mutation: UPDATE_RETURNABLE,
-			variables: returnable,
-			errorsHandler,
-			success: () => routerInstance.goTo(ReturnableRoutes.List),
-			successNotification: "La consigne a bien été modifiée",
-			errorNotification: "La modification de la consigne a échoué"
-		});
-	};
+	const handleSubmit = async () => await mutate({
+		mutation: UPDATE_RETURNABLE,
+		variables: returnable,
+		errorsHandler,
+		success: () => routerInstance.goTo(ReturnableRoutes.List),
+		successNotification: "La consigne a bien été modifiée",
+		errorNotification: "La modification de la consigne a échoué",
+		clearCache: [GET_RETURNABLES]
+	});
 
-	const showDeleteModal = () => {
-		open(DeleteReturnable, {
-			returnable,
-			onClose: async (res) => {
-				if (res.success) {
-					graphQLInstance.clearApolloCache(GET_RETURNABLES);
-					routerInstance.goTo(ReturnableRoutes.List);
-				}
-			},
-		});
-	};
+	const showDeleteModal = () => open(DeleteReturnable, {
+		returnable,
+		onClose: () => routerInstance.goTo(ReturnableRoutes.List)
+	});
 
-	const buttons = [{text:'Supprimer', click: () => showDeleteModal(), color:'red'}];
+	const buttons = [{ text:'Supprimer', click: () => showDeleteModal(), color:'red' }];
 </script>
 
 <TransitionWrapper>

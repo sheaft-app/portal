@@ -1,7 +1,7 @@
 <script>
-	import { onMount } from "svelte";
+	import { getContext, onMount } from "svelte";
 	import { fly } from "svelte/transition";
-	import { format, formatDistance, formatRelative } from "date-fns";
+	import { formatDistance } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import Icon from "svelte-awesome";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -16,11 +16,12 @@
 		getNotificationIcon,
 		getNotificationColor,
 	} from "./helpers.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import GetRouterInstance from "./../../services/SheaftRouter";
+	import SheaftErrors from "../../services/SheaftErrors.js";
 
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
+	const errorsHandler = new SheaftErrors();
+	const { query, mutate } = getContext("api");
 	const PAGE_LIMIT_SIZE = 30;
 
 	let isLoading = false;
@@ -31,64 +32,65 @@
 		endCursor: null,
 	};
 
-	const createVariables = () => {
-		return {
-			first: PAGE_LIMIT_SIZE,
-			after: pageInfo.endCursor,
-		};
-	};
-
 	const getDisplayDate = (date) => {
 		return formatDistance(date, new Date(), { locale: fr });
 	};
 
 	const getNextResults = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.query(GET_NOTIFICATIONS, createVariables());
-		if (!res.success) {
-			isLoading = false;
-			//TODO
-			return;
-		}
-
-		pageInfo = res.pageInfo;
-		parseNotifications(res.data);
+		await query({
+			query: GET_NOTIFICATIONS,
+			variables: { first: PAGE_LIMIT_SIZE, after: pageInfo.endCursor },
+			errorsHandler,
+			success: (res) => {
+				pageInfo = res.pageInfo;
+				parseNotifications(res.data);
+			},
+			errorNotification: "Impossible de récupérer la liste des notifications"
+		});
 		isLoading = false;
 	};
 
 	const markAllAsRead = async (date) => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(MARK_USER_NOTIFICATIONS_AS_READ);
-		if(!res.success){				
-			isLoading = false;
-			return;
-		}
+		await mutate({
+			mutation: MARK_USER_NOTIFICATIONS_AS_READ,
+			errorsHandler,
+			success: (res) => {
+				date = new Date(res);
+				const array = $notifications.map((e) => {
+					if (e.createdOn < date) e.unread = false;
+					return e;
+				});
 
-		date = new Date(res.data);
-		var array = $notifications.map((e) => {
-			if (e.createdOn < date) e.unread = false;
-			return e;
+				notifications.set(array);
+				notificationsCount.set(array.filter((e) => e.unread).length);
+			},
+			errorNotification: "Impossible de marquer toutes les notifications comme lues"
 		});
-
-		notifications.set(array);
-		notificationsCount.set(array.filter((e) => e.unread).length);
+		isLoading = false;
 	};
 
 	const markAsRead = async (notification) => {
 		if (notification.url) routerInstance.goTo(notification.url);
 
-		var res = await graphQLInstance.mutate(MARK_USER_NOTIFICATION_AS_READ, {
-			id: notification.id,
-		});
+		await mutate({
+			mutation: MARK_USER_NOTIFICATION_AS_READ,
+			variables: { id: notification.id },
+			errorsHandler,
+			success: () => {
+				const array = $notifications.map((e) => {
+					if (e.id == notification.id) e.unread = false;
+					return e;
+				});
 
-		var array = $notifications.map((e) => {
-			if (e.id == notification.id) e.unread = false;
-			return e;
+				notifications.set(array);
+				notificationsCount.set(array.filter((e) => e.unread).length);
+				displayNotificationCenter.set(false);
+			},
+			errorNotification: "Impossible de marquer les notifications comme lues"
 		});
-
-		notifications.set(array);
-		notificationsCount.set(array.filter((e) => e.unread).length);
-		displayNotificationCenter.set(false);
+		isLoading = false;
 	};
 
 	const parseNotifications = (notifs) => {
@@ -99,8 +101,8 @@
 			return;
 		}
 
-		var results = notifs.map((n) => getFormattedNotification(null, n, false));
-		var arr = [...$notifications, results][0];
+		const results = notifs.map((n) => getFormattedNotification(null, n, false));
+		const arr = [...$notifications, results][0];
 
 		notifications.set(arr);
 		notificationsCount.set(arr.filter((e) => e.unread).length);

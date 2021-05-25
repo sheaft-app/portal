@@ -5,9 +5,10 @@
   import Loader from "./../../../components/Loader.svelte";
   import Icon from "svelte-awesome";
   import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { config } from "../../../configs/config";
+  import { productionSite, stepper } from "../registerCompanyForm";
+  import { config } from "../../../configs/config";
 
-  export let company, stepper = 4, isStore, submit = () => {};
+  export let isStore, submit = () => {};
 
   let isSearchingAddress = false;
   let valid = false;
@@ -15,7 +16,7 @@ import { config } from "../../../configs/config";
   let acceptMangoCgv = false;
 
   const resetAddress = () => {
-    company.address = {
+    $productionSite.address = {
       line1: null,
       line2: null,
       city: null,
@@ -30,7 +31,7 @@ import { config } from "../../../configs/config";
     }
   }
   
-  $: valid = company.address && company.address.line1 && company.address.city && company.address.zipcode && acceptCgv && acceptMangoCgv;
+  $: valid = $productionSite.address.line1 && $productionSite.address.city && $productionSite.address.zipcode && acceptCgv && acceptMangoCgv;
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -47,7 +48,7 @@ import { config } from "../../../configs/config";
   <div class="w-full h-full md:w-1/2 mb-2 md:mb-0 px-8">
     <Loader />
   </div>
-{:else if company.address.line1 && company.address.city && company.address.zipcode}
+{:else if $productionSite.address.line1 && $productionSite.address.city && $productionSite.address.zipcode}
   <form class="px-8">
     <fieldset>
       <div class="form-control">
@@ -57,14 +58,14 @@ import { config } from "../../../configs/config";
           required="required"
           class="disabled"
           disabled={true}
-          bind:value={company.address.line1} />
+          bind:value={$productionSite.address.line1} />
       </div>
       <div class="form-control">
         <label for="line2">Complément d'adresse</label>
         <input
           id="line2"
           type="text"
-          bind:value={company.address.line2} />
+          bind:value={$productionSite.address.line2} />
       </div>
       <div class="flex">
         <div class="w-full form-control pr-2">
@@ -76,7 +77,7 @@ import { config } from "../../../configs/config";
             maxlength="5"
             class="disabled"
             disabled={true}
-            bind:value={company.address.zipcode} />
+            bind:value={$productionSite.address.zipcode} />
         </div>
         <div class="w-full md:w-1/2 form-control">
           <label for="city">Ville*</label>
@@ -86,7 +87,7 @@ import { config } from "../../../configs/config";
             required="required"
             class="disabled"
             disabled={true}
-            bind:value={company.address.city} />
+            bind:value={$productionSite.address.city} />
         </div>
       </div>
       <p class="mt-2">
@@ -124,9 +125,9 @@ import { config } from "../../../configs/config";
   <div class="px-8">
     <div class="w-full form-control" style="display: block;">
       <CitySearch
-        bind:selectedAddress={company.address}
+        bind:selectedAddress={$productionSite.address}
         placeholder="Entrez l'adresse de votre lieu de production"
-        initialValue={company.address} />
+        initialValue={$productionSite.address} />
     </div>
     <small class="text-gray-600"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Tapez une adresse puis sélectionnez la correspondance dans la liste.</small>
   </div>
@@ -135,7 +136,7 @@ import { config } from "../../../configs/config";
 <div class="flex w-full justify-center mt-5">
   <div>
     <button
-      on:click={() => stepper--}
+      on:click={() => $stepper--}
       aria-label="Retour"
       class="form-button uppercase text-sm cursor-pointer text-gray-600
       rounded-full px-6 py-2 flex items-center justify-center m-auto border border-gray-600 mr-2">

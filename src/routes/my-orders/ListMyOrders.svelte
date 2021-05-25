@@ -32,7 +32,7 @@
 			errorsHandler,
 			success: (res) => {
 				items.set(
-					res.map((p) => ({
+					res.data.map((p) => ({
 						...p,
 						active:
 							p.status !== PurchaseOrderStatusKind.Cancelled.Value &&

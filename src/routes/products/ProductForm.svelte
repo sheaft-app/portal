@@ -26,6 +26,7 @@
 	import form from "../../stores/form";
 	import {validators, initialValues} from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
 	import Sortable from 'sortablejs';
 	import {getNextId} from "../../helpers/app";
 
@@ -67,7 +68,7 @@
 		let el = document.getElementById('product-images');
 		let sortable = Sortable.create(el, {
 			onEnd: (evt) => {
-				if(evt.oldIndex == evt.newIndex)
+				if (evt.oldIndex == evt.newIndex)
 					return;
 
 				let itemEl = evt.item;
@@ -153,7 +154,7 @@
 						id: `${incrementer.next().value}`,
 						data: res.data,
 						position: product.pictures.length,
-						new : true
+						new: true
 					}];
 				}
 			},
@@ -256,10 +257,10 @@
 						<div id="product-images" class="flex flex-wrap">
 							{#if product.pictures && product.pictures.length > 0}
 								{#each product.pictures as picture}
-									<div data-id="{picture.id}" class="product-image picture-preview relative m-2"
+									<div data-id="{picture.id}" class="product-image picture-preview relative m-2 shadow"
 											 style="background: url('{picture.data ? picture.data : picture.medium}'); height: 80px; width:128px;">
 										<div class="absolute cursor-pointer btn-outline rounded-full"
-												 style="top:5px; right: 5px; height: 30px; width:30px;"
+												 style="top:5px; right: 5px; height: 30px; width:30px; background-color: white!important"
 												 on:click={() => removeImage(picture.id)}>
 											<Icon data="{faTrash}"/>
 										</div>
@@ -287,6 +288,7 @@
 			disabled={$isLoading}
 			on:change={(c) => changeCategory(c)}
 			bindClassData={{ form, name: 'selectedCategory' }}
+			{errorsHandler}
 			{selectedCategory}
 			displayOptionAllProducts={false}
 			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"/>
@@ -450,11 +452,12 @@
 	</div>
 </form>
 
-<style>
+<style lang="scss">
 	.picture-preview {
-		background-size: contain !important;
+		background-size: cover !important;
 		background-position: center !important;
 		background-repeat: no-repeat !important;
+		background-color: white !important;
 	}
 
 	.themed {

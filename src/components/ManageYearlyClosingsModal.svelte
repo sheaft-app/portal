@@ -4,18 +4,15 @@
 	import GetAuthInstance from "./../services/SheaftAuth";
   import { GET_BUSINESS_CLOSINGS } from "./queries.js";
   import { UPDATE_BUSINESS_CLOSINGS } from "./mutations.js";
-  import GetNotificationsInstance from "./../services/SheaftNotifications.js";
-  import GetGraphQLInstance from "./../services/SheaftGraphQL";
   import SheaftErrors from "./../services/SheaftErrors";
   import ClosingDates from "./ClosingDates.svelte";
   import { normalizeClosingDates, denormalizeClosingDates } from "../helpers/app";
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import Loader from "./Loader.svelte";
   
   const errorsHandler = new SheaftErrors();
-  const notificationsInstance = GetNotificationsInstance();
-  const graphQLInstance = GetGraphQLInstance();
-	const authInstance = GetAuthInstance();
+  const authInstance = GetAuthInstance();
+  const { query, mutate } = getContext("api");
   
   export let onClose, close;
 
@@ -26,45 +23,33 @@
   $: valid = true;
 
   onMount(async () => {
-    const result = await graphQLInstance.query(GET_BUSINESS_CLOSINGS);
-
-    if (!result.success) {
-      // todo
-      isInitializing = false;
-      return;
-    }
-
-    closings = denormalizeClosingDates(result.data);
+    await query({
+      query: GET_BUSINESS_CLOSINGS,
+      errorsHandler,
+      success: (res) => closings = denormalizeClosingDates(res),
+      errorNotification: "Impossible de récupérer les informations de fermetures"
+    });
     isInitializing = false;
   });
 
   async function submit() {
       isLoading = true;
-  
-      const result = await graphQLInstance.mutate(UPDATE_BUSINESS_CLOSINGS, {
-        id: authInstance.user.profile.id,
-        closings: normalizeClosingDates(closings)
-      },  errorsHandler.Uuid);
-  
+      await mutate({
+        mutation: UPDATE_BUSINESS_CLOSINGS,
+        variables: { id: authInstance.user.profile.id, closings: normalizeClosingDates(closings) },
+        errorsHandler,
+        success: async (res) => {
+          closings = denormalizeClosingDates(result.data);
+          await closeModal(res);
+        },
+        errorNotification: "Une erreur est survenue pendant la configuration de vos fermetures annuelles",
+        successNotification: "Vos fermetures annuelles ont bien été mises à jour !",
+        clearCache: [GET_BUSINESS_CLOSINGS]
+      });
       isLoading = false;
-
-      if (!result.success)
-          notificationsInstance.error(
-              "Une erreur est survenue pendant la configuration de vos fermetures annuelles."
-              );
-      else {
-        notificationsInstance.success(
-              "Vos fermetures annuelles ont bien été mises à jour !"
-              );
-  
-        return await closeModal(result.data);
-      }  
-      
   }
 
   async function closeModal(res) {
-    graphQLInstance.clearApolloCache(GET_BUSINESS_CLOSINGS); 
-
     if (onClose) {
       onClose(res);
     }
@@ -78,7 +63,7 @@
     title="Gérer les fermetures annuelles"
     {submit}
     {isLoading}
-    close={closeModal}
+    {close}
     submitText="Sauvegarder"
     icon={faCheck}
     {valid}

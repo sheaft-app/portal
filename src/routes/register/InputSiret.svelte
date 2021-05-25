@@ -4,7 +4,6 @@
   import Cleave from "cleave.js";
 
   export let value, disabled = false, bindClassData = null;
-  const max = 14;
 
   let ref;
   let cleave = null;

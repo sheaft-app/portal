@@ -6,9 +6,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
-	import GetAuthInstance from "./../../services/SheaftAuth";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL";
 	import PurchaseOrderRoutes from "./routes";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";

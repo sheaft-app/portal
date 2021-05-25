@@ -1,4 +1,4 @@
-import { querystring, push, pop, replace, location as locat } from "svelte-spa-router";
+import {querystring, push, pop, replace, location as locat} from "svelte-spa-router";
 import qs from "qs";
 import Guid from "../helpers/Guid";
 
@@ -15,7 +15,7 @@ class SheaftRouter {
 
 	async goTo(route, routeParams, refresh) {
 		let url = handleUrl(route, routeParams);
-		if(refresh == null || !refresh)
+		if (refresh == null || !refresh)
 			await push(url);
 		else
 			await replace(url);
@@ -62,13 +62,16 @@ class SheaftRouter {
 	}
 
 	unregister() {
-		this.locSubscription.unsubscribe();
-		this.queryStrSubscription.unsubscribe();
+		if (this.locSubscription && this.locSubscription.unsubscribe)
+			this.locSubscription.unsubscribe();
+
+		if (this.queryStrSubscription && this.queryStrSubscription.unsubscribe)
+			this.queryStrSubscription.unsubscribe();
 	}
 }
 
 function handleUrl(route, routeParams) {
-	let isObject = typeof(route) === "object";
+	let isObject = typeof (route) === "object";
 	let url = isObject ? route.Path : route;
 
 	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
@@ -99,7 +102,7 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 			let queryParam = routeParam ? routeParam[queryKey] : null;
 			let param = queryParam ? queryParam : defaultQueryParam;
 
-			if (param != null && Array.isArray(param)){
+			if (param != null && Array.isArray(param)) {
 				param.forEach(p => {
 					queryParams = [...queryParams, {
 						key: queryKey,
@@ -127,7 +130,7 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 }
 
 function sanitizeUrl(url) {
-	if(!url)
+	if (!url)
 		throw "url to navigate to cannot be null";
 
 	if (url.indexOf("/#/") === 0) url = url.substr(2);

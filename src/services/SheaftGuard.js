@@ -1,4 +1,4 @@
-import { wrap } from "svelte-spa-router/wrap";
+import {wrap} from "svelte-spa-router/wrap";
 import Home from "./../routes/home/Home.svelte";
 import Cart from "./../routes/cart/Cart.svelte";
 import Register from "./../routes/register/Register.svelte";
@@ -231,9 +231,9 @@ class SheaftGuard {
 			conditions: [
 				() =>
 					this.handleRouteNavigation(
-						() => 
-						this.authInstance.userIsAnonymous() ||
-						this.authInstance.userHasAccess(ExternalRoutes.Roles),
+						() =>
+							this.authInstance.userIsAnonymous() ||
+							this.authInstance.userHasAccess(ExternalRoutes.Roles),
 						true
 					),
 			],
@@ -330,7 +330,7 @@ class SheaftGuard {
 		};
 	}
 
-	handleRouteNavigation = (exec, autoRedirect) => {
+	handleRouteNavigation(exec, autoRedirect) {
 		if (
 			this.authInstance.initialized &&
 			this.authInstance.authorized &&
@@ -350,7 +350,8 @@ class SheaftGuard {
 	};
 
 	unregister() {
-		this.initializedSub.unsubscribe();
+		if (this.initializedSub && this.initializedSub.unsubscribe)
+			this.initializedSub.unsubscribe();
 	}
 }
 

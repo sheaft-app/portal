@@ -20,7 +20,6 @@
 	import Rating from "./../../components/rating/Rating.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
 	import {selectedItem} from "./../../stores/app.js";
 	import {timeSpanToFrenchHour, formatMoney} from "./../../helpers/app.js";
 	import TagKind from "./../../enums/TagKind";
@@ -33,13 +32,14 @@
 	import orderBy from "lodash/orderBy";
 	import {config} from "../../configs/config";
 	import ProducerOtherProducts from "./../../components/ProducerOtherProducts.svelte";
+	import { getContext } from "svelte";
 
 	export let displayProducerData = true;
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-	const graphQLInstance = GetGraphQLInstance();
+	const { query, mutate } = getContext("api");
 
 	let product = null;
 	let producerDescriptionExpanded = false;
@@ -59,60 +59,54 @@
 
 	const getProductDetails = async id => {
 		isLoading = true;
-		let res = await graphQLInstance.query(GET_PRODUCT_DETAILS, {id: id}, errorsHandler.Uuid);
+		product = await query({
+			query: GET_PRODUCT_DETAILS,
+			variables: { id },
+			errorsHandler,
+			error: () => close(),
+			errorNotification: "Impossible de récupérer les informations du produit.",
+			success: async (res) => {
+				ratings = res.ratings.nodes.map(r => r);
+				if (displayProducerData) {
+					await query({
+						query: GET_PRODUCER_DELIVERIES,
+						variables: { input: [res.producer.id] },
+						errorsHandler,
+						success: (deliveriesResult) => {
+							if (res.length == 0) {
+								deliveries = [];
+							} else {
+								deliveries = deliveriesResult[0].deliveries.map((d) => ({
+									...d,
+									distance: GetDistanceInfos(
+										values["latitude"],
+										values["longitude"],
+										d.address.latitude,
+										d.address.longitude
+									),
+									deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
+										index === self.findIndex((d) => (
+											d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+										))
+									))
+								}));
 
-		if (!res.success) {
-			isLoading = false;
-			close();
-			//TODO
-			return;
-		}
+								deliveries = orderBy(deliveries, (d) => d.distance.distance, ['asc']);
+							}
+						},
+						error: () => close(),
+						errorNotification: "Impossible de récupérer les horaires de livraison."
+					});
 
-		if (displayProducerData) {
-			var deliveriesResult = await graphQLInstance.query(GET_PRODUCER_DELIVERIES, {
-				input: [res.data.producer.id]
-			}, errorsHandler.Uuid);
-
-			if (!deliveriesResult.success) {
-				isLoading = false;
-				close();
-				//TODO
+					distanceInfos = GetDistanceInfos(
+						values["latitude"],
+						values["longitude"],
+						res.producer.address.latitude,
+						res.producer.address.longitude
+					);
+				}
 			}
-
-			if (deliveriesResult.data.length == 0) {
-				deliveries = [];
-			} else {
-				deliveries = deliveriesResult.data[0].deliveries.map((d) => {
-					return {
-						...d,
-						distance: GetDistanceInfos(
-							values["latitude"],
-							values["longitude"],
-							d.address.latitude,
-							d.address.longitude
-						),
-						deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-							index === self.findIndex((d) => (
-								d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-							))
-						))
-					}
-				});
-
-				deliveries = orderBy(deliveries, (d) => d.distance.distance, ['asc']);
-			}
-		}
-
-		product = res.data;
-		ratings = product.ratings.nodes.map(r => r);
-
-		distanceInfos = displayProducerData ? GetDistanceInfos(
-			values["latitude"],
-			values["longitude"],
-			product.producer.address.latitude,
-			product.producer.address.longitude
-		) : null;
-
+		});
 		isLoading = false;
 	};
 
@@ -143,30 +137,24 @@
 
 	const handleRatingSubmit = async () => {
 		isSubmittingRate = true;
-		var res = await graphQLInstance.mutate(RATE_PRODUCT, {
-			id: $selectedItem,
-			value: rating,
-			comment: comment
-		}, errorsHandler.Uuid);
-
+		await mutate({
+			mutation: RATE_PRODUCT,
+			variables: { id: $selectedItem, value: rating, comment },
+			errorsHandler,
+			success: (res) => {
+				product.rating = res.rating;
+				product.ratingsCount = res.ratingsCount;
+				ratings = res.ratings;
+				rating = null;
+				comment = null;
+			},
+			errorNotification: "Impossible de noter le produit pour le moment. Réessayez plus tard.",
+		});
 		isSubmittingRate = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		product.rating = res.data.rating;
-		product.ratingsCount = res.data.ratingsCount;
-		ratings = res.data.ratings;
-		isSubmittingRate = false;
-		rating = null;
-		comment = null;
 	};
 
 	const handleKeyup = ({key}) => {
 		if ($selectedItem && key === "Escape") {
-			event.preventDefault();
 			close()
 		}
 	};

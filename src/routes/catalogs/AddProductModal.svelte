@@ -1,13 +1,12 @@
 <script>
-    import { onMount } from "svelte";
+    import { getContext, onMount } from "svelte";
     import { GET_PRODUCTS } from "./queries";
-    import GetGraphQLInstance from "../../services/SheaftGraphQL.js";
     import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
     import { products } from "./stores";
 
     export let alreadyPresentProducts = [], close;
 
-    const graphQLInstance = GetGraphQLInstance();
+    const { query } = getContext("api");
 
     let allProducts = [];
 
@@ -33,15 +32,20 @@
     }
 
     onMount(async() => {
-        const result = await graphQLInstance.query(GET_PRODUCTS);
+        await query({
+            query: GET_PRODUCTS,
+            errorsHandler,
+            success: (res) => {
+                allProducts = res.filter((p) => !alreadyPresentProducts.includes(p.id)).map((p) => ({
+                    ...p,
+                    checked: false
+                }));
 
-        allProducts = result.data.filter((p) => !alreadyPresentProducts.includes(p.id)).map((p) => ({
-            ...p,
-            checked: false
-        }));
-
-        if (allProducts.length == 0)
-            close();
+                if (allProducts.length == 0) close();
+            },
+            error: () => close(),
+            errorNotification: "Impossible de récupérer les informations des produits"
+        })
     })
 
     $: hasSelectedAll = allProducts.filter((p) => !p.checked).length == 0;

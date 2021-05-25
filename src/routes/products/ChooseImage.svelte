@@ -2,7 +2,6 @@
 	import {faCheck} from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import Cropper from 'cropperjs';
-	import "cropperjs/dist/cropper.min.css";
 
 	export let close, onClose;
 
