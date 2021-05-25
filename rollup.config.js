@@ -1,40 +1,73 @@
-import svelte from "rollup-plugin-svelte";
+import svelte from "rollup-plugin-svelte-hot";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
-import postcss from "rollup-plugin-postcss";
-import { terser } from "rollup-plugin-terser";
+import {terser} from "rollup-plugin-terser";
 import del from "rollup-plugin-delete";
 import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
-import { generateSW } from "rollup-plugin-workbox";
+import {generateSW} from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
 import alias from "rollup-plugin-alias";
 import define from 'rollup-plugin-define';
+import hmr from 'rollup-plugin-hot';
+import postcss from 'rollup-plugin-postcss';
 
-const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
+const isNollup = !!process.env.NOLLUP
+const isWatch = !!process.env.ROLLUP_WATCH
+const isLiveReload = !!process.env.LIVERELOAD
+
+const isDev = isWatch || isLiveReload
+const production = !isDev
+
+const isHot = isWatch && !isLiveReload
+
+function serve() {
+	let server
+
+	function toExit() {
+		if (server) server.kill(0)
+	}
+
+	return {
+		name: 'svelte/template:serve',
+		writeBundle() {
+			if (server) return
+			server = require('child_process').spawn(
+				'npm',
+				['run', 'start', '--', '--dev'],
+				{
+					stdio: ['ignore', 'inherit', 'inherit'],
+					shell: true,
+				}
+			)
+
+			process.on('SIGTERM', toExit)
+			process.on('exit', toExit)
+		},
+	}
+}
 
 export default {
 	input: "src/index.js",
 	output: [
-		{
-			name: "module",
+		!production ? {
+			format: 'iife',
+			name: 'dev',
+			file: 'public/dist/index.js',
+			sourcemap: !production,
+			compact: production,
+		} : {
+			name: "prod",
 			dir: `${buildDir}`,
 			format: "es",
 			sourcemap: !production,
 			compact: production,
 		},
-		// {
-		// 	name: "nomodule",
-		// 	dir: `${buildDir}/nomodule`,
-		// 	format: "system",
-		// 	sourcemap: !production,
-		// 	compact: production
-		// },
 	],
 	manualChunks(id) {
-		if (id.includes("node_modules")) {
+		if (production && id.includes("node_modules")) {
 			return "vendor";
 		}
 	},
@@ -42,32 +75,35 @@ export default {
 		alias({
 			forms: __dirname + "vendors/svelte-forms",
 		}),
-		del({
+		production && del({
 			targets: "public/dist/*",
 			runOnce: true,
 		}),
 		define({
 			replacements: {
-			  'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
-			  __buildDate__: () => JSON.stringify(new Date()),
+				'process.env.NODE_ENV': production ? JSON.stringify('production') : JSON.stringify('development'),
+				__buildDate__: () => JSON.stringify(new Date()),
 			}
-		  }),
+		}),
 		// typescript({
 		// 	removeComments: production,
 		// 	sourceMap: !production,
 		// }),
 		svelte({
+			compilerOptions: {
+				dev: !production
+			},
 			emitCss: true,
 			preprocess: autoPreprocess({
-				postcss: {
-					plugins: [
-						require("tailwindcss"),
-						require("autoprefixer"),
-						require("postcss-nesting"),
-					],
-				},
+				globalStyle: true,
+				postcss: true,
 				scss: true,
+				sourceMap: !production
 			}),
+			hot: isHot && {
+				optimistic: true,
+				preserveLocalState: true
+			}
 		}),
 		svelteSVG(),
 		postcss(),
@@ -119,7 +155,7 @@ export default {
 					},
 				],
 				"@babel/plugin-transform-named-capturing-groups-regex",
-				["@babel/plugin-transform-arrow-functions", { spec: true }],
+				["@babel/plugin-transform-arrow-functions", {spec: true}],
 				"@babel/plugin-syntax-dynamic-import",
 				[
 					"@babel/plugin-transform-runtime",
@@ -134,8 +170,14 @@ export default {
 			browser: true,
 			dedupe: ["svelte"],
 		}),
-		commonjs({
-			include: "node_modules/**",
+		commonjs(),
+		isDev && !isNollup && serve(),
+		isLiveReload && livereload('public'),
+		production && terser(),
+		hmr({
+			public: 'public',
+			inMemory: true,
+			compatModuleHot: !isHot,
 		}),
 		production && generateSW({
 			swDest: "public/sw.js",
@@ -242,7 +284,7 @@ export default {
 				{
 					handler: "CacheFirst",
 					urlPattern: new RegExp(
-						/^https:\/\/app.sheaft.com\/[assets|img]+\/.*/,
+						/^https:\/\/app\.sheaft\.com\/[assets|img]+\/.*/,
 						"iyg"
 					),
 					options: {
@@ -254,7 +296,7 @@ export default {
 				},
 				{
 					handler: "CacheFirst",
-					urlPattern: new RegExp(/^https:\/\/images.unsplash.com.*/, "iyg"),
+					urlPattern: new RegExp(/^https:\/\/images\.unsplash\.com.*/, "iyg"),
 					options: {
 						cacheName: "local-cache",
 						cacheableResponse: {
@@ -263,15 +305,7 @@ export default {
 					},
 				},
 			],
-		}),
-		!production &&
-			livereload({
-				watch: "public/dist",
-			}),
-		production &&
-			terser({
-				module: false,
-			}),
+		})
 	],
 	watch: {
 		clearScreen: false,

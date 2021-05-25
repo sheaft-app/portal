@@ -300,45 +300,43 @@
 			</tr>
 			</thead>
 			<tbody>
-			{#if !isLoading}
-				{#if items.length > 0}
-					{#each items as item}
-						<tr
-							on:click|stopPropagation={() => onRowClick(item)}
-							class="{rowColor(item)} cursor-pointer ripple border-b
+			{#if !isLoading && items.length > 0}
+				{#each items as item}
+					<tr
+						on:click|stopPropagation={() => onRowClick(item)}
+						class="{rowColor(item)} cursor-pointer ripple border-b
 							border-gray-200">
-							{#if canSelect}
-								<td
-									class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
+						{#if canSelect}
+							<td
+								class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200"
-									class:disabled={disableRowSelection(item)}
-									on:click|stopPropagation={(e) => {
+								class:disabled={disableRowSelection(item)}
+								on:click|stopPropagation={(e) => {
 										if (!disableRowSelection(item)) {
 											selectRow(item);
 										}
 									}}>
-									<div class="flex items-center">
-										<div class="flex-shrink-0">
-											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)}/>
-										</div>
+								<div class="flex items-center">
+									<div class="flex-shrink-0">
+										<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)}/>
 									</div>
-								</td>
-							{/if}
-							<slot rowItem={item}/>
-						</tr>
-					{/each}
-				{:else}
-					<tr>
-						<td colspan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
-						border-gray-200 hover:bg-white">
-							{#if noResultsPage}
-								<PageEmpty {noResultsPage}/>
-							{:else}
-								Aucun résultat
-							{/if}
-						</td>
+								</div>
+							</td>
+						{/if}
+						<slot rowItem={item}/>
 					</tr>
-				{/if}
+				{/each}
+			{:else if !isLoading && items.length < 1}
+				<tr>
+					<td colspan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
+						border-gray-200 hover:bg-white">
+						{#if noResultsPage}
+							<PageEmpty {noResultsPage}/>
+						{:else}
+							Aucun résultat
+						{/if}
+					</td>
+				</tr>
 			{:else}
 				<tr>
 					<td colSpan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 p-4 whitespace-no-wrap border-b

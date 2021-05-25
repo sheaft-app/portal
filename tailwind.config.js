@@ -1,6 +1,7 @@
 module.exports = {
 	corePlugins: {},
 	theme: {
+		prefix: 'tw-',
 		extend: {
 			transitionProperty: {
 				height: "height",

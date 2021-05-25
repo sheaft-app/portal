@@ -8,7 +8,7 @@ import {
 	authAuthorized,
 } from "./../stores/auth.js";
 import {clearLocalStorage} from "./../helpers/storage";
-import { stringify } from "qs";
+import {stringify} from "qs";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
@@ -55,7 +55,7 @@ class SheaftAuth {
 
 		this.userManager.events.addUserUnloaded((e) => {
 		});
- 
+
 		this.userManager.events.addAccessTokenExpiring(async () => {
 			await this.loginSilent();
 		});
@@ -66,42 +66,48 @@ class SheaftAuth {
 	}
 
 	async retrieveUser(user, onInit) {
-		try {
-			var localUser = JSON.parse(localStorage.getItem("user"));
-			if(localUser.id && localUser.id.length > 0){
-				user.id = localUser.id;
-				user.profile.id = localUser.profileId;
-				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
-				return;
-			}
+		var localUser = JSON.parse(localStorage.getItem("user"));
+		if (localUser.id && localUser.id.length > 0) {
+			user.id = localUser.id;
+			user.profile.id = localUser.profileId;
+		}
 
+		try {
 			var result = await fetch(
 				config.api + "/graphql",
 				getUserInfoSettings(user)
 			);
 
-			var content = await result.json();
-			if (content.data.me && content.data.me.id) {
-				user.id = content.data.me.id;
-				user.profile.id = content.data.me.profileId;
-				this.setAuthStatus(user, true, true, true, true);
-			} else if (content.errors && content.errors.length > 0) {
-				console.error('An error occurred while retrieving user infos', content.errors);
-				this.refreshPageAsUnauthorized(false);
-			} else {
-				user.id = null;
-				user.profile.id = null;
-				this.setAuthStatus(user, true, true, false, true);
+			if (result.status === 401) {
+				await this.userManager.removeUser();
+				await this.login();
+				return;
 			}
+
+			if (localUser)
+				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
+
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
-			this.refreshPageAsUnauthorized(true);
+			await this.refreshPageAsUnauthorized(true);
+			return;
+		}
+
+		var content = await result.json();
+		if (content.data.me && content.data.me.id) {
+			user.id = content.data.me.id;
+			user.profile.id = content.data.me.profileId;
+			this.setAuthStatus(user, true, true, true, true);
+		} else {
+			user.id = null;
+			user.profile.id = null;
+			this.setAuthStatus(user, true, true, false, true);
 		}
 	}
 
-	refreshPageAsUnauthorized(hasError) {
+	async refreshPageAsUnauthorized(hasError) {
 		if (location.hash.indexOf('/callback') > -1 || hasError) {
-			this.userManager.removeUser();
+			await this.userManager.removeUser();
 			location.hash = "/";
 			location.reload();
 		}
@@ -119,7 +125,14 @@ class SheaftAuth {
 		if (this.initialized != initialized)
 			authInitialized.set(initialized);
 
-		localStorage.setItem("user", JSON.stringify({id: user.id, profileId : user.profile.id, authenticated : authenticated, authorized: authorized, registered : registered, role: user.profile.role}));
+		localStorage.setItem("user", JSON.stringify({
+			id: user.id,
+			profileId: user.profile.id,
+			authenticated: authenticated,
+			authorized: authorized,
+			registered: registered,
+			role: user.profile.role
+		}));
 	}
 
 	userIsAnonymous() {
@@ -219,11 +232,20 @@ class SheaftAuth {
 	}
 
 	unregister() {
-		this.authorizedSub.unsubscribe();
-		this.authenticatedSub.unsubscribe();
-		this.registeredSub.unsubscribe();
-		this.initializedSub.unsubscribe();
-		this.userSub.unsubscribe();
+		if (this.authorizedSub && this.authorizedSub.unsubscribe)
+			this.authorizedSub.unsubscribe();
+
+		if (this.authenticatedSub && this.authenticatedSub.unsubscribe)
+			this.authenticatedSub.unsubscribe();
+
+		if (this.registeredSub && this.registeredSub.unsubscribe)
+			this.registeredSub.unsubscribe();
+
+		if (this.initializedSub && this.initializedSub.unsubscribe)
+			this.initializedSub.unsubscribe();
+
+		if (this.userSub && this.userSub.unsubscribe)
+			this.userSub.unsubscribe();
 
 		this.userManager.events.removeAccessTokenExpiring();
 		this.userManager.events.removeAccessTokenExpired();

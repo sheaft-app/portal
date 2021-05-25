@@ -25,6 +25,7 @@
   	import form from "../../stores/form";
   	import { validators, initialValues } from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	export let submit, product = { ...initialValues }, errorsHandler;
 
@@ -417,7 +418,7 @@
 	</div>
 </form>
 
-<style>
+<style lang="scss">
 	.product-picture {
 		background-size: cover !important;
 		background-position: center !important;

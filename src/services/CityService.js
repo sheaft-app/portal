@@ -1,5 +1,5 @@
+
 export default class CityService {
-	address = "https://api-adresse.data.gouv.fr";
 
 	async SearchByAddress(filterText) {
 		var res = {
@@ -10,7 +10,7 @@ export default class CityService {
 
 		try {
 			const response = await fetch(
-				`${this.address}/search/?q=${filterText}`,
+				`https://api-adresse.data.gouv.fr/search/?q=${filterText}`,
 				{
 					method: "GET",
 					headers: {
@@ -52,7 +52,7 @@ export default class CityService {
 
 		try {
 			const response = await fetch(
-				`${this.address}/reverse/?lat=${position.latitude}&lng=${position.longitude}`,
+				`https://api-adresse.data.gouv.fr/reverse/?lat=${position.latitude}&lng=${position.longitude}`,
 				{
 					method: "GET",
 					headers: {
