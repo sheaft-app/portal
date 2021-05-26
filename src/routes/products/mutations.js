@@ -33,6 +33,11 @@ export const CREATE_PRODUCT = gql`
 				name
 				kind
 			}
+			pictures{
+				id
+				position
+				medium
+			}
 			available
 			visibleTo
 		}
@@ -79,6 +84,11 @@ export const UPDATE_PRODUCT = gql`
 				addedOn
 				id
 				name
+			}
+			pictures{
+				id
+				position
+				medium
 			}
 			available
 			visibleTo

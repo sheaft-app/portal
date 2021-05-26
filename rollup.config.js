@@ -1,73 +1,40 @@
-import svelte from "rollup-plugin-svelte-hot";
+import svelte from "rollup-plugin-svelte";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
-import {terser} from "rollup-plugin-terser";
+import postcss from "rollup-plugin-postcss";
+import { terser } from "rollup-plugin-terser";
 import del from "rollup-plugin-delete";
 import babel from "rollup-plugin-babel";
 import svelteSVG from "rollup-plugin-svelte-svg";
-import {generateSW} from "rollup-plugin-workbox";
+import { generateSW } from "rollup-plugin-workbox";
 import autoPreprocess from "svelte-preprocess";
 import alias from "rollup-plugin-alias";
 import define from 'rollup-plugin-define';
-import hmr from 'rollup-plugin-hot';
-import postcss from 'rollup-plugin-postcss';
 
+const production = !process.env.ROLLUP_WATCH;
 const buildDir = "public/dist";
-const isNollup = !!process.env.NOLLUP
-const isWatch = !!process.env.ROLLUP_WATCH
-const isLiveReload = !!process.env.LIVERELOAD
-
-const isDev = isWatch || isLiveReload
-const production = !isDev
-
-const isHot = isWatch && !isLiveReload
-
-function serve() {
-	let server
-
-	function toExit() {
-		if (server) server.kill(0)
-	}
-
-	return {
-		name: 'svelte/template:serve',
-		writeBundle() {
-			if (server) return
-			server = require('child_process').spawn(
-				'npm',
-				['run', 'start', '--', '--dev'],
-				{
-					stdio: ['ignore', 'inherit', 'inherit'],
-					shell: true,
-				}
-			)
-
-			process.on('SIGTERM', toExit)
-			process.on('exit', toExit)
-		},
-	}
-}
 
 export default {
 	input: "src/index.js",
 	output: [
-		!production ? {
-			format: 'iife',
-			name: 'dev',
-			file: 'public/dist/index.js',
-			sourcemap: !production,
-			compact: production,
-		} : {
-			name: "prod",
+		{
+			name: "module",
 			dir: `${buildDir}`,
 			format: "es",
 			sourcemap: !production,
 			compact: production,
 		},
+		// {
+		// 	name: "nomodule",
+		// 	dir: `${buildDir}/nomodule`,
+		// 	format: "system",
+		// 	sourcemap: !production,
+		// 	compact: production
+		// },
 	],
 	manualChunks(id) {
-		if (production && id.includes("node_modules")) {
+		if (id.includes("node_modules")) {
 			return "vendor";
 		}
 	},
@@ -75,7 +42,7 @@ export default {
 		alias({
 			forms: __dirname + "vendors/svelte-forms",
 		}),
-		production && del({
+		del({
 			targets: "public/dist/*",
 			runOnce: true,
 		}),
@@ -90,23 +57,49 @@ export default {
 		// 	sourceMap: !production,
 		// }),
 		svelte({
-			compilerOptions: {
+			compilerOptions:{
 				dev: !production
 			},
 			emitCss: true,
 			preprocess: autoPreprocess({
-				globalStyle: true,
 				postcss: true,
-				scss: true,
-				sourceMap: !production
+				scss: true
 			}),
-			hot: isHot && {
-				optimistic: true,
-				preserveLocalState: true
-			}
 		}),
 		svelteSVG(),
-		postcss(),
+		postcss({
+			extract: true,
+			parser: "postcss-scss",
+			plugins: [
+				require('postcss-import'),
+				require('tailwindcss'),
+				require('postcss-nesting'),
+				production && require('autoprefixer'),
+				production && require("@fullhuman/postcss-purgecss")({
+					safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/],
+					content: ["./src/**/*.html", "./src/**/*.svelte"],
+					defaultExtractor: (content) => {
+						const regExp = new RegExp(/[\w-/:]+(?<!:)/g);
+
+						const matchedTokens = [];
+
+						let match = regExp.exec(content);
+
+						while (match) {
+							if (match[0].startsWith("class:")) {
+								matchedTokens.push(match[0].substring(6));
+							} else {
+								matchedTokens.push(match[0]);
+							}
+
+							match = regExp.exec(content);
+						}
+
+						return matchedTokens;
+					},
+				}),
+			].filter(plugin => plugin)
+		}),
 		production && babel({
 			extensions: [".ts", ".js", ".mjs", ".html", ".svelte"],
 			runtimeHelpers: true,
@@ -155,7 +148,7 @@ export default {
 					},
 				],
 				"@babel/plugin-transform-named-capturing-groups-regex",
-				["@babel/plugin-transform-arrow-functions", {spec: true}],
+				["@babel/plugin-transform-arrow-functions", { spec: true }],
 				"@babel/plugin-syntax-dynamic-import",
 				[
 					"@babel/plugin-transform-runtime",
@@ -170,14 +163,8 @@ export default {
 			browser: true,
 			dedupe: ["svelte"],
 		}),
-		commonjs(),
-		isDev && !isNollup && serve(),
-		isLiveReload && livereload('public'),
-		production && terser(),
-		hmr({
-			public: 'public',
-			inMemory: true,
-			compatModuleHot: !isHot,
+		commonjs({
+			include: "node_modules/**",
 		}),
 		production && generateSW({
 			swDest: "public/sw.js",
@@ -284,7 +271,7 @@ export default {
 				{
 					handler: "CacheFirst",
 					urlPattern: new RegExp(
-						/^https:\/\/app\.sheaft\.com\/[assets|img]+\/.*/,
+						/^https:\/\/app.sheaft.com\/[assets|img]+\/.*/,
 						"iyg"
 					),
 					options: {
@@ -296,7 +283,7 @@ export default {
 				},
 				{
 					handler: "CacheFirst",
-					urlPattern: new RegExp(/^https:\/\/images\.unsplash\.com.*/, "iyg"),
+					urlPattern: new RegExp(/^https:\/\/images.unsplash.com.*/, "iyg"),
 					options: {
 						cacheName: "local-cache",
 						cacheableResponse: {
@@ -305,7 +292,15 @@ export default {
 					},
 				},
 			],
-		})
+		}),
+		!production &&
+		livereload({
+			watch: "public/dist",
+		}),
+		production &&
+		terser({
+			module: false,
+		}),
 	],
 	watch: {
 		clearScreen: false,

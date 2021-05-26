@@ -1,11 +1,19 @@
 <script>
+	import {onMount} from "svelte";
 	import {faCheck} from "@fortawesome/free-solid-svg-icons";
-	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
+	import ActionConfirm from "./../components/modal/ActionConfirm.svelte";
 	import Cropper from 'cropperjs';
 
-	export let close, onClose;
+	export let close, onClose,
+		newElementMinWidth = 100,
+		newElementMinHeight = 100,
+		newElementMaxWidth = 100,
+		newElementMaxHeight = 100,
+		containerMaxHeight = 600,
+		containerMaxWidth = 800,
+		imageSmoothing = true,
+		src = null;
 
-	let src = null;
 	let imageChosen = false;
 	let reader = new FileReader();
 	let cropper = null;
@@ -16,22 +24,22 @@
 		src = URL.createObjectURL(file);
 		reader.readAsDataURL(file);
 
-		if(!cropper)
+		if (!cropper)
 			initCropper();
 
 		cropper.replace(src);
 	}
 
 	const handleSubmit = async () => {
-		if(!imageChosen)
+		if (!imageChosen)
 			return await handleClose({success: false, data: null});
 
 		let res = cropper.getCroppedCanvas({
-			minWidth: 620,
-			minHeight: 256,
-			maxWidth: 620,
-			maxHeight: 256,
-			imageSmoothingEnabled: true,
+			minWidth: parseInt(newElementMinWidth),
+			minHeight: parseInt(newElementMinHeight),
+			maxWidth: parseInt(newElementMaxWidth),
+			maxHeight: parseInt(newElementMaxHeight),
+			imageSmoothingEnabled: imageSmoothing,
 			imageSmoothingQuality: 'high',
 		});
 
@@ -46,28 +54,34 @@
 	const handleClose = async (res) => {
 		close();
 		await onClose(res);
-		cropper.destroy();
+
+		if(cropper)
+			cropper.destroy();
 	}
 
 	const initCropper = () => {
 		const image = document.getElementById('image');
 		cropper = new Cropper(image, {
 			viewMode: 0,
-			dragMode:"move",
+			dragMode: "move",
 			checkCrossOrigin: false,
 			responsive: true,
 			rotatable: true,
 			scalable: true,
 			modal: true,
-			minCropBoxHeight: 256,
-			minCropBoxWidth: 620
+			minCropBoxHeight: parseInt(newElementMinHeight),
+			minCropBoxWidth: parseInt(newElementMinWidth)
 		});
 	}
+
+	onMount(() => {
+		document.getElementById('avatar').click();
+	})
 </script>
 
 <ActionConfirm
 	class="modal"
-	title="Modifier l'image du produit"
+	title="Nouvelle image"
 	icon={faCheck}
 	valid={imageChosen}
 	submit={handleSubmit}
@@ -75,7 +89,7 @@
 	closeText="Annuler"
 	close={() => handleClose({success:false, data:null})}>
 	<form>
-		<div class="image-container">
+		<div class="image-container" style="max-height: {containerMaxHeight}px; max-width:{containerMaxWidth}px;">
 			<img id="image" src="{src}">
 		</div>
 		<div class="pt-5 m-auto text-center">
@@ -105,14 +119,9 @@
 		margin: auto;
 	}
 
-	.image-container{
-		max-height: 600px;
-		max-width: 800px;
-	}
-
 	img {
 		display: block;
-		margin:auto;
+		margin: auto;
 		max-width: 100%;
 	}
 

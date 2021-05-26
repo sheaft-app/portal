@@ -2,14 +2,14 @@
   "private": true,
   "name": "sheaft",
   "scripts": {
-    "autobuild": "nollup -c --hot --port 4200 --content-base ./public",
+    "autobuild": "rollup -c -w",
     "sprint": "set NODE_ENV=PRODUCTION && rollup -c",
     "staging": "set NODE_ENV=PRODUCTION && rollup -c",
     "production": "set NODE_ENV=PRODUCTION && rollup -c",
-    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
-    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
-    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild",
-    "start": "sirv public --dev --single --port 4200"
+    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
+    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
+    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
+    "start:dev": "sirv public --dev --single --port 4200"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "~7.13.17",
@@ -22,6 +22,7 @@
     "apollo-link-context": "~1.0.20",
     "apollo-link-http": "~1.5.17",
     "cleave.js": "~1.6.0",
+    "cropperjs": "~1.5.11",
     "date-fns": "~2.21.1",
     "dropzone": "~5.9.2",
     "graphql": "~14.7.0",
@@ -32,14 +33,13 @@
     "oidc-client": "~1.11.5",
     "ping.js": "~0.3.0",
     "qs": "~6.10.1",
+    "sortablejs": "~1.13.0",
     "svelte-apollo": "~0.3.0",
     "svelte-awesome": "~2.3.1",
     "svelte-image-encoder": "~1.2.5",
     "svelte-spa-router": "~3.1.0",
     "swiper": "~6.5.7",
-    "timeUtils": "~2.0.0",
-    "cropperjs": "~1.5.11",
-    "sortablejs": "~1.13.0"
+    "timeUtils": "~2.0.0"
   },
   "devDependencies": {
     "@apollo/client": "~3.3.6",

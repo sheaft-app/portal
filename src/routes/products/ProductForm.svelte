@@ -6,8 +6,7 @@
 	import {
 		faPaperPlane,
 		faCircleNotch,
-		faTrash,
-		faPlus
+		faInfoCircle
 	} from "@fortawesome/free-solid-svg-icons";
 	import CategorySelect from "./../../components/controls/CategorySelect.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
@@ -17,7 +16,6 @@
 	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
 	import TagKind from "./../../enums/TagKind.js";
 	import {GET_RETURNABLES, GET_TAGS} from "./queries.js";
-	import ChooseImage from "./ChooseImage.svelte";
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
 	import {config} from "../../configs/config";
@@ -26,9 +24,7 @@
 	import form from "../../stores/form";
 	import {validators, initialValues} from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
-	import GetRouterInstance from "../../services/SheaftRouter";
-	import Sortable from 'sortablejs';
-	import {getNextId} from "../../helpers/app";
+	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
 
 	export let submit, product = {...initialValues}, errorsHandler;
 
@@ -63,28 +59,6 @@
 				&& TagKind.Label.Value == TagKind.get(t.kind).Value),
 			error: () => routerInstance.goTo(ProductRoutes.List),
 			errorNotification: "Un problème est survenu pendant la récupération des informations du produit."
-		});
-
-		let el = document.getElementById('product-images');
-		let sortable = Sortable.create(el, {
-			onEnd: (evt) => {
-				if (evt.oldIndex == evt.newIndex)
-					return;
-
-				let itemEl = evt.item;
-				let id = itemEl.getAttribute("data-id");
-
-				product.pictures = product.pictures.map(p => {
-					if (p.position >= evt.newIndex && p.id !== id)
-						p.position++;
-					else if (p.id === id)
-						p.position = evt.newIndex;
-
-					return p;
-				});
-
-				console.log(evt);
-			},
 		});
 	});
 
@@ -145,28 +119,6 @@
 			},
 		});
 	};
-
-	const addImage = () => {
-		open(ChooseImage, {
-			onClose: (res) => {
-				if (res.success) {
-					product.pictures = [...product.pictures, {
-						id: `${incrementer.next().value}`,
-						data: res.data,
-						position: product.pictures.length,
-						new: true
-					}];
-				}
-			},
-		});
-	};
-
-	const removeImage = (id) => {
-		let pictures = product.pictures.filter(p => p.id !== id);
-		product.pictures = pictures;
-	}
-
-	const incrementer = getNextId();
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -250,30 +202,17 @@
 			</div>
 		</div>
 		<div class="w-full lg:w-1/2 lg:pl-3">
-			<div class="form-control">
+			<div class="form-control" style="display:block;">
 				<div class="w-full">
-					<label>Images</label>
-					<div class="border border-gray-400 cursor-pointer text-center h-full">
-						<div id="product-images" class="flex flex-wrap">
-							{#if product.pictures && product.pictures.length > 0}
-								{#each product.pictures as picture}
-									<div data-id="{picture.id}" class="product-image picture-preview relative m-2 shadow"
-											 style="background: url('{picture.data ? picture.data : picture.medium}'); height: 80px; width:128px;">
-										<div class="absolute cursor-pointer btn-outline rounded-full"
-												 style="top:5px; right: 5px; height: 30px; width:30px; background-color: white!important"
-												 on:click={() => removeImage(picture.id)}>
-											<Icon data="{faTrash}"/>
-										</div>
-									</div>
-								{/each}
-							{/if}
-							<div id="add-image" class="product-image cursor-pointer p-6 m-2 rounded-md btn-outline hover:btn-accent"
-									 on:click={()=> addImage()}
-									 style="height: 80px; width:80px;">
-								<Icon data={faPlus}/>
-							</div>
-						</div>
+					<label>Images
+						<Icon data={faInfoCircle}/>
+					</label>
+					<div class="text-xxs mb-3">L'image en première position sera celle affichée par défaut, vous pouvez changer
+						l'ordre des images en restant cliqué sur l'image et en la faisant glisser à la position voulue.
 					</div>
+					<GalleryConfigurator bind:elements={product.pictures} elementHeight="80" elementWidth="195"
+															 newElementMinHeight="256" newElementMinWidth="620"
+															 newElementMaxHeight="256" newElementMaxWidth="620"/>
 				</div>
 			</div>
 		</div>
@@ -453,13 +392,6 @@
 </form>
 
 <style lang="scss">
-	.picture-preview {
-		background-size: cover !important;
-		background-position: center !important;
-		background-repeat: no-repeat !important;
-		background-color: white !important;
-	}
-
 	.themed {
 		display: contents;
 		--cursor: text;
