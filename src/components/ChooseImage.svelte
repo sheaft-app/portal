@@ -37,8 +37,8 @@
 		let res = cropper.getCroppedCanvas({
 			minWidth: parseInt(newElementMinWidth),
 			minHeight: parseInt(newElementMinHeight),
-			maxWidth: parseInt(newElementMaxWidth),
-			maxHeight: parseInt(newElementMaxHeight),
+			maxWidth: parseInt(newElementMaxWidth ? newElementMaxWidth : newElementMinWidth),
+			maxHeight: parseInt(newElementMaxHeight ? newElementMaxHeight : newElementMinHeight),
 			imageSmoothingEnabled: imageSmoothing,
 			imageSmoothingQuality: 'high',
 		});
@@ -85,7 +85,7 @@
 	icon={faCheck}
 	valid={imageChosen}
 	submit={handleSubmit}
-	submitText="Modifier"
+	submitText="Valider"
 	closeText="Annuler"
 	close={() => handleClose({success:false, data:null})}>
 	<form>

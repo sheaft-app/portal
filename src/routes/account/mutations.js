@@ -38,6 +38,11 @@ export const UPDATE_STORE = gql`
 				from
 				to
 			}
+			pictures{
+				id
+				position
+				medium
+			}
 		}
 	}
 `;
@@ -65,6 +70,11 @@ export const UPDATE_PRODUCER = gql`
 				country
 				latitude
 				longitude
+			}
+			pictures{
+				id
+				position
+				medium
 			}
 		}
 	}

@@ -25,13 +25,6 @@ export default {
 			sourcemap: !production,
 			compact: production,
 		},
-		// {
-		// 	name: "nomodule",
-		// 	dir: `${buildDir}/nomodule`,
-		// 	format: "system",
-		// 	sourcemap: !production,
-		// 	compact: production
-		// },
 	],
 	manualChunks(id) {
 		if (id.includes("node_modules")) {
