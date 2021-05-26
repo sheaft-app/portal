@@ -8,7 +8,7 @@
 	import { getContext } from "svelte";
 
 	export let id, mutation, close, onClose, initialSrc = config.content + "/pictures/users/profile.svg";
-	
+
 	const errorsHandler = new SheaftErrors();
   	const authInstance = GetAuthInstance();
 	const { mutate } = getContext("api");
@@ -24,24 +24,24 @@
 
 	$: valid = initialSrc !== src;
 
-	let reader = new FileReader();
-	reader.onloadend = function () {
-		originalPicture = reader.result;
-	}
+	// let reader = new FileReader();
+	// reader.onloadend = function () {
+	// 	originalPicture = reader.result;
+	// }
 
 	function loadFile(e) {
 		let file = e.target.files[0];
 		src = URL.createObjectURL(file);
-		reader.readAsDataURL(file);
+		//reader.readAsDataURL(file);
 	}
 
 	const handleSubmit = async () => {
 		isLoading = true;
 		await mutate({
 			mutation,
-			variables: {id: authInstance.user.id, picture: { resized: url, original: originalPicture } },
+			variables: {id: authInstance.user.id, picture: url },
 			errorsHandler,
-			success: (res) => handleClose(res), 
+			success: (res) => handleClose(res),
 			errorNotification: "Impossible de mettre à jour votre photo de profil."
 		});
 		isLoading = false;

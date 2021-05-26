@@ -204,7 +204,7 @@
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="display:block;">
 				<div class="w-full">
-					<label>Images
+					<label>Gallerie d'images
 						<Icon data={faInfoCircle}/>
 					</label>
 					<div class="text-xxs mb-3">L'image en première position sera celle affichée par défaut, vous pouvez changer

@@ -14,8 +14,8 @@
 		elementWidth = 100,
 		newElementMinWidth = 100,
 		newElementMinHeight = 100,
-		newElementMaxWidth = 100,
-		newElementMaxHeight = 100,
+		newElementMaxWidth = null,
+		newElementMaxHeight = null,
 		containerMaxHeight = 600,
 		containerMaxWidth = 800,
 		imageSmoothing = true;
@@ -27,8 +27,8 @@
 		open(ChooseImage, {
 			newElementMinWidth,
 			newElementMinHeight,
-			newElementMaxWidth,
-			newElementMaxHeight,
+			newElementMaxWidth : newElementMaxWidth ? newElementMaxWidth : newElementMinWidth,
+			newElementMaxHeight : newElementMaxHeight ? newElementMaxHeight : newElementMinHeight,
 			containerMaxHeight,
 			containerMaxWidth,
 			imageSmoothing,

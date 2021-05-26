@@ -20,6 +20,7 @@ export const initialValues = {
         zipcode: null,
         country: "FR"
     },
+		pictures:[],
     openForNewBusiness: true
 };
 
@@ -32,4 +33,5 @@ export const validators = (producer) => ({
 
 export const normalizeProducer = producer => omit({
     ...producer,
+	 pictures: producer.pictures.map(p => ({id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position})),
 }, ['openingHours', 'tags']);

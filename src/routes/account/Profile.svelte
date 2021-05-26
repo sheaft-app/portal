@@ -24,7 +24,7 @@
   let isSendingGPDRRequest = false;
   let hasSentGPDRRequest = false;
 
-  const handleExport = async () => {    
+  const handleExport = async () => {
     isSendingGPDRRequest = true;
     await mutate({
 			mutation: EXPORT_DATA,
@@ -71,7 +71,7 @@
             style="background: url('{picture}'); background-size: cover;
             background-position: center; width: 4em; height: 4em"
             class="flex justify-end rounded-full bg-black shadow cursor-pointer">
-              <button class="bottom-0 absolute text-xs text-white mt-6 shadow rounded-full bg-accent px-1"><Icon scale=".9" data={faEdit} /></button>
+              <button style="height: 25px; width:25px;" class="bottom-0 absolute text-xs text-white mt-6 shadow rounded-full bg-accent px-1"><Icon scale=".9" data={faEdit} /></button>
             </div>
         </div>
         <h1 class="text-2xl mb-0">Mon profil</h1>

@@ -21,6 +21,7 @@ export const initialValues = {
         zipcode: null,
         country: "FR"
     },
+		pictures:[],
     openingHours: getDefaultDenormalizedOpeningHours(),
     openForNewBusiness: true
 };
@@ -38,6 +39,7 @@ export const validators = (store) => ({
 
 export const normalizeStore = store => ({
     ...store,
-   tags: store.tags ? store.tags.map(t => t.id) : [], 
-   openingHours: store.openingHours ? normalizeOpeningHours(store.openingHours) : [] 
+	 pictures: store.pictures.map(p => ({id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position})),
+   tags: store.tags ? store.tags.map(t => t.id) : [],
+   openingHours: store.openingHours ? normalizeOpeningHours(store.openingHours) : []
 });

@@ -1,14 +1,19 @@
 <script>
-	import { UPDATE_PRODUCER } from "./mutations.js";
-	import { GET_PRODUCER_DETAILS } from "./queries.js";
-  	import CitySearch from "./../../components/search/CitySearch.svelte";
+	import {UPDATE_PRODUCER} from "./mutations.js";
+	import {GET_PRODUCER_DETAILS} from "./queries.js";
+	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import ProfileForm from "./ProfileForm.svelte";
-	import { initialValues, validators, normalizeProducer } from "./producerForm";
+	import {initialValues, validators, normalizeProducer} from "./producerForm";
+	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
+	import Icon from "svelte-awesome";
+	import {
+		faInfoCircle
+	} from "@fortawesome/free-solid-svg-icons";
 
 	export let errorsHandler;
 
-	let producer = { ...initialValues };
+	let producer = {...initialValues};
 </script>
 
 <ProfileForm
@@ -64,6 +69,17 @@
 	</div>
 	<h3 class="font-semibold uppercase mb-0 mt-5">Description</h3>
 	<span class="bg-primary h-1 w-20 mt-2 mb-6 block"></span>
+	<div class="form-control" style="display:block;">
+		<div class="w-full">
+			<label>Gallerie d'images
+				<Icon data={faInfoCircle}/>
+			</label>
+			<div class="text-xxs mb-3">Vous pouvez changer l'ordre des images en restant cliqué sur l'image et en la faisant glisser à la position voulue.
+			</div>
+			<GalleryConfigurator bind:elements={producer.pictures} elementHeight="80" elementWidth="100"
+													 newElementMinHeight="200" newElementMinWidth="600"/>
+		</div>
+	</div>
 	<div class="form-control">
 		<div class="w-full md:w-2/2">
 			<label for="grid-line3">Résumé</label>
