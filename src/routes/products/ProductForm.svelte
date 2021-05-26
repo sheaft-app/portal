@@ -35,11 +35,10 @@
 	let selectedCategory = null;
 	let returnables = [];
 	let organicTag;
-	let productPicture = product.picture;
 
 	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
 	$: isBio = organicTag && product.tags.find((i) => i.kind == organicTag.kind && i.value == organicTag.value);
-	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) => i && TagKind.get(i.kind).Value == TagKind.Category.Value);
+	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) =>  i && TagKind.get(i.kind).Value == TagKind.Category.Value);
 	$: quantityPerUnitLabel = isBasketType ? "Nombre de personnes (adultes) *" : (product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *");
 
 	(() => product = form.initialize(product, validators, initialValues))();
@@ -65,6 +64,7 @@
 	onDestroy(async () => {
 		await form.destroy();
 	});
+
 
 	const handleSubmit = async () => {
 		if (product.conditioning != ConditioningKind.Bulk.Value) {
