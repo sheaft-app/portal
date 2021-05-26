@@ -6,7 +6,7 @@
 	import {
 		faPaperPlane,
 		faCircleNotch,
-		faImage,
+		faInfoCircle
 	} from "@fortawesome/free-solid-svg-icons";
 	import CategorySelect from "./../../components/controls/CategorySelect.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
@@ -16,21 +16,20 @@
 	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
 	import TagKind from "./../../enums/TagKind.js";
 	import {GET_RETURNABLES, GET_TAGS} from "./queries.js";
-	import ChangeImage from "./ChangeImage.svelte";
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
 	import {config} from "../../configs/config";
 	import ProductCatalogs from "./ProductCatalogs.svelte";
-	import { bindClass } from '../../../vendors/svelte-forms/src/index';
-  	import form from "../../stores/form";
-  	import { validators, initialValues } from "./productForm";
+	import {bindClass} from '../../../vendors/svelte-forms/src/index';
+	import form from "../../stores/form";
+	import {validators, initialValues} from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
-	import GetRouterInstance from "../../services/SheaftRouter";
+	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
 
-	export let submit, product = { ...initialValues }, errorsHandler;
+	export let submit, product = {...initialValues}, errorsHandler;
 
-	const { open } = getContext("modal");
-	const { query, isLoading } = getContext("api");
+	const {open} = getContext("modal");
+	const {query, isLoading} = getContext("api");
 
 	let invalidCatalogs = false;
 	let selectedCategory = null;
@@ -120,18 +119,6 @@
 			},
 		});
 	};
-
-	const changeImage = () => {
-		open(ChangeImage, {
-			product,
-			onClose: (res) => {
-				if (res.success) {
-					product.picture = res.data;
-					product.originalPicture = res.original;
-				}
-			},
-		});
-	};
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -168,35 +155,35 @@
 			<div class="form-control">
 				<div class="flex w-full">
 					<div class="w-full" class:hidden={product.producer?.notSubjectToVat}>
-						<label>TVA quand applicable *</label>
+						<label>TVA *</label>
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={$isLoading}
 							use:bindClass={{ form, name: 'vat' }}>
-								<button
-									on:click={() => selectVat(5.5)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 5.5}
-									class:skeleton-box={$isLoading}>
-									5,5%
-								</button>
-								<button
-									on:click={() => selectVat(10)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 10}
-									class:skeleton-box={$isLoading}>
-									10%
-								</button>
-								<button
-									on:click={() => selectVat(20)}
-									type="button"
-									class="text-sm md:text-base"
-									class:selected={product.vat === 20}
-									class:skeleton-box={$isLoading}>
-									20%
-								</button>
+							<button
+								on:click={() => selectVat(5.5)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 5.5}
+								class:skeleton-box={$isLoading}>
+								5,5%
+							</button>
+							<button
+								on:click={() => selectVat(10)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 10}
+								class:skeleton-box={$isLoading}>
+								10%
+							</button>
+							<button
+								on:click={() => selectVat(20)}
+								type="button"
+								class="text-sm md:text-base"
+								class:selected={product.vat === 20}
+								class:skeleton-box={$isLoading}>
+								20%
+							</button>
 						</div>
 						<ErrorContainer field={$form.fields.vat}/>
 					</div>
@@ -215,38 +202,24 @@
 			</div>
 		</div>
 		<div class="w-full lg:w-1/2 lg:pl-3">
-			<div class="form-control" style="height: 300px;">
-				<div class="w-full" on:click={() => changeImage()}>
-					<label>Image</label>
-					<div class="border border-gray-400 cursor-pointer text-center h-full">
-						{#if product.picture}
-							<div
-								class="h-full product-picture relative"
-								style="background: url('{product.picture}'); margin:auto;">
-								{#if product.picture.includes("pictures/tags/images/")}
-									<div class="absolute" style="bottom: 0%; z-index: 1;">
-										<div class="text-white text-lg p-1 bg-gray-800">
-											Une image par défaut est utilisée. Cliquez dans le cadre pour remplacer la photo.
-										</div>
-									</div>
-								{/if}
-							</div>
-						{:else}
-							<Icon
-								data={faImage}
-								class="mr-2 inline"
-								scale={2}
-								style="margin:105px;"/>
-							<p class="text-gray-600">Cliquez dans la zone pour ajouter une image</p>
-						{/if}
+			<div class="form-control" style="display:block;">
+				<div class="w-full">
+					<label>Images
+						<Icon data={faInfoCircle}/>
+					</label>
+					<div class="text-xxs mb-3">L'image en première position sera celle affichée par défaut, vous pouvez changer
+						l'ordre des images en restant cliqué sur l'image et en la faisant glisser à la position voulue.
 					</div>
+					<GalleryConfigurator bind:elements={product.pictures} elementHeight="80" elementWidth="195"
+															 newElementMinHeight="256" newElementMinWidth="620"
+															 newElementMaxHeight="256" newElementMaxWidth="620"/>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues</label>
-		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
+		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs/>
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>
@@ -419,12 +392,6 @@
 </form>
 
 <style lang="scss">
-	.product-picture {
-		background-size: cover !important;
-		background-position: center !important;
-		background-repeat: no-repeat !important;
-	}
-
 	.themed {
 		display: contents;
 		--cursor: text;

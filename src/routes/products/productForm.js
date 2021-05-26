@@ -11,7 +11,6 @@ export const initialValues = {
     conditioning: ConditioningKind.Bulk.Value,
     returnableId: null,
     description: null,
-    picture: null,
     tags: [],
     available: true,
     catalogs:[],
@@ -47,8 +46,7 @@ export const normalizeCreateProduct = product => omit({
             id: c.id,
             wholeSalePricePerUnit: c.wholeSalePricePerUnit
         })),
-        picture: product.picture ?? null,
-        originalPicture: product.originalPicture ?? null,
+				pictures: product.pictures.map(p => ({id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position})),
         tags: product.tags.map(i => i.id)
     }, ['producer', 'createdOn', 'rating', 'ratingsCount', 'returnable', 'weight']);
 

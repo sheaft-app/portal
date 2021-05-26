@@ -262,7 +262,7 @@
 				</div>
 				<div class="relative lg:w-1/2">
 					<!-- si on utilise l'image par défaut -->
-					{#if product.picture.includes("pictures/tags/images/")}
+					{#if product.picture.includes("pictures/tags/")}
 						<div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
 							<div class="font-semibold text-white text-lg">
 								Aucune image disponible
@@ -271,16 +271,16 @@
 					{/if}
 					<div
 						style="background-position: center; background-image: url({product.picture ? product.picture : config.content + '/pictures/tags/images/default.jpg'}); background-size: cover;"
-						class:opacity-50={product.picture.includes("pictures/tags/images/")}
+						class:opacity-50={product.picture.includes("pictures/tags/")}
 						class="w-full shadow-md h-40 lg:h-64"/>
 					<!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
 							<Icon data={faHeart} scale="1.3" />
 						</button> -->
 				</div>
 			</div>
-			<ProducerOtherProducts 
+			<ProducerOtherProducts
 				on:productClick={(e) => $selectedItem = product.id}
-				productParentId={product.id} 
+				productParentId={product.id}
 				producerName={product.producer.name}
 				producerId={product.producer.id} {errorsHandler}
 				breakpoints={{
@@ -288,7 +288,7 @@
 						slidesPerView: 4,
 						spaceBetween: 10
 					}
-				}} 
+				}}
 			/>
 			<div class="flex flex-wrap justify-between mt-5">
 				<div class="lg:w-2/3 w-full">

@@ -37,9 +37,19 @@
 	const { query } = getContext("api");
 
 	let items = [];
-	let selectedItems = [];
+	let selectedItems = []; 
 	let isLoading = true;
-	let noResults = true;
+	let noResults = false;
+
+	onMount(async () => {
+		hasPendingJobs = await query({
+			query: HAS_PRODUCTS_IMPORT_INPROGRESS,
+			variables: { kinds: [JobKind.ImportProducts.Value] },
+			errorsHandler,
+			error: () => hasPendingJobs = false,
+			errorNotification: "Un problème est survenu pendant la récupération des informations d'import."
+		});
+	});
 
 	onMount(async () => {
 		hasPendingJobs = await query({
@@ -104,10 +114,6 @@
 	const onRowClick = (item) => {
 		routerInstance.goTo(ProductRoutes.Details, {id: item.id});
 	};
-
-	onMount(async () => {
-		await checkHasImportInProgress();
-	});
 
 	$: hasPendingJobs = false;
 	$: hasSelectedOneItem = selectedItems.length > 0;
