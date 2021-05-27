@@ -123,8 +123,8 @@
 					<img
 						class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 border
           border-gray-800 border-solid"
-						src={store.picture ? store.picture : 'img/icons/farmer.svg'}
-						alt="Photo du producteur"/>
+						src={store.picture ? store.picture : 'img/icons/store.svg'}
+						alt="Photo du magasin"/>
 					<div class="w-full xl:w-10/12 xl:pl-3 text-center xl:text-left mt-3 xl:mt-0">
 						<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">{store.name}</h3>
 						<div class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2" class:xl:-mt-6={store.summary}
