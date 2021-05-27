@@ -186,3 +186,11 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 			return '';
 	}
 };
+
+export function* getNextId() {
+	let i = 0
+
+	while (true) {
+		yield i++
+	}
+}

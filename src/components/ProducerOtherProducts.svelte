@@ -6,7 +6,7 @@
 	import ProductCartQuantity from "./controls/ProductCartQuantity.svelte";
 	import {Swiper, SwiperSlide} from 'swiper/svelte';
 	import cart from "./../stores/cart";
-	import {formatMoney, handleSlideChange} from "./../helpers/app.js";
+	import {formatMoney} from "./../helpers/app.js";
 	import {formatConditioningDisplay} from "./../helpers/app";
 	import RatingStars from "./rating/RatingStars.svelte";
 	import GetAuthInstance from "./../services/SheaftAuth.js";
