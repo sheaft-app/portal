@@ -13,7 +13,7 @@
 	import {GET_PRODUCER_PRODUCTS} from "./queries.js";
 	import Loader from "./Loader.svelte";
 
-	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null;
+	export let productParentId, producerName, producerId, errorsHandler, breakpoints = null, displayPriceData = true;
 
 	const {query} = getContext("api");
 	const dispatch = createEventDispatcher();
@@ -150,21 +150,23 @@
 											{product.rating || 'Aucun avis'}
 									</span>
 									</div>
-									<div
-										class="text-base lg:text-lg w-full font-semibold mb-2
+									{#if displayPriceData}
+										<div
+											class="text-base lg:text-lg w-full font-semibold mb-2
                                 justify-between items-center block">
-										{#if authInstance.isInRole(["STORE", "PRODUCER"])}
-											{formatMoney(product.wholeSalePricePerUnit)} HT
-										{:else}
-											{formatMoney(product.onSalePricePerUnit)}
-										{/if}
-										<span class="text-xxs lg:text-sm lg:inline hidden font-normal">
+											{#if authInstance.isInRole(["STORE", "PRODUCER"])}
+												{formatMoney(product.wholeSalePricePerUnit)} HT
+											{:else}
+												{formatMoney(product.onSalePricePerUnit)}
+											{/if}
+											<span class="text-xxs lg:text-sm lg:inline hidden font-normal">
 											{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
 									</span>
-									</div>
+										</div>
+									{/if}
 								</div>
 								<div class="flex items-center justify-between">
-									{#if !authInstance.isInRole(["STORE", "PRODUCER"])}
+									{#if displayPriceData && !authInstance.isInRole(["STORE", "PRODUCER"])}
 										<div class="w-full">
 											{#if product.available && product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
 												<ProductCartQuantity productId={product.id}/>

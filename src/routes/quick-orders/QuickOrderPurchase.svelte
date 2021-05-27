@@ -51,12 +51,12 @@
 
 	const loadDeliveries = async (ids) => {
 		isLoadingDeliveries = true;
-		producerDeliveries = await query({
+		producerDeliveries = (await query({
 			query: GET_STORE_DELIVERIES_FOR_PRODUCERS,
 			variables: { input: ids },
 			errorsHandler,
 			errorNotification: "Impossible de récupérer les informations de livraison."
-		});
+		})).data;
 		isLoadingDeliveries = false;
 	}
 
@@ -111,6 +111,13 @@
 	onMount(async () => {
 		await getAllAvailableProducts();
 	})
+
+	const getProducerDeliveries = producerId => {
+		if(!producerDeliveries || producerDeliveries.length < 1)
+			return null;
+
+		return producerDeliveries.find(p => p.id === producerId)
+	}
 
 	$: productsCount = normalizedProducts.reduce((sum, product) => {
 		return sum + (product.quantity || 0);
@@ -175,7 +182,7 @@
 										selected={product.producer.delivery}
 										selectedDeliveryHour={product.producer.deliveryHour}
 										bind:businessQuickOrderProducts={normalizedProducts}
-										data={producerDeliveries.find(p => p.id === product.producer.id)}
+										data={getProducerDeliveries(product.producer.id)}
 										displayLocation={false}
 										isLoading={isLoadingDeliveries}
 									/>

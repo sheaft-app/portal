@@ -8,6 +8,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			description
 			rating
 			ratingsCount
+			wholeSalePricePerUnit
 			onSalePricePerUnit
 			onSalePrice
 			quantityPerUnit
@@ -92,7 +93,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 `;
 
 export const GET_PRODUCER_PROFILE = gql`
-query GetUserProfile($id: ID!) {
+query GetProducerProfile($id: ID!) {
 	producer(id: $id) {
 		id
 		name
@@ -121,10 +122,12 @@ query GetUserProfile($id: ID!) {
 		facebook
 		instagram
 		twitter
+		website
 		products{
 			id
 			name
 			onSalePricePerUnit
+			wholeSalePricePerUnit
 			imageMedium
 			imageSmall
 			rating
@@ -134,6 +137,59 @@ query GetUserProfile($id: ID!) {
 			available
 		}
 		stores{
+			id
+			name
+			picture
+			address{
+				line1
+				line2
+				city
+				latitude
+				longitude
+				zipcode
+			}
+		}
+	}
+}
+`;
+
+export const GET_STORE_PROFILE = gql`
+query GetStoreProfile($id: ID!) {
+	store(id: $id) {
+		id
+		name
+		picture
+		pictures{
+			id
+			position
+			large
+		}
+		summary
+		closings {
+			id
+			from
+			to
+			reason
+		}
+		address {
+			line1
+			line2
+			city
+			latitude
+			longitude
+			zipcode
+		}
+		description
+		facebook
+		instagram
+		twitter
+		website
+		openingHours {
+			day
+			from
+			to
+		}
+		producers{
 			id
 			name
 			picture

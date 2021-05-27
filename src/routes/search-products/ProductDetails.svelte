@@ -20,7 +20,7 @@
 	import Rating from "./../../components/rating/Rating.svelte";
 	import RatingStars from "./../../components/rating/RatingStars.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import {selectedItem} from "./../../stores/app.js";
+	import {selectedItem} from "../../stores/app";
 	import {timeSpanToFrenchHour, formatMoney} from "./../../helpers/app.js";
 	import TagKind from "./../../enums/TagKind";
 	import DayOfWeekKind from "./../../enums/DayOfWeekKind";
@@ -35,7 +35,7 @@
 	import { getContext } from "svelte";
 	import PictureSlider from "./../../components/PictureSlider.svelte";
 
-	export let displayProducerData = true;
+	export let displayProducerData = true, displayPriceData = true;
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -53,6 +53,8 @@
 	let distanceInfos = null;
 	let deliveries = [];
 	let timeout = null;
+	let productPricePerUnit = null;
+	let productPrice = null;
 
 	if (timeout) {
 		clearTimeout(timeout);
@@ -108,6 +110,9 @@
 				}
 			}
 		});
+
+		productPricePerUnit = authInstance.isInRole(Roles.Store.Value) ? product.wholeSalePricePerUnit : product.onSalePricePerUnit;
+		productPrice = authInstance.isInRole(Roles.Store.Value) ? product.wholeSalePrice : product.onSalePrice;
 		isLoading = false;
 	};
 
@@ -230,17 +235,17 @@
 					</div>
 				{/if}
 			</div>
-			{#if product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
+			{#if displayPriceData && productPricePerUnit && productPricePerUnit > 0}
 				<p class="text-xl lg:text-2xl font-bold">
-					{formatMoney(product.onSalePricePerUnit)}
+					{formatMoney(productPricePerUnit)}{authInstance.isInRole(["STORE"]) ? 'HT' : ''}
 					<span class="font-normal">
           {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
         </span>
 				</p>
+				{#if product.conditioning == ConditioningKind.Bulk.Value && productPrice && productPrice > 0}
+					<p class="lg:text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"}
+						: {formatMoney(productPrice)}{authInstance.isInRole(["STORE"]) ? 'HT' : ''})</p>
 			{/if}
-			{#if product.conditioning == ConditioningKind.Bulk.Value && product.onSalePrice && product.onSalePrice > 0}
-				<p class="lg:text-center">(prix au {product.unit == "G" || product.unit == "KG" ? "kilo" : "litre"}
-					: {formatMoney(product.onSalePrice)})</p>
 			{/if}
 			{#if product.description}
 				<div class="pt-2 lg:pt-5 text-base text-justify lg:text-center">
@@ -268,13 +273,13 @@
 			</div>
 		{/if}
 		{#if !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
-			{#if product.available && product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
+			{#if displayPriceData && product.available && productPricePerUnit && productPricePerUnit > 0}
 				<ProductCartQuantity
 					productId={$selectedItem}
 					plusButtonActive
 					bind:timeout
 					userFeedback/>
-			{:else}
+			{:else if displayPriceData}
 				<div class="text-center text-red-500">Ce produit n'est pas disponible pour le moment.</div>
 			{/if}
 		{/if}
@@ -391,6 +396,7 @@
 					producerName={product.producer.name}
 					producerId={product.producer.id}
 					{errorsHandler}
+					{displayPriceData}
 				/>
 			</div>
 		{/if}

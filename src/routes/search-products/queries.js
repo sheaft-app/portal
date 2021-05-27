@@ -11,7 +11,9 @@ export const SEARCH_PRODUCTS = gql`
 				imageMedium
 				imageSmall
 				rating
+				wholeSalePricePerUnit
 				onSalePricePerUnit
+				wholeSalePrice
 				onSalePrice
 				unit
 				conditioning
@@ -44,7 +46,9 @@ export const GET_PRODUCT_DETAILS = gql`
 			description
 			rating
 			ratingsCount
+			wholeSalePricePerUnit
 			onSalePricePerUnit
+			wholeSalePrice
 			onSalePrice
 			quantityPerUnit
 			available
