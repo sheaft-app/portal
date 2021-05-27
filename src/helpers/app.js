@@ -139,15 +139,6 @@ export const encodeQuerySearchUrl = address => {
 	return address ? encodeURI(`${address.latitude}+${address.longitude}`) : '';
 };
 
-// Define a generator function that increments by one
-export function* getNextId() {
-	let i = 0
-
-	while (true) {
-		yield i++
-	}
-}
-
 export const freezeBody = () => {
 	const scroll = window.scrollY;
 	const mainContent = document.getElementById('main-content');

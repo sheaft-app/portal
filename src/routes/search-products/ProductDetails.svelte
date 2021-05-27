@@ -54,6 +54,12 @@
 	let deliveries = [];
 	let timeout = null;
 
+  let imagesForTest = [
+    {url:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1498&q=80'},
+    {url:'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1500&q=80'},
+    {url:'https://images.unsplash.com/photo-1432107294469-414527cb5c65?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80'}
+  ];
+
 	if (timeout) {
 		clearTimeout(timeout);
 	}
