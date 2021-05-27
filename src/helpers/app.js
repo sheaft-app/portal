@@ -139,6 +139,14 @@ export const encodeQuerySearchUrl = address => {
 	return address ? encodeURI(`${address.latitude}+${address.longitude}`) : '';
 };
 
+export const encodeQuerySearchUrlAddress = entity => {
+	let str = entity.name;
+	if(entity.address) {
+		str += `,${entity.address.line1},${entity.address.zipcode} ${entity.address.city},France`
+	}
+	return str;
+};
+
 export const freezeBody = () => {
 	const scroll = window.scrollY;
 	const mainContent = document.getElementById('main-content');

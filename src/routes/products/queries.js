@@ -77,7 +77,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			pictures{
 				id
 				position
-				medium
+				large
 			}
 		}
 	}

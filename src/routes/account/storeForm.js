@@ -27,7 +27,7 @@ export const initialValues = {
 };
 
 export const validators = (store) => ({
-    ...getDefaultFields(store, initialValues, ['facebook', 'instagram', 'website', 'phone']),
+    ...getDefaultFields(store, initialValues, ['facebook', 'instagram', 'website', 'phone', 'pictures']),
     openingHours: {
         value: store.openingHours,
         validators: ['required', 'openingsDays', 'openingsDates'],

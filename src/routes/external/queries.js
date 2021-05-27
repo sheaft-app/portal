@@ -24,6 +24,11 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
+			pictures{
+				id
+				position
+				large
+			}
 			ratings(first: 10, order: { createdOn: DESC }) {
 				nodes {
 					user {
@@ -92,6 +97,11 @@ query GetUserProfile($id: ID!) {
 		id
 		name
 		picture
+		pictures{
+			id
+			position
+			large
+		}
 		summary
 		closings {
 			id
@@ -123,13 +133,26 @@ query GetUserProfile($id: ID!) {
 			unit
 			available
 		}
+		stores{
+			id
+			name
+			picture
+			address{
+				line1
+				line2
+				city
+				latitude
+				longitude
+				zipcode
+			}
+		}
 	}
 }
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
 	query($id: ID!) {
-		
+
 		producer(id: $id) {
 			products {
 				id

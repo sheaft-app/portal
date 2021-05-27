@@ -52,7 +52,7 @@ export const GET_STORE_DETAILS = gql`
 			pictures{
 				id
 				position
-				medium
+				large
 			}
 		}
 	}
@@ -86,7 +86,7 @@ export const GET_PRODUCER_DETAILS = gql`
 			pictures{
 				id
 				position
-				medium
+				large
 			}
 		}
 	}

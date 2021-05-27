@@ -31,11 +31,12 @@
 	import Cart from "../search-products/Cart.svelte";
 	import ProducerOtherProducts from "../../components/ProducerOtherProducts.svelte";
 	import Meta from "../../components/Meta.svelte";
+	import PictureSlider from "../../components/PictureSlider.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-	const { query, mutate } = getContext("api");
+	const {query, mutate} = getContext("api");
 
 	export let params = {};
 
@@ -95,12 +96,12 @@
 		isLoading = true;
 		product = await query({
 			query: GET_PRODUCT_DETAILS,
-			variables: { id },
+			variables: {id},
 			errorsHandler,
 			success: async (res) => {
 				await query({
 					query: GET_PRODUCER_DELIVERIES,
-					variables: { input: [res.producer.id] },
+					variables: {input: [res.producer.id]},
 					errorsHandler,
 					success: (res) => {
 						if (res[0] && res[0].deliveries)
@@ -141,7 +142,7 @@
 		isSubmittingRate = true;
 		product = await mutate({
 			mutation: RATE_PRODUCT,
-			variables: { id: params.id, value: rating, comment },
+			variables: {id: params.id, value: rating, comment},
 			errorsHandler,
 			success: async (res) => {
 				ratings = res.ratings.nodes.map(r => r);
@@ -261,21 +262,7 @@
 					{/if}
 				</div>
 				<div class="relative lg:w-1/2">
-					<!-- si on utilise l'image par défaut -->
-					{#if product.picture.includes("pictures/tags/")}
-						<div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
-							<div class="font-semibold text-white text-lg">
-								Aucune image disponible
-							</div>
-						</div>
-					{/if}
-					<div
-						style="background-position: center; background-image: url({product.picture ? product.picture : config.content + '/pictures/tags/images/default.jpg'}); background-size: cover;"
-						class:opacity-50={product.picture.includes("pictures/tags/")}
-						class="w-full shadow-md h-40 lg:h-64"/>
-					<!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
-							<Icon data={faHeart} scale="1.3" />
-						</button> -->
+					<PictureSlider elements={product.pictures ? product.pictures.map(p => ({url: p.large})) : [{url: product.picture}]} />
 				</div>
 			</div>
 			<ProducerOtherProducts

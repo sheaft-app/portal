@@ -132,6 +132,10 @@ import AgreementStatusKind from "../../enums/AgreementStatusKind";
           </h4>
           <div
             class="text-xs text-gray-600 uppercase font-semibold">
+						<p>{producer.address.line1}</p>
+						{#if producer.address.line2}
+							<p>{producer.address.line2}</p>
+						{/if}
             <p>{producer.address.zipcode} {producer.address.city}</p>
           </div>
         </div>

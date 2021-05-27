@@ -12,7 +12,7 @@
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import {GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE} from "./queries.js";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import {timeSpanToFrenchHour} from "../../helpers/app.js";
+	import {encodeQuerySearchUrlAddress, timeSpanToFrenchHour} from "../../helpers/app.js";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import Roles from "../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -26,12 +26,14 @@
 	import fr from "date-fns/locale/fr";
 	import AccountRoutes from "../account/routes";
 	import Meta from "../../components/Meta.svelte";
+	import PictureSlider from "../../components/PictureSlider.svelte";
+	import StoreCard from "../search-stores/StoreCard.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
 	const {open} = getContext('modal');
-	const { query } = getContext("api");
+	const {query} = getContext("api");
 
 	export let params = {};
 
@@ -40,8 +42,9 @@
 	let deliveries = [];
 
 	const tabs = [
-		{id: 'data', icon: '', label: 'Produits'},
-		{id: 'layout', icon: 'fas fa-arrows-alt', label: 'Points de retrait'}
+		{id: 'data', icon: 'fas fa-barcode', label: 'Produits'},
+		{id: 'layout', icon: 'fas fa-arrows-alt', label: 'Points de retrait'},
+		{id: 'stores', icon: 'fas fa-store', label: 'Magasins'}
 	];
 
 	onMount(async () => {
@@ -49,16 +52,16 @@
 		isLoading = true;
 		producer = await query({
 			query: GET_PRODUCER_PROFILE,
-			variables: { id: params.id },
+			variables: {id: params.id},
 			errorsHandler,
 			success: async (res) => {
 				await query({
 					query: GET_PRODUCER_DELIVERIES,
-					variables: { input: [params.id] },
+					variables: {input: [params.id]},
 					errorsHandler,
 					success: (res) => {
-						if (res[0] && res[0].deliveries)
-							deliveries = res[0].deliveries.map((d) => ({
+						if (res.data[0] && res.data[0].deliveries)
+							deliveries = res.data[0].deliveries.map((d) => ({
 								...d,
 								deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
 									index === self.findIndex((d) => (
@@ -76,7 +79,11 @@
 		isLoading = false;
 	})
 
-	const openReadMoreModal = () => open(ProducerReadMoreModal, { producer });
+	const openReadMoreModal = () => open(ProducerReadMoreModal, {producer});
+	const openGMap = (store) => {
+		let url = `https://www.google.com/maps/search/${encodeQuerySearchUrlAddress(store)}`;
+		window.open(url,'_blank');
+	};
 
 	$: metadata = {
 		title: producer ? producer.name : null,
@@ -98,8 +105,11 @@
 			</button>
 		{:else if authInstance.isInRole([Roles.Producer.Value])}
 			<div class="mb-3 p-4 text-white bg-blue-500 rounded">
-				<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour avoir une référence directe vers votre boutique.</p>
-				<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a href="javascript:void(0)" on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant ici</a>.</p>
+				<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
+					avoir une référence directe vers votre boutique.</p>
+				<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a href="javascript:void(0)"
+																																													 on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant
+					ici</a>.</p>
 			</div>
 		{/if}
 		{#if !producer && !isLoading}
@@ -196,6 +206,12 @@
 					{/if}
 				</div>
 			</div>
+			{#if producer.pictures && producer.pictures.length > 0}
+				<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Gallerie d'images</h3>
+				<div class="relative w-full py-6 m-auto" style="max-width: 600px;">
+					<PictureSlider elements={producer.pictures ? producer.pictures.map(p => ({url: p.large})) : []}/>
+				</div>
+			{/if}
 			<Tabs>
 				<TabList>
 					{#each tabs as tab}
@@ -233,19 +249,19 @@
 										<div>
 											<p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
 											{#if delivery.address}
-											<p>{delivery.address.line1}</p>
-											{#if delivery.address.line2}
-												<p>
-													{delivery.address.line2}
-												</p>
-											{/if}
-											<p>{delivery.address.zipcode} {delivery.address.city}</p>
-											<a
-												class="mt-1"
-												target="_blank"
-												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
-												Voir sur Google Maps
-											</a>
+												<p>{delivery.address.line1}</p>
+												{#if delivery.address.line2}
+													<p>
+														{delivery.address.line2}
+													</p>
+												{/if}
+												<p>{delivery.address.zipcode} {delivery.address.city}</p>
+												<a
+													class="mt-1"
+													target="_blank"
+													href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
+													Voir sur Google Maps
+												</a>
 											{/if}
 										</div>
 									</div>
@@ -288,6 +304,18 @@
 					<div class="lg:w-1/3 w-full">
 						<!-- <div id="map" class="rounded-r shadow lg:h-full" style="z-index: 0;" /> -->
 					</div>
+				</TabPanel>
+				<TabPanel>
+					{#if producer.stores && producer.stores.length > 0}
+						<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+							{#each producer.stores as store}
+								<StoreCard {store} clicked="{() => openGMap(store)}"/>
+							{/each}
+						</div>
+					{:else}
+						<p>Ce producteur ne vends pas ses produits dans des magasins proches de vous</p>
+					{/if}
 				</TabPanel>
 			</Tabs>
 		{/if}

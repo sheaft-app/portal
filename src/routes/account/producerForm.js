@@ -25,7 +25,7 @@ export const initialValues = {
 };
 
 export const validators = (producer) => ({
-    ...getDefaultFields(producer, initialValues, ['facebook', 'instagram', 'website', 'phone']),
+    ...getDefaultFields(producer, initialValues, ['facebook', 'instagram', 'website', 'phone', 'pictures']),
     email: { value: producer.email, validators: ['required', 'email'], enabled: true },
     summary: { value: producer.summary, validators: ['maxLength:300'], enabled: producer.summary && producer.summary.length > 0 },
     description: { value: producer.description, validators: ['maxLength:1500'], enabled: producer.description && producer.description.length > 0 }
