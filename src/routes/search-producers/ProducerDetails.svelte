@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
   import Icon from "svelte-awesome";
-	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
+	import ReadMoreModal from "../external/ReadMoreModal.svelte";
   import {
     faPhone,
     faEnvelope,
@@ -60,7 +60,7 @@
 			errorNotification: "Impossible de récupérer les informations de livraison."
     });
 
-    return res[0] ? res[0].deliveries : [] 
+    return res[0] ? res[0].deliveries : []
   }
 
   const openAgreement = () => {
@@ -84,8 +84,8 @@
     }
   };
 
-  const openReadMoreModal = () =>	open(ProducerReadMoreModal, {
-    producer
+  const openReadMoreModal = () =>	open(ReadMoreModal, {
+    entity:producer
   });
 
   $: if ($selectedItem) openAndLoad($selectedItem);

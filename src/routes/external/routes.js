@@ -5,6 +5,7 @@ const prefix = "/details";
 
 const productDetails = "/products/:id";
 const producerDetails = "/producers/:id";
+const storeDetails = "/stores/:id";
 
 const ExternalRoutes = {
 	Prefix: `${prefix}`,
@@ -23,6 +24,15 @@ const ExternalRoutes = {
 		Icon: faStore,
 		Path: `${prefix}${producerDetails}`,
 		SubPart: `${producerDetails}`,
+		Params: {
+			id: null,
+		}
+	},
+	StoreDetails: {
+		Name: "Mon magasin",
+		Icon: faStore,
+		Path: `${prefix}${storeDetails}`,
+		SubPart: `${storeDetails}`,
 		Params: {
 			id: null,
 		}

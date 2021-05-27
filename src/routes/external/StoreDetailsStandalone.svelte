@@ -10,26 +10,22 @@
 	import SearchProductsRoutes from "../search-products/routes";
 	import ProductDetails from "../search-products/ProductDetails.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import {GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE} from "./queries.js";
+	import {GET_STORE_PROFILE} from "./queries.js";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import {timeSpanToFrenchHour} from "../../helpers/app.js";
-	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import Roles from "../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import DeliveryKind from "../../enums/DeliveryKind";
-	import {groupBy, encodeQuerySearchUrl} from "../../helpers/app";
+	import {encodeQuerySearchUrl} from "../../helpers/app";
 	import "leaflet/dist/leaflet.css";
 	import {Tabs, Tab, TabList, TabPanel} from 'svelte-tabs';
 	import {selectedItem} from "../../stores/app.js";
 	import SkeletonCard from "../search-products/SkeletonCard.svelte";
-	import {format} from "date-fns";
-	import fr from "date-fns/locale/fr";
 	import AccountRoutes from "../account/routes";
 	import Meta from "../../components/Meta.svelte";
 	import PictureSlider from "../../components/PictureSlider.svelte";
-	import StoreCard from "../search-stores/StoreCard.svelte";
+	import ProducerCard from "../search-producers/ProducerCard.svelte";
 	import ExternalRoutes from "./routes";
-	import Loader from "../../components/Loader.svelte";
+	import DayOfWeekKind from "../../enums/DayOfWeekKind";
+	import {timeSpanToFrenchHour} from "../../helpers/app.js";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -39,57 +35,37 @@
 
 	export let params = {};
 
-	let producer = null;
+	let store = null;
 	let isLoading = true;
 	let deliveries = [];
 
 	const tabs = [
-		{id: 'data', icon: 'fas fa-barcode', label: 'Produits'},
-		{id: 'layout', icon: 'fas fa-arrows-alt', label: 'Points de retrait'},
-		{id: 'stores', icon: 'fas fa-store', label: 'Magasins'}
+		{id: 'producers', icon: 'fas fa-store', label: 'Producteurs'},
+		//{id: 'products', icon: 'fas fa-barcode', label: 'Produits'},
+		{id: 'openings', icon: 'fas fa-barcode', label: 'Horaires'},
 	];
 
 	onMount(async () => {
 		window.scrollTo(0, 0);
 		isLoading = true;
-		producer = await query({
-			query: GET_PRODUCER_PROFILE,
+		store = await query({
+			query: GET_STORE_PROFILE,
 			variables: {id: params.id},
 			errorsHandler,
-			success: async (res) => {
-				await query({
-					query: GET_PRODUCER_DELIVERIES,
-					variables: {input: [params.id]},
-					errorsHandler,
-					success: (res) => {
-						if (res.data[0] && res.data[0].deliveries)
-							deliveries = res.data[0].deliveries.map((d) => ({
-								...d,
-								deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-									index === self.findIndex((d) => (
-										d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-									))
-								))
-							}));
-					},
-					error: () => deliveries = [],
-					errorNotification: "Impossible de récupérer les informations de livraison du producteur."
-				});
-			},
-			errorNotification: "Impossible de récupérer les informations du producteur."
+			errorNotification: "Impossible de récupérer les informations du magasin."
 		});
 		isLoading = false;
 	})
 
-	const openReadMoreModal = () => open(ReadMoreModal, {entity: producer});
-	const openGMap = (store) => {
-		routerInstance.goTo(ExternalRoutes.StoreDetails, {id: store.id});
+	const openReadMoreModal = () => open(ReadMoreModal, {entity: store});
+	const openGMap = (producer) => {
+		routerInstance.goTo(ExternalRoutes.ProducerDetails, {id: producer.id});
 	};
 
 	$: metadata = {
-		title: producer ? producer.name : null,
-		description: producer && producer.summary ? producer.summary : null,
-		image: producer && producer.picture ? producer.picture : null,
+		title: store ? store.name : null,
+		description: store && store.summary ? store.summary : null,
+		image: store && store.picture ? store.picture : null,
 	};
 </script>
 
@@ -105,8 +81,8 @@
 				<div class="flex flex-wrap justify-between w-full pt-2" style="align-items: baseline;">
 					<div class="w-full h-32 skeleton-box"/>
 					<!-- <div class="w-full xl:w-auto">
-						<div class="w-64 h-32 skeleton-box" />
-					</div> -->
+					<div class="w-64 h-32 skeleton-box" />
+				</div> -->
 				</div>
 				<div class="flex flex-row flex-wrap social-medias justify-center xl:justify-start">
 					<div class="h-6 w-6rounded-full skeleton-box"/>
@@ -123,58 +99,58 @@
 		</div>
 	{:else}
 		<div class="container m-auto">
-			{#if !authInstance.isInRole([Roles.Producer.Value])}
+			{#if !authInstance.isInRole([Roles.Store.Value])}
 				<button
 					class="text-gray-600 items-center flex uppercase mb-2"
 					on:click={() => routerInstance.goTo(SearchProductsRoutes.Search)}>
 					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline"/>
 					Retourner à la recherche
 				</button>
-			{:else if authInstance.isInRole([Roles.Producer.Value])}
+			{:else if authInstance.isInRole([Roles.Store.Value])}
 				<div class="mb-3 p-4 text-white bg-blue-500 rounded">
 					<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
-						avoir une référence directe vers votre boutique.</p>
+						avoir une référence directe vers votre magasin.</p>
 					<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a href="javascript:void(0)"
 																																														 on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant
 						ici</a>.</p>
 				</div>
 			{/if}
-			{#if !producer}
+			{#if !store}
 				<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Mince !</h3>
-				<p>Nous n'avons pas réussi à trouver ce producteur.</p>
+				<p>Nous n'avons pas réussi à trouver ce magasin.</p>
 			{:else}
 				<div class="flex flex-wrap mt-5 mb-5 justify-center xl:justify-between">
 					<img
 						class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 border
           border-gray-800 border-solid"
-						src={producer.picture ? producer.picture : 'img/icons/farmer.svg'}
+						src={store.picture ? store.picture : 'img/icons/farmer.svg'}
 						alt="Photo du producteur"/>
 					<div class="w-full xl:w-10/12 xl:pl-3 text-center xl:text-left mt-3 xl:mt-0">
-						<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">{producer.name}</h3>
-						<div class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2" class:xl:-mt-6={producer.summary}
+						<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">{store.name}</h3>
+						<div class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2" class:xl:-mt-6={store.summary}
 								 style="align-items: baseline;">
-							{#if producer.summary}
+							{#if store.summary}
 								<div class="w-full xl:w-7/12">
-									<p class="text-sm">{producer.summary}</p>
-									{#if producer.description}
+									<p class="text-sm">{store.summary}</p>
+									{#if store.description}
 										<button on:click={openReadMoreModal} class="btn btn-link mt-2 m-auto xl:mx-0">Lire plus</button>
 									{/if}
 								</div>
 							{/if}
-							<div class:xl:w-auto={producer.summary} class="w-full mt-3 xl:mt-0">
+							<div class:xl:w-auto={store.summary} class="w-full mt-3 xl:mt-0">
 								<div class="bg-white shadow-md rounded p-4 px-5 w-full">
 									<div class="flex flex-row justify-center xl:justify-between items-start mb-3">
 										<div>
-											<p class="font-semibold">Site de production</p>
-											<p>{producer.address.line1}</p>
-											{#if producer.address.line2}
-												<p>{producer.address.line2}</p>
+											<p class="font-semibold">Adresse du magasin</p>
+											<p>{store.address.line1}</p>
+											{#if store.address.line2}
+												<p>{store.address.line2}</p>
 											{/if}
-											<p>{producer.address.zipcode} {producer.address.city}</p>
+											<p>{store.address.zipcode} {store.address.city}</p>
 											<a
 												class="mt-1"
 												target="_blank"
-												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(producer.address)}`}>
+												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(store.address)}`}>
 												Voir sur Google Maps
 											</a>
 										</div>
@@ -182,12 +158,12 @@
 								</div>
 							</div>
 						</div>
-						{#if producer.facebook || producer.instagram}
-							<p class="text-gray-600 mb-2 text-sm mt-4" class:xl:mt-0={producer.summary}>Retrouvez-nous sur les réseaux
+						{#if store.facebook || store.instagram}
+							<p class="text-gray-600 mb-2 text-sm mt-4" class:xl:mt-0={store.summary}>Retrouvez-nous sur les réseaux
 								sociaux !</p>
 							<div class="flex flex-row flex-wrap social-medias justify-center xl:justify-start">
-								{#if producer.facebook}
-									<a href={producer.facebook} target="_blank">
+								{#if store.facebook}
+									<a href={store.facebook} target="_blank">
 										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#1877F2"><title>
 											Facebook</title>
 											<path
@@ -195,8 +171,8 @@
 										</svg>
 									</a>
 								{/if}
-								{#if producer.instagram}
-									<a href={producer.instagram} target="_blank">
+								{#if store.instagram}
+									<a href={store.instagram} target="_blank">
 										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#E4405F"><title>
 											Instagram</title>
 											<path
@@ -208,10 +184,10 @@
 						{/if}
 					</div>
 				</div>
-				{#if producer.pictures && producer.pictures.length > 0}
+				{#if store.pictures && store.pictures.length > 0}
 					<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Gallerie d'images</h3>
 					<div class="relative w-full py-6 m-auto" style="max-width: 600px;">
-						<PictureSlider elements={producer.pictures ? producer.pictures.map(p => ({url: p.large})) : []}/>
+						<PictureSlider elements={store.pictures ? store.pictures.map(p => ({url: p.large})) : []}/>
 					</div>
 				{/if}
 				<Tabs>
@@ -220,104 +196,46 @@
 							<Tab>{tab.label}</Tab>
 						{/each}
 					</TabList>
-
 					<TabPanel>
-						<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
-							{#each producer.products as product}
-								<ProductCard {product} displayProducerData={false} useAddToCartButtonCTA={true}/>
-							{/each}
-						</div>
-					</TabPanel>
-
-					<TabPanel>
-						<div class="lg:w-2/3 w-full">
-							<div
-								class="bg-white overflow-hidden rounded-l p-3 lg:p-6 shadow
-              relative">
-								{#if producer.closings.length > 0}
-									<p class="text-orange-500 font-semibold">Tous les points de retrait seront fermés aux dates suivantes
-										: </p>
-									<ul style="list-style: circle;padding: revert;">
-										{#each producer.closings as closing}
-											<li>du {format(new Date(closing.from), 'PPPP', {locale: fr})}
-												au {format(new Date(closing.to), 'PPPP', {locale: fr})}</li>
-										{/each}
-									</ul>
-								{/if}
-								{#each deliveries as delivery}
-									<div class="bg-gray-100 rounded-lg p-4 px-5 mt-2 w-full">
-										<div class="flex flex-row justify-between items-start mb-3">
-											<div>
-												<p class="font-semibold">{DeliveryKind.label(delivery.kind)}</p>
-												{#if delivery.address}
-													<p>{delivery.address.line1}</p>
-													{#if delivery.address.line2}
-														<p>
-															{delivery.address.line2}
-														</p>
-													{/if}
-													<p>{delivery.address.zipcode} {delivery.address.city}</p>
-													<a
-														class="mt-1"
-														target="_blank"
-														href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
-														Voir sur Google Maps
-													</a>
-												{/if}
-											</div>
-										</div>
-										<div class="mt-2">
-											{#each delivery.deliveryHours as deliveryHour, index}
-												<div class="flex mb-2 border-gray-300"
-														 class:pb-2={index !== delivery.deliveryHours.length - 1}
-														 class:border-b={index !== delivery.deliveryHours.length - 1}>
-													<p style="min-width: 100px;">
-														{DayOfWeekKind.label(deliveryHour[0].day)}
-													</p>
-													<div>
-														{#each deliveryHour as hours}
-															<p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
-														{/each}
-													</div>
-												</div>
-											{/each}
-										</div>
-										{#if delivery.closings.length > 0}
-											{#if producer.closings.length > 0}
-												<p class="font-semibold text-orange-500">En plus des dates de fermeture citées plus haut, ce
-													point
-													sera fermé aux dates suivantes :</p>
-											{:else}
-												<p class="font-semibold text-orange-500">Ce point sera fermé aux dates suivantes :</p>
-											{/if}
-											<ul style="list-style: circle;padding: revert;">
-												{#each delivery.closings as closing}
-													<li>du {format(new Date(closing.from), 'PPPP', {locale: fr})}
-														au {format(new Date(closing.to), 'PPPP', {locale: fr})}</li>
-												{/each}
-											</ul>
-										{/if}
-									</div>
-								{:else}
-									<p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
-								{/each}
-							</div>
-						</div>
-						<div class="lg:w-1/3 w-full">
-							<!-- <div id="map" class="rounded-r shadow lg:h-full" style="z-index: 0;" /> -->
-						</div>
-					</TabPanel>
-					<TabPanel>
-						{#if producer.stores && producer.stores.length > 0}
+						{#if store.producers && store.producers.length > 0}
 							<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
           xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
-								{#each producer.stores as store}
-									<StoreCard {store} clicked="{() => openGMap(store)}"/>
+								{#each store.producers as producer}
+									<ProducerCard {producer} clicked="{() => openGMap(producer)}"/>
 								{/each}
 							</div>
 						{:else}
-							<p>Ce producteur ne vends pas ses produits dans des magasins proches de vous</p>
+							<p>Ce magasin ne vends pas de produits des producteurs proches de vous</p>
+						{/if}
+					</TabPanel>
+
+					<!--<TabPanel>
+						<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+							{#each store.products as product}
+								<ProductCard {product} displayPriceData={false}/>
+							{/each}
+						</div>
+					</TabPanel>-->
+
+					<TabPanel>
+						{#if store.openingHours && store.openingHours.length > 0}
+							<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+								<ul>
+								{#each store.openingHours as openingHour, index}
+									<li class="mb-2 border-gray-300"
+											 class:pb-2={index !== store.openingHours.length - 1}
+											 class:border-b={index !== store.openingHours.length - 1}>
+										<p style="min-width: 100px;">
+												Le {DayOfWeekKind.label(openingHour.day)} entre {`${timeSpanToFrenchHour(openingHour.from)} et ${timeSpanToFrenchHour(openingHour.to)}`}
+										</p>
+									</li>
+								{/each}
+								</ul>
+							</div>
+						{:else}
+							<p>Ce magasin n'a pas renseigné ses horaires d'ouverture</p>
 						{/if}
 					</TabPanel>
 				</Tabs>
@@ -331,7 +249,7 @@
 				class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
         h-screen product-details bg-white"
 				style="z-index: 10; padding-bottom: 70px;">
-				<ProductDetails displayProducerData={false}/>
+				<ProductDetails displayPriceData={false}/>
 			</div>
 		{/if}
 

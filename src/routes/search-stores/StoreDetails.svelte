@@ -11,19 +11,19 @@
 	} from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import CreateAgreementModal from "./CreateAgreementModal.svelte";
-	import { GET_STORE_DETAILS } from "./queries.js";
+	import {GET_STORE_DETAILS} from "./queries.js";
 	import {selectedItem} from "./../../stores/app.js";
-	import { encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy } from "./../../helpers/app";
+	import {encodeQuerySearchUrl, timeSpanToFrenchHour, groupBy} from "./../../helpers/app";
 	import AgreementRoutes from "../agreements/routes";
 	import {config} from "../../configs/config.js";
-  	import GetAuthInstance from "./../../services/SheaftAuth.js";
-	import ProducerReadMoreModal from "../external/ProducerReadMoreModal.svelte";
-  	import SheaftErrors from "../../services/SheaftErrors";
+	import GetAuthInstance from "./../../services/SheaftAuth.js";
+	import ReadMoreModal from "../external/ReadMoreModal.svelte";
+	import SheaftErrors from "../../services/SheaftErrors";
 
 	const routerInstance = GetRouterInstance();
-  	const errorsHandler = new SheaftErrors();
+	const errorsHandler = new SheaftErrors();
 	const {open} = getContext("modal");
-	const { query } = getContext("api");
+	const {query} = getContext("api");
 
 	let store = null;
 	let storeDoesntExist = false;
@@ -46,7 +46,7 @@
 
 		store = await query({
 			query: GET_STORE_DETAILS,
-			variables: { id: $selectedItem.id },
+			variables: {id: $selectedItem.id},
 			errorsHandler,
 			success: (res) => openings = groupBy(res.openingHours, item => [item.day]),
 			error: () => storeDoesntExist = true,
@@ -60,7 +60,8 @@
 	}
 
 	const showCreateAgreementModal = () => open(CreateAgreementModal, {
-		submit: () => {},
+		submit: () => {
+		},
 		store,
 		producerId: GetAuthInstance().user.profile.id,
 		storeId: store.id,
@@ -70,7 +71,7 @@
 		}
 	});
 
-	const openReadMoreModal = () => open(ProducerReadMoreModal, { producer })
+	const openReadMoreModal = () => open(ReadMoreModal, {entity: store})
 
 	onDestroy(() => openings = []);
 
@@ -156,8 +157,8 @@
 					voir accord
 				</button>
 			{:else}
-				<button on:click={showCreateAgreementModal} 
-				class="flex py-3 px-6 items-center justify-center
+				<button on:click={showCreateAgreementModal}
+								class="flex py-3 px-6 items-center justify-center
           	p-2 uppercase bg-accent rounded-full cursor-pointer text-sm mb-2 m-auto">
 					<Icon data={faHandshake} scale="1.3" class="mr-2"/>
 					demander accord
@@ -241,16 +242,16 @@
 					Intéressé par
 				</label>
 				<div class="flex flex-wrap">
-            		{#if store.tags && store.tags.length > 0}
+					{#if store.tags && store.tags.length > 0}
 						{#each store.tags as tag}
             				<span class="mx-2 mb-2 px-4 h-6 rounded-full text-xs font-semibold flex
               					items-center cursor-pointer bg-gray-100 text-gray-600">
 								{tag.name}
 							</span>
 						{/each}
-            		{:else}
-            			<p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
-            		{/if}
+					{:else}
+						<p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
+					{/if}
 				</div>
 			</div>
 			<div class="w-full px-4 mt-5">

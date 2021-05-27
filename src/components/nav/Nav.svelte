@@ -124,6 +124,21 @@
 					{ExternalRoutes.ProducerDetails.Name}
 				</a>
 			{/if}
+			{#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value])}
+				<a
+					class="px-4 block hover:bg-gray-100 py-3 text-normal"
+					href="javascript:void(0)"
+					on:click={() => {
+            userMenuExpended.set(false);
+            routerInstance.goTo(ExternalRoutes.StoreDetails, {id:$authUserAccount.profile.id});
+          }}>
+					<Icon
+						data={ExternalRoutes.StoreDetails.Icon}
+						class="inline mr-4 md:mr-1 w-4"
+						scale="0.9"/>
+					{ExternalRoutes.StoreDetails.Name}
+				</a>
+			{/if}
 			<a
 				class="px-4 block hover:bg-gray-100 py-3 text-normal"
 				href="javascript:void(0)"
