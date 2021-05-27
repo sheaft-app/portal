@@ -844,16 +844,6 @@
 			font-size: 1.2rem;
 		}
 	}
- 
-  .swiper-product-images .swiper-button-prev, 
-  .swiper-product-images .swiper-button-next {
-    top: 50% !important;
-  }
-
-	.swiper-button-prev,
-	.swiper-button-next {
-		top: 30% !important;
-	}
 
 	.scal-trigger {
 		width: fit-content;

@@ -12,7 +12,7 @@ export const timeSpanToFrenchHour = (timeSpan) => {
 	return `${result.groups.hours}h${result.groups.minutes ?? ''}`;
 }
 export const timeToTimeSpan = (time) =>
-	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S`: ''}`;
+	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S` : ''}`;
 
 export const timeSpanToTime = (timeSpan) => {
 	if (!timeSpan) {
@@ -28,7 +28,7 @@ export const timeSpanToTime = (timeSpan) => {
 };
 
 export const groupBy = (array, f) => {
-	if(!array || array.length < 1)
+	if (!array || array.length < 1)
 		return [];
 
 	var groups = {};
@@ -50,7 +50,7 @@ export const getDefaultDenormalizedOpeningHours = () => denormalizeOpeningHours(
 	}
 ]);
 
-export const denormalizeOpeningHours = (openingHours) => 
+export const denormalizeOpeningHours = (openingHours) =>
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];
 
@@ -116,20 +116,20 @@ export const denormalizeClosingDates = (closings) => closings ? closings.map((c)
 
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {
-		if(obj.hasOwnProperty(prop)) {
-			switch(typeof(obj[prop])) {
+		if (obj.hasOwnProperty(prop)) {
+			switch (typeof (obj[prop])) {
 				case 'object':
-					if(keys.indexOf(prop) > -1) {
+					if (keys.indexOf(prop) > -1) {
 						delete obj[prop];
 					} else {
 						removeKeys(obj[prop], keys);
 					}
 					break;
-			default:
-				if(keys.indexOf(prop) > -1) {
-					delete obj[prop];
-				}
-				break;
+				default:
+					if (keys.indexOf(prop) > -1) {
+						delete obj[prop];
+					}
+					break;
 			}
 		}
 	}
@@ -171,7 +171,7 @@ export const unfreezeBody = () => {
 	window.scrollTo(0, parseInt(scrollY || '0') * -1);
 }
 
-export const formatMoney = (price) => `${price.toFixed(2).replace('.',',')}€`;
+export const formatMoney = (price) => `${price.toFixed(2).replace('.', ',')}€`;
 
 export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) => {
 	if (!conditioning || conditioning == ConditioningKind.NotSpecified.Value) {
@@ -188,35 +188,10 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 		case ConditioningKind.Bouquet.Value:
 			return `(1 bouquet)`;
 		case ConditioningKind.Basket.Value:
-				return `(${quantityPerUnit} personne${quantityPerUnit > 1 ? 's' : ''})`;
+			return `(${quantityPerUnit} personne${quantityPerUnit > 1 ? 's' : ''})`;
 		case ConditioningKind.Piece.Value:
 			return `(${quantityPerUnit} pièce${quantityPerUnit > 1 ? 's' : ''})`;
 		default:
 			return '';
 	}
-}
-
-export const handleSlideChange = (e, ref) => {
-	const nextButton = ref.$$.ctx[6]; // todo : find a better way
-	const prevButton = ref.$$.ctx[5]; // todo : find a better way
-
-	let elem = e.detail[0];
-	// C'est une slide ?
-	if (Array.isArray(e.detail[0])) {
-		elem = elem.shift();
-	}
-
-	if (elem.isBeginning && elem.isEnd) {
-		prevButton.classList.add('hidden');
-		nextButton.classList.add('hidden');
-	} else if (elem.isBeginning) {
-		prevButton.classList.add('hidden');
-		nextButton.classList.remove('hidden');
-	} else if (elem.isEnd) {
-		prevButton.classList.remove('hidden');
-		nextButton.classList.add('hidden');
-	} else {
-		prevButton.classList.remove('hidden');
-		nextButton.classList.remove('hidden');
-	}
-}
+};

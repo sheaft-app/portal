@@ -54,12 +54,6 @@
 	let deliveries = [];
 	let timeout = null;
 
-  let imagesForTest = [
-    {url:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1498&q=80'},
-    {url:'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1500&q=80'},
-    {url:'https://images.unsplash.com/photo-1432107294469-414527cb5c65?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80'}
-  ];
-
 	if (timeout) {
 		clearTimeout(timeout);
 	}
@@ -80,10 +74,10 @@
 						variables: { input: [res.producer.id] },
 						errorsHandler,
 						success: (deliveriesResult) => {
-							if (res.length == 0) {
+							if (deliveriesResult.data.length < 1) {
 								deliveries = [];
 							} else {
-								deliveries = deliveriesResult[0].deliveries.map((d) => ({
+								deliveries = deliveriesResult.data[0].deliveries.map((d) => ({
 									...d,
 									distance: GetDistanceInfos(
 										values["latitude"],
@@ -220,14 +214,7 @@
 					</div>
 				</div>
 			{/if}
-			<!-- <div
-				style="background-position: center; background-image: url({product.picture ? product.picture : config.content + '/pictures/tags/images/default.jpg'}); background-size: cover;"
-				class:opacity-50={product.picture.includes("pictures/tags/images/")}
-				class="w-full shadow-md h-40 lg:h-64"/> -->
-        <PictureSlider pictures={product.pictures} pictureDefault={product.picture} {errorsHandler} />
-			<!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
-					<Icon data={faHeart} scale="1.3" />
-				</button> -->
+        <PictureSlider elements={product.pictures ? product.pictures.map(p => ({url: p.large})) : [{url: product.picture}]} />
 		</div>
 		<div class="title-margin lg:text-center" style="margin-bottom: 20px;">
 			<RatingStars rating={product.rating || 0}/>

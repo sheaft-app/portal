@@ -17,14 +17,13 @@ const buildDir = "public/dist";
 
 export default {
 	input: "src/index.js",
-	output: [
-		{
+	output: [{
 			name: "module",
 			dir: `${buildDir}`,
 			format: "es",
 			sourcemap: !production,
 			compact: production,
-		},
+		}
 	],
 	manualChunks(id) {
 		if (id.includes("node_modules")) {
@@ -55,44 +54,13 @@ export default {
 			},
 			emitCss: true,
 			preprocess: autoPreprocess({
+				globalStyle:true,
 				postcss: true,
 				scss: true
 			}),
 		}),
 		svelteSVG(),
-		postcss({
-			extract: true,
-			parser: "postcss-scss",
-			plugins: [
-				require('postcss-import'),
-				require('tailwindcss'),
-				require('postcss-nesting'),
-				production && require('autoprefixer'),
-				production && require("@fullhuman/postcss-purgecss")({
-					safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/],
-					content: ["./src/**/*.html", "./src/**/*.svelte"],
-					defaultExtractor: (content) => {
-						const regExp = new RegExp(/[\w-/:]+(?<!:)/g);
-
-						const matchedTokens = [];
-
-						let match = regExp.exec(content);
-
-						while (match) {
-							if (match[0].startsWith("class:")) {
-								matchedTokens.push(match[0].substring(6));
-							} else {
-								matchedTokens.push(match[0]);
-							}
-
-							match = regExp.exec(content);
-						}
-
-						return matchedTokens;
-					},
-				}),
-			].filter(plugin => plugin)
-		}),
+		postcss(),
 		production && babel({
 			extensions: [".ts", ".js", ".mjs", ".html", ".svelte"],
 			runtimeHelpers: true,
@@ -156,9 +124,7 @@ export default {
 			browser: true,
 			dedupe: ["svelte"],
 		}),
-		commonjs({
-			include: "node_modules/**",
-		}),
+		commonjs(),
 		production && generateSW({
 			swDest: "public/sw.js",
 			globDirectory: "public",
