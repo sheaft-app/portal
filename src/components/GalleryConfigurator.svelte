@@ -18,7 +18,8 @@
 		newElementMaxHeight = null,
 		containerMaxHeight = 600,
 		containerMaxWidth = 800,
-		imageSmoothing = true;
+		imageSmoothing = true,
+	 defaultSrcProperty = 'large';
 
 	const {open} = getContext("modal");
 	let buttonAddSize = parseInt(elementHeight) < parseInt(elementWidth) ? elementHeight : elementWidth;
@@ -91,7 +92,7 @@
 		{#if elements && elements.length > 0}
 			{#each elements as element}
 				<div data-id="{element.id}" class="element preview relative m-2 shadow"
-						 style="background: url('{element.data ? element.data : element.medium}'); height: {elementHeight}px; width:{elementWidth}px;">
+						 style="background: url('{element.data ? element.data : element[defaultSrcProperty]}'); height: {elementHeight}px; width:{elementWidth}px;">
 					<div class="absolute cursor-pointer btn-outline rounded-full remove-element"
 							 style="top:5px; right: 5px; height: 30px; width:30px;"
 							 on:click={() => removeElement(element.id)}>

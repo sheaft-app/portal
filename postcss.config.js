@@ -30,12 +30,11 @@ const purgecss = require("@fullhuman/postcss-purgecss")({
 const production = !process.env.ROLLUP_WATCH;
 
 module.exports = {
-	extract: true,
 	parser: "postcss-scss",
 	plugins: [
 		cssImport,
-		cssNesting,
 		tailwind,
+		cssNesting,
 		production && autoPrefixer,
 		production && purgecss,
 	].filter(plugin => plugin)

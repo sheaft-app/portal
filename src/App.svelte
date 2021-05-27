@@ -845,11 +845,6 @@
 		}
 	}
 
-	.swiper-button-prev,
-	.swiper-button-next {
-		top: 30% !important;
-	}
-
 	.scal-trigger {
 		width: fit-content;
 	}

@@ -2,14 +2,15 @@
   "private": true,
   "name": "sheaft",
   "scripts": {
-    "autobuild": "rollup -c -w",
+    "nol": "nollup -c --port 4200 --content-base ./public",
+    "rol": "rollup -c -w",
     "sprint": "set NODE_ENV=PRODUCTION && rollup -c",
     "staging": "set NODE_ENV=PRODUCTION && rollup -c",
     "production": "set NODE_ENV=PRODUCTION && rollup -c",
-    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p autobuild start:dev",
-    "start:dev": "sirv public --dev --single --port 4200"
+    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol start",
+    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol start",
+    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol start",
+    "start": "sirv public --dev --single --port 4200"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "~7.13.17",
@@ -38,7 +39,7 @@
     "svelte-awesome": "~2.3.1",
     "svelte-image-encoder": "~1.2.5",
     "svelte-spa-router": "~3.1.0",
-    "swiper": "~6.5.7",
+    "swiper": "~6.6.2",
     "timeUtils": "~2.0.0"
   },
   "devDependencies": {

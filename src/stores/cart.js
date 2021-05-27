@@ -6,7 +6,7 @@ import { get } from "svelte/store";
 import { authRegistered } from "./auth";
 
 export const card = writable({
-    data: { 
+    data: {
         cardName: null,
         cardNumber: null,
         cardExpirationDate: null,
@@ -43,7 +43,7 @@ const store = () => {
 
 	const methods = {
 		async initialize(apiInstance, errorsHandlerInstance, authenticated = false) {
-			if(initialized || !get(authRegistered))
+			if(initialized)
 				return;
 
 			let selectedCart = null;

@@ -33,6 +33,7 @@
 	import {config} from "../../configs/config";
 	import ProducerOtherProducts from "./../../components/ProducerOtherProducts.svelte";
 	import { getContext } from "svelte";
+	import PictureSlider from "./../../components/PictureSlider.svelte";
 
 	export let displayProducerData = true;
 
@@ -73,10 +74,10 @@
 						variables: { input: [res.producer.id] },
 						errorsHandler,
 						success: (deliveriesResult) => {
-							if (res.length == 0) {
+							if (deliveriesResult.data.length < 1) {
 								deliveries = [];
 							} else {
-								deliveries = deliveriesResult[0].deliveries.map((d) => ({
+								deliveries = deliveriesResult.data[0].deliveries.map((d) => ({
 									...d,
 									distance: GetDistanceInfos(
 										values["latitude"],
@@ -213,13 +214,7 @@
 					</div>
 				</div>
 			{/if}
-			<div
-				style="background-position: center; background-image: url({product.picture ? product.picture : config.content + '/pictures/tags/images/default.jpg'}); background-size: cover;"
-				class:opacity-50={product.picture.includes("pictures/tags/")}
-				class="w-full shadow-md h-40 lg:h-64"/>
-			<!-- <button class="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow absolute cursor-pointer text-accent" style="right: 40px; bottom: -25px;">
-					<Icon data={faHeart} scale="1.3" />
-				</button> -->
+        <PictureSlider elements={product.pictures ? product.pictures.map(p => ({url: p.large})) : [{url: product.picture}]} />
 		</div>
 		<div class="title-margin lg:text-center" style="margin-bottom: 20px;">
 			<RatingStars rating={product.rating || 0}/>

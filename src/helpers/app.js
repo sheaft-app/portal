@@ -12,7 +12,7 @@ export const timeSpanToFrenchHour = (timeSpan) => {
 	return `${result.groups.hours}h${result.groups.minutes ?? ''}`;
 }
 export const timeToTimeSpan = (time) =>
-	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S`: ''}`;
+	`PT${time.hours ? `${time.hours}H` : ''}${time.minutes ? `${time.minutes}M` : ''}${time.seconds ? `${time.seconds}S` : ''}`;
 
 export const timeSpanToTime = (timeSpan) => {
 	if (!timeSpan) {
@@ -28,7 +28,7 @@ export const timeSpanToTime = (timeSpan) => {
 };
 
 export const groupBy = (array, f) => {
-	if(!array || array.length < 1)
+	if (!array || array.length < 1)
 		return [];
 
 	var groups = {};
@@ -50,7 +50,7 @@ export const getDefaultDenormalizedOpeningHours = () => denormalizeOpeningHours(
 	}
 ]);
 
-export const denormalizeOpeningHours = (openingHours) => 
+export const denormalizeOpeningHours = (openingHours) =>
 	groupBy(openingHours, (item) => [item.from, item.to]).map((group) => {
 		let days = [];
 
@@ -116,20 +116,20 @@ export const denormalizeClosingDates = (closings) => closings ? closings.map((c)
 
 export const removeKeys = (obj, keys) => {
 	for (var prop in obj) {
-		if(obj.hasOwnProperty(prop)) {
-			switch(typeof(obj[prop])) {
+		if (obj.hasOwnProperty(prop)) {
+			switch (typeof (obj[prop])) {
 				case 'object':
-					if(keys.indexOf(prop) > -1) {
+					if (keys.indexOf(prop) > -1) {
 						delete obj[prop];
 					} else {
 						removeKeys(obj[prop], keys);
 					}
 					break;
-			default:
-				if(keys.indexOf(prop) > -1) {
-					delete obj[prop];
-				}
-				break;
+				default:
+					if (keys.indexOf(prop) > -1) {
+						delete obj[prop];
+					}
+					break;
 			}
 		}
 	}
@@ -139,14 +139,13 @@ export const encodeQuerySearchUrl = address => {
 	return address ? encodeURI(`${address.latitude}+${address.longitude}`) : '';
 };
 
-// Define a generator function that increments by one
-export function* getNextId() {
-	let i = 0
-
-	while (true) {
-		yield i++
+export const encodeQuerySearchUrlAddress = entity => {
+	let str = entity.name;
+	if(entity.address) {
+		str += `,${entity.address.line1},${entity.address.zipcode} ${entity.address.city},France`
 	}
-}
+	return str;
+};
 
 export const freezeBody = () => {
 	const scroll = window.scrollY;
@@ -171,7 +170,7 @@ export const unfreezeBody = () => {
 	window.scrollTo(0, parseInt(scrollY || '0') * -1);
 }
 
-export const formatMoney = (price) => `${price.toFixed(2).replace('.',',')}€`;
+export const formatMoney = (price) => `${price.toFixed(2).replace('.', ',')}€`;
 
 export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) => {
 	if (!conditioning || conditioning == ConditioningKind.NotSpecified.Value) {
@@ -188,10 +187,18 @@ export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) =
 		case ConditioningKind.Bouquet.Value:
 			return `(1 bouquet)`;
 		case ConditioningKind.Basket.Value:
-				return `(${quantityPerUnit} personne${quantityPerUnit > 1 ? 's' : ''})`;
+			return `(${quantityPerUnit} personne${quantityPerUnit > 1 ? 's' : ''})`;
 		case ConditioningKind.Piece.Value:
 			return `(${quantityPerUnit} pièce${quantityPerUnit > 1 ? 's' : ''})`;
 		default:
 			return '';
+	}
+};
+
+export function* getNextId() {
+	let i = 0
+
+	while (true) {
+		yield i++
 	}
 }
