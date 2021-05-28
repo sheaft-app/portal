@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_CART = gql`
     query order($input: ID!) {
-        order(input: $input) {
+        order(id: $input) {
             id
             totalFees
             totalOnSalePrice
