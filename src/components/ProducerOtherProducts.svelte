@@ -119,7 +119,7 @@
 								class:opacity-50={suggestedProductIsInCart(product)}
 								class="transition duration-200 ease-in-out w-full rounded-t-md">
 								{#if product.picture.includes("pictures/tags/") && !suggestedProductIsInCart(product)}
-									<div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -94px;">
+									<div class="absolute" style="z-index: 1; top: 30%; margin:auto;">
 										<div class="text-white text-sm p-2 bg-gray-800 text-center">
 											Aucune image disponible
 										</div>
@@ -142,14 +142,16 @@
 										class="font-semibold text-base lg:text-lg leading-tight mb-0">
 										{product.name}
 									</h4>
-									<div
-										class="mt-2 md:mt-0 inline-flex items-center w-full text-xxs
+									{#if product.rating}
+										<div
+											class="mt-2 md:mt-0 inline-flex items-center w-full text-xxs
                                 lg:text-sm">
-										<RatingStars rating={product.rating}/>
-										<span class="text-gray-600 ml-2 hidden lg:block">
-											{product.rating || 'Aucun avis'}
+											<RatingStars rating={product.rating}/>
+											<span class="text-gray-600 ml-2 hidden lg:block">
+											{product.rating}
 									</span>
-									</div>
+										</div>
+									{/if}
 									{#if displayPriceData}
 										<div
 											class="text-base lg:text-lg w-full font-semibold mb-2

@@ -5,6 +5,7 @@
 	import 'swiper/swiper.scss';
 	import 'swiper/components/navigation/navigation.scss';
 	import 'swiper/components/pagination/pagination.scss';
+	import {config} from './../configs/config';
 
 	export let elements = [], allowTouchMove = true, classes = "w-full shadow-md h-40 lg:h-64";
 
@@ -51,7 +52,15 @@
 	on:swiper={initSwipper}
 	on:slideChange={updateCursor}>
 	{#each elements as element}
-		<SwiperSlide style="background-image: url({element.url});background-size: contain;background-repeat:no-repeat;background-position: center;"/>
+		<SwiperSlide>
+			{#if element.url.includes("pictures/tags/")}
+				<div class="absolute" style="filter:blur(0px);z-index: 1; left: 50%; top: 40%; margin-left: -105px;">
+					<div class="text-white text-lg p-1 bg-gray-800">Aucune image disponible</div>
+				</div>
+			{/if}
+			<div
+				style="background-image: url({element.url});background-size: contain;background-repeat:no-repeat;background-position: center;height:100%;{element.url.includes('pictures/tags/') ? 'filter:blur(2px)' : ''}"></div>
+		</SwiperSlide>
 	{/each}
 </Swiper>
 
