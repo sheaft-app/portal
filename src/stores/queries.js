@@ -19,8 +19,8 @@ export const GET_CART = gql`
                     to
                     expectedDeliveryDate
                 }
-                id
                 deliveryMode {
+                		id
                     kind
                     producer {
                         id
@@ -77,8 +77,8 @@ export const GET_MOST_RECENT_CART = gql`
                     to
                     expectedDeliveryDate
                 }
-                id
                 deliveryMode {
+                		id
                     kind
                     producer {
                         id

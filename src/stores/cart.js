@@ -189,7 +189,7 @@ const store = () => {
 			return deliveries.map((delivery, index) => ({
 				number: index + 1,
 				delivery: {
-					id: delivery.id,
+					id: delivery.deliveryMode.id,
 					address: delivery.deliveryMode.address,
 					kind: delivery.deliveryMode.kind
 				},

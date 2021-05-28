@@ -19,8 +19,8 @@ export const CREATE_CONSUMER_ORDER = gql`
 					to
 					expectedDeliveryDate
 				}
-				id
 				deliveryMode {
+					id
 					kind
 					producer {
 						id
@@ -77,8 +77,8 @@ export const UPDATE_CONSUMER_ORDER = gql`
 					to
 					expectedDeliveryDate
 				}
-				id
 				deliveryMode {
+					id
 					kind
 					producer {
 						id

@@ -57,14 +57,14 @@
   $: if (producersDeliveries.length === 0 && $cart.products.length > 0) {
     getProducerDeliveries();
   }
-  
+
   const showTransactionInfo = () => open(MangoPayInfo, {});
 
   const getProducerDeliveries = async () => {
     isLoadingDeliveries = true;
 
     const ids = cart.getProducersIds();
-    producersDeliveries = await query({
+    producersDeliveries = (await query({
       query: GET_PRODUCER_DELIVERIES,
       variables: { input: ids },
       errorsHandler,
@@ -72,18 +72,18 @@
         // l'utilisateur avait déjà choisi un lieu de récup pour le prod
         // mais entre temps le prod a supprimé ce lieu
 
-        const deliveriesIds = res.map((r) => r.deliveries).flat().map((d) => d.id);
+        const deliveriesIds = res.data.map((r) => r.deliveries).flat().map((d) => d.id);
         const cartItemWithProducerDeliveryNotFound = $cart.selectedDeliveries.find((d) => d.delivery && d.delivery.id && !deliveriesIds.includes(d.delivery.id));
-        
+
         if (cartItemWithProducerDeliveryNotFound) {
           cart.resetSelectedDeliveryForProducerId(cartItemWithProducerDeliveryNotFound.producerId);
         }
 
         if (res.length !== ids.length) {
-          cart.disableProducers(ids.filter((i) => !res.map((r) => r.id).includes(i)));
+          cart.disableProducers(ids.filter((i) => !res.data.map((r) => r.id).includes(i)));
         }
       }
-    })
+    })).data;
     isLoadingDeliveries = false;
   }
 
@@ -102,11 +102,11 @@
         var headerOffset = document.getElementById('navbar').offsetHeight;
         var elementPosition = element.offsetTop;
         var offsetPosition = elementPosition - headerOffset;
-        
+
         window.scrollTo({
             top: offsetPosition,
             behavior: "smooth"
-        });   
+        });
       }
 
       element.classList.add("blink");
@@ -114,7 +114,7 @@
       index++;
     }
   }
-  
+
   const validateCart = () => {
     if (!isValid)
       return blink($cart.products.filter(c => !c.producer.deliveryHour));
@@ -123,7 +123,7 @@
 
   const handleSubmit = async () => {
     await cart.updateCart(choosenDonation);
-    
+
     routerInstance.goTo(CartRoutes.Checkout)
     localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
   }
@@ -204,7 +204,7 @@
                     {#if product.producer.disabled}
                       <div class="bg-orange-200 py-2 pl-3 border-gray-400 border">
                         <p>Le producteur a désactivé ses points de vente.</p>
-                        <button 
+                        <button
                           type="button"
                           class="btn-link text-sm"
                           on:click={() => cart.removeProducerProducts(product.producer.id)}>
@@ -213,15 +213,15 @@
                       </div>
                     {:else}
                       <DeliveryModePicker
-                        data={producersDeliveries.find(p => p.id === product.producer.id)} 
+                        data={producersDeliveries.find(p => p.id === product.producer.id)}
                         isLoading={isLoadingDeliveries}
                       />
                     {/if}
                 {/if}
                 <div
                   class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
-                  border-gray-400 border-solid items-center" 
-                  class:bg-orange-200={product.disabled || product.producer.disabled} 
+                  border-gray-400 border-solid items-center"
+                  class:bg-orange-200={product.disabled || product.producer.disabled}
                   class:text-gray-500={product.disabled || product.producer.disabled}
                   class:line-through={product.disabled || product.producer.disabled}>
                   <div class="md:w-6/12 px-3">
@@ -290,8 +290,8 @@
                     <p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.totalOnSalePrice)}</p>
                     {#if $cart.returnablesCount >= 1}
                       <p class="text-blue-500 font-medium text-sm" class:invisible={$cart.isSaving}>
-                        dont 
-                        <img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
+                        dont
+                        <img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  />
                         {formatMoney($cart.totalReturnableOnSalePrice)}
                       </p>
                     {/if}
