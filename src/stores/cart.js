@@ -395,12 +395,6 @@ const store = () => {
 				return state;
 			})
 		},
-		setProducts(products) {
-			update(state => {
-				state.products = products;
-				return state;
-			});
-		},
 		setSelectedDeliveries(deliveries) {
 			update(state => {
 				state.selectedDeliveries = deliveries;
@@ -427,7 +421,7 @@ const store = () => {
 				state.userCurrentOrder = selectedCart.id;
 				state.conflicts = [];
 
-				if (selectedCart.deliveries.length > 0) {
+				if (selectedCart.deliveries && selectedCart.deliveries.length > 0) {
 					setters.setSelectedDeliveries(methods.normalizeDeliveries(selectedCart.deliveries));
 				}
 
