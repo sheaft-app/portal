@@ -72,7 +72,7 @@ const store = () => {
 					variables: { input: currentOrder },
 					errorsHandler,
 					success: (res) => {
-						if (["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.data.status))
+						if (!res || !res.data || ["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.data.status))
 							return this.clearStorage();
 						else if (selectedCart)
 							return update(state => {
