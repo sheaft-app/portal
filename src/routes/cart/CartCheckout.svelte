@@ -78,10 +78,14 @@
 			query: GET_MY_CONSUMER_LEGALS,
 			errorsHandler,
 			success: (res) => {
-				user = res.owner;
-				legalId = res.id;
-				userLegalsFound = true;
-				step = 2;
+				if(res || res) {
+					user = res.owner;
+					legalId = res.id;
+					userLegalsFound = true;
+					step = 2;
+				}
+				else
+					userLegalsFound = false;
 			},
 			error: () => userLegalsFound = false
 		});
@@ -124,14 +128,14 @@
 						//TODO handle authorization error
 						return;
 					}
-					
+
 					if (result.secureModeRedirectURL) {
 						window.location = result.secureModeRedirectURL;
 						return;
 					} else {
 						isPaying = false;
-						return routerInstance.goTo({ 
-							Path: CartRoutes.Success.Path, 
+						return routerInstance.goTo({
+							Path: CartRoutes.Success.Path,
 							Params: {
 								Query: {
 									id: $cart.userCurrentOrder
@@ -249,8 +253,8 @@
 								<p class="font-medium">{formatMoney($cart.totalOnSalePrice)}</p>
 								{#if $cart.returnablesCount >= 1}
 									<p class="text-blue-500 font-medium text-sm">
-										dont 
-										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  /> 
+										dont
+										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  />
 										{formatMoney($cart.totalReturnableOnSalePrice)}
 									</p>
 								{/if}
