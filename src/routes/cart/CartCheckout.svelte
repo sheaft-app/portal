@@ -78,7 +78,7 @@
 			query: GET_MY_CONSUMER_LEGALS,
 			errorsHandler,
 			success: (res) => {
-				if(res || res) {
+				if(res) {
 					user = res.owner;
 					legalId = res.id;
 					userLegalsFound = true;
