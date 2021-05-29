@@ -7,7 +7,7 @@
   import { GET_NATIONALITIES } from "../queries";
 
   export let formName = null, name = null, selectedValue = null, displayError = true, errorsHandler = null;
-  
+
   const { query } = getContext("api");
   const getLabel = option => option.name;
 
@@ -19,7 +19,7 @@
       query: GET_NATIONALITIES,
       errorsHandler,
       success: (res) => {
-        if (selectedValue && typeof selectedValue == "string") selectedValue = nationalities.find((n) => n.code == selectedValue);
+        if (selectedValue && typeof selectedValue == "string") selectedValue = res.data.find((n) => n.code == selectedValue);
       },
       errorNotification: "Impossible de récupérer la liste des nationalités"
     });
@@ -31,7 +31,7 @@
   <Loader />
 {:else}
   <div class="themed" use:bindClass={{ form: formName, name }}>
-    <Select 
+    <Select
       getOptionLabel={getLabel}
       getSelectionLabel={getLabel}
       items={nationalities}
