@@ -134,9 +134,7 @@
 				<div class="mb-3 p-4 text-white bg-blue-500 rounded">
 					<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
 						avoir une référence directe vers votre boutique.</p>
-					<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a href="javascript:void(0)"
-																																														 on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant
-						ici</a>.</p>
+					<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a class="text-white underline" href="javascript:void(0)" on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant ici</a>.</p>
 				</div>
 			{/if}
 			{#if !producer}
@@ -317,7 +315,7 @@
 								{/each}
 							</div>
 						{:else}
-							<p>Ce producteur ne vends pas ses produits dans des magasins proches de vous</p>
+							<p>Ce producteur ne vend pas ses produits dans des magasins proches de vous</p>
 						{/if}
 					</TabPanel>
 				</Tabs>
