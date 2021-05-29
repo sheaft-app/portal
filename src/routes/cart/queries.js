@@ -28,15 +28,24 @@ export const GET_PRODUCER_DELIVERIES = gql`
 `;
 
 export const GET_MY_ORDERS = gql`
-	query MyOrders($ids: [Uuid!]) {
-		purchaseOrders(where: { id: { in: $ids }}) {
-			nodes {
+	query MyOrder($id: ID!) {
+		order(id: $id) {
 				id
 				reference
-				vendor {
-					name
+				purchaseOrders{
+					id
+					reference
+					totalOnSalePrice
+					expectedDelivery{
+						expectedDeliveryDate
+						day
+						from
+						to
+					}
+					vendor{
+						name
+					}
 				}
-			}
 		}
 	}
 `;

@@ -15,14 +15,17 @@
   let countries = [];
 
   onMount(async () => {
-    countries = await query({
+    await query({
       query: GET_COUNTRIES,
       errorsHandler,
       success: (res) => {
-        if (selectedValue && typeof selectedValue == "string") selectedValue = res.data.find((c) => c.code == selectedValue)
+        if (selectedValue && typeof selectedValue == "string")
+        	selectedValue = res.data.find((c) => c.code == selectedValue);
+
+				countries = res.data;
       },
       errorNotification: "Impossible de récupérer la liste des pays"
-    });
+    })
     isLoading = false;
   })
 </script>

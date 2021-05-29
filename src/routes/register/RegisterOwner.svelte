@@ -54,7 +54,7 @@
   <title>Enregistrement société</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
   <!-- hack avec h-full pour éviter que le citysearch dépasse du cadre -->
   <div class="-my-2 -mx-4 py-2 overflow-x-auto mt-2 mb-8" class:h-full={$stepper == 4}>
     <ErrorCard {errorsHandler}/>

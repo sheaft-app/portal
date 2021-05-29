@@ -15,11 +15,14 @@
   let nationalities = [];
 
   onMount(async () => {
-    nationalities = await query({
+     await query({
       query: GET_NATIONALITIES,
       errorsHandler,
       success: (res) => {
-        if (selectedValue && typeof selectedValue == "string") selectedValue = res.data.find((n) => n.code == selectedValue);
+        if (selectedValue && typeof selectedValue == "string")
+        	selectedValue = res.data.find((n) => n.code == selectedValue);
+
+				nationalities = res.data;
       },
       errorNotification: "Impossible de récupérer la liste des nationalités"
     });

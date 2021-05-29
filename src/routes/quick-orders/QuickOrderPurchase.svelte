@@ -51,12 +51,15 @@
 
 	const loadDeliveries = async (ids) => {
 		isLoadingDeliveries = true;
-		producerDeliveries = (await query({
+		await query({
 			query: GET_STORE_DELIVERIES_FOR_PRODUCERS,
 			variables: { input: ids },
 			errorsHandler,
+			success: (res) => {
+				producerDeliveries = res.data;
+			},
 			errorNotification: "Impossible de récupérer les informations de livraison."
-		})).data;
+		});
 		isLoadingDeliveries = false;
 	}
 

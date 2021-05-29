@@ -31,7 +31,7 @@
   <title>Enregistrement</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
   <div
     class="mx-0 py-2 overflow-x-auto sm:px-4 lg:px-8 text-center">
     <div class="pb-4 lg:py-8">

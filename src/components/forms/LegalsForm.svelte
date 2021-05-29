@@ -10,7 +10,7 @@
   import fr from "date-fns/locale/fr";
   import CountrySelect from "./../../components/controls/CountrySelect.svelte";
   import NationalitySelect from "./../../components/controls/NationalitySelect.svelte";
-  
+
   export let user = {
     id: null,
     firstName: null,
@@ -61,8 +61,8 @@
       query: GET_COUNTRIES,
       errorsHandler,
       success: (res) => {
-        if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = res.find((c) => c.code == user.countryOfResidence);
-        if (user.address.country && typeof user.address.country == "string") user.address.country = res.find((c) => c.code == user.address.country);
+        if (user.countryOfResidence && typeof user.address.country == "string") user.countryOfResidence = res.data.find((c) => c.code == user.countryOfResidence);
+        if (user.address.country && typeof user.address.country == "string") user.address.country = res.data.find((c) => c.code == user.address.country);
       },
       errorNotification: "Impossible de récupérer la liste des pays"
     });
@@ -71,14 +71,14 @@
       query: GET_NATIONALITIES,
       errorsHandler,
       success: (res) => {
-        if (user.nationality && typeof user.nationality == "string") user.nationality = res.find((c) => c.code == user.nationality);
+        if (user.nationality && typeof user.nationality == "string") user.nationality = res.data.find((c) => c.code == user.nationality);
       },
       errorNotification: "Impossible de récupérer la liste des nationalités"
     });
     isLoadingLists = false;
 
     // restaurer les valeurs initiales quand elles viennent du serveur sous format ISOCode
-    
+
     if (user.birthDate) {
       if (typeof user.birthDate == "object" || user.birthDate.includes("-")) {
         user.birthDate = format(new Date(user.birthDate), 'P', { locale: fr });
@@ -136,21 +136,21 @@
             <input name="birthday" use:initializeCleave class="input-birthday" placeholder="JJ/MM/AAAA" type="text" use:bindClass={{ form: facturationForm, name: "birthDate" }} bind:value={user.birthDate} autocomplete="birthday"  />
             <ErrorContainer field={$facturationForm.fields.birthDate} />
           </div>
-          
+
           {#if !hideResidence}
             <div class="w-full form-control" style="display: block">
               <label for="country">Pays de résidence *</label>
-              <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} /> 
+              <CountrySelect bind:selectedValue={user.countryOfResidence} formName={facturationForm} name="countryOfResidence" {errorsHandler} />
             </div>
           {/if}
 
           <div class="w-full form-control" style="display: block">
             <label for="nationality">Nationalité *</label>
-            <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} /> 
+            <NationalitySelect bind:selectedValue={user.nationality} formName={facturationForm} name="nationality" {errorsHandler} />
           </div>
 
           {#if accordeon && facturationForm && !validatedInfoOnce}
-            <button 
+            <button
               on:click={() => { validatedInfoOnce = true; selectedAccordeon = "address"; }}
               disabled={
                 !$facturationForm.fields.firstName.valid ||
@@ -203,7 +203,7 @@
 
           <div class="w-full form-control" style="display: block">
             <label for="country">Pays *</label>
-            <CountrySelect bind:selectedValue={user.address.country} formName={facturationForm} name="country" {errorsHandler} /> 
+            <CountrySelect bind:selectedValue={user.address.country} formName={facturationForm} name="country" {errorsHandler} />
           </div>
         </div>
       {/if}

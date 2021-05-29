@@ -61,7 +61,7 @@
   <title>Enregistrement consommateur</title>
 </svelte:head>
 
-<TransitionWrapper>
+<TransitionWrapper classNames="m-auto">
   <div class="-my-2 m-auto py-2 overflow-x-auto md:w-3/5 mt-2 mb-8 h-full -mx-4 md:m-auto">
     <ErrorCard {errorsHandler}/>
     {#if !isRegistering && !isLoading}

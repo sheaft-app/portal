@@ -1,68 +1,71 @@
 <script>
-	import { getContext, onMount } from "svelte";
+	import {getContext, onMount} from "svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import cart from "./../../stores/cart.js";
-	import { GET_MY_ORDERS } from "./queries.js";
-	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
+	import {GET_MY_ORDERS} from "./queries.js";
+	import {MY_ORDERS, MY_VALIDATING_ORDERS} from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
+	import Loader from "../../components/Loader.svelte";
+	import Icon from "svelte-awesome";
+	import {faLink} from "@fortawesome/free-solid-svg-icons";
 
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
-	const { query, clearApolloCache } = getContext("api");
+	const {query, clearApolloCache} = getContext("api");
 
-	let orders = [];
+	let isLoading = true;
+	let order = null;
 
 	onMount(async () => {
-		let values = routerInstance.getQueryParams();
-
 		clearApolloCache([MY_ORDERS, MY_VALIDATING_ORDERS]);
-
 		await cart.reset();
 
-		//TODO should retrieve purchaseOrders with transactionCartId
-
-		if (!values || !values.id) {
-			return routerInstance.goTo(MyOrderRoutes.List);
-		}
-
-		// quand il n'y a qu'un seul ID, le paramètre est lu comme une string et non un array
-		let ids = Array.isArray(values.id) ? values.id : [values.id];
-
-		orders = await query({
-			query: GET_MY_ORDERS, 
-			variables: { ids }, 
+		let values = routerInstance.getQueryParams();
+		await query({
+			query: GET_MY_ORDERS,
+			variables: {id: values.id},
+			success: res => {
+				order = res;
+			},
 			errorsHandler,
 			error: () => routerInstance.goTo(MyOrderRoutes.List)
 		});
+
+		isLoading = false;
 	});
 </script>
 
 <svelte:head>
-	<title>Votre commande a été envoyée</title>
+	<title>Votre paiement a été envoyé</title>
 </svelte:head>
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler}/>
-	<div class="px-0 md:px-5 overflow-x-auto lg:-mx-4 md:-mx-5 mb-5">
-		<div class="flex flex-wrap w-full items-start flex-col-reverse lg:flex-row">
-			<div class="w-full lg:w-2/3 lg:pr-12">
-				{#if orders.length > 1}
+	{#if isLoading}
+		<Loader/>
+	{:else}
+		<div class="px-0 md:px-5 overflow-x-auto lg:-mx-4 md:-mx-5 mb-5">
+			<div class="flex flex-wrap w-full items-start flex-col-reverse lg:flex-row">
+				<div class="w-full lg:w-2/3 lg:pr-12">
 					<p class="mt-5 text-3xl sm:text-2xl text-primary">
-						Vos commandes ont bien été envoyées.
+						Votre paiement a été envoyé.
 					</p>
-					<!-- <p class="text-4xl mt-5 text-center text-primary">MERCI 🎉</p>
-					<p class="text-center">
-						Grâce à vous, une consommation plus responsable est en marche.
-					</p> -->
 					<p class="text-xl font-semibold mb-2 mt-10">Et maintenant ?</p>
-					<p class="mb-2">
-						Vos commandes ont été envoyées aux producteurs concernés, qui
-						doivent maintenant les valider. Vous recevrez une notification pour
-						chaque mise à jour.
-					</p>
+					{#if order.purchaseOrders && order.purchaseOrders.length > 1}
+						<p class="mb-2">
+							Vos commandes ont été envoyées aux producteurs concernés, qui
+							doivent maintenant les accepter. Vous recevrez une notification pour
+							chaque mise à jour.
+						</p>
+					{:else}
+						<p class="mb-2">
+							Votre commande a été envoyée au producteur, qui doit maintenant l'accepter. Vous recevrez une
+							notification pour chaque mise à jour.
+						</p>
+					{/if}
 					<p class="text-xl font-semibold mb-2 mt-6">
 						Besoin d'une information ?
 					</p>
@@ -70,72 +73,46 @@
 						Vous voulez savoir où en est votre commande ? Vous avez oublié où
 						aller la chercher ? À quelle heure ? Vous pouvez trouver toutes les
 						informations dans les détails de la commande dans votre espace <a
-							href="javascript:void(0)"
-							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
-							Mes Commandes
-						</a> .
+						href="javascript:void(0)"
+						on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
+						Mes Commandes
+					</a> .
 					</p>
-				{:else}
-					<p class="mt-5 text-2xl text-primary">
-						Votre commande a bien été envoyée.
-					</p>
-					<!-- <p class="text-4xl mt-5 text-center text-primary">MERCI 🎉</p>
-					<p class="text-center">
-						Grâce à vous, une consommation plus responsable est en marche.
-					</p> -->
-					<p class="text-xl font-semibold mb-2 mt-10">Et maintenant ?</p>
-					<p class="mb-2">
-						Votre commande a été envoyée au producteur, qui doit maintenant la
-						valider. Vous recevrez une notification quand celle-ci sera prête.
-					</p>
-					<p class="text-xl font-semibold mb-2 mt-6">
-						Besoin d'une information ?
-					</p>
-					<p>
-						Vous voulez savoir où en est votre commande ? Vous avez oublié où
-						aller la chercher ? À quelle heure ? Vous pouvez trouver toutes les
-						informations dans les détails de la commande dans votre espace <a
-							href="javascript:void(0)"
-							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
-							Mes Commandes
-						</a> .
-					</p>
-				{/if}
+				</div>
+				<img
+					src="./img/order-success.svg"
+					class="mb-3 lg:mb-0 m-auto w-48 lg:w-auto"
+					style="max-width: 280px;"
+					alt="La commande a bien été envoyée !"/>
 			</div>
-			<img
-				src="./img/order-success.svg"
-				class="mb-3 lg:mb-0 m-auto w-48 lg:w-auto"
-				style="max-width: 280px;"
-				alt="La commande a bien été envoyée !" />
-		</div>
-		{#if orders.length > 1}
-			<p class="text-xl mb-2 font-semibold mt-6">Vos commandes</p>
-		{:else}
-			<p class="text-xl mb-2 font-semibold mt-6">Votre commande</p>
-		{/if}
-		{#each orders as order}
-			<!-- <div class="mb-1">
-				- {order.vendor.name}
-				<a
-					href="javascript:void(0)"
-					on:click={() => routerInstance.goTo(MyOrderRoutes.Details, {
-							id: order.id,
-						})}>
-					<Icon data={faLink} />
-					voir le détail
-				</a>
-      </div> -->
-			<div class="mb-1">
-				- {order.vendor.name} : <a
-					href="javascript:void(0)"
-					on:click={() => routerInstance.goTo(MyOrderRoutes.Details, {
+			{#if order.purchaseOrders && order.purchaseOrders.length > 0}
+				{#if order.purchaseOrders.length > 1}
+					<p class="text-xl mb-2 font-semibold mt-6">Vos commandes</p>
+				{:else}
+					<p class="text-xl mb-2 font-semibold mt-6">Votre commande</p>
+				{/if}
+				{#each order.purchaseOrders as order}
+					<div class="mb-1">
+						- {order.vendor.name}
+						<a
+							href="javascript:void(0)"
+							on:click={() => routerInstance.goTo(MyOrderRoutes.Details, {
+								id: order.id,
+							})}>
+							<Icon data={faLink}/>
+							voir le détail
+						</a>
+					</div>
+					<div class="mb-1">
+						- {order.vendor.name} : <a
+						href="javascript:void(0)"
+						on:click={() => routerInstance.goTo(MyOrderRoutes.Details, {
 							id: order.id,
 						})}>#{order.reference}
-				</a>
-			</div>
-		{/each}
-		<!-- <div class="mt-2">
-      <a href="javascript:void(0)" on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>Voir toutes mes Commandes</a>
-    </div> -->
-	</div>
+					</a>
+					</div>
+				{/each}
+			{/if}
+		</div>
+	{/if}
 </TransitionWrapper>

@@ -193,25 +193,26 @@ class SheaftGraphQL {
 
 	handleResults(data, dataTypes) {
 		var resultData = data[dataTypes[0]];
-		if (!resultData && dataTypes.length > 1) {
-			var selection = dataTypes[1].filter(
-				(dt) => dt == "nodes" || dt == "edges"
-			);
-			if (selection.length == 0)
-				return {
-					data: null,
-					success: false,
-				};
-		}
+		if(!resultData && !data.errors)
+			return {
+				data: null,
+				errors: null,
+				success: true,
+			};
 
-		var errors = null;
-		var success = true;
+		if(data.errors && data.errors.length > 0){
+			return {
+				data: null,
+				errors: data.errors,
+				success: false,
+			};
+		}
 
 		if (typeof resultData === "boolean") {
 			return {
 				data: resultData,
 				errors: null,
-				success: success,
+				success: true,
 			};
 		}
 
@@ -219,16 +220,16 @@ class SheaftGraphQL {
 			return {
 				data: resultData.nodes,
 				pageInfo: resultData.pageInfo,
-				errors,
-				success,
+				errors: null,
+				success: true,
 			};
 
 		if (resultData.edges)
 			return {
 				data: resultData.edges.map((n) => n.node),
 				pageInfo: resultData.pageInfo,
-				errors,
-				success,
+				errors: null,
+				success: true,
 			};
 
 		if (Array.isArray(resultData))
@@ -240,14 +241,14 @@ class SheaftGraphQL {
 					startCursor: null,
 					endCursor: null,
 				},
-				errors,
-				success,
+				errors: null,
+				success: true,
 			};
 
 		return {
 			data: resultData,
-			errors,
-			success,
+			errors: null,
+			success: true,
 		};
 	}
 

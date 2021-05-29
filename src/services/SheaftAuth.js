@@ -67,7 +67,7 @@ class SheaftAuth {
 
 	async retrieveUser(user, onInit) {
 		var localUser = JSON.parse(localStorage.getItem("user"));
-		if (localUser.id && localUser.id.length > 0) {
+		if (localUser && localUser.id && localUser.id.length > 0) {
 			user.id = localUser.id;
 			user.profile.id = localUser.profileId;
 		}

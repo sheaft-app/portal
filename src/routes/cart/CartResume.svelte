@@ -64,7 +64,7 @@
     isLoadingDeliveries = true;
 
     const ids = cart.getProducersIds();
-    producersDeliveries = (await query({
+    await query({
       query: GET_PRODUCER_DELIVERIES,
       variables: { input: ids },
       errorsHandler,
@@ -82,8 +82,10 @@
         if (res.length !== ids.length) {
           cart.disableProducers(ids.filter((i) => !res.data.map((r) => r.id).includes(i)));
         }
+
+				producersDeliveries = res.data;
       }
-    })).data;
+    });
     isLoadingDeliveries = false;
   }
 
