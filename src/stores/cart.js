@@ -2,8 +2,6 @@ import {writable} from "svelte/store";
 import {GET_CART, GET_MOST_RECENT_CART} from "./queries";
 import {CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER} from "./mutations.js";
 import orderBy from "lodash/orderBy";
-import { get } from "svelte/store";
-import { authRegistered } from "./auth";
 
 export const card = writable({
     data: {
@@ -18,7 +16,7 @@ export const card = writable({
 });
 
 const store = () => {
-	let graphQLInstance = null;
+	let context = null;
 	let errorsHandler = null;
 	let initialized = false;
 
@@ -42,13 +40,13 @@ const store = () => {
 	const {subscribe, set, update} = writable(state);
 
 	const methods = {
-		async initialize(apiInstance, errorsHandlerInstance, authenticated = false) {
-			if(initialized)
-				return;
+		async initialize(c, errorsHandlerInstance, authenticated = false) {
+			if(initialized) return;
 
 			let selectedCart = null;
 
-			graphQLInstance = apiInstance;
+			context = c;
+			console.log(context);
 			errorsHandler = errorsHandlerInstance;
 
 			let currentOrder = null;
@@ -60,30 +58,39 @@ const store = () => {
 			}
 
 			if (authenticated) {
-				const mostRecentCartResponse = await graphQLInstance.query(GET_MOST_RECENT_CART);
-
-				if (mostRecentCartResponse.data) {
-					selectedCart = mostRecentCartResponse.data;
-				}
+				await context.query({
+					query: GET_MOST_RECENT_CART,
+					errorsHandler,
+					success: (res) => selectedCart = res,
+					errorNotification: "Impossible de récupérer les informations du panier le plus récent"
+				});
 			}
 
 			if (currentOrder && (!selectedCart || currentOrder !== selectedCart.id)) {
-				const res = await graphQLInstance.query(GET_CART, {input: currentOrder});
-
-				if (!res.success || res.data == null || res.data.status == "SUCCEEDED" || res.data.status == "WAITING" || res.data.status == "VALIDATED") {
-					this.clearStorage();
-				} else if (selectedCart) {
-					return update(state => {
-						state.conflicts = [
-							selectedCart,
-							res.data
-						];
-						state.isInitializing = false;
-						return state;
-					});
-				} else {
-					selectedCart = res.data;
-				}
+				await context.query({
+					query: GET_CART,
+					variables: { input: currentOrder },
+					errorsHandler,
+					success: (res) => {
+						if (["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.status))
+							return this.clearStorage();
+						else if (selectedCart)
+							return update(state => {
+								state.conflicts = [
+									selectedCart,
+									res.data
+								];
+								state.isInitializing = false;
+								return state;
+							});
+						else
+							selectedCart = res;
+					},
+					error: () => {
+						this.clearStorage();
+					},
+					errorNotification: "Imposible de récupérer les informations du panier"
+				})
 			}
 
 			if (selectedCart) {
@@ -123,47 +130,59 @@ const store = () => {
 				delete variables["id"];
 			}
 
-			let response = await graphQLInstance.mutate(orderMutation, variables);
+			const res = await context.mutate({
+				mutation: orderMutation, 
+				variables,
+				errorsHandler,
+				success: (res) => {
+					console.log("success");
+					setters.updateWholeCart(res);
+				},
+				errorNotification: "Impossible de mettre à jour votre panier",
+				error: (response) => {
+					const invalidProductsError = response.errors.find((e) => e.message.includes('produits sont invalides'));
 
-			if (!response.success) {
-				const invalidProductsError = response.errors.find((e) => e.message.includes('produits sont invalides'));
+					if (invalidProductsError) {
+						const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+						let products = JSON.parse(localStorage.getItem("user_cart"));
+						localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
+						setters.disableProducts(ids);
+					}
 
-				if (invalidProductsError) {
-					const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-					let products = JSON.parse(localStorage.getItem("user_cart"));
-					localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
-					setters.disableProducts(ids);
+					const disabledProductsError = response.errors.find((e) => e.message.includes('sont actuellement indisponibles'));
+
+					if (disabledProductsError) {
+						const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+						let products = JSON.parse(localStorage.getItem("user_cart"));
+						localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
+						setters.disableProducts(ids);
+					}
+
+					if (invalidProductsError || disabledProductsError) {
+						update(state => {
+							state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
+							return state;
+						});
+					}
+
+					return update(state => {
+						state.isSaving = false;
+						return state;
+					});
 				}
+			});
 
-				const disabledProductsError = response.errors.find((e) => e.message.includes('sont actuellement indisponibles'));
-
-				if (disabledProductsError) {
-					const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-					let products = JSON.parse(localStorage.getItem("user_cart"));
-					localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
-					setters.disableProducts(ids);
-				}
-
-				return update(state => {
-					state.isSaving = false;
-					state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
-					return state;
-				});
-			}
-
-			setters.updateWholeCart(response.data);
-			return true;
+			return res.status && ["CREATED", "UPDATED"].includes(res.status);
 		},
 		async chooseCart(cartId) {
 			state.isSaving = true;
-			const res = await graphQLInstance.query(GET_CART, {input: cartId});
-
-			if (!res.success) {
-				// todo
-				return;
-			}
-
-			setters.updateWholeCart(res.data);
+			await context.query({
+				query: GET_CART,
+				variables: { input: cartId },
+				errorsHandler,
+				success: (res) => setters.updateWholeCart(res), 
+				errorNotification: "Impossible de choisir le panier"
+			});
 		},
 		addProduct(productId, quantity) {
 			localStorage.setItem("user_cart", JSON.stringify([...getters.getValidProducts().map((i) => ({

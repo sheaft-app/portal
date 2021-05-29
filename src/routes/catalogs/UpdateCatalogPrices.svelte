@@ -1,13 +1,13 @@
 <script>
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import { UPDATE_CATALOG_PRICES } from "./mutations";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_CATALOGS } from "./queries";
-import { formatMoney } from "../../helpers/app";
+	import { formatMoney } from "../../helpers/app";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
+	const { mutate } = getContext("api");
 
 	export let catalog, close, onClose;
 
@@ -20,20 +20,15 @@ import { formatMoney } from "../../helpers/app";
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(
-			UPDATE_CATALOG_PRICES, { id: catalog.id, percent: percent },
-			errorsHandler.Uuid,
-			GET_CATALOGS
-    );
-    
+		await mutate({
+			mutation: UPDATE_CATALOG_PRICES,
+			variables: { id: catalog.id, percent: percent },
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			errorNotification: "Impossible de mettre à jour les prix du catalogue",
+			clearCache: [GET_CATALOGS]
+		});
 		isLoading = false;
-
-		if (!res.success) {
-			//TODO
-			return;
-		}
-
-		return await handleClose(res);
 	};
 
 	const handleClose = async (res) => {
@@ -48,7 +43,7 @@ import { formatMoney } from "../../helpers/app";
 	{isLoading}
 	submit={handleSubmit}
 	{errorsHandler}
-	close={() => handleClose({ success: false, data: null })}>
+	{close}>
 	<p class="leading-5">
 		Vous vous apprêtez à mettre à jour tous les prix du catalogue {catalog.name}
 	</p>

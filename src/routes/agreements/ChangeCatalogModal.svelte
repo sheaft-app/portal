@@ -1,38 +1,34 @@
 <script>
 	import {faCheck} from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import GetGraphQLInstance from "./../../services/SheaftGraphQL.js";
-	import GetAuthInstance from "../../services/SheaftAuth";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import {GET_AGREEMENTS} from "./queries.js";
 	import SelectCatalog from "../search-stores/SelectCatalog.svelte";
 	import {UPDATE_AGREEMENT_CATALOG} from "./mutations";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 
 	export let onClose, close, agreement;
-	const graphQLInstance = GetGraphQLInstance();
-	const authInstance = GetAuthInstance();
+	const { mutate } = getContext("api");
 
 	let isLoading = false;
 	let selectedCatalog = null;
 
 	const handleSubmit = async () => {
 		isLoading = true;
-		var res = await graphQLInstance.mutate(UPDATE_AGREEMENT_CATALOG, {
+		await mutate({
+			mutation: UPDATE_AGREEMENT_CATALOG,
+			variables: {
 				agreementId: agreement.id,
 				catalogId: selectedCatalog?.id
 			},
-			errorsHandler.Uuid,
-			GET_AGREEMENTS);
-
-		if (!res.success) {
-			// todo
-			isLoading = false;
-			return;
-		}
-
-		await handleClose(res);
+			errorsHandler,
+			success: async (res) => await handleClose(res),
+			errorNotification: "Impossible de modifier le catalogue",
+			clearCache: [GET_AGREEMENTS]
+		})
+		isLoading = false;
 	}
 
 	const handleClose = async (res) => {

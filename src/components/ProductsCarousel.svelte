@@ -10,11 +10,9 @@
 	import {formatConditioningDisplay} from "./../helpers/app";
 	import RatingStars from "./rating/RatingStars.svelte";
 	import GetAuthInstance from "./../services/SheaftAuth.js";
-	import GetGraphQLInstance from "./../services/SheaftGraphQL.js";
 
 	export let products, producerName, breakpoints = null;
 
-	const graphQLInstance = GetGraphQLInstance();
 	const dispatch = createEventDispatcher();
 	const authInstance = GetAuthInstance();
 

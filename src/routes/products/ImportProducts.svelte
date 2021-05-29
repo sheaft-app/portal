@@ -9,10 +9,10 @@
   import GetAuthInstance from "./../../services/SheaftAuth.js";
   import SheaftErrors from "./../../services/SheaftErrors";
 
-  const errorsHandler = new SheaftErrors();
-
   export let onClose, close;
+
   const notificationsInstance = GetNotificationsInstance();
+  const errorsHandler = new SheaftErrors();
 
   let isLoading = false;
   let dropzone;

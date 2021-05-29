@@ -4,7 +4,6 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
     import { getContext, onMount } from "svelte";
-    import GetGraphQLInstance from "../../services/SheaftGraphQL";
     import GetRouterInstance from "../../services/SheaftRouter";
     import AddProductModal from "./AddProductModal.svelte";
     import Icon from "svelte-awesome";
@@ -13,9 +12,8 @@
 
     export let catalog, invalidCatalogProducts = false;
 
-    const graphQLInstance = GetGraphQLInstance();
     const routerInstance = GetRouterInstance();
-    const { open } = getContext('modal');
+    const { open, clearApolloCache } = getContext('modal');
 
     const headers = [{ label: 'Nom', mobile: true }, {label: 'Prix HT', mobile: true}, {label:'Ajouté le', mobile: false}, {label: 'Actions', mobile:false}]
 
@@ -47,8 +45,8 @@
         open(UpdateCatalogPrices, {
             catalog: catalog,
 			onClose: async(res) => {
-					graphQLInstance.clearApolloCache(GET_CATALOGS);
-                    routerInstance.reload();
+                clearApolloCache(GET_CATALOGS);
+                routerInstance.reload();
 			},
         })
     }

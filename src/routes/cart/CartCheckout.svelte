@@ -5,7 +5,6 @@
 	import { formatMoney } from "./../../helpers/app.js";
 	import FacturationForm from "./FacturationForm.svelte";
 	import SummaryForm from "./SummaryForm.svelte";
-	import GetGraphQLInstance from "../../services/SheaftGraphQL";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { GET_MY_CONSUMER_LEGALS } from "./queries";
@@ -29,10 +28,9 @@
 	import { normalizeUpdateLegals, normalizeCreateLegals } from "./cartForm";
 
 	const errorsHandler = new SheaftErrors();
-	const graphQLInstance = GetGraphQLInstance();
 	const routerInstance = GetRouterInstance();
 	const { open } = getContext("modal");
-	const { query, mutate } = getContext("api");
+	const { query, mutate, clearApolloCache } = getContext("api");
 
 	let step = 1;
 
@@ -189,8 +187,7 @@
 			},
 			errorNotification: "Impossible d'enregistrer vos informations de facturation"
 		})
-
-		graphQLInstance.clearApolloCache(user.id);
+		clearApolloCache(user.id);
 	};
 </script>
 
