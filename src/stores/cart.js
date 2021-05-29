@@ -72,7 +72,7 @@ const store = () => {
 					variables: { input: currentOrder },
 					errorsHandler,
 					success: (res) => {
-						if (["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.status))
+						if (["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.data.status))
 							return this.clearStorage();
 						else if (selectedCart)
 							return update(state => {
@@ -84,7 +84,7 @@ const store = () => {
 								return state;
 							});
 						else
-							selectedCart = res;
+							selectedCart = res.data;
 					},
 					error: () => {
 						this.clearStorage();
@@ -131,7 +131,7 @@ const store = () => {
 			}
 
 			const res = await context.mutate({
-				mutation: orderMutation, 
+				mutation: orderMutation,
 				variables,
 				errorsHandler,
 				success: (res) => {
@@ -180,7 +180,7 @@ const store = () => {
 				query: GET_CART,
 				variables: { input: cartId },
 				errorsHandler,
-				success: (res) => setters.updateWholeCart(res), 
+				success: (res) => setters.updateWholeCart(res.data),
 				errorNotification: "Impossible de choisir le panier"
 			});
 		},
