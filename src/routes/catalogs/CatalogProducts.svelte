@@ -44,7 +44,7 @@
 	})
 
 	const showUpdateCatalogPricesModal = () => open(UpdateCatalogPrices, {
-		catalog: catalog,
+		catalog,
 		onClose: async (res) => {
 			clearApolloCache(GET_CATALOGS);
 			routerInstance.reload();

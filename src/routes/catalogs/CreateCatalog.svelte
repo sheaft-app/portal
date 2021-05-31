@@ -16,7 +16,7 @@
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
-	const { mutate, isLoading } = getContext("api");
+	const { mutate } = getContext("api");
 
 	const handleSubmit = async () => await mutate({
 		mutation: CREATE_CATALOG,
@@ -39,7 +39,7 @@
 
 <TransitionWrapper>
 	<PageHeader name="Créer un nouveau catalogue" previousPage={CatalogRoutes.List}/>
-	<PageBody {errorsHandler} isLoading={$isLoading}>
+	<PageBody {errorsHandler}>
 		<CatalogForm submit={handleSubmit} close={handleClose} {errorsHandler}/>
 	</PageBody>
 </TransitionWrapper>
