@@ -24,7 +24,7 @@ export const validators = (product) => ({
     ...getDefaultFields(product, initialValues, ['pictures', 'catalogs', 'reference', 'returnableId', 'description', 'picture']),
     name: {
         value: product.name,
-        validators: ["required", "min:3"],
+        validators: ["required", "minLength:3"],
         enabled: true,
     },
     vat: {value: product.vat, validators: ["required"], enabled: !product.notSubjectToVat},

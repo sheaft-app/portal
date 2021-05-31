@@ -11,7 +11,7 @@ export const initialValues = {
 
 export const validators = (catalog) => ({
     ...getDefaultFields(catalog, initialValues, ['products']),
-    name: { value: catalog.name, validators: ['required', 'min:3'], enabled: true }
+    name: { value: catalog.name, validators: ['required', 'minLength:3'], enabled: true }
 });
 
 export const normalizeCatalog = catalog => ({

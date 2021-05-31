@@ -32,9 +32,8 @@ export const validators = (delivery) => ({
     denormalizedDeliveryHours: { value: delivery.denormalizedDeliveryHours, validators: ["required", "openingsDays", "openingsDates"], enabled: true },
     maxPurchaseOrders: { value: delivery.maxPurchaseOrdersPerTimeSlot, validators: ["min:1"], enabled: delivery.limitOrders },
     lockPurchaseOrders: { value: delivery.lockOrderHoursBeforeDelivery, validators: ["min:0"], enabled: delivery.limitOrders },
-    name: { value: delivery.name, validators: ["required", "min:3"], enabled: true }
+    name: { value: delivery.name, validators: ["required", "minLength:3"], enabled: true }
 });
-
 
 export const normalizeDelivery = delivery => omit({
     ...delivery,
