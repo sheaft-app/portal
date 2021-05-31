@@ -45,10 +45,8 @@
             "Découvrez et commandez en quelques clics des produits de qualité issus de la production locale.",
           url: link
         })
-        .then(() => console.log("Successful share"))
         .catch(error => console.error("Error sharing", error));
     } else {
-      console.log("Cannot do that");
     }
   };
 

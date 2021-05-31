@@ -65,8 +65,6 @@
 
             isLoading.set(false);
 
-            console.log(res);
-
             if (!res.success) {
                 await error(res);
                 if (errorNotification)

@@ -158,8 +158,6 @@
 					cardError = 'Les informations de votre carte ne sont pas valides.';
 					break;
 			}
-			console.log(response.ResultCode);
-			console.log(response.ResultMessage);
 		});
 	};
 

@@ -208,7 +208,6 @@
 							isLoadingCitySearch = false;
 						});
 				} catch (ex) {
-					console.log(ex);
 					isLoadingCitySearch = false;
 				}
 			}
