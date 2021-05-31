@@ -32,6 +32,9 @@ export const GET_STORE_DETAILS = gql`
 			name
 			email
 			phone
+			website
+			facebook
+			instagram
 			tags {
 				kind
 				name

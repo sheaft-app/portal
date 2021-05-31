@@ -46,6 +46,9 @@ export const GET_PRODUCER_DETAILS = gql`
 			description
 			picture
 			email
+			website
+			facebook
+			instagram
 			phone
 			closings {
 				id
@@ -93,7 +96,7 @@ export const GET_PRODUCER_DETAILS = gql`
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
-	query GetProducerProducts($companyId: ID!) {		
+	query GetProducerProducts($companyId: ID!) {
 		producer(id: $companyId) {
 			products {
 				id
