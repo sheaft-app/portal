@@ -90,6 +90,7 @@
 
 	const refetch = async () => {
 		isLoading.set(true);
+		prevFeed = [];
 		await searchProducts(0);
 	};
 
@@ -116,9 +117,6 @@
 				prevFeed = [...prevFeed, ...res.products];
 				lastFetchLength = res.products.length;
 				searchResults.set(prevFeed);
-
-				// on reset le feed pour les nouvelles query
-				if (page === 1) prevFeed = [];
 			},
 			errorNotification: "Impossible de récupérer les informations des produits."
 		});
