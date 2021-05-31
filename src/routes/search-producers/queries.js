@@ -74,6 +74,7 @@ export const GET_PRODUCER_DETAILS = gql`
 				id
 				status
 				delivery{
+					id
 					name
 					deliveryHours{
 						from

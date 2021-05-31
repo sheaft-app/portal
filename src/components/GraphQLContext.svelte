@@ -24,7 +24,7 @@
             const res = await graphQLInstance.query(
                 query,
                 variables,
-                errorsHandler?.Uuid
+                errorsHandler.Uuid
             );
 
             isLoading.set(false);
