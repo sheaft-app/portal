@@ -4,7 +4,7 @@ const cssImport = require("postcss-import");
 const cssNesting = require("postcss-nesting");
 
 const purgecss = require("@fullhuman/postcss-purgecss")({
-	safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/],
+	safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/,/cropper-/],
 	content: ["./src/**/*.html", "./src/**/*.svelte"],
 	defaultExtractor: (content) => {
 		const regExp = new RegExp(/[\w-/:]+(?<!:)/g);
