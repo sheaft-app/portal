@@ -77,7 +77,7 @@
 		<Swiper
 			threshold={6}
 			preventClicks={false}
-			preventClicksPropagation={false}
+			preventClicksPropagation={true}
 			breakpoints={{
 			320: {
 				slidesPerView: 1,

@@ -17,6 +17,7 @@
 	}
 	
 	function prev(e) {
+		e.stopPropagation();
 		cur = clamp( --cur, 0, slides.length-1 )
 	}
 	
@@ -24,7 +25,7 @@
 		cur = clamp( ++cur, 0, slides.length-1 )
 	}
 	
-  const ARROW_LEFT = 37;
+  	const ARROW_LEFT = 37;
 	const ARROW_RIGHT = 39;
 	function handleShortcut(e) {
     if (e.keyCode === ARROW_LEFT ) {
@@ -43,20 +44,20 @@
 		<div class="inner-wrapper">
 			{#each slides as slide, index}
 				{#if index === cur}
-          <div
-            class="slide px-1"
-          >
-            <slot {slide} {index} />	
-          </div>
+					<div
+						class="slide px-1"
+					>
+						<slot {slide} {index} />	
+					</div>
 				{/if}
 			{/each}
 			<div class="controls">
-        <button type="button" on:click="{()=>prev()}" class:invisible={cur === 0}>
-          <Icon data={faChevronLeft} />
-        </button>
-        <button type="button" on:click="{()=>next()}" class:invisible={cur === slides.length - 1}>
-          <Icon data={faChevronRight} />
-        </button>
+				<button type="button" on:click="{()=>prev()}" class:invisible={cur === 0}>
+					<Icon data={faChevronLeft} />
+				</button>
+				<button type="button" on:click="{()=>next()}" class:invisible={cur === slides.length - 1}>
+					<Icon data={faChevronRight} />
+				</button>
 			</div>
 		</div>
 	</div>
