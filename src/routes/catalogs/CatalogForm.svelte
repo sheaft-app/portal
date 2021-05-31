@@ -10,8 +10,8 @@
   import CatalogProducts from "./CatalogProducts.svelte";
   import CatalogKind from "../../enums/CatalogKind";
 
-  export let submit, catalog = { ...initialValues };
-  
+  export let submit, catalog = { ...initialValues }, errorsHandler;
+
 	(() => catalog = form.initialize(catalog, validators, initialValues))();
 
   let invalidCatalogProducts = false;
@@ -75,7 +75,7 @@
       </Toggle>
     </div>
   {/if}
-  <CatalogProducts {catalog} bind:invalidCatalogProducts />
+  <CatalogProducts {catalog} {errorsHandler} bind:invalidCatalogProducts />
   <p class="text-sm mt-5">* champs requis</p>
   <div class="form-control mt-5">
     <button

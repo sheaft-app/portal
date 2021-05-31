@@ -80,6 +80,6 @@
 <TransitionWrapper>
 	<PageHeader name="Modifier un catalogue" previousPage={CatalogRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
-		<CatalogForm submit={handleSubmit} bind:catalog/>
+		<CatalogForm submit={handleSubmit} bind:catalog {errorsHandler}/>
 	</PageBody>
 </TransitionWrapper>

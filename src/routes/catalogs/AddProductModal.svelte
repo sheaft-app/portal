@@ -4,7 +4,7 @@
     import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
     import { products } from "./stores";
 
-    export let alreadyPresentProducts = [], close;
+    export let alreadyPresentProducts = [], close, errorsHandler;
 
     const { query } = getContext("api");
 

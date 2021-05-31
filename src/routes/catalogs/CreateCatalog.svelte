@@ -11,7 +11,7 @@
 	import form from "../../stores/form";
 	import { getContext } from "svelte";
 	import { normalizeCatalog } from "./catalogForm";
-	
+
 	export let isInModal = false, onClose, close;
 
 	const errorsHandler = new SheaftErrors();
@@ -40,6 +40,6 @@
 <TransitionWrapper>
 	<PageHeader name="Créer un nouveau catalogue" previousPage={CatalogRoutes.List}/>
 	<PageBody {errorsHandler} isLoading={$isLoading}>
-		<CatalogForm submit={handleSubmit} close={handleClose}/>
+		<CatalogForm submit={handleSubmit} close={handleClose} {errorsHandler}/>
 	</PageBody>
 </TransitionWrapper>
