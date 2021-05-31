@@ -25,9 +25,11 @@
 	import {validators, initialValues} from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
 	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	export let submit, product = {...initialValues}, errorsHandler;
 
+	const routerInstance = GetRouterInstance();
 	const {open} = getContext("modal");
 	const {query, isLoading} = getContext("api");
 
