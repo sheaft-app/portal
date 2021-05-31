@@ -29,7 +29,7 @@ export const initialValues = {
 };
 
 export const validators = (values) => ({
-    ...getDefaultFields(values, initialValues, ['name', 'maxPurchaseOrdersPerTimeSlot', 'deliveryHours', 'lockOrderHoursBeforeDelivery', 'closings', 'denormalizedClosings']),
+    ...getDefaultFields(values, initialValues, ['maxPurchaseOrdersPerTimeSlot', 'deliveryHours', 'lockOrderHoursBeforeDelivery', 'closings', 'denormalizedClosings']),
     kind: { value: values.kind, validators: ["required", "min:3"], enabled: true },
     openings: { value: values.denormalizedDeliveryHours, validators: ["required", "openingsDays", "openingsDates"], enabled: true },
     maxPurchaseOrders: { value: values.maxPurchaseOrdersPerTimeSlot, validators: ["min:1"], enabled: values.limitOrders },
