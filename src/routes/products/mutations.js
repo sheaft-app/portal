@@ -44,14 +44,6 @@ export const CREATE_PRODUCT = gql`
 	}
 `;
 
-export const UPLOAD_PRODUCTS = gql`
-	mutation UploadProducts($files: [string]) {
-		uploadProducts(files: $files) {
-			id
-		}
-	}
-`;
-
 export const UPDATE_PRODUCT = gql`
 	mutation UpdateProduct($input: UpdateProductInput!) {
 		updateProduct(input: $input) {

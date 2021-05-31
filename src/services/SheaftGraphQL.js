@@ -1,6 +1,7 @@
 import { query, mutate } from "svelte-apollo";
 import { from } from "apollo-boost";
 import { createHttpLink } from "apollo-link-http";
+import { createUploadLink } from 'apollo-upload-client';
 import ApolloClient from "apollo-client";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -341,7 +342,7 @@ class SheaftGraphQL {
 let graphQLInstance = null;
 
 export function InitGraphQL(authInstance, url, errHandler) {
-	const httpLink = createHttpLink({
+	const httpLink = createUploadLink({
 		uri: url + "/graphql",
 	});
 

@@ -13,8 +13,8 @@
     export let isLoading = writable(false);
 
 
-    const clearApolloCache = (data) => Array.isArray(data) 
-        ? data.forEach((c) => graphQLInstance.clearApolloCache(c)) 
+    const clearApolloCache = (data) => Array.isArray(data)
+        ? data.forEach((c) => graphQLInstance.clearApolloCache(c))
         : graphQLInstance.clearApolloCache(data);
 
     const query = async ({ query, variables, errorsHandler, success = () => {}, error = () => {}, errorNotification }) => {

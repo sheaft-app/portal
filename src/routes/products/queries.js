@@ -1,5 +1,13 @@
 import gql from "graphql-tag";
 
+export const UPLOAD_PRODUCTS = gql`
+	query ImportProducts($file: Upload!) {
+		importProducts(file: $file) {
+			id
+		}
+	}
+`;
+
 export const GET_PRODUCTS = gql`
 	query GetProducts(
 		$first: Int

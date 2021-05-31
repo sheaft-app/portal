@@ -22,6 +22,7 @@
     "apollo-client": "~2.6.10",
     "apollo-link-context": "~1.0.20",
     "apollo-link-http": "~1.5.17",
+    "apollo-upload-client": "^15.0.0",
     "cleave.js": "~1.6.0",
     "cropperjs": "~1.5.11",
     "date-fns": "~2.21.1",
