@@ -9,6 +9,8 @@ export const SEARCH_PRODUCERS = gql`
 				picture
 				name
 				address {
+					line1
+					line2
 					city
 					latitude
 					longitude

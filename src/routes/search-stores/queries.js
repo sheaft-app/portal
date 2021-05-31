@@ -8,6 +8,8 @@ export const SEARCH_STORES = gql`
 				id
 				name
 				address {
+					line1
+					line2
 					city
 					latitude
 					longitude
