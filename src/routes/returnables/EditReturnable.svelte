@@ -54,6 +54,6 @@
 <TransitionWrapper>
 	<PageHeader name="Modifier la consigne" previousPage={ReturnableRoutes.List} {buttons}/>
 	<PageBody {errorsHandler} {isLoading} loadingMessage="Récupération des informations de votre consigne en cours... veuillez patienter">
-		<ReturnableForm submit={handleSubmit} {returnable}/>
+		<ReturnableForm submit={handleSubmit} bind:returnable />
 	</PageBody>
 </TransitionWrapper>

@@ -9,7 +9,7 @@
 
   export let submit, returnable = { ...initialValues }, isInModal = false, close = null;
 
-  (() => form.initialize(returnable, validators))();
+  returnable = form.initialize(returnable, validators, initialValues);
 
   onDestroy(async () => {
     await form.destroy();
