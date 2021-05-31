@@ -24,7 +24,11 @@ export const timeSpanToTime = (timeSpan) => {
 	}
 
 	const result = /^P(?!$)((?<years>\d+)Y)?((?<months>\d+)M)?((?<weeks>\d+)W)?((?<days>\d+)D)?(T(?=\d+[HMS])((?<hours>\d+)H)?((?<minutes>\d+)M)?((?<seconds>\d+)S)?)?$/.exec(timeSpan)
-	return result.groups;
+	return {
+		hours: result.groups.hours ? result.groups.hours : '0',
+		minutes: result.groups.minutes ? result.groups.minutes : '0',
+		seconds: result.groups.seconds ? result.groups.seconds : '0'
+	};
 };
 
 export const groupBy = (array, f) => {
