@@ -95,7 +95,7 @@
 
 <Meta metadata={metadata}/>
 
-<TransitionWrapper hasRightPanel>
+<TransitionWrapper hasRightPanel={authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}>
 	{#if isLoading}
 		<div class="flex flex-wrap mt-5 mb-5 justify-center xl:justify-between">
 			<div
@@ -338,7 +338,9 @@
 			</div>
 		{/if}
 
-		<Cart/>
+		{#if authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}
+			<Cart/>
+		{/if}
 	{/if}
 </TransitionWrapper>
 

@@ -165,7 +165,7 @@
 
 <Meta metadata={metadata}/>
 
-<TransitionWrapper hasRightPanel>
+<TransitionWrapper hasRightPanel={authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}>
 	<div class="container m-auto">
 		{#if !authInstance.isInRole([Roles.Producer.Value])}
 			<button
@@ -499,11 +499,10 @@
 			</div>
 		{/if}
 	</div>
-	<div
-		class="fixed overflow-hidden shadow right-0 top-0 bg-gray-100 h-screen w-3/12
-      transition duration-300 ease-in-out cart-panel">
-		<Cart/>
-	</div>
+	
+	{#if authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}
+	<Cart/>
+{/if}
 
 	{#if $selectedItem}
 		<div

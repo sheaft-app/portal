@@ -258,7 +258,9 @@
 			</div>
 		{/if}
 
-		<Cart/>
+		{#if authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}
+			<Cart/>
+		{/if}
 	{/if}
 </TransitionWrapper>
 
