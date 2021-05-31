@@ -38,22 +38,18 @@
 		$products = $products;
 	}
 
-	const addProduct = () => {
-		open(AddProductModal, {
-			errorsHandler: errorsHandler,
-			alreadyPresentProducts: $products.map((p) => p.id)
-		})
-	}
+	const addProduct = () => open(AddProductModal, {
+		errorsHandler,
+		alreadyPresentProducts: $products.map((p) => p.id)
+	})
 
-	const showUpdateCatalogPricesModal = () => {
-		open(UpdateCatalogPrices, {
-			catalog: catalog,
-			onClose: async (res) => {
-				clearApolloCache(GET_CATALOGS);
-				routerInstance.reload();
-			},
-		})
-	}
+	const showUpdateCatalogPricesModal = () => open(UpdateCatalogPrices, {
+		catalog: catalog,
+		onClose: async (res) => {
+			clearApolloCache(GET_CATALOGS);
+			routerInstance.reload();
+		},
+	})
 
 	$: $products = catalog.products;
 	$: invalidCatalogProducts = $products.length == 0 || ($products.length > 0 && $products.filter((p) => !p.wholeSalePricePerUnit).length);
