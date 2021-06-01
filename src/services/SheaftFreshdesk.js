@@ -24,14 +24,14 @@ export function openHelpModal() {
 }
 
 export function createNewTicket(subject, profile, errors) {
-	FreshworksWidget("open", "ticketForm",{
+	FreshworksWidget("open", "ticketForm", {
 		subject: subject,
 		custom_fields: {
-		  cf_profile: JSON.stringify(profile),
-		  cf_page: location.hash,
-		  cf_errors: errors ? JSON.stringify(errors) : null
-		}
-	  });
+			cf_profile: JSON.stringify(profile),
+			cf_page: location.hash,
+			cf_errors: errors ? JSON.stringify(errors) : null,
+		},
+	});
 }
 
 export function logoutFreshdesk() {
@@ -41,8 +41,7 @@ export function logoutFreshdesk() {
 async function retrieveFreshdeskToken() {
 	var postSettings = {
 		method: "POST",
-		body:
-			'{"operationName":"FreshdeskToken","variables":{},"query":"query FreshdeskToken {freshdeskToken}"}',
+		body: '{"operationName":"FreshdeskToken","variables":{},"query":"query FreshdeskToken {freshdeskToken}"}',
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + GetAuthInstance().user.access_token,
@@ -50,9 +49,7 @@ async function retrieveFreshdeskToken() {
 	};
 
 	try {
-		var result = await (
-			await fetch(config.api + "/graphql", postSettings)
-		).json();
+		var result = await (await fetch(config.api + "/graphql", postSettings)).json();
 		if (result && result.data && result.data.freshdeskToken) {
 			return result.data.freshdeskToken;
 		}

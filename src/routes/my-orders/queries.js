@@ -1,20 +1,8 @@
 import gql from "graphql-tag";
 
 export const MY_ORDERS = gql`
-	query MyOrders(
-		$first: Int
-		$last: Int
-		$after: String
-		$before: String
-		$orderBy: [PurchaseOrderSortInput!]
-	) {
-		purchaseOrders(
-			first: $first
-			last: $last
-			after: $after
-			before: $before
-			order: $orderBy
-		) {
+	query MyOrders($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PurchaseOrderSortInput!]) {
+		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $orderBy) {
 			pageInfo {
 				startCursor
 				endCursor
@@ -114,7 +102,7 @@ export const GET_MY_ORDER_DETAILS = gql`
 
 export const MY_VALIDATING_ORDERS = gql`
 	query {
-		orders(where: { or: [{ status: { in: [WAITING] }}, { status: { in: [VALIDATED]}}]}) {
+		orders(where: { or: [{ status: { in: [WAITING] } }, { status: { in: [VALIDATED] } }] }) {
 			nodes {
 				id
 				status
@@ -123,4 +111,4 @@ export const MY_VALIDATING_ORDERS = gql`
 			}
 		}
 	}
-`
+`;

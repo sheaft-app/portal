@@ -9,13 +9,7 @@ export const UPLOAD_PRODUCTS = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-	query GetProducts(
-		$first: Int
-		$after: String
-		$last: Int
-		$before: String
-		$orderBy: [ProductSortInput!]
-	) {
+	query GetProducts($first: Int, $after: String, $last: Int, $before: String, $orderBy: [ProductSortInput!]) {
 		products(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
 				startCursor
@@ -70,7 +64,7 @@ export const GET_PRODUCT_DETAILS = gql`
 				vat
 				wholeSalePrice
 			}
-			producer{
+			producer {
 				id
 				notSubjectToVat
 			}
@@ -82,7 +76,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			available
 			visibleTo
-			pictures{
+			pictures {
 				id
 				position
 				large
@@ -97,7 +91,7 @@ export const GET_PRODUCER_DETAILS = gql`
 			notSubjectToVat
 		}
 	}
-`
+`;
 
 export const GET_PRODUCT_RATINGS = gql`
 	query GetProductRatings($id: ID!) {
@@ -123,7 +117,7 @@ export const GET_PRODUCT_RATINGS = gql`
 
 export const HAS_PRODUCTS_IMPORT_INPROGRESS = gql`
 	query hasPendingJobs($kinds: [JobKind!]) {
-		hasPendingJobs(kinds:$kinds)
+		hasPendingJobs(kinds: $kinds)
 	}
 `;
 

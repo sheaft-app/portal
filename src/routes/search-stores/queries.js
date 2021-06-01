@@ -18,7 +18,7 @@ export const SEARCH_STORES = gql`
 				tags {
 					name
 				}
-				agreement{
+				agreement {
 					id
 					status
 				}
@@ -46,7 +46,7 @@ export const GET_STORE_DETAILS = gql`
 				from
 				to
 			}
-			agreement{
+			agreement {
 				id
 				status
 			}
@@ -93,7 +93,7 @@ export const GET_MY_BUSINESS_LOCATION = gql`
 
 export const GET_DELIVERIES = gql`
 	query GetDeliveries {
-		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] }}) {
+		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
 			nodes {
 				id
 				name
@@ -109,7 +109,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_CATALOGS = gql`
 	query GetCatalogs {
-		catalogs(where: { kind: { in: [STORES] }}, first:50) {
+		catalogs(where: { kind: { in: [STORES] } }, first: 50) {
 			nodes {
 				id
 				name

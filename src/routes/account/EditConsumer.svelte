@@ -6,7 +6,8 @@
 
 	export let errorsHandler;
 
-	let consumer = { ... initialValues };
+	let consumer = { ...initialValues };
+
 </script>
 
 <ProfileForm
@@ -16,5 +17,5 @@
 	{initialValues}
 	updateQuery={UPDATE_CONSUMER}
 	getQuery={GET_CONSUMER_DETAILS}
-	{errorsHandler}>
-</ProfileForm>
+	{errorsHandler}
+/>

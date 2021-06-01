@@ -10,20 +10,17 @@
 	import "swiper/components/navigation/navigation.min.css";
 	import Modal from "./components/modal/Modal.svelte";
 	import Nav from "./components/nav/Nav.svelte";
-	import {selectedItem} from "./stores/app.js";
-	import {authInitialized, authAuthenticated} from "./stores/auth.js";
-	import {navExpended} from "./components/nav/store.js";
-	import {config} from "./configs/config.js";
+	import { selectedItem } from "./stores/app.js";
+	import { authInitialized, authAuthenticated } from "./stores/auth.js";
+	import { navExpended } from "./components/nav/store.js";
+	import { config } from "./configs/config.js";
 	import Tailwindcss from "./components/Tailwind.svelte";
 	import Roles from "./enums/Roles";
-	import {
-		loginFreshdesk,
-		logoutFreshdesk
-	} from "./services/SheaftFreshdesk.js";
+	import { loginFreshdesk, logoutFreshdesk } from "./services/SheaftFreshdesk.js";
 	import OidcRoutes from "./routes/oidc/routes";
-	import {notificationsCount} from "./components/notifications/store";
-	import {GET_UNREAD_NOTIFICATIONS_COUNT} from "./components/notifications/queries";
-	import mangoPay from './../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
+	import { notificationsCount } from "./components/notifications/store";
+	import { GET_UNREAD_NOTIFICATIONS_COUNT } from "./components/notifications/queries";
+	import mangoPay from "./../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js";
 	import "cropperjs/dist/cropper.min.css";
 
 	export let authInstance;
@@ -41,10 +38,10 @@
 	let isLoading = true;
 
 	if ("serviceWorker" in navigator) {
-		navigator.serviceWorker.register("./sw.js", {scope: "./"});
+		navigator.serviceWorker.register("./sw.js", { scope: "./" });
 	}
 
-	const initSubscription = authInitialized.subscribe(async initialized => {
+	const initSubscription = authInitialized.subscribe(async (initialized) => {
 		if (initialized) {
 			isLoading = false;
 
@@ -54,7 +51,7 @@
 		}
 	});
 
-	const authSubscription = authAuthenticated.subscribe(async authenticated => {
+	const authSubscription = authAuthenticated.subscribe(async (authenticated) => {
 		if (!authenticated) {
 			await logoutFreshdesk();
 			signalrInstance.stop();
@@ -65,23 +62,24 @@
 			await query({
 				query: GET_UNREAD_NOTIFICATIONS_COUNT,
 				errorsHandler: errorsHandlers,
-				success: (res) => notificationsCount.set(res)
-			})
+				success: (res) => notificationsCount.set(res),
+			});
 
-			if (routerInstance.currentUrl == OidcRoutes.Callback.Path || routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path)
+			if (
+				routerInstance.currentUrl == OidcRoutes.Callback.Path ||
+				routerInstance.currentUrl == OidcRoutes.CallbackSilent.Path
+			)
 				routerInstance.goTo("/", null, true);
 		}
 	});
 
-	window.addEventListener("beforeinstallprompt", e => {
-	});
+	window.addEventListener("beforeinstallprompt", (e) => {});
 
-	window.addEventListener("appinstalled", evt => {
+	window.addEventListener("appinstalled", (evt) => {
 		//TODO: register user points
 	});
 
-	window.addEventListener("load", () => {
-	});
+	window.addEventListener("load", () => {});
 
 	onMount(async () => {
 		isLoading = true;
@@ -99,7 +97,7 @@
 			await authInstance.login();
 		}
 
-		const progress = await fetch(config.content + '/progress/departments.json');
+		const progress = await fetch(config.content + "/progress/departments.json");
 		let data = await progress.json();
 
 		allDepartmentsProgress.set(data);
@@ -112,23 +110,17 @@
 		window.removeEventListener("load");
 		window.removeEventListener("appinstalled");
 
-		if (authSubscription && authSubscription.unsubscribe)
-			authSubscription.unsubscribe();
+		if (authSubscription && authSubscription.unsubscribe) authSubscription.unsubscribe();
 
-		if (initSubscription && initSubscription.unsubscribe)
-			initSubscription.unsubscribe();
+		if (initSubscription && initSubscription.unsubscribe) initSubscription.unsubscribe();
 
-		if (authInstance)
-			authInstance.unregister();
+		if (authInstance) authInstance.unregister();
 
-		if (routerInstance)
-			routerInstance.unregister();
+		if (routerInstance) routerInstance.unregister();
 
-		if (guardInstance)
-			guardInstance.unregister();
+		if (guardInstance) guardInstance.unregister();
 
-		if (signalrInstance)
-			await signalrInstance.stop();
+		if (signalrInstance) await signalrInstance.stop();
 	});
 
 </script>
@@ -141,7 +133,8 @@
 				data-name="FEUILLES V3"
 				xmlns="http://www.w3.org/2000/svg"
 				style="height:150px;width:auto;"
-				viewBox="0 0 217.22 220.01">
+				viewBox="0 0 217.22 220.01"
+			>
 				<defs>
 					<style>
 						.cls-1,
@@ -171,39 +164,32 @@
 							stroke-linejoin: round;
 							stroke-width: 3px;
 						}
+
 					</style>
 				</defs>
 				<title>FAVICON_SHEAFT_V1_white</title>
 				<g id="FRAISE">
-					<path
-						class="cls-1"
-						d="M132,162.12s52.52-.66,72.3-48.83c12.54-30.51,5.76-73.38-1.9-99.37"/>
-					<path
-						class="cls-1"
-						d="M201.32,11.68c-26.91-4.35-73.44-12-102.39,4.1C53.22,41.2,49.87,96,49.87,96"/>
-					<circle class="cls-2" cx="175.01" cy="33.92" r="7.15"/>
-					<circle class="cls-2" cx="132.75" cy="89.66" r="7.15"/>
-					<circle class="cls-2" cx="164.44" cy="113.51" r="7.15"/>
-					<circle class="cls-2" cx="87.87" cy="82.5" r="7.15"/>
-					<circle class="cls-2" cx="113.51" cy="41.08" r="7.15"/>
-					<circle class="cls-2" cx="182.16" cy="75.35" r="7.15"/>
-					<circle class="cls-2" cx="113.51" cy="133.66" r="7.15"/>
+					<path class="cls-1" d="M132,162.12s52.52-.66,72.3-48.83c12.54-30.51,5.76-73.38-1.9-99.37" />
+					<path class="cls-1" d="M201.32,11.68c-26.91-4.35-73.44-12-102.39,4.1C53.22,41.2,49.87,96,49.87,96" />
+					<circle class="cls-2" cx="175.01" cy="33.92" r="7.15" />
+					<circle class="cls-2" cx="132.75" cy="89.66" r="7.15" />
+					<circle class="cls-2" cx="164.44" cy="113.51" r="7.15" />
+					<circle class="cls-2" cx="87.87" cy="82.5" r="7.15" />
+					<circle class="cls-2" cx="113.51" cy="41.08" r="7.15" />
+					<circle class="cls-2" cx="182.16" cy="75.35" r="7.15" />
+					<circle class="cls-2" cx="113.51" cy="133.66" r="7.15" />
 				</g>
 				<path
 					class="cls-3"
-					d="M20.69,218.51c-6-73.94,41.35-65.24,51.15-62.67,1.12.29-21.12,13-4.84,39C77.41,211.43,27.35,207.26,20.69,218.51Z"/>
-				<path
-					class="cls-3"
-					d="M7.2,97.41c-.91,43.29,34,25.45,34,25.45C24.48,120.72,13.46,104.07,7.2,97.41Z"/>
-				<path
-					class="cls-2"
-					d="M89.25,209.55c-40.95-31.1-10.85-52-10.85-52C109.46,173.75,85,198.13,89.25,209.55Z"/>
-				<path
-					class="cls-4"
-					d="M1.5,162.34c36.09-45.51,58.21-9.16,58.21-9.16C40.57,188.18,14.35,158.14,1.5,162.34Z"/>
+					d="M20.69,218.51c-6-73.94,41.35-65.24,51.15-62.67,1.12.29-21.12,13-4.84,39C77.41,211.43,27.35,207.26,20.69,218.51Z"
+				/>
+				<path class="cls-3" d="M7.2,97.41c-.91,43.29,34,25.45,34,25.45C24.48,120.72,13.46,104.07,7.2,97.41Z" />
+				<path class="cls-2" d="M89.25,209.55c-40.95-31.1-10.85-52-10.85-52C109.46,173.75,85,198.13,89.25,209.55Z" />
+				<path class="cls-4" d="M1.5,162.34c36.09-45.51,58.21-9.16,58.21-9.16C40.57,188.18,14.35,158.14,1.5,162.34Z" />
 				<path
 					class="cls-2"
-					d="M122.67,207.88c-30.45-12-13.73-29.82-13.73-29.82C131.09,182.69,118.44,201.65,122.67,207.88Z"/>
+					d="M122.67,207.88c-30.45-12-13.73-29.82-13.73-29.82C131.09,182.69,118.44,201.65,122.67,207.88Z"
+				/>
 			</svg>
 			<div class="text-white font-bold" style="font-size:3em">SHEAFT</div>
 		</div>
@@ -214,20 +200,25 @@
 			on:click={() => selectedItem.set(null)}
 			class="cursor-pointer w-full h-full opacity-50 bg-black fixed hidden
       lg:block"
-      style="z-index: 7;" />
-  	{/if}
+			style="z-index: 7;"
+		/>
+	{/if}
 	<Nav />
 	<AcceptCookiePlaceholder />
-	<main class:relative={!$navExpended} class:fixed={$navExpended} class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}>
+	<main
+		class:relative={!$navExpended}
+		class:fixed={$navExpended}
+		class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}
+	>
 		<Modal>
-		<div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
-			<Router routes={guardInstance.routes} />
-		</div>
+			<div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
+				<Router routes={guardInstance.routes} />
+			</div>
 		</Modal>
 	</main>
 {/if}
 
-<Tailwindcss/>
+<Tailwindcss />
 
 <style global lang="scss">
 	svg {
@@ -286,8 +277,8 @@
 
 	body {
 		margin: 0;
-		font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen,
-		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+		font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+			Helvetica Neue, sans-serif;
 		font-size: 14px;
 		line-height: 1.5;
 		color: #205164;
@@ -427,7 +418,6 @@
 			padding-top: 45px;
 		}
 	}
-
 
 	.material-icons {
 		margin-top: 0;
@@ -710,18 +700,9 @@
 		}
 	}
 
-	@use
-	postcss-preset-env
-
-	;
-	@use
-	postcss-nested-ancestors
-
-	;
-	@use
-	postcss-nested
-
-	;
+	@use postcss-preset-env;
+	@use postcss-nested-ancestors;
+	@use postcss-nested;
 
 	.skeleton-box {
 		position: relative;
@@ -736,11 +717,11 @@
 			left: 0;
 			transform: translateX(-100%);
 			background-image: linear-gradient(
-					90deg,
-					rgba(255, 255, 255, 0) 0,
-					rgba(255, 255, 255, 0.2) 20%,
-					rgba(255, 255, 255, 0.5) 60%,
-					rgba(255, 255, 255, 0)
+				90deg,
+				rgba(255, 255, 255, 0) 0,
+				rgba(255, 255, 255, 0.2) 20%,
+				rgba(255, 255, 255, 0.5) 60%,
+				rgba(255, 255, 255, 0)
 			);
 			animation: shimmer 1s infinite;
 			content: "";
@@ -798,7 +779,6 @@
 		color: #ff4081;
 	}
 
-
 	.swiper-button-next {
 		background-color: #ff3f80;
 		border-radius: 50px;
@@ -836,8 +816,8 @@
 		visibility: hidden;
 		opacity: 0;
 		pointer-events: none;
-		transition: .2s ease-out;
-		transform: translate(-50%, 5px)
+		transition: 0.2s ease-out;
+		transform: translate(-50%, 5px);
 	}
 
 	[data-tooltip]:before {
@@ -859,7 +839,7 @@
 		text-align: center;
 		font-size: 14px;
 		line-height: 1.2;
-		transition: .2s ease-out
+		transition: 0.2s ease-out;
 	}
 
 	[data-tooltip]:after {
@@ -880,11 +860,12 @@
 	[data-tooltip]:hover:after {
 		visibility: visible;
 		opacity: 1;
-		transform: translate(-50%, 0)
+		transform: translate(-50%, 0);
 	}
-	[data-tooltip=false]:hover:before,
-	[data-tooltip=false]:hover:after {
+	[data-tooltip="false"]:hover:before,
+	[data-tooltip="false"]:hover:after {
 		visibility: hidden;
 		opacity: 0;
 	}
+
 </style>

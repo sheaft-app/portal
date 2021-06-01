@@ -8,7 +8,7 @@ const choose = "/choose";
 
 const RegisterRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Anonymous.Value],
+	Roles: [Roles.Anonymous.Value],
 	Owner: {
 		Name: "Enregistrement de la société",
 		Icon: null,
@@ -16,8 +16,8 @@ const RegisterRoutes = {
 		SubPart: `${owner}`,
 		Params: {
 			id: null,
-		}
-	},	
+		},
+	},
 	Choose: {
 		Name: "Choix du type de compte",
 		Icon: null,
@@ -29,7 +29,7 @@ const RegisterRoutes = {
 		Icon: null,
 		Path: `${prefix}${consumer}`,
 		SubPart: `${consumer}`,
-	}
+	},
 };
 
 export default RegisterRoutes;

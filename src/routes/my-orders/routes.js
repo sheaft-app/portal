@@ -10,7 +10,7 @@ const details = "/:id";
 
 const MyOrderRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Consumer.Value, Roles.Store.Value],
+	Roles: [Roles.Consumer.Value, Roles.Store.Value],
 	List: {
 		Name: "Mes commandes",
 		Icon: faCreditCard,
@@ -24,7 +24,7 @@ const MyOrderRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 			},
-		}
+		},
 	},
 	Details: {
 		Name: "Détail de la commande",
@@ -33,8 +33,8 @@ const MyOrderRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
-	}
+		},
+	},
 };
 
 export default MyOrderRoutes;

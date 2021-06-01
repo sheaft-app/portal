@@ -1,18 +1,18 @@
-import {writable} from "svelte/store";
-import {GET_CART, GET_MOST_RECENT_CART} from "./queries";
-import {CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER} from "./mutations.js";
+import { writable } from "svelte/store";
+import { GET_CART, GET_MOST_RECENT_CART } from "./queries";
+import { CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER } from "./mutations.js";
 import orderBy from "lodash/orderBy";
 
 export const card = writable({
-    data: {
-        cardName: null,
-        cardNumber: null,
-        cardExpirationDate: null,
-        cardCvx: null,
-        cardType: "CB_VISA_MASTERCARD",
-    },
-    year: null,
-    month: null
+	data: {
+		cardName: null,
+		cardNumber: null,
+		cardExpirationDate: null,
+		cardCvx: null,
+		cardType: "CB_VISA_MASTERCARD",
+	},
+	year: null,
+	month: null,
 });
 
 const store = () => {
@@ -34,14 +34,14 @@ const store = () => {
 		totalReturnableOnSalePrice: 0,
 		returnablesCount: 0,
 		conflicts: [],
-		warningInfo: null
-	}
+		warningInfo: null,
+	};
 
-	const {subscribe, set, update} = writable(state);
+	const { subscribe, set, update } = writable(state);
 
 	const methods = {
 		async initialize(c, errorsHandlerInstance, authenticated = false) {
-			if(initialized) return;
+			if (initialized) return;
 
 			let selectedCart = null;
 
@@ -60,8 +60,8 @@ const store = () => {
 				await context.query({
 					query: GET_MOST_RECENT_CART,
 					errorsHandler,
-					success: (res) => selectedCart = res,
-					errorNotification: "Impossible de récupérer les informations du panier le plus récent"
+					success: (res) => (selectedCart = res),
+					errorNotification: "Impossible de récupérer les informations du panier le plus récent",
 				});
 			}
 
@@ -74,22 +74,18 @@ const store = () => {
 						if (!res || !res.data || ["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.data.status))
 							return this.clearStorage();
 						else if (selectedCart)
-							return update(state => {
-								state.conflicts = [
-									selectedCart,
-									res.data
-								];
+							return update((state) => {
+								state.conflicts = [selectedCart, res.data];
 								state.isInitializing = false;
 								return state;
 							});
-						else
-							selectedCart = res.data;
+						else selectedCart = res.data;
 					},
 					error: () => {
 						this.clearStorage();
 					},
-					errorNotification: "Imposible de récupérer les informations du panier"
-				})
+					errorNotification: "Imposible de récupérer les informations du panier",
+				});
 			}
 
 			if (selectedCart) {
@@ -99,7 +95,7 @@ const store = () => {
 				await this.updateCart();
 			}
 
-			update(state => {
+			update((state) => {
 				state.isInitializing = false;
 				return state;
 			});
@@ -107,7 +103,7 @@ const store = () => {
 			initialized = true;
 		},
 		async updateCart(donation = "NONE") {
-			update(state => {
+			update((state) => {
 				state.warningInfo = null;
 				return state;
 			});
@@ -122,7 +118,7 @@ const store = () => {
 				id: state.userCurrentOrder,
 				donation,
 				products: getters.getNormalizedProducts(),
-				deliveries: getters.getNormalizedSelectedDeliveries()
+				deliveries: getters.getNormalizedSelectedDeliveries(),
 			};
 
 			if (!state.userCurrentOrder) {
@@ -138,36 +134,38 @@ const store = () => {
 				},
 				errorNotification: "Impossible de mettre à jour votre panier",
 				error: (response) => {
-					const invalidProductsError = response.errors.find((e) => e.message.includes('produits sont invalides'));
+					const invalidProductsError = response.errors.find((e) => e.message.includes("produits sont invalides"));
 
 					if (invalidProductsError) {
 						const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
 						let products = JSON.parse(localStorage.getItem("user_cart"));
-						localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
+						localStorage.setItem("user_cart", JSON.stringify(products.filter((p) => !ids.includes(p.id))));
 						setters.disableProducts(ids);
 					}
 
-					const disabledProductsError = response.errors.find((e) => e.message.includes('sont actuellement indisponibles'));
+					const disabledProductsError = response.errors.find((e) =>
+						e.message.includes("sont actuellement indisponibles")
+					);
 
 					if (disabledProductsError) {
 						const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
 						let products = JSON.parse(localStorage.getItem("user_cart"));
-						localStorage.setItem('user_cart', JSON.stringify(products.filter((p) => !ids.includes(p.id))));
+						localStorage.setItem("user_cart", JSON.stringify(products.filter((p) => !ids.includes(p.id))));
 						setters.disableProducts(ids);
 					}
 
 					if (invalidProductsError || disabledProductsError) {
-						update(state => {
+						update((state) => {
 							state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
 							return state;
 						});
 					}
 
-					return update(state => {
+					return update((state) => {
 						state.isSaving = false;
 						return state;
 					});
-				}
+				},
 			});
 
 			return res.status && ["CREATED", "UPDATED"].includes(res.status);
@@ -179,23 +177,34 @@ const store = () => {
 				variables: { input: cartId },
 				errorsHandler,
 				success: (res) => setters.updateWholeCart(res.data),
-				errorNotification: "Impossible de choisir le panier"
+				errorNotification: "Impossible de choisir le panier",
 			});
 		},
 		addProduct(productId, quantity) {
-			localStorage.setItem("user_cart", JSON.stringify([...getters.getValidProducts().map((i) => ({
-				id: i.id,
-				quantity: i.quantity
-			})), {
-				id: productId,
-				quantity
-			}]));
+			localStorage.setItem(
+				"user_cart",
+				JSON.stringify([
+					...getters.getValidProducts().map((i) => ({
+						id: i.id,
+						quantity: i.quantity,
+					})),
+					{
+						id: productId,
+						quantity,
+					},
+				])
+			);
 		},
 		updateCartInStorage() {
-			localStorage.setItem("user_cart", JSON.stringify(getters.getValidProducts().map((i) => ({
-				id: i.id,
-				quantity: i.quantity
-			}))));
+			localStorage.setItem(
+				"user_cart",
+				JSON.stringify(
+					getters.getValidProducts().map((i) => ({
+						id: i.id,
+						quantity: i.quantity,
+					}))
+				)
+			);
 		},
 		clearStorage() {
 			localStorage.removeItem("user_last_transaction");
@@ -208,15 +217,15 @@ const store = () => {
 				delivery: {
 					id: delivery.deliveryMode.id,
 					address: delivery.deliveryMode.address,
-					kind: delivery.deliveryMode.kind
+					kind: delivery.deliveryMode.kind,
 				},
 				deliveryHour: {
-					...delivery.expectedDelivery
+					...delivery.expectedDelivery,
 				},
 				producerId: delivery.deliveryMode.producer.id,
 				producerName: delivery.deliveryMode.producer.name,
 			}));
-		}
+		},
 	};
 
 	const getters = {
@@ -224,36 +233,32 @@ const store = () => {
 			return state.products.find((i) => i.id == productId);
 		},
 		getSortedProductsByProducerName() {
-			return orderBy(state.products, i => i.producer.name, ['asc']);
+			return orderBy(state.products, (i) => i.producer.name, ["asc"]);
 		},
 		getProducersIds() {
 			return state.products
-				.map(p => p.producer.id)
-				.reduce(
-					(unique, item) =>
-						unique.includes(item) ? unique : [...unique, item],
-					[]
-				);
+				.map((p) => p.producer.id)
+				.reduce((unique, item) => (unique.includes(item) ? unique : [...unique, item]), []);
 		},
 		getProductsMappedByProducer() {
 			return state.products.reduce((producers, product) => {
-				let producer = producers.find(p => p.id == product.producer.id);
+				let producer = producers.find((p) => p.id == product.producer.id);
 
 				producer
-					? producer.nbProducts += product.quantity
-					: producers = [
-						...producers,
-						{
-							...product.producer,
-							nbProducts: product.quantity
-						}
-					];
+					? (producer.nbProducts += product.quantity)
+					: (producers = [
+							...producers,
+							{
+								...product.producer,
+								nbProducts: product.quantity,
+							},
+					  ]);
 
 				return producers;
 			}, []);
 		},
 		getValidProducts() {
-			return state.products.filter(p => p.quantity > 0 && !p.disabled && !p.producer.disabled);
+			return state.products.filter((p) => p.quantity > 0 && !p.disabled && !p.producer.disabled);
 		},
 		getDeliveryByProducerId(_producerId) {
 			return state.selectedDeliveries.find((d) => d.producerId == _producerId);
@@ -264,9 +269,9 @@ const store = () => {
 		getNormalizedProducts() {
 			let products = JSON.parse(localStorage.getItem("user_cart"));
 
-			return products.map(product => ({
+			return products.map((product) => ({
 				id: product.id,
-				quantity: product.quantity
+				quantity: product.quantity,
 			}));
 		},
 		getNormalizedSelectedDeliveries() {
@@ -286,11 +291,9 @@ const store = () => {
 				.map((d) => ({
 					producerId: d.producerId,
 					deliveryModeId: d.delivery ? d.delivery.id : null,
-					expectedDeliveryDate: d.deliveryHour ? d.deliveryHour.expectedDeliveryDate : null
+					expectedDeliveryDate: d.deliveryHour ? d.deliveryHour.expectedDeliveryDate : null,
 				}))
-				.filter((producer, index, self) =>
-					index === self.findIndex(t => t.producerId === producer.producerId)
-				);
+				.filter((producer, index, self) => index === self.findIndex((t) => t.producerId === producer.producerId));
 		},
 		getSelectedDelivery(deliveries) {
 			for (const delivery of deliveries) {
@@ -299,22 +302,22 @@ const store = () => {
 			}
 
 			return null;
-		}
-	}
+		},
+	};
 
 	const setters = {
 		setProducts(products) {
-			update(state => {
+			update((state) => {
 				state.products = products;
 				methods.updateCartInStorage();
 				return state;
-			})
+			});
 		},
 		disableProducts(productIds) {
 			productIds.map((i) => {
 				let product = getters.getProductById(i);
 				if (product) product.disabled = true;
-			})
+			});
 		},
 		disableProducers(producersIds) {
 			producersIds.map((i) => {
@@ -324,23 +327,23 @@ const store = () => {
 							...c,
 							producer: {
 								...c.producer,
-								disabled: true
-							}
-						}
+								disabled: true,
+							},
+						};
 					} else return c;
 				});
-			})
+			});
 		},
 		removeProduct(productId) {
-			update(state => {
-				state.products = state.products.filter(c => c.id !== productId);
+			update((state) => {
+				state.products = state.products.filter((c) => c.id !== productId);
 				methods.updateCartInStorage();
 				methods.updateCart();
 				return state;
-			})
+			});
 		},
 		async updateProduct(productId, quantity) {
-			update(state => {
+			update((state) => {
 				let product = getters.getProductById(productId);
 
 				if (!product) {
@@ -350,30 +353,30 @@ const store = () => {
 					methods.updateCartInStorage();
 				}
 				return state;
-			})
+			});
 			const result = await methods.updateCart();
 			return result;
 		},
 		removeProducerProducts(producerId) {
-			update(state => {
-				state.products = state.products.filter(c => c.producer.id !== producerId);
+			update((state) => {
+				state.products = state.products.filter((c) => c.producer.id !== producerId);
 				resetSelectedDeliveryForProducerId(producerId);
 				methods.updateCartInStorage();
 				methods.updateCart();
 				return state;
-			})
+			});
 		},
 		reset() {
-			update(state => {
+			update((state) => {
 				state.products = [];
 				methods.updateCartInStorage();
 				localStorage.removeItem("user_last_transaction");
 				localStorage.removeItem("user_current_order");
 				return state;
-			})
+			});
 		},
-		updateDelivery({producerId, delivery, deliveryHour}) {
-			update(state => {
+		updateDelivery({ producerId, delivery, deliveryHour }) {
+			update((state) => {
 				let deliveryMode = getters.getDeliveryByProducerId(producerId);
 
 				if (deliveryMode) {
@@ -381,33 +384,36 @@ const store = () => {
 					deliveryMode.deliveryHour = deliveryHour;
 					state.selectedDeliveries = state.selectedDeliveries;
 				} else {
-					state.selectedDeliveries = [...state.selectedDeliveries, {
-						number: state.selectedDeliveries.length + 1,
-						producerId,
-						delivery,
-						deliveryHour
-					}];
+					state.selectedDeliveries = [
+						...state.selectedDeliveries,
+						{
+							number: state.selectedDeliveries.length + 1,
+							producerId,
+							delivery,
+							deliveryHour,
+						},
+					];
 				}
 
 				methods.updateCart();
 				return state;
-			})
+			});
 		},
 		setSelectedDeliveries(deliveries) {
-			update(state => {
+			update((state) => {
 				state.selectedDeliveries = deliveries;
 				return state;
 			});
 		},
 		resetSelectedDeliveryForProducerId(producerId) {
-			update(state => {
+			update((state) => {
 				state.selectedDeliveries = state.selectedDeliveries.filter((d) => d.producerId !== producerId);
 				return state;
-			})
+			});
 		},
 		updateWholeCart(selectedCart) {
 			localStorage.setItem("user_current_order", JSON.stringify(selectedCart.id));
-			update(state => {
+			update((state) => {
 				state.products = selectedCart.products;
 				state.totalFees = selectedCart.totalFees;
 				state.donation = selectedCart.donation;
@@ -428,7 +434,7 @@ const store = () => {
 				return state;
 			});
 			methods.updateCartInStorage();
-		}
+		},
 	};
 
 	return {
@@ -437,8 +443,8 @@ const store = () => {
 		update,
 		...methods,
 		...getters,
-		...setters
-	}
-}
+		...setters,
+	};
+};
 
-export default store()
+export default store();

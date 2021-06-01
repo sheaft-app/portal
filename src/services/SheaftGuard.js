@@ -1,4 +1,4 @@
-import {wrap} from "svelte-spa-router/wrap";
+import { wrap } from "svelte-spa-router/wrap";
 import Home from "./../routes/home/Home.svelte";
 import Cart from "./../routes/cart/Cart.svelte";
 import Register from "./../routes/register/Register.svelte";
@@ -44,9 +44,7 @@ import QuickOrderRoutes from "./../routes/quick-orders/routes.js";
 import OidcRoutes from "./../routes/oidc/routes.js";
 import HomeRoutes from "./../routes/home/routes.js";
 import Roles from "./../enums/Roles";
-import {
-	authInitialized,
-} from "../stores/auth";
+import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 
 class SheaftGuard {
@@ -62,9 +60,7 @@ class SheaftGuard {
 			conditions: [
 				() =>
 					this.handleRouteNavigation(
-						() =>
-							this.authInstance.userIsLoggedIn() &&
-							!this.authInstance.userIsRegistered(),
+						() => this.authInstance.userIsLoggedIn() && !this.authInstance.userIsRegistered(),
 						true
 					),
 			],
@@ -72,144 +68,78 @@ class SheaftGuard {
 		this.routes[`${CartRoutes.Prefix}/*`] = wrap({
 			component: Cart,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(CartRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(CartRoutes.Roles), true)],
 		});
 		this.routes[`${ProductRoutes.Prefix}/*`] = wrap({
 			component: Products,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(ProductRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ProductRoutes.Roles), true)],
 		});
 		this.routes[`${JobRoutes.Prefix}/*`] = wrap({
 			component: Jobs,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(JobRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(JobRoutes.Roles), true)],
 		});
 		this.routes[`${AgreementRoutes.Prefix}/*`] = wrap({
 			component: Agreements,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(AgreementRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(AgreementRoutes.Roles), true),
 			],
 		});
 		this.routes[`${ReturnableRoutes.Prefix}/*`] = wrap({
 			component: Returnables,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(ReturnableRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ReturnableRoutes.Roles), true),
 			],
 		});
 		this.routes[`${CatalogRoutes.Prefix}/*`] = wrap({
 			component: Catalogs,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(CatalogRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(CatalogRoutes.Roles), true)],
 		});
 		this.routes[`${SponsorshipRoutes.Prefix}/*`] = wrap({
 			component: Sponsorship,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(SponsorshipRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SponsorshipRoutes.Roles), true),
 			],
 		});
 		this.routes[`${AccountRoutes.Prefix}/*`] = wrap({
 			component: Account,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(AccountRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(AccountRoutes.Roles), true)],
 		});
 		this.routes[`${SellingPointRoutes.Prefix}/*`] = wrap({
 			component: SellingPoints,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(SellingPointRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SellingPointRoutes.Roles), true),
 			],
 		});
 		this.routes[`${DeliveryRoutes.Prefix}/*`] = wrap({
 			component: Deliveries,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(DeliveryRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(DeliveryRoutes.Roles), true)],
 		});
 		this.routes[`${PurchaseOrderRoutes.Prefix}/*`] = wrap({
 			component: PurchaseOrders,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(PurchaseOrderRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(PurchaseOrderRoutes.Roles), true),
 			],
 		});
 		this.routes[`${MyOrderRoutes.Prefix}/*`] = wrap({
 			component: MyOrders,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(MyOrderRoutes.Roles),
-						true
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(MyOrderRoutes.Roles), true)],
 		});
 		this.routes[`${QuickOrderRoutes.Prefix}/*`] = wrap({
 			component: QuickOrders,
 			customData: null,
 			conditions: [
-				() =>
-					this.handleRouteNavigation(
-						() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles),
-						true
-					),
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),
 			],
 		});
 		this.routes[`${SearchProductRoutes.Prefix}`] = wrap({
@@ -218,9 +148,7 @@ class SheaftGuard {
 			conditions: [
 				() =>
 					this.handleRouteNavigation(
-						() =>
-							this.authInstance.userIsAnonymous() ||
-							this.authInstance.userHasAccess(SearchProductRoutes.Roles),
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(SearchProductRoutes.Roles),
 						true
 					),
 			],
@@ -231,9 +159,7 @@ class SheaftGuard {
 			conditions: [
 				() =>
 					this.handleRouteNavigation(
-						() =>
-							this.authInstance.userIsAnonymous() ||
-							this.authInstance.userHasAccess(ExternalRoutes.Roles),
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(ExternalRoutes.Roles),
 						true
 					),
 			],
@@ -241,22 +167,12 @@ class SheaftGuard {
 		this.routes[`${SearchStoreRoutes.Prefix}`] = wrap({
 			component: SearchStores,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(() =>
-						this.authInstance.userHasAccess(SearchStoreRoutes.Roles)
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SearchStoreRoutes.Roles))],
 		});
 		this.routes[`${SearchProducerRoutes.Prefix}`] = wrap({
 			component: SearchProducers,
 			customData: null,
-			conditions: [
-				() =>
-					this.handleRouteNavigation(() =>
-						this.authInstance.userHasAccess(SearchProducerRoutes.Roles)
-					),
-			],
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(SearchProducerRoutes.Roles))],
 		});
 
 		this.routes[`${OidcRoutes.Callback.Path}`] = Callback;
@@ -270,10 +186,7 @@ class SheaftGuard {
 			customData: null,
 			conditions: [
 				() => {
-					if (
-						this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) > -1
-					)
-						return false;
+					if (this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) > -1) return false;
 
 					var redirectRoute = this.getRedirectRoute();
 					this.routerInstance.goTo(redirectRoute, null, true);
@@ -283,23 +196,14 @@ class SheaftGuard {
 		});
 
 		this.initializedSub = authInitialized.subscribe((initialized) => {
-			if (
-				initialized &&
-				this.authInstance.authorized &&
-				!this.authInstance.registered
-			)
+			if (initialized && this.authInstance.authorized && !this.authInstance.registered)
 				this.routerInstance.goTo(RegisterRoutes.Choose);
 		});
 	}
 
 	getRedirectRoute() {
 		var user = this.authInstance.user;
-		if (
-			user &&
-			user.state &&
-			user.state.redirectTo &&
-			user.state.redirectTo.slice(1) != "/"
-		) {
+		if (user && user.state && user.state.redirectTo && user.state.redirectTo.slice(1) != "/") {
 			return {
 				Path: user.state.redirectTo.slice(1),
 				Params: null,
@@ -347,11 +251,10 @@ class SheaftGuard {
 		}
 
 		return result;
-	};
+	}
 
 	unregister() {
-		if (this.initializedSub && this.initializedSub.unsubscribe)
-			this.initializedSub.unsubscribe();
+		if (this.initializedSub && this.initializedSub.unsubscribe) this.initializedSub.unsubscribe();
 	}
 }
 

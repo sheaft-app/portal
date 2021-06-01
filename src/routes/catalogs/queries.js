@@ -1,17 +1,12 @@
 import gql from "graphql-tag";
 
 export const GET_CATALOGS = gql`
-	query Catalogs(
-		$first: Int
-		$after: String
-		$last: Int
-		$before: String
-	) {
+	query Catalogs($first: Int, $after: String, $last: Int, $before: String) {
 		catalogs(first: $first, after: $after, last: $last, before: $before) {
 			edges {
 				cursor
 				node {
-					id					
+					id
 					name
 					kind
 					isDefault
@@ -20,12 +15,12 @@ export const GET_CATALOGS = gql`
 					productsCount
 				}
 			}
-			pageInfo{
+			pageInfo {
 				hasPreviousPage
 				hasNextPage
 				startCursor
 				endCursor
-			}			
+			}
 		}
 	}
 `;
@@ -62,4 +57,4 @@ export const GET_PRODUCTS = gql`
 			}
 		}
 	}
-`
+`;

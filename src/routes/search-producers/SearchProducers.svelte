@@ -1,16 +1,16 @@
 <script>
-	import {onMount, onDestroy, getContext} from "svelte";
-	import {fly} from "svelte/transition";
-	import {SEARCH_PRODUCERS, GET_MY_BUSINESS_LOCATION} from "./queries.js";
-	import {isLoading, filters, isFetchingMore, items} from "./store";
+	import { onMount, onDestroy, getContext } from "svelte";
+	import { fly } from "svelte/transition";
+	import { SEARCH_PRODUCERS, GET_MY_BUSINESS_LOCATION } from "./queries.js";
+	import { isLoading, filters, isFetchingMore, items } from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import {selectedItem} from "./../../stores/app.js";
+	import { selectedItem } from "./../../stores/app.js";
 	import ProducerCard from "./ProducerCard.svelte";
 	import FiltersModal from "./FiltersModal.svelte";
 	import ProducerDetails from "./ProducerDetails.svelte";
 	import Icon from "svelte-awesome";
-	import {faFilter} from "@fortawesome/free-solid-svg-icons";
-	import {querystring} from "svelte-spa-router";
+	import { faFilter } from "@fortawesome/free-solid-svg-icons";
+	import { querystring } from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import SearchInput from "./../../components/controls/SearchInput.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -22,7 +22,7 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const { query } = getContext("api");
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const observer = new IntersectionObserver(onIntersect);
 	const QUERY_SIZE = 20;
 
@@ -31,7 +31,7 @@
 	let currentPage = 0;
 	let lastFetchLength = 0;
 	let businessLocation = null;
-	
+
 	function fetchMoreOnIntersect(node, params) {
 		observer.observe(node);
 		return {
@@ -42,25 +42,20 @@
 	}
 
 	async function onIntersect(entries) {
-		if (
-			lastFetchLength >= QUERY_SIZE &&
-			!isFetchingMore &&
-			entries[0].isIntersecting
-		) {
+		if (lastFetchLength >= QUERY_SIZE && !isFetchingMore && entries[0].isIntersecting) {
 			isFetchingMore.set(false);
 			await searchProducers(currentPage);
 			isFetchingMore.set(true);
 		}
 	}
 
-	const showFiltersModal = () => open(FiltersModal, {filters, visibleNav: true});
+	const showFiltersModal = () => open(FiltersModal, { filters, visibleNav: true });
 
 	async function refetch() {
 		isLoading.set(true);
 		await searchProducers(0);
 		isLoading.set(false);
 	}
-
 
 	const searchProducers = async (page) => {
 		currentPage = ++page;
@@ -73,7 +68,7 @@
 				lastFetchLength = prevFeed.length;
 				items.set(prevFeed);
 			},
-			errorNotification: "Impossible de récupérer les informations des producteurs."
+			errorNotification: "Impossible de récupérer les informations des producteurs.",
 		});
 	};
 
@@ -89,8 +84,10 @@
 		await query({
 			query: GET_MY_BUSINESS_LOCATION,
 			errorsHandler,
-			success: (res) => { businessLocation = res.address; },
-			errorNotification: "Impossible de récupérer la localisation de votre société."
+			success: (res) => {
+				businessLocation = res.address;
+			},
+			errorNotification: "Impossible de récupérer la localisation de votre société.",
 		});
 
 		window.addEventListener("popstate", popStateListener, false);
@@ -100,30 +97,34 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	$: history.pushState({selected: $selectedItem}, "Trouver des producteurs");
+	$: history.pushState({ selected: $selectedItem }, "Trouver des producteurs");
 	$: refetch($querystring);
+
 </script>
 
-<Meta/>
+<Meta />
 
 <TransitionWrapper>
-	<PageHeader name="Trouver des producteurs"/>
+	<PageHeader name="Trouver des producteurs" />
 	<PageBody {errorsHandler}>
 		<div
 			class="inline-flex items-center mb-3 themed text-center sticky -mx-4 px-4
 			filter-bar"
 			style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
-			width: -webkit-fill-available; width: fill-available;">
+			width: -webkit-fill-available; width: fill-available;"
+		>
 			<SearchInput placeholder="Rechercher un producteur" />
 			<button
 				class="filter-btn bg-white py-2 px-3 rounded text-sm shadow-md flex
 				flex-nowrap items-center ml-2"
 				class:text-white={$filters.tags && $filters.tags.length > 0}
 				class:bg-accent={$filters.tags && $filters.tags.length > 0}
-				on:click={showFiltersModal}>
+				on:click={showFiltersModal}
+			>
 				<Icon
 					class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
-					data={faFilter} />
+					data={faFilter}
+				/>
 				{#if $filters.tags && $filters.tags.length > 0}
 					<span class="text-white">{$filters.tags.length}</span>
 				{/if}
@@ -132,21 +133,21 @@
 		{#if $isLoading}
 			<div
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-				gap-3 mt-3">
+				gap-3 mt-3"
+			>
 				{#each Array(9) as _i}
 					<div>
 						<div class="shadow-md h-full skeleton-box rounded-t-md">
 							<div class="relative pb-5/6 overflow-hidden rounded-t-md">
-								<div
-									style="height: 150px;"
-									class="skeleton-box w-full rounded-t-md" />
+								<div style="height: 150px;" class="skeleton-box w-full rounded-t-md" />
 							</div>
 							<div class="relative">
 								<div class="bg-white p-6 rounded-b-lg">
 									<div class="flex items-baseline">
 										<div
 											class="text-xs uppercase font-semibold tracking-wide mr-6
-											w-64 skeleton-box" />
+											w-64 skeleton-box"
+										/>
 									</div>
 									<div class="mb-1 h-4 skeleton-box" />
 									<div class="mb-1 h-4 w-48 skeleton-box" />
@@ -167,7 +168,8 @@
 						<span
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-							items-center bg-gray-200">
+							items-center bg-gray-200"
+						>
 							{tag}
 						</span>
 					{/each}
@@ -176,30 +178,31 @@
 					<span
 						style="font-size: .6rem"
 						class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-						items-center bg-gray-200">
+						items-center bg-gray-200"
+					>
 						termes: '{$filters.text}'
 					</span>
 				{/if}
 			</div>
 			<div
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-				md:gap-3 -mx-4 md:mx-0">
+				md:gap-3 -mx-4 md:mx-0"
+			>
 				{#each $items as producer, index}
 					<ProducerCard {producer} bind:hoveredProducer {businessLocation} />
 					{#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
 						<div use:fetchMoreOnIntersect>
 							<div class="shadow-md h-full skeleton-box rounded-t-md">
 								<div class="relative pb-5/6 overflow-hidden rounded-t-md">
-									<div
-										style="height: 150px;"
-										class="skeleton-box w-full rounded-t-md" />
+									<div style="height: 150px;" class="skeleton-box w-full rounded-t-md" />
 								</div>
 								<div class="relative">
 									<div class="bg-white p-6 rounded-b-lg">
 										<div class="flex items-baseline">
 											<div
 												class="text-xs uppercase font-semibold tracking-wide
-												mr-6 w-64 skeleton-box" />
+												mr-6 w-64 skeleton-box"
+											/>
 										</div>
 										<div class="mb-1 h-4 skeleton-box" />
 										<div class="mb-1 h-4 w-48 skeleton-box" />
@@ -218,16 +221,15 @@
 						<div>
 							<div class="shadow-md h-full skeleton-box rounded-t-md">
 								<div class="relative pb-5/6 overflow-hidden rounded-t-md">
-									<div
-										style="height: 150px;"
-										class="skeleton-box w-full rounded-t-md" />
+									<div style="height: 150px;" class="skeleton-box w-full rounded-t-md" />
 								</div>
 								<div class="relative">
 									<div class="bg-white p-6 rounded-b-lg">
 										<div class="flex items-baseline">
 											<div
 												class="text-xs uppercase font-semibold tracking-wide
-												mr-6 w-64 skeleton-box" />
+												mr-6 w-64 skeleton-box"
+											/>
 										</div>
 										<div class="mb-1 h-4 skeleton-box" />
 										<div class="mb-1 h-4 w-48 skeleton-box" />
@@ -252,7 +254,8 @@
 		class="fixed overflow-y-scroll overflow-x-hidden shadow right-0 top-0
 		h-screen producer-details bg-white"
 		transition:fly={{ x: 600, duration: 300 }}
-		style="z-index: 10;">
+		style="z-index: 10;"
+	>
 		<ProducerDetails />
 	</div>
 {/if}
@@ -320,4 +323,5 @@
 			transform: translateY(0px);
 		}
 	}
+
 </style>

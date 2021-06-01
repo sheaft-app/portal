@@ -64,7 +64,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			pictures{
+			pictures {
 				id
 				large
 				position
@@ -98,9 +98,8 @@ export const GET_PRODUCT_DETAILS = gql`
 	}
 `;
 
-
 export const GET_PRODUCER_PRODUCTS = gql`
-	query($id: ID!) {
+	query ($id: ID!) {
 		producer(id: $id) {
 			products {
 				id
@@ -115,12 +114,12 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				available
 			}
 		}
-  	}
-`
+	}
+`;
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
+		nextProducersDeliveries(ids: $input, kinds: [FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -159,7 +158,7 @@ export const SUGGEST_PRODUCER = gql`
 		suggestProducers(input: $input) {
 			id
 			name
-			address{
+			address {
 				zipcode
 				city
 			}

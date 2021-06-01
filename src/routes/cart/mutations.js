@@ -109,10 +109,10 @@ export const CREATE_PRE_AUTHORIZATION = gql`
 			id
 			status
 			secureModeRedirectURL
-			order{
+			order {
 				id
 				status
-				purchaseOrders{
+				purchaseOrders {
 					id
 				}
 			}

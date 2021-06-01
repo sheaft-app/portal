@@ -1,8 +1,8 @@
 <script>
 	import Icon from "svelte-awesome";
-	import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
+	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import ErrorCard from "../ErrorCard.svelte";
-	import {onMount} from "svelte";
+	import { onMount } from "svelte";
 
 	export let title,
 		level,
@@ -15,7 +15,7 @@
 		isLoading = false,
 		errorsHandler = null;
 
-	const renderColorWithLevel = level => {
+	const renderColorWithLevel = (level) => {
 		switch (level) {
 			case "success":
 				return "green";
@@ -38,24 +38,30 @@
 	async function handleClose() {
 		await close();
 	}
+
 </script>
 
 <div>
 	<div class="mt-3 text-center sm:mt-0 sm:text-left">
 		<h3
-			class="text-lg leading-6 font-medium {level ? `bg-${renderColorWithLevel(level)}-500` : 'bg-primary'} py-3 px-6 -mx-6 -mt-5 md:-mt-2 md:rounded-t-lg text-white">{title}</h3>
+			class="text-lg leading-6 font-medium {level
+				? `bg-${renderColorWithLevel(level)}-500`
+				: 'bg-primary'} py-3 px-6 -mx-6 -mt-5 md:-mt-2 md:rounded-t-lg text-white"
+		>
+			{title}
+		</h3>
 
 		<div class="mt-4">
 			{#if errorsHandler}
-				<ErrorCard {errorsHandler}/>
+				<ErrorCard {errorsHandler} />
 			{/if}
-			<slot/>
+			<slot />
 		</div>
 	</div>
 </div>
 <div class="bg-gray-50 px-2 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-  <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-    <button
+	<span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+		<button
 			on:click={handleSubmit}
 			type="submit"
 			disabled={isLoading || !valid}
@@ -64,15 +70,16 @@
       inline-flex justify-center w-full rounded-md border border-transparent
       px-4 py-2 text-base leading-6 font-medium text-white shadow-sm
       focus:outline-none transition ease-in-out duration-150 sm:text-sm
-      sm:leading-5">
-      {#if isLoading}
-        <Icon data={faCircleNotch} spin class="inline"/>
+      sm:leading-5"
+		>
+			{#if isLoading}
+				<Icon data={faCircleNotch} spin class="inline" />
 				{submitText}
-      {:else}{submitText}{/if}
-    </button>
-  </span>
+			{:else}{submitText}{/if}
+		</button>
+	</span>
 	<span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-    <button
+		<button
 			on:click={handleClose}
 			type="button"
 			aria-label={closeText}
@@ -80,10 +87,11 @@
       px-4 py-2 bg-white text-base leading-6 font-medium shadow-sm
       focus:outline-none focus:border-blue-300
       focus:shadow-outline transition ease-in-out duration-150 sm:text-sm
-      sm:leading-5">
-      {closeText}
-    </button>
-  </span>
+      sm:leading-5"
+		>
+			{closeText}
+		</button>
+	</span>
 </div>
 
 <style lang="scss">
@@ -130,4 +138,5 @@
 			}
 		}
 	}
+
 </style>

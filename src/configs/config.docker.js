@@ -20,5 +20,5 @@ export const config = {
 			response_mode: "query",
 		},
 	},
-	production: false
+	production: false,
 };

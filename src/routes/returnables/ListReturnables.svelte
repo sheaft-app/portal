@@ -1,14 +1,14 @@
 <script>
-	import {faPlus} from "@fortawesome/free-solid-svg-icons";
+	import { faPlus } from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import {GET_RETURNABLES} from "./queries";
+	import { GET_RETURNABLES } from "./queries";
 	import ReturnableRoutes from "./routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
-	import {formatMoney} from "./../../helpers/app";
+	import { formatMoney } from "./../../helpers/app";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
@@ -19,19 +19,14 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [
-		{name: "Nom", sortLabel: "name"},
-		{name: "Prix HT"},
-		{name: "TVA"},
-		{name: "Prix TTC"},
-	];
+	const headers = [{ name: "Nom", sortLabel: "name" }, { name: "Prix HT" }, { name: "TVA" }, { name: "Prix TTC" }];
 
 	const getRowBackgroundColor = (item) => {
 		return "";
 	};
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(ReturnableRoutes.Details, {id: item.id});
+		routerInstance.goTo(ReturnableRoutes.Details, { id: item.id });
 	};
 
 	const actions = [
@@ -42,12 +37,13 @@
 			color: "green",
 		},
 	];
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Mes consignes"/>
+	<PageHeader name="Mes consignes" />
 	<PageBody {errorsHandler}>
-		<Actions {actions}/>
+		<Actions {actions} />
 		<Table
 			bind:items
 			bind:isLoading
@@ -60,11 +56,10 @@
 			loadingMessage="Chargement de vos consignes en cours... veuillez patienter."
 			defaultSearchValues={ReturnableRoutes.List.Params.Query}
 			{getRowBackgroundColor}
-			{onRowClick}>
+			{onRowClick}
+		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div
-					class="text-sm leading-5 font-medium truncate"
-					style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
 					{returnable.name}
 				</div>
 			</td>

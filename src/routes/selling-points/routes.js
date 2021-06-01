@@ -11,7 +11,7 @@ const details = "/:id";
 
 const SellingPointRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Producer.Value],
+	Roles: [Roles.Producer.Value],
 	List: {
 		Name: "Points de vente",
 		Icon: faMapMarkerAlt,
@@ -25,14 +25,14 @@ const SellingPointRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 			},
-		}
+		},
 	},
 	Create: {
 		Name: "Nouveau point de vente",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Details: {
 		Name: "Editer le point de vente",
@@ -41,14 +41,14 @@ const SellingPointRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	NoResultsPage: {
 		Name: "Ajouter un point de vente",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 };
 

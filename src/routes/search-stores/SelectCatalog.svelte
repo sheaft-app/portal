@@ -1,5 +1,5 @@
 <script>
-	import {getContext, onMount} from "svelte";
+	import { getContext, onMount } from "svelte";
 	import { GET_CATALOGS } from "./queries";
 	import Loader from "../../components/Loader.svelte";
 
@@ -8,16 +8,18 @@
 	let catalogs = [];
 	let isLoading = true;
 
-	export let selectedCatalog = null, errorsHandler;
+	export let selectedCatalog = null,
+		errorsHandler;
 
 	onMount(async () => {
 		catalogs = await query({
 			query: GET_CATALOGS,
 			errorsHandler,
-			errorNotification: "Impossible de récupérer les informations des catalogues."
+			errorNotification: "Impossible de récupérer les informations des catalogues.",
 		});
 		isLoading = false;
-	})
+	});
+
 </script>
 
 <div class="form-control mt-2" style="display: block;">
@@ -25,13 +27,14 @@
 		<label>Quel catalogue souhaitez-vous assigner à ce magasin ?</label>
 	</div>
 	{#if isLoading}
-		<Loader/>
+		<Loader />
 	{:else if catalogs.length > 0}
 		{#each catalogs as catalog}
 			<div
 				class:active={selectedCatalog && selectedCatalog.id == catalog.id}
-				on:click={() => selectedCatalog = catalog}
-				class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded">
+				on:click={() => (selectedCatalog = catalog)}
+				class="mb-2 cursor-pointer hover:bg-gray-100 shadow px-3 py-2 bg-white rounded"
+			>
 				{catalog.name}
 			</div>
 		{/each}
@@ -49,4 +52,5 @@
 			@apply text-white;
 		}
 	}
+
 </style>

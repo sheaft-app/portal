@@ -1,10 +1,10 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	None: { Value: "NONE", Label: "Personne"},
-	All: { Value: "ALL", Label: "Tous"},
-	Consumers: { Value: "CONSUMERS", Label: "Consommateurs"},
-	Stores: { Value: "STORES", Label: "Professionels"},
+	None: { Value: "NONE", Label: "Personne" },
+	All: { Value: "ALL", Label: "Tous" },
+	Consumers: { Value: "CONSUMERS", Label: "Consommateurs" },
+	Stores: { Value: "STORES", Label: "Professionels" },
 };
 
 let VisibleToKind = {
@@ -23,10 +23,10 @@ let VisibleToKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => VisibleToKind[key] = enums[key]);
+Object.keys(enums).map((key) => (VisibleToKind[key] = enums[key]));
 Object.freeze(VisibleToKind);
 
 export default VisibleToKind;

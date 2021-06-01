@@ -1,8 +1,8 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	Consumers: { Value: "CONSUMERS", Label: "Consommateurs"},
-	Stores: { Value: "STORES", Label: "Professionels"}
+	Consumers: { Value: "CONSUMERS", Label: "Consommateurs" },
+	Stores: { Value: "STORES", Label: "Professionels" },
 };
 
 let CatalogKind = {
@@ -21,10 +21,10 @@ let CatalogKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => CatalogKind[key] = enums[key]);
+Object.keys(enums).map((key) => (CatalogKind[key] = enums[key]));
 Object.freeze(CatalogKind);
 
 export default CatalogKind;

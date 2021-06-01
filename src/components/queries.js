@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 
 export const GET_CATEGORIES = gql`
 	query GetCategories {
-		tags(where: { kind: { in: [CATEGORY] }}) {
-			nodes{
+		tags(where: { kind: { in: [CATEGORY] } }) {
+			nodes {
 				id
 				kind
 				icon
@@ -14,23 +14,23 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_COUNTRIES = gql`
-query GetCountries {
-  countries {
-		id
-		code
-		name
-	  }
-}
+	query GetCountries {
+		countries {
+			id
+			code
+			name
+		}
+	}
 `;
 
 export const GET_NATIONALITIES = gql`
-query GetNationalities {
-  nationalities {
-	  id
-	  code
-	  name
+	query GetNationalities {
+		nationalities {
+			id
+			code
+			name
+		}
 	}
-}
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
@@ -54,9 +54,8 @@ export const GET_PRODUCER_PRODUCTS = gql`
 
 export const GET_BUSINESS_CLOSINGS = gql`
 	query GetBusinessClosings {
-		businessClosings
-		{
-			nodes {	
+		businessClosings {
+			nodes {
 				id
 				from
 				to
@@ -64,5 +63,4 @@ export const GET_BUSINESS_CLOSINGS = gql`
 			}
 		}
 	}
-`
-
+`;

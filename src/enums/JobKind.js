@@ -1,10 +1,10 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	ExportPickingOrders: { Value: "EXPORT_PICKING_ORDERS", Label: "Bon de préparation"},
-	ImportProducts: { Value: "IMPORT_PRODUCTS", Label: "Import de produits"},
-	ExportUserData: { Value: "EXPORT_USER_DATA", Label: "Export RGPD"},
-	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export Virements"},
+	ExportPickingOrders: { Value: "EXPORT_PICKING_ORDERS", Label: "Bon de préparation" },
+	ImportProducts: { Value: "IMPORT_PRODUCTS", Label: "Import de produits" },
+	ExportUserData: { Value: "EXPORT_USER_DATA", Label: "Export RGPD" },
+	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export Virements" },
 };
 
 let JobKind = {
@@ -23,10 +23,10 @@ let JobKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => JobKind[key] = enums[key]);
+Object.keys(enums).map((key) => (JobKind[key] = enums[key]));
 Object.freeze(JobKind);
 
 export default JobKind;

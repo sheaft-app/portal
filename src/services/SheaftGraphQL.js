@@ -1,14 +1,14 @@
 import { query, mutate } from "svelte-apollo";
 import { from } from "apollo-boost";
 import { createHttpLink } from "apollo-link-http";
-import { createUploadLink } from 'apollo-upload-client';
+import { createUploadLink } from "apollo-upload-client";
 import ApolloClient from "apollo-client";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { setClient } from "svelte-apollo";
 import gql from "graphql-tag";
 import { removeKeys } from "../helpers/app";
-import {config} from "./../configs/config";
+import { config } from "./../configs/config";
 
 let client = null;
 let errorsHandler = null;
@@ -76,8 +76,7 @@ class SheaftGraphQL {
 		var idFound = false;
 		for (var i = 0; i < dataType.length; i++) {
 			if (dataType[i] === "id") idFound = true;
-			else if (Array.isArray(dataType[i]))
-				idFound = this.findIdInDataType(dataType[i]);
+			else if (Array.isArray(dataType[i])) idFound = this.findIdInDataType(dataType[i]);
 
 			if (idFound) break;
 		}
@@ -87,8 +86,7 @@ class SheaftGraphQL {
 	updateApolloCache(res, dataType, input, typename) {
 		if (!res || !res.data || dataType.length < 2) return;
 
-		if (dataType.length > 1 && !this.findIdInDataType(dataType))
-			return;
+		if (dataType.length > 1 && !this.findIdInDataType(dataType)) return;
 
 		var hasInputIds = input.id || input.ids;
 		if (Array.isArray(res.data)) {
@@ -182,9 +180,7 @@ class SheaftGraphQL {
 
 			values.push(selections[i].name.value);
 			if (selections[i].selectionSet && selections[i].selectionSet.selections) {
-				var items = this.findRecursiveSelection(
-					selections[i].selectionSet.selections
-				);
+				var items = this.findRecursiveSelection(selections[i].selectionSet.selections);
 				if (items.length > 0) values.push(items);
 			}
 		}
@@ -194,14 +190,14 @@ class SheaftGraphQL {
 
 	handleResults(data, dataTypes) {
 		var resultData = data[dataTypes[0]];
-		if(!resultData && !data.errors)
+		if (!resultData && !data.errors)
 			return {
 				data: null,
 				errors: null,
 				success: true,
 			};
 
-		if(data.errors && data.errors.length > 0){
+		if (data.errors && data.errors.length > 0) {
 			return {
 				data: null,
 				errors: data.errors,
@@ -296,20 +292,19 @@ class SheaftGraphQL {
 				}
 
 				var message = null;
-				if((graphQlError.code == "EXEC_INVALID_TYPE" || graphQlError.message.indexOf('Expected type') > -1) && config.production)
-				{
+				if (
+					(graphQlError.code == "EXEC_INVALID_TYPE" || graphQlError.message.indexOf("Expected type") > -1) &&
+					config.production
+				) {
 					code = "EXEC_INVALID_TYPE";
-					message = "Les fichiers de l'application contenus dans le cache de votre navigateur ne correspondent pas à la dernière version, veuillez vider le cache de votre navigateur en suivant l'aide : <a target='_blank' href='https://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur' style='color:white;font-weight:bold;'>Vider mon cache</a>"
-				}
-				else if (!code) {
+					message =
+						"Les fichiers de l'application contenus dans le cache de votre navigateur ne correspondent pas à la dernière version, veuillez vider le cache de votre navigateur en suivant l'aide : <a target='_blank' href='https://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur' style='color:white;font-weight:bold;'>Vider mon cache</a>";
+				} else if (!code) {
 					code = "Unexpected";
 					status = 500;
 				}
 
-				if (!message &&
-					graphQlError.extensions &&
-					graphQlError.extensions.hasOwnProperty(code)
-				) {
+				if (!message && graphQlError.extensions && graphQlError.extensions.hasOwnProperty(code)) {
 					message = graphQlError.extensions[code];
 				}
 
@@ -322,7 +317,7 @@ class SheaftGraphQL {
 					status,
 					message,
 					identifier,
-					error
+					error,
 				});
 			}
 
@@ -333,7 +328,7 @@ class SheaftGraphQL {
 			{
 				code: "Unexpected",
 				message: "Une erreur inattendue est survenue !",
-				error : error
+				error: error,
 			},
 		];
 	}

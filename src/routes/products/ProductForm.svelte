@@ -1,13 +1,9 @@
 <script>
-	import {onMount, onDestroy, getContext} from "svelte";
-	import {fly} from "svelte/transition";
+	import { onMount, onDestroy, getContext } from "svelte";
+	import { fly } from "svelte/transition";
 	import ProductRoutes from "./routes";
 	import Icon from "svelte-awesome";
-	import {
-		faPaperPlane,
-		faCircleNotch,
-		faInfoCircle
-	} from "@fortawesome/free-solid-svg-icons";
+	import { faPaperPlane, faCircleNotch, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 	import CategorySelect from "./../../components/controls/CategorySelect.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
 	import Select from "./../../components/controls/select/Select.js";
@@ -15,23 +11,25 @@
 	import ReturnableSelectItem from "./ReturnableSelectItem.svelte";
 	import CreateReturnable from "./../returnables/CreateReturnable.svelte";
 	import TagKind from "./../../enums/TagKind.js";
-	import {GET_RETURNABLES, GET_TAGS} from "./queries.js";
+	import { GET_RETURNABLES, GET_TAGS } from "./queries.js";
 	import UnitKind from "../../enums/UnitKind";
 	import ConditioningKind from "../../enums/ConditioningKind";
-	import {config} from "../../configs/config";
+	import { config } from "../../configs/config";
 	import ProductCatalogs from "./ProductCatalogs.svelte";
-	import {bindClass} from '../../../vendors/svelte-forms/src/index';
+	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import form from "../../stores/form";
-	import {validators, initialValues} from "./productForm";
+	import { validators, initialValues } from "./productForm";
 	import RatingStars from "../../components/rating/RatingStars.svelte";
 	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 
-	export let submit, product = {...initialValues}, errorsHandler;
+	export let submit,
+		product = { ...initialValues },
+		errorsHandler;
 
 	const routerInstance = GetRouterInstance();
-	const {open} = getContext("modal");
-	const {query, isLoading} = getContext("api");
+	const { open } = getContext("modal");
+	const { query, isLoading } = getContext("api");
 
 	let invalidCatalogs = false;
 	let selectedCategory = null;
@@ -40,26 +38,33 @@
 
 	$: isBasketType = selectedCategory && selectedCategory.name == "Panier garni";
 	$: isBio = organicTag && product.tags.find((i) => i.kind == organicTag.kind && i.value == organicTag.value);
-	$: selectedCategory = product.tags.length > 0 && product.tags.find((i) =>  i && TagKind.get(i.kind).Value == TagKind.Category.Value);
-	$: quantityPerUnitLabel = isBasketType ? "Nombre de personnes (adultes) *" : (product.conditioning == ConditioningKind.Bulk.Value ? "Poids *" : "Quantité *");
+	$: selectedCategory =
+		product.tags.length > 0 && product.tags.find((i) => i && TagKind.get(i.kind).Value == TagKind.Category.Value);
+	$: quantityPerUnitLabel = isBasketType
+		? "Nombre de personnes (adultes) *"
+		: product.conditioning == ConditioningKind.Bulk.Value
+		? "Poids *"
+		: "Quantité *";
 
-	(() => product = form.initialize(product, validators, initialValues))();
+	(() => (product = form.initialize(product, validators, initialValues)))();
 
 	onMount(async () => {
 		returnables = await query({
 			query: GET_RETURNABLES,
 			errorsHandler,
 			error: () => routerInstance.goTo(ProductRoutes.List),
-			errorNotification: "Un problème est survenu pendant la récupération des informations du produit."
+			errorNotification: "Un problème est survenu pendant la récupération des informations du produit.",
 		});
 
 		await query({
 			query: GET_TAGS,
 			errorsHandler,
-			success: (res) => organicTag = res.find((t) => t.name.toLowerCase() === "bio"
-				&& TagKind.Label.Value == TagKind.get(t.kind).Value),
+			success: (res) =>
+				(organicTag = res.find(
+					(t) => t.name.toLowerCase() === "bio" && TagKind.Label.Value == TagKind.get(t.kind).Value
+				)),
 			error: () => routerInstance.goTo(ProductRoutes.List),
-			errorNotification: "Un problème est survenu pendant la récupération des informations du produit."
+			errorNotification: "Un problème est survenu pendant la récupération des informations du produit.",
 		});
 	});
 
@@ -67,13 +72,15 @@
 		await form.destroy();
 	});
 
-
 	const handleSubmit = async () => {
 		if (product.conditioning != ConditioningKind.Bulk.Value) {
 			product.unit = UnitKind.NotSpecified.Value;
 		}
 
-		if (product.conditioning == ConditioningKind.Bouquet.Value || product.conditioning == ConditioningKind.Bunch.Value) {
+		if (
+			product.conditioning == ConditioningKind.Bouquet.Value ||
+			product.conditioning == ConditioningKind.Bunch.Value
+		) {
 			product.quantityPerUnit = 1;
 		}
 
@@ -98,9 +105,7 @@
 
 		if (product.tags) {
 			product.tags = [
-				...product.tags.filter(
-					(i) => TagKind.get(i.kind).Value != TagKind.Category.Value
-				),
+				...product.tags.filter((i) => TagKind.get(i.kind).Value != TagKind.Category.Value),
 				category.detail,
 			];
 		} else {
@@ -108,7 +113,7 @@
 		}
 	};
 
-	const selectVat = vat => product.vat = vat;
+	const selectVat = (vat) => (product.vat = vat);
 
 	const showCreateReturnableModal = () => {
 		open(CreateReturnable, {
@@ -121,6 +126,7 @@
 			},
 		});
 	};
+
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -136,7 +142,8 @@
 						disabled={$isLoading}
 						id="grid-reference"
 						type="text"
-						placeholder="Auto-générée si non renseignée"/>
+						placeholder="Auto-générée si non renseignée"
+					/>
 				</div>
 			</div>
 			<div class="form-control">
@@ -144,14 +151,15 @@
 					<label for="grid-product">Nom du produit *</label>
 					<input
 						bind:value={product.name}
-						use:bindClass={{ form, name: 'name' }}
+						use:bindClass={{ form, name: "name" }}
 						class:skeleton-box={$isLoading}
 						disabled={$isLoading}
 						name="name"
 						id="grid-product"
 						type="text"
-						placeholder="ex : Tomate ancienne"/>
-					<ErrorContainer field={$form.fields.name}/>
+						placeholder="ex : Tomate ancienne"
+					/>
+					<ErrorContainer field={$form.fields.name} />
 				</div>
 			</div>
 			<div class="form-control">
@@ -161,13 +169,15 @@
 						<div
 							class="w-full text-lg justify-center button-group"
 							class:skeleton-box={$isLoading}
-							use:bindClass={{ form, name: 'vat' }}>
+							use:bindClass={{ form, name: "vat" }}
+						>
 							<button
 								on:click={() => selectVat(5.5)}
 								type="button"
 								class="text-sm md:text-base"
 								class:selected={product.vat === 5.5}
-								class:skeleton-box={$isLoading}>
+								class:skeleton-box={$isLoading}
+							>
 								5,5%
 							</button>
 							<button
@@ -175,7 +185,8 @@
 								type="button"
 								class="text-sm md:text-base"
 								class:selected={product.vat === 10}
-								class:skeleton-box={$isLoading}>
+								class:skeleton-box={$isLoading}
+							>
 								10%
 							</button>
 							<button
@@ -183,11 +194,12 @@
 								type="button"
 								class="text-sm md:text-base"
 								class:selected={product.vat === 20}
-								class:skeleton-box={$isLoading}>
+								class:skeleton-box={$isLoading}
+							>
 								20%
 							</button>
 						</div>
-						<ErrorContainer field={$form.fields.vat}/>
+						<ErrorContainer field={$form.fields.vat} />
 					</div>
 				</div>
 			</div>
@@ -198,42 +210,52 @@
 					disabled={$isLoading}
 					classNames="ml-1"
 					isChecked={isBio}
-					onChange={() => toggleBio()}>
-					<img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Produit bio" class="w-8"/>
+					onChange={() => toggleBio()}
+				>
+					<img src={config.content + "/pictures/tags/icons/bio.png"} alt="Produit bio" class="w-8" />
 				</Toggle>
 			</div>
 		</div>
 		<div class="w-full lg:w-1/2 lg:pl-3">
 			<div class="form-control" style="display:block;">
 				<div class="w-full">
-					<label>Gallerie d'images
-						<Icon data={faInfoCircle}/>
+					<label
+						>Gallerie d'images
+						<Icon data={faInfoCircle} />
 					</label>
-					<div class="text-xxs mb-3">L'image en première position sera celle affichée par défaut, vous pouvez changer
-						l'ordre des images en restant cliqué sur l'image et en la faisant glisser à la position voulue.
+					<div class="text-xxs mb-3">
+						L'image en première position sera celle affichée par défaut, vous pouvez changer l'ordre des images en
+						restant cliqué sur l'image et en la faisant glisser à la position voulue.
 					</div>
-					<GalleryConfigurator bind:elements={product.pictures} elementHeight="80" elementWidth="195"
-															 newElementMinHeight="256" newElementMinWidth="620"
-															 newElementMaxHeight="256" newElementMaxWidth="620"/>
+					<GalleryConfigurator
+						bind:elements={product.pictures}
+						elementHeight="80"
+						elementWidth="195"
+						newElementMinHeight="256"
+						newElementMinWidth="620"
+						newElementMaxHeight="256"
+						newElementMaxWidth="620"
+					/>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues</label>
-		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs/>
+		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>
 		<CategorySelect
 			disabled={$isLoading}
 			on:change={(c) => changeCategory(c)}
-			bindClassData={{ form, name: 'selectedCategory' }}
+			bindClassData={{ form, name: "selectedCategory" }}
 			{errorsHandler}
 			{selectedCategory}
 			displayOptionAllProducts={false}
-			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"/>
-		<ErrorContainer field={$form.fields.selectedCategory}/>
+			grid="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-7 gap-3"
+		/>
+		<ErrorContainer field={$form.fields.selectedCategory} />
 	</div>
 	{#if !isBasketType}
 		<div class="form-control">
@@ -244,9 +266,10 @@
 						<select
 							bind:value={product.conditioning}
 							id="grid-conditioning"
-							use:bindClass={{ form, name: 'conditioning' }}
+							use:bindClass={{ form, name: "conditioning" }}
 							class:skeleton-box={$isLoading}
-							disabled={$isLoading}>
+							disabled={$isLoading}
+						>
 							<option selected="true" value={ConditioningKind.Bulk.Value}>
 								{ConditioningKind.Bulk.Label}
 							</option>
@@ -263,7 +286,7 @@
 								{ConditioningKind.Piece.Label}
 							</option>
 						</select>
-						<ErrorContainer field={$form.fields.conditioning}/>
+						<ErrorContainer field={$form.fields.conditioning} />
 					</div>
 				</div>
 			</div>
@@ -279,28 +302,30 @@
 							type="number"
 							step="0.10"
 							bind:value={product.quantityPerUnit}
-							use:bindClass={{ form, name: 'quantityPerUnit' }}
+							use:bindClass={{ form, name: "quantityPerUnit" }}
 							id="grid-quantityPerUnit"
 							placeholder="ex : 5"
 							class:skeleton-box={$isLoading}
-							disabled={$isLoading}/>
-						<ErrorContainer field={$form.fields.quantityPerUnit}/>
+							disabled={$isLoading}
+						/>
+						<ErrorContainer field={$form.fields.quantityPerUnit} />
 					</div>
 					{#if product.conditioning == ConditioningKind.Bulk.Value && !isBasketType}
 						<div>
 							<select
 								bind:value={product.unit}
 								id="grid-unit"
-								use:bindClass={{ form, name: 'unit' }}
+								use:bindClass={{ form, name: "unit" }}
 								class:skeleton-box={$isLoading}
-								disabled={$isLoading}>
+								disabled={$isLoading}
+							>
 								<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
 								<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
 								<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
 								<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
 								<option value={UnitKind.KG.Value}>{UnitKind.KG.Value}</option>
 							</select>
-							<ErrorContainer field={$form.fields.unit}/>
+							<ErrorContainer field={$form.fields.unit} />
 						</div>
 					{/if}
 				</div>
@@ -324,14 +349,16 @@
 				bind:selectedValue={product.returnable}
 				isSearchable={true}
 				isClearable={false}
-				containerStyles="font-weight: 600; color: #4a5568;"/>
+				containerStyles="font-weight: 600; color: #4a5568;"
+			/>
 		</div>
 		{#if returnables.length > 0 && product.returnable}
 			<button
 				transition:fly|local={{ y: -30 }}
 				type="button"
 				class="btn-link text-sm"
-				on:click={() => (product.returnable = null)}>
+				on:click={() => (product.returnable = null)}
+			>
 				Retirer la consigne du produit
 			</button>
 		{:else}
@@ -339,7 +366,8 @@
 				on:click={showCreateReturnableModal}
 				transition:fly|local={{ y: -30 }}
 				type="button"
-				class="btn-link text-sm">
+				class="btn-link text-sm"
+			>
 				Créer une nouvelle consigne
 			</button>
 		{/if}
@@ -354,24 +382,20 @@
 				disabled={$isLoading}
 				type="text"
 				style="min-height:150px;"
-				placeholder="Tomate ancienne d'une variété très particulière"/>
+				placeholder="Tomate ancienne d'une variété très particulière"
+			/>
 		</div>
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Disponible à la vente</label>
-		<Toggle
-			labelPosition="left"
-			disabled={$isLoading}
-			classNames="ml-1"
-			bind:isChecked={product.available}>
-		</Toggle>
+		<Toggle labelPosition="left" disabled={$isLoading} classNames="ml-1" bind:isChecked={product.available} />
 	</div>
 	{#if product.ratingsCount > 0}
 		<div class="form-control" style="display: block;">
 			<label>Evaluations client</label>
-			<RatingStars rating={product.rating}/>
+			<RatingStars rating={product.rating} />
 			{#if product.ratingsCount > 0}
-				<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, {id: product.id})}>
+				<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, { id: product.id })}>
 					Voir les {product.ratingsCount} avis
 				</a>
 			{/if}
@@ -383,11 +407,9 @@
 			type="submit"
 			disabled={$isLoading || invalidCatalogs}
 			class:disabled={$isLoading || !$form.valid || invalidCatalogs}
-			class="btn btn-primary btn-xl justify-center w-full md:w-auto">
-			<Icon
-				data={$isLoading ? faCircleNotch : faPaperPlane}
-				class="mr-2 inline"
-				spin={$isLoading}/>
+			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
+		>
+			<Icon data={$isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={$isLoading} />
 			Valider
 		</button>
 	</div>
@@ -405,4 +427,5 @@
 		--inputPadding: 18px;
 		--inputColor: #205164;
 	}
+
 </style>

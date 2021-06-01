@@ -1,8 +1,9 @@
 <script>
-  import GetAuthInstance from "./../../services/SheaftAuth.js";
-  GetAuthInstance().loginSilentCallback();
+	import GetAuthInstance from "./../../services/SheaftAuth.js";
+	GetAuthInstance().loginSilentCallback();
+
 </script>
 
 <svelte:head>
-  <title>Re-connexion</title>
+	<title>Re-connexion</title>
 </svelte:head>

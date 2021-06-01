@@ -21,7 +21,7 @@ class SheaftErrors {
 					code: error.extensions.code,
 					message: error.extensions[error.extensions.code],
 					identifier: error.extensions.RequestIdentifier,
-					error
+					error,
 				});
 			} else custErrors.push(error);
 

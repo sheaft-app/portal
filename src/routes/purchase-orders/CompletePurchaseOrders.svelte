@@ -1,9 +1,9 @@
 <script>
-	import {faCheck} from "@fortawesome/free-solid-svg-icons";
+	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import {COMPLETE_PURCHASE_ORDERS} from "./mutations.js";
+	import { COMPLETE_PURCHASE_ORDERS } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
-	import {GET_ORDERS} from "./queries";
+	import { GET_ORDERS } from "./queries";
 	import { getContext } from "svelte";
 
 	export let onClose, close, purchaseOrders;
@@ -22,7 +22,7 @@
 			success: async (res) => await handleClose(res),
 			successNotification: "Commande terminée",
 			errorNotification: "Impossible de terminer la commande.",
-			clearCache: [GET_ORDERS]
+			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
 	};
@@ -31,17 +31,19 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={purchaseOrders.length > 1 ? 'Marquer ces commandes comme prêtes' : 'Marquer cette commande comme prête'}
+	title={purchaseOrders.length > 1 ? "Marquer ces commandes comme prêtes" : "Marquer cette commande comme prête"}
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"
 	icon={faCheck}
 	{isLoading}
-	{close}>
+	{close}
+>
 	<p class="leading-5">
 		{#if purchaseOrders.length > 1}
 			Marquer ces commandes comme prêtes alertera automatiquement leur client que tout est prêt pour venir la récupérer

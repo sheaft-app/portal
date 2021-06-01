@@ -1,15 +1,9 @@
 <script>
 	import CancelMyOrders from "./CancelMyOrders.svelte";
-	import {onMount, getContext} from "svelte";
+	import { onMount, getContext } from "svelte";
 	import Icon from "svelte-awesome";
-	import {
-		faTruck,
-		faCheck,
-		faMapMarkerAlt,
-		faCalendar,
-		faClock
-	} from "@fortawesome/free-solid-svg-icons";
-	import {format} from "date-fns";
+	import { faTruck, faCheck, faMapMarkerAlt, faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
+	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth";
@@ -17,16 +11,16 @@
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import Roles from "./../../enums/Roles";
 	import MyOrderRoutes from "./routes";
-	import {GET_MY_ORDER_DETAILS} from "./queries.js";
+	import { GET_MY_ORDER_DETAILS } from "./queries.js";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import {timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney} from "./../../helpers/app";
+	import { timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney } from "./../../helpers/app";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	export let params = {};
 
 	const errorsHandler = new SheaftErrors();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const { query } = getContext("api");
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -34,7 +28,7 @@
 	let order = null;
 	let isLoading = true;
 
-	const getProcessStep = status => {
+	const getProcessStep = (status) => {
 		switch (status) {
 			case PurchaseOrderStatusKind.Waiting.Value:
 			case PurchaseOrderStatusKind.Accepted.Value:
@@ -52,10 +46,11 @@
 		}
 	};
 
-	const cancelOrder = () => open(CancelMyOrders, {
-		orders: [order],
-		onClose: () => routerInstance.goTo(MyOrderRoutes.List)
-	});
+	const cancelOrder = () =>
+		open(CancelMyOrders, {
+			orders: [order],
+			onClose: () => routerInstance.goTo(MyOrderRoutes.List),
+		});
 
 	onMount(async () => {
 		isLoading = true;
@@ -64,10 +59,10 @@
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(MyOrderRoutes.List),
-			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus"
+			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus",
 		});
 		isLoading = false;
-	})
+	});
 
 	$: canCancelOrder =
 		order &&
@@ -78,15 +73,21 @@
 		order.status != PurchaseOrderStatusKind.Shipping.Value &&
 		order.status != PurchaseOrderStatusKind.Processing.Value &&
 		order.status != PurchaseOrderStatusKind.Refused.Value;
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Détails de la commande" previousPage={MyOrderRoutes.List}/>
-	<PageBody {errorsHandler} {isLoading} loadingMessage="Récupération des informations de votre commande en cours... veuillez patienter.">
+	<PageHeader name="Détails de la commande" previousPage={MyOrderRoutes.List} />
+	<PageBody
+		{errorsHandler}
+		{isLoading}
+		loadingMessage="Récupération des informations de votre commande en cours... veuillez patienter."
+	>
 		{#if order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Withdrawned.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
-        shadow rounded mb-3">
+        shadow rounded mb-3"
+			>
 				<p class="uppercase font-bold leading-none">Commande annulée</p>
 				<div class="mt-2">
 					<p>La commande a été annulée, vous ne pouvez plus interagir avec.</p>
@@ -99,7 +100,8 @@
 		{#if order.status == PurchaseOrderStatusKind.Refused.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-red-100
-        shadow rounded mb-3">
+        shadow rounded mb-3"
+			>
 				<p class="uppercase font-bold leading-none">Commande refusée</p>
 				<div class="mt-2">
 					<p>La commande a été refusée, vous ne pouvez plus interagir avec.</p>
@@ -112,30 +114,24 @@
 		{#if order.status === PurchaseOrderStatusKind.Waiting.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
-        rounded mb-3">
-				<p class="uppercase font-bold leading-none">
-					Votre commande est en cours de traitement
-				</p>
+        rounded mb-3"
+			>
+				<p class="uppercase font-bold leading-none">Votre commande est en cours de traitement</p>
 				<div class="mt-2">
 					<p>
-						Votre commande a été envoyée au producteur. Celui-ci doit
-						maintenant définir s'il est apte à la traiter en fonction de son
-						stock et de sa capacité de production.
+						Votre commande a été envoyée au producteur. Celui-ci doit maintenant définir s'il est apte à la traiter en
+						fonction de son stock et de sa capacité de production.
 					</p>
-					<p>
-						Vous recevrez un e-mail dès l'instant où le producteur aura traité
-						votre commande.
-					</p>
+					<p>Vous recevrez un e-mail dès l'instant où le producteur aura traité votre commande.</p>
 				</div>
 			</div>
 		{/if}
 		{#if order.status == PurchaseOrderStatusKind.Shipping.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
-        rounded mb-3">
-				<p class="uppercase font-bold leading-none">
-					Commande en livraison
-				</p>
+        rounded mb-3"
+			>
+				<p class="uppercase font-bold leading-none">Commande en livraison</p>
 				<div class="mt-2">
 					<p>Votre commande est en cours de livraison</p>
 				</div>
@@ -144,7 +140,8 @@
 		{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
-        rounded mb-3">
+        rounded mb-3"
+			>
 				{#if authInstance.isInRole([Roles.Store.Value])}
 					<p class="uppercase font-bold leading-none">Commande récupérée</p>
 					<div class="mt-2">
@@ -161,14 +158,13 @@
 		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
-        md:rounded md:mb-3 border-t md:border-none border-gray-400">
+        md:rounded md:mb-3 border-t md:border-none border-gray-400"
+			>
 				<div class="flex">
 					{#if authInstance.isInRole([Roles.Store.Value])}
-						<Icon data={faTruck} scale="1" class="mr-5"/>
+						<Icon data={faTruck} scale="1" class="mr-5" />
 						<div>
-							<p class="uppercase font-bold leading-none">
-								Livraison de la commande
-							</p>
+							<p class="uppercase font-bold leading-none">Livraison de la commande</p>
 							<div class="mt-2">
 								<p class="leading-none">
 									{#if order.status !== PurchaseOrderStatusKind.Accepted.Value}
@@ -176,13 +172,9 @@
 									{:else}Votre commande sera livrée le
 									{/if}
 									<b>
-										{format(
-											new Date(order.expectedDelivery.expectedDeliveryDate),
-											'PPPP',
-											{
-												locale: fr
-											}
-										)}
+										{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPPP", {
+											locale: fr,
+										})}
 									</b>
 									entre
 									<b>{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
@@ -193,12 +185,10 @@
 						</div>
 					{:else}
 						<div>
-							<p class="uppercase font-bold leading-none">
-								Où et quand récupérer ma commande ?
-							</p>
+							<p class="uppercase font-bold leading-none">Où et quand récupérer ma commande ?</p>
 							<div class="mt-3">
 								<div class="flex mb-2">
-									<Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;"/>
+									<Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;" />
 									<div>
 										<p>{order.expectedDelivery.address.line1}</p>
 										{#if order.expectedDelivery.address.line2}
@@ -209,17 +199,13 @@
 								</div>
 								<div class="mb-3">
 									<p class="mb-1">
-										<Icon data={faCalendar} class="mr-2 w-3 h-3"/>
-										{format(
-											new Date(order.expectedDelivery.expectedDeliveryDate),
-											'PPPP',
-											{
-												locale: fr
-											}
-										)}
+										<Icon data={faCalendar} class="mr-2 w-3 h-3" />
+										{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPPP", {
+											locale: fr,
+										})}
 									</p>
 									<p class="mb-1">
-										<Icon data={faClock} class="mr-2 w-3 h-3"/>
+										<Icon data={faClock} class="mr-2 w-3 h-3" />
 										entre
 										{timeSpanToFrenchHour(order.expectedDelivery.from)}
 										et
@@ -230,7 +216,10 @@
 									target="_blank"
 									class="btn btn-lg btn-accent font-semibold mt-2"
 									style="width: max-content;"
-									href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}>
+									href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+										order.expectedDelivery.address
+									)}`}
+								>
 									Voir sur Google Maps
 								</a>
 							</div>
@@ -242,61 +231,54 @@
 		{#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Refused.Value}
 			<div
 				class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
-        border-t md:border-l md:border-r border-gray-400">
+        border-t md:border-l md:border-r border-gray-400"
+			>
 				<div class="md-stepper-horizontal green mb-5">
-					<div
-						class="md-step p-0 md:p-6"
-						class:active={getProcessStep(order.status) >= 1}>
+					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 1}>
 						<div class="md-step-circle">
 							{#if getProcessStep(order.status) <= 1}
 								1
 							{:else}
-								<Icon data={faCheck} class="mb-1"/>
+								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
 						<div class="md-step-title text-xs md:text-base">
 							{#if order.status == PurchaseOrderStatusKind.Waiting.Value}En attente{:else}Acceptée{/if}
 						</div>
-						<div class="md-step-bar-left hidden md:block"/>
-						<div class="md-step-bar-right hidden md:block"/>
+						<div class="md-step-bar-left hidden md:block" />
+						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div
-						class="md-step p-0 md:p-6"
-						class:active={getProcessStep(order.status) >= 2}>
+					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 2}>
 						<div class="md-step-circle">
 							{#if getProcessStep(order.status) <= 2}
 								<span>2</span>
 							{:else}
-								<Icon data={faCheck} class="mb-1"/>
+								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
 						<div class="md-step-title text-xs md:text-base">Préparation</div>
-						<div class="md-step-optional"/>
-						<div class="md-step-bar-left hidden md:block"/>
-						<div class="md-step-bar-right hidden md:block"/>
+						<div class="md-step-optional" />
+						<div class="md-step-bar-left hidden md:block" />
+						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div
-						class="md-step p-0 md:p-6"
-						class:active={getProcessStep(order.status) >= 3}>
+					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 3}>
 						<div class="md-step-circle">
 							{#if getProcessStep(order.status) <= 3}
 								<span>3</span>
 							{:else}
-								<Icon data={faCheck} class="mb-1"/>
+								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
 						<div class="md-step-title text-xs md:text-base">Prête</div>
-						<div class="md-step-bar-left hidden md:block"/>
-						<div class="md-step-bar-right hidden md:block"/>
+						<div class="md-step-bar-left hidden md:block" />
+						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div
-						class="md-step p-0 md:p-6"
-						class:active={getProcessStep(order.status) >= 4}>
+					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 4}>
 						<div class="md-step-circle">
 							{#if getProcessStep(order.status) <= 4 && order.status !== PurchaseOrderStatusKind.Delivered.Value}
 								<span>4</span>
 							{:else}
-								<Icon data={faCheck} class="mb-1"/>
+								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
 						{#if authInstance.isInRole([Roles.Store.Value])}
@@ -304,18 +286,18 @@
 						{:else}
 							<div class="md-step-title text-xs md:text-base">Récupérée</div>
 						{/if}
-						<div class="md-step-bar-left hidden md:block"/>
-						<div class="md-step-bar-right hidden md:block"/>
+						<div class="md-step-bar-left hidden md:block" />
+						<div class="md-step-bar-right hidden md:block" />
 					</div>
 				</div>
 			</div>
 		{/if}
 		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
-			<div
-				class="flex flex-wrap bg-white w-full items-top">
+			<div class="flex flex-wrap bg-white w-full items-top">
 				<div
 					class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-400">
+          lg:border-r border-solid border-gray-400"
+				>
 					<p class="uppercase font-bold pb-2">La commande</p>
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
@@ -327,18 +309,14 @@
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Passée le :</span>
-								{format(new Date(order.createdOn), 'PPPPp', {locale: fr})}
+								{format(new Date(order.createdOn), "PPPPp", { locale: fr })}
 							</p>
 						</div>
 						{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
 							<div class="flex items-center mb-2">
 								<p>
 									<span class="text-gray-600">Livrée le :</span>
-									{format(
-										new Date(order.expectedDelivery.deliveredOn),
-										'PPPPp',
-										{locale: fr}
-									)}
+									{format(new Date(order.expectedDelivery.deliveredOn), "PPPPp", { locale: fr })}
 								</p>
 							</div>
 						{/if}
@@ -346,7 +324,8 @@
 				</div>
 				<div
 					class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-400">
+          lg:border-r border-solid border-gray-400"
+				>
 					{#if authInstance.isInRole([Roles.Store.Value])}
 						<p class="uppercase font-bold pb-2">Le contenu</p>
 					{:else}
@@ -372,7 +351,8 @@
 				</div>
 				<div
 					class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
-          border-gray-400 px-4 py-5">
+          border-gray-400 px-4 py-5"
+				>
 					<p class="uppercase font-bold pb-2">Le producteur</p>
 					<div class="mt-3">
 						<div>
@@ -402,94 +382,110 @@
 						<div class="-mx-4 lg:-mx-8">
 							<table class="min-w-full leading-normal">
 								<thead>
-								<tr>
-									<th
-										class="px-4 md:px-8 py-3 border-b md:border-l border-gray-400
+									<tr>
+										<th
+											class="px-4 md:px-8 py-3 border-b md:border-l border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider">
-										Produit
-									</th>
-									<th
-										class="px-4 md:px-8 py-3 border-b border-gray-400
+                      uppercase tracking-wider"
+										>
+											Produit
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider hidden lg:table-cell">
-										Prix unitaire TTC
-									</th>
-									<th
-										class="px-4 md:px-8 py-3 border-b border-gray-400
+                      uppercase tracking-wider hidden lg:table-cell"
+										>
+											Prix unitaire TTC
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
-                      text-gray-600 uppercase tracking-wider">
-										Qté
-									</th>
-									<th
-										class="px-4 md:px-8 py-3 border-b md:border-r border-gray-400
+                      text-gray-600 uppercase tracking-wider"
+										>
+											Qté
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b md:border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
-                      uppercase tracking-wider">
-										Prix Total TTC
-									</th>
-								</tr>
+                      uppercase tracking-wider"
+										>
+											Prix Total TTC
+										</th>
+									</tr>
 								</thead>
 								<tbody class="border-b md:border border-gray-400">
-								{#each order.products as line, index}
+									{#each order.products as line, index}
+										<tr>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base"
+											>
+												<div class="items-center">
+													<p>{line.name}</p>
+													<p class="whitespace-no-wrap block lg:hidden">
+														{formatMoney(line.unitOnSalePrice)} / unité
+													</p>
+												</div>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base hidden lg:table-cell"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(line.unitOnSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{line.quantity}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(line.totalOnSalePrice)}
+												</p>
+												{#if line.totalReturnableOnSalePrice > 0}
+													<p class="text-blue-500 whitespace-no-wrap">
+														<img
+															src="./img/returnable.svg"
+															alt="Consigné"
+															class="mr-1"
+															style="width: 15px; display: inline;"
+														/>
+														{formatMoney(line.totalReturnableOnSalePrice)}
+													</p>
+												{/if}
+											</td>
+										</tr>
+									{/each}
 									<tr>
 										<td
-											class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base">
-											<div class="items-center">
-												<p>{line.name}</p>
-												<p class="whitespace-no-wrap block lg:hidden">
-													{formatMoney(line.unitOnSalePrice)} / unité
-												</p>
-											</div>
-										</td>
-										<td
-											class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base hidden lg:table-cell">
-											<p class="whitespace-no-wrap">
-												{formatMoney(line.unitOnSalePrice)}
-											</p>
-										</td>
-										<td
-											class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base text-center md:text-left">
-											<p class="whitespace-no-wrap">{line.quantity}</p>
-										</td>
-										<td
-											class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base text-right">
-											<p class="whitespace-no-wrap">
-												{formatMoney(line.totalOnSalePrice)}
-											</p>
-											{#if line.totalReturnableOnSalePrice > 0}
-												<p class="text-blue-500 whitespace-no-wrap">
-													<img src="./img/returnable.svg" alt="Consigné" class="mr-1"
-															 style="width: 15px; display: inline;"/> {formatMoney(line.totalReturnableOnSalePrice)}
-												</p>
-											{/if}
-										</td>
-									</tr>
-								{/each}
-								<tr>
-									<td
-										class="bg-white px-4 md:px-8
+											class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-										colspan="2">
-										Total TTC:
-									</td>
-									<td
-										class="bg-white px-4 md:px-8
+											colspan="2"
+										>
+											Total TTC:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-										colspan="3">
-										Total TTC:
-									</td>
-									<td
-										class="bg-white px-4 md:px-8
+											colspan="3"
+										>
+											Total TTC:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
                       py-5 text-lg text-right
                       font-bold"
-										colspan="1">
-										{formatMoney(order.totalOnSalePrice)}
-									</td>
-								</tr>
+											colspan="1"
+										>
+											{formatMoney(order.totalOnSalePrice)}
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
@@ -497,19 +493,12 @@
 				</div>
 			</div>
 		</div>
-		<div
-			class:hidden={!canCancelOrder}
-			class="bg-white shadow md:rounded overflow-hidden md:mb-3 -mx-4 md:mx-0">
+		<div class:hidden={!canCancelOrder} class="bg-white shadow md:rounded overflow-hidden md:mb-3 -mx-4 md:mx-0">
 			<div class="px-4 md:px-8 py-5">
 				<p class="uppercase font-bold">Annuler la commande</p>
 				<div class="mt-5">
-					<p>
-						Vous pouvez annuler votre commande tant que celle-ci n'est pas en
-						cours de préparation.
-					</p>
-					<button
-						on:click={cancelOrder}
-						class="btn btn-lg btn-accent shadow mt-3 font-semibold">
+					<p>Vous pouvez annuler votre commande tant que celle-ci n'est pas en cours de préparation.</p>
+					<button on:click={cancelOrder} class="btn btn-lg btn-accent shadow mt-3 font-semibold">
 						Annuler ma commande
 					</button>
 				</div>
@@ -632,4 +621,5 @@
 		right: 50%;
 		margin-right: 20px;
 	}
+
 </style>

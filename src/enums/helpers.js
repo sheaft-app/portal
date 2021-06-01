@@ -14,6 +14,6 @@ const GetEnumObjectFor = (enums, propertyValue) => {
 	if (enumValue == null) return defaultEnum;
 
 	return enums[enumValue];
-}
+};
 
 export default GetEnumObjectFor;

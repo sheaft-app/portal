@@ -1,11 +1,11 @@
 <script>
-	import {getContext, onMount} from "svelte";
+	import { getContext, onMount } from "svelte";
 	import SheaftErrors from "./../../services/SheaftErrors.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import {formatMoney} from "./../../helpers/app.js";
-	import {GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS} from "./queries.js";
+	import { formatMoney } from "./../../helpers/app.js";
+	import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
 	import ConfirmOrder from "./ConfirmOrder.svelte";
 	import Select from "./../../components/controls/select/Select";
 	import MyOrdersRoutes from "../my-orders/routes";
@@ -14,7 +14,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const { query } = getContext("api");
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -26,7 +26,7 @@
 	let dirty = false;
 	let isLoadingDeliveries = true;
 
-	$: isValid = normalizedProducts.filter((p) => (p.quantity >= 1 && !p.producer.deliveryHour)).length == 0;
+	$: isValid = normalizedProducts.filter((p) => p.quantity >= 1 && !p.producer.deliveryHour).length == 0;
 
 	const getAllAvailableProducts = async () => {
 		isLoading = true;
@@ -34,20 +34,30 @@
 			query: GET_ALL_PRODUCTS,
 			errorsHandler,
 			success: async (res) => {
-				normalizedProducts = orderBy(res.map((i) => ({
-					...i,
-					quantity: 0
-				}), i => i.producer.name, ['asc']));
+				normalizedProducts = orderBy(
+					res.map(
+						(i) => ({
+							...i,
+							quantity: 0,
+						}),
+						(i) => i.producer.name,
+						["asc"]
+					)
+				);
 
 				if (normalizedProducts.length > 1) {
-					await loadDeliveries(res.map((p) => p.producer.id).reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []));
+					await loadDeliveries(
+						res
+							.map((p) => p.producer.id)
+							.reduce((unique, item) => (unique.includes(item) ? unique : [...unique, item]), [])
+					);
 				}
 			},
-			errorNotification: "Impossible de récupérer les produits commandables."
+			errorNotification: "Impossible de récupérer les produits commandables.",
 		});
 		isLoading = false;
 		dirty = false;
-	}
+	};
 
 	const loadDeliveries = async (ids) => {
 		isLoadingDeliveries = true;
@@ -58,13 +68,13 @@
 			success: (res) => {
 				producerDeliveries = res.data;
 			},
-			errorNotification: "Impossible de récupérer les informations de livraison."
+			errorNotification: "Impossible de récupérer les informations de livraison.",
 		});
 		isLoadingDeliveries = false;
-	}
+	};
 
-	const handleLess = productId => {
-		let product = normalizedProducts.find(p => p.id === productId);
+	const handleLess = (productId) => {
+		let product = normalizedProducts.find((p) => p.id === productId);
 
 		if (product.quantity !== 0) {
 			product.quantity = (product.quantity || 1) - 1;
@@ -75,8 +85,8 @@
 		dirty = true;
 	};
 
-	const handleMore = productId => {
-		let product = normalizedProducts.find(p => p.id === productId);
+	const handleMore = (productId) => {
+		let product = normalizedProducts.find((p) => p.id === productId);
 		product.quantity = (product.quantity || 0) + 1;
 
 		normalizedProducts = normalizedProducts;
@@ -85,42 +95,41 @@
 	};
 
 	const handleSubmit = async (products) => {
-		const productsFiltered = normalizedProducts.filter(p => p.quantity > 0);
-		const producersExpectedDeliveries = productsFiltered.map(product => {
-			return {
-				producerId: product.producer.id,
-				deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
-				expectedDeliveryDate: product.producer.deliveryHour ? product.producer.deliveryHour.expectedDeliveryDate : null
-			};
-		})
-			.filter(
-				(producer, index, self) =>
-					index === self.findIndex(t => t.producerId === producer.producerId)
-			);
+		const productsFiltered = normalizedProducts.filter((p) => p.quantity > 0);
+		const producersExpectedDeliveries = productsFiltered
+			.map((product) => {
+				return {
+					producerId: product.producer.id,
+					deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
+					expectedDeliveryDate: product.producer.deliveryHour
+						? product.producer.deliveryHour.expectedDeliveryDate
+						: null,
+				};
+			})
+			.filter((producer, index, self) => index === self.findIndex((t) => t.producerId === producer.producerId));
 
 		open(ConfirmOrder, {
 			data: {
 				allProducts: productsFiltered,
-				products: productsFiltered.map(product => ({
+				products: productsFiltered.map((product) => ({
 					id: product.id,
-					quantity: product.quantity
+					quantity: product.quantity,
 				})),
-				producersExpectedDeliveries
+				producersExpectedDeliveries,
 			},
-			onClose: () => routerInstance.goTo(MyOrdersRoutes.List)
+			onClose: () => routerInstance.goTo(MyOrdersRoutes.List),
 		});
-	}
+	};
 
 	onMount(async () => {
 		await getAllAvailableProducts();
-	})
+	});
 
-	const getProducerDeliveries = producerId => {
-		if(!producerDeliveries || producerDeliveries.length < 1)
-			return null;
+	const getProducerDeliveries = (producerId) => {
+		if (!producerDeliveries || producerDeliveries.length < 1) return null;
 
-		return producerDeliveries.find(p => p.id === producerId)
-	}
+		return producerDeliveries.find((p) => p.id === producerId);
+	};
 
 	$: productsCount = normalizedProducts.reduce((sum, product) => {
 		return sum + (product.quantity || 0);
@@ -132,20 +141,36 @@
 		return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
 	}, 0);
 	$: totalHt = normalizedProducts.reduce((sum, product) => {
-		return parseFloat(sum) + (product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) * (product.quantity || 0);
+		return (
+			parseFloat(sum) +
+			(product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) *
+				(product.quantity || 0)
+		);
 	}, 0);
 	$: totalVat = normalizedProducts.reduce((sum, product) => {
-		return parseFloat(sum) + (product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0);
+		return (
+			parseFloat(sum) +
+			(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0)
+		);
 	}, 0);
 	$: totalTtc = normalizedProducts.reduce((sum, product) => {
-		return parseFloat(sum) + (product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) * (product.quantity || 0);
+		return (
+			parseFloat(sum) +
+			(product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) * (product.quantity || 0)
+		);
 	}, 0);
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Passer une commande"/>
-	<PageBody {errorsHandler} {isLoading} noResults={normalizedProducts.length < 1} noResultsPage={SearchProducerRoutes.NoResults}
-						loadingMessage="Chargement des produits disponibles... veuillez patienter.">
+	<PageHeader name="Passer une commande" />
+	<PageBody
+		{errorsHandler}
+		{isLoading}
+		noResults={normalizedProducts.length < 1}
+		noResultsPage={SearchProducerRoutes.NoResults}
+		loadingMessage="Chargement des produits disponibles... veuillez patienter."
+	>
 		<form on:submit|preventDefault={handleSubmit}>
 			{#if normalizedProducts.length > 0}
 				{#if producerDeliveries.length > 1}
@@ -157,14 +182,17 @@
 								getSelectionLabel={(l) => l.name}
 								showChevron={true}
 								hideSelectedOnFocus={true}
-								on:select={(selectedVal) => { producersDisplayed = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [] }}
+								on:select={(selectedVal) => {
+									producersDisplayed = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [];
+								}}
 								optionIdentifier="id"
 								placeholder="Filtrez les producteurs"
 								noOptionsMessage="Aucun producteur trouvé"
 								isSearchable={true}
 								isMulti={true}
 								isClearable={false}
-								containerStyles="font-weight: 600; color: #4a5568;"/>
+								containerStyles="font-weight: 600; color: #4a5568;"
+							/>
 						</div>
 					</div>
 				{/if}
@@ -174,11 +202,13 @@
 				<div class="lg:flex lg:flex-row">
 					<div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
 						<div class="align-middle inline-block min-w-full overflow-hidden items mb-5">
-							{#each (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts) as product, i}
-								{#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter((p) => producersDisplayed.includes(p.producer.id)) : normalizedProducts)[i - 1].producer.name !== product.producer.name}
-									<p style="border-bottom: 0;"
-										 class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100"
-										 class:mt-5={i >= 1}>
+							{#each producersDisplayed.length > 0 ? normalizedProducts.filter( (p) => producersDisplayed.includes(p.producer.id) ) : normalizedProducts as product, i}
+								{#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter( (p) => producersDisplayed.includes(p.producer.id) ) : normalizedProducts)[i - 1].producer.name !== product.producer.name}
+									<p
+										style="border-bottom: 0;"
+										class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100"
+										class:mt-5={i >= 1}
+									>
 										{product.producer.name}
 									</p>
 									<DeliveryModePicker
@@ -192,7 +222,9 @@
 								{/if}
 								<div
 									class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
-              border-gray-400 border-solid items-center" class:bg-blue-100={product.quantity > 0}>
+              border-gray-400 border-solid items-center"
+									class:bg-blue-100={product.quantity > 0}
+								>
 									<div class="md:w-6/12 px-3">
 										<div class="text-lg leading-5 font-medium">
 											<p>{product.name}</p>
@@ -201,15 +233,14 @@
 									</div>
 									<div class="md:w-2/12 px-3 block md:hidden">
 										<p>
-                      <span class="font-bold text-xl">
-                        {formatMoney(product.wholeSalePricePerUnit * product.quantity || 0)} HT
-                      </span>
+											<span class="font-bold text-xl">
+												{formatMoney(product.wholeSalePricePerUnit * product.quantity || 0)} HT
+											</span>
 										</p>
 									</div>
 									<div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
 										{#if product.available}
-											<div
-												class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
+											<div class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
 												<button
 													disabled={product.quantity === 0}
 													style="height: 36px;"
@@ -217,7 +248,8 @@
 													aria-label="Retirer 1"
 													class="font-bold
                         transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
-													on:click|stopPropagation={() => handleLess(product.id)}>
+													on:click|stopPropagation={() => handleLess(product.id)}
+												>
 													-
 												</button>
 												<input
@@ -225,25 +257,27 @@
 													max="999"
 													type="number"
 													on:click|stopPropagation
-													on:input={e => {
-                          if (!dirty) dirty = true;
+													on:input={(e) => {
+														if (!dirty) dirty = true;
 
-                          if (e.target.value.length > e.target.maxLength) {
-                            e.target.value = e.target.value.slice(0, e.target.maxLength);
-                          }
-                        }}
+														if (e.target.value.length > e.target.maxLength) {
+															e.target.value = e.target.value.slice(0, e.target.maxLength);
+														}
+													}}
 													maxLength="3"
 													bind:value={product.quantity}
 													class:font-bold={product.quantity > 0}
 													class="text-center w-full border-none rounded-none p-1 text-sm lg:text-base"
-													class:bg-blue-100={product.quantity > 0}/>
+													class:bg-blue-100={product.quantity > 0}
+												/>
 												<button
 													type="button"
 													style="height: 36px;"
 													class="font-bold
                         transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
 													aria-label="Ajouter 1"
-													on:click|stopPropagation={() => handleMore(product.id)}>
+													on:click|stopPropagation={() => handleMore(product.id)}
+												>
 													+
 												</button>
 											</div>
@@ -265,13 +299,14 @@
 						<div
 							class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
             bg-white shadow w-full"
-							style="height: fit-content;">
+							style="height: fit-content;"
+						>
 							<div class="flex justify-between w-full lg:px-3 pb-2">
 								<div class="text-left">
 									<p>Montant HT</p>
 									<p class="text-sm text-gray-600">
 										{#if productsCount > 0}
-											{productsCount} article{productsCount > 1 ? 's' : ''}
+											{productsCount} article{productsCount > 1 ? "s" : ""}
 										{:else}Aucun article
 										{/if}
 									</p>
@@ -317,7 +352,8 @@
 									disabled={productsCount === 0 || !isValid}
 									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
                 justify-center m-auto"
-									style="padding-left: 50px; padding-right: 50px;">
+									style="padding-left: 50px; padding-right: 50px;"
+								>
 									Valider
 								</button>
 							</div>
@@ -328,7 +364,6 @@
 		</form>
 	</PageBody>
 </TransitionWrapper>
-
 
 <style lang="scss">
 	button:active {
@@ -355,7 +390,6 @@
 
 	.plusButton,
 	.minusButton {
-
 		&:hover {
 			background-color: #009688;
 			@apply text-white;
@@ -379,7 +413,7 @@
 	}
 
 	/* Firefox */
-	input[type=number] {
+	input[type="number"] {
 		-moz-appearance: textfield;
 	}
 

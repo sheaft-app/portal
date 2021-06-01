@@ -33,7 +33,7 @@ export const CREATE_PRODUCT = gql`
 				name
 				kind
 			}
-			pictures{
+			pictures {
 				id
 				position
 				medium
@@ -77,7 +77,7 @@ export const UPDATE_PRODUCT = gql`
 				id
 				name
 			}
-			pictures{
+			pictures {
 				id
 				position
 				medium
@@ -97,8 +97,8 @@ export const DELETE_PRODUCTS = gql`
 export const SET_PRODUCTS_AVAILABILITY = gql`
 	mutation SetProductsAvailability($input: SetProductsAvailabilityInput!) {
 		setProductsAvailability(input: $input) {
-				id
-				available
+			id
+			available
 		}
 	}
 `;

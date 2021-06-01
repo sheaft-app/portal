@@ -12,7 +12,7 @@ const ratings = "/:id/ratings";
 
 const ProductRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Producer.Value],
+	Roles: [Roles.Producer.Value],
 	List: {
 		Name: "Produits",
 		Icon: faBarcode,
@@ -26,14 +26,14 @@ const ProductRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 			},
-		}
+		},
 	},
 	Create: {
 		Name: "Créer un produit",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Details: {
 		Name: "Editer un produit",
@@ -42,7 +42,7 @@ const ProductRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	Ratings: {
 		Name: "Notation du produit",
@@ -51,7 +51,7 @@ const ProductRoutes = {
 		SubPart: `${ratings}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	NoResults: {
 		Name: "Créer un produit",
@@ -59,7 +59,7 @@ const ProductRoutes = {
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
-		Text:"Vous n'avez pas encore de produits dans votre catalogue."
+		Text: "Vous n'avez pas encore de produits dans votre catalogue.",
 	},
 };
 

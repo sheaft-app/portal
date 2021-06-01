@@ -4,21 +4,25 @@
 	import ErrorCard from "./ErrorCard.svelte";
 	import Loader from "./Loader.svelte";
 
-	export let noResultsPage, errorsHandler, noResults = false, isLoading = false, loadingMessage;
+	export let noResultsPage,
+		errorsHandler,
+		noResults = false,
+		isLoading = false,
+		loadingMessage;
 	const routerInstance = GetRouterInstance();
+
 </script>
 
-
 {#if !isLoading && errorsHandler}
-	<ErrorCard {errorsHandler}/>
+	<ErrorCard {errorsHandler} />
 {/if}
 
 {#if !isLoading && noResults}
-	<PageEmpty {noResultsPage}/>
+	<PageEmpty {noResultsPage} />
 {/if}
 
 {#if isLoading}
-	<Loader text={loadingMessage}/>
+	<Loader text={loadingMessage} />
 {:else}
-	<slot/>
+	<slot />
 {/if}

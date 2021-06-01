@@ -23,16 +23,16 @@ const ReturnableRoutes = {
 				orderBy: "name",
 				direction: OrderByDirection.ASC,
 				take: 20,
-				paginate: Paginate.First
-			}
-		}
+				paginate: Paginate.First,
+			},
+		},
 	},
 	Create: {
 		Name: "Nouvelle consigne",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Details: {
 		Name: "Editer une consigne",
@@ -41,7 +41,7 @@ const ReturnableRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	NoResults: {
 		Name: "Créer une consigne",
@@ -49,7 +49,7 @@ const ReturnableRoutes = {
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
-		Text:"Vous n'avez aucune consigne"
+		Text: "Vous n'avez aucune consigne",
 	},
 };
 

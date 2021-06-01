@@ -10,7 +10,7 @@ const details = "/:id";
 
 const PurchaseOrderRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Producer.Value],
+	Roles: [Roles.Producer.Value],
 	List: {
 		Name: "Commandes",
 		Icon: faFileInvoice,
@@ -24,9 +24,9 @@ const PurchaseOrderRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 				where: null,
-				whereValues: null
+				whereValues: null,
 			},
-		}
+		},
 	},
 	Details: {
 		Name: "Détails de la commande",
@@ -35,8 +35,8 @@ const PurchaseOrderRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
-	}
+		},
+	},
 };
 
 export default PurchaseOrderRoutes;

@@ -1,13 +1,7 @@
 import gql from "graphql-tag";
 
 export const GET_RETURNABLES = gql`
-	query Returnables(
-		$first: Int
-		$after: String
-		$last: Int
-		$before: String
-		$order: [ReturnableSortInput!]
-	) {
+	query Returnables($first: Int, $after: String, $last: Int, $before: String, $order: [ReturnableSortInput!]) {
 		returnables(first: $first, after: $after, last: $last, before: $before, order: $order) {
 			edges {
 				cursor
@@ -19,7 +13,7 @@ export const GET_RETURNABLES = gql`
 					onSalePrice
 				}
 			}
-			pageInfo{
+			pageInfo {
 				hasPreviousPage
 				hasNextPage
 				startCursor

@@ -23,7 +23,7 @@
 			success: async (res) => await handleClose(res),
 			successNotification: "Commande annulée",
 			errorNotification: "Impossible d'annuler la commande.",
-			clearCache: [GET_ORDERS]
+			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
 	};
@@ -32,28 +32,26 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={purchaseOrders.length > 1 ? 'Annuler ces commandes' : 'Annuler cette commande'}
+	title={purchaseOrders.length > 1 ? "Annuler ces commandes" : "Annuler cette commande"}
 	level="danger"
 	{isLoading}
 	icon={faTimes}
 	submit={handleSubmit}
 	submitText="Confirmer l'annulation"
 	closeText="Fermer"
-	{close}>
+	{close}
+>
 	<p class="leading-5">
-		Annuler {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}
+		Annuler {purchaseOrders.length > 1 ? "ces commandes" : "cette commande"}
 		alertera automatiquement votre client.
 	</p>
 	<form class="mt-2">
-		<label
-			class="block uppercase tracking-wide text-gray-700 text-xs font-bold"
-			for="reason">
-			Raison
-		</label>
+		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold" for="reason"> Raison </label>
 		<input
 			bind:value={reason}
 			class="appearance-none block w-full text-gray-700 border input-bg-clr
@@ -61,6 +59,7 @@
 			focus:shadow-outline-green focus:bg-white"
 			id="reason"
 			type="text"
-			placeholder="Expliquez l'annulation (optionnel)" />
+			placeholder="Expliquez l'annulation (optionnel)"
+		/>
 	</form>
 </ActionConfirm>

@@ -6,9 +6,9 @@ import {
 	faTimes,
 	faSpinner,
 	faTruck,
-	faTruckLoading
+	faTruckLoading,
 } from "@fortawesome/free-solid-svg-icons";
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 export const PurchaseOrderStatus = {
 	WAITING: "WAITING",
@@ -90,7 +90,7 @@ let enums = {
 		Label: "Inconnue",
 		Icon: faQuestion,
 		Color: "black-400",
-	}
+	},
 };
 
 let PurchaseOrderStatusKind = {
@@ -109,10 +109,10 @@ let PurchaseOrderStatusKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => PurchaseOrderStatusKind[key] = enums[key]);
+Object.keys(enums).map((key) => (PurchaseOrderStatusKind[key] = enums[key]));
 Object.freeze(PurchaseOrderStatusKind);
 
 export default PurchaseOrderStatusKind;

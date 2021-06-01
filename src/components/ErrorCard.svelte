@@ -1,12 +1,16 @@
 <script>
 	import Icon from "svelte-awesome";
-	import { slide } from 'svelte/transition';
+	import { slide } from "svelte/transition";
 	import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 	import { errors } from "../stores/errors";
 	import { createNewTicket } from "../services/SheaftFreshdesk";
 	import { authAuthenticated, authUserAccount } from "../stores/auth";
 
-	export let errorsHandler = null, displayIcon = true, classes = null, componentErrors = [], retry = false;
+	export let errorsHandler = null,
+		displayIcon = true,
+		classes = null,
+		componentErrors = [],
+		retry = false;
 	let bgColor = "bg-red-500";
 	const getErrors = () => {
 		if (!errorsHandler) {
@@ -15,33 +19,36 @@
 		}
 
 		componentErrors = errorsHandler.getErrors();
-		
-		if(componentErrors.filter(e => e.code == "BadRequest" || e.code == "Unexpected" || e.code == "EXEC_INVALID_TYPE").length > 0)
+
+		if (
+			componentErrors.filter((e) => e.code == "BadRequest" || e.code == "Unexpected" || e.code == "EXEC_INVALID_TYPE")
+				.length > 0
+		)
 			bgColor = "bg-red-500";
-		else
-			bgColor = "bg-orange-500";
-	}
+		else bgColor = "bg-orange-500";
+	};
 
 	const refresh = () => {
 		location.reload();
 	};
-	
+
 	const scrollTo = (node) => {
-		let headerOffset = document.getElementById('navbar').offsetHeight;
+		let headerOffset = document.getElementById("navbar").offsetHeight;
 		let elementPosition = node.offsetTop;
 		let offsetPosition = elementPosition - headerOffset;
-		
-		window.scrollTo({
-				top: offsetPosition,
-				behavior: "smooth"
-		});  
-	}
 
-	const openHelp= () => {
-		createNewTicket(null, $authUserAccount.profile, componentErrors)
-	}
+		window.scrollTo({
+			top: offsetPosition,
+			behavior: "smooth",
+		});
+	};
+
+	const openHelp = () => {
+		createNewTicket(null, $authUserAccount.profile, componentErrors);
+	};
 
 	$: getErrors($errors);
+
 </script>
 
 {#if componentErrors.length >= 1}
@@ -52,22 +59,29 @@
 			</div>
 		{/if}
 		<div class="text-center lg:text-left" style="word-break: break-word;">
-				<slot />
-				{#each componentErrors as error}
-					<p>{@html error.message}</p>
-				{/each}
-				{#if $authAuthenticated}					
+			<slot />
+			{#each componentErrors as error}
+				<p>{@html error.message}</p>
+			{/each}
+			{#if $authAuthenticated}
 				<p class="mt-2">
-					Si le problème persiste, contactez le service technique en <a href="javascript:void(0)" on:click="{openHelp}" style="color:white;font-weight:bold;">cliquant ici</a>
-					</p>
-				{:else}
+					Si le problème persiste, contactez le service technique en <a
+						href="javascript:void(0)"
+						on:click={openHelp}
+						style="color:white;font-weight:bold;">cliquant ici</a
+					>
+				</p>
+			{:else}
 				<p class="mt-2">
-					Si le problème persiste, contactez le service technique en envoyant un email à <a href="mailto:support@sheaft.com" style="color:white;font-weight:bold;">support@sheaft.com</a>
-					</p>
-				{/if}
-				{#if retry}
-					<button class="btn btn-lg btn-white m-auto lg:m-0" on:click={refresh}>Recharger la page</button>
-				{/if}
+					Si le problème persiste, contactez le service technique en envoyant un email à <a
+						href="mailto:support@sheaft.com"
+						style="color:white;font-weight:bold;">support@sheaft.com</a
+					>
+				</p>
+			{/if}
+			{#if retry}
+				<button class="btn btn-lg btn-white m-auto lg:m-0" on:click={refresh}>Recharger la page</button>
+			{/if}
 		</div>
 	</div>
 {/if}
@@ -76,4 +90,5 @@
 	p {
 		@apply mb-2;
 	}
+
 </style>

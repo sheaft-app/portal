@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
+		nextProducersDeliveries(ids: $input, kinds: [FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -16,7 +16,7 @@ export const GET_PRODUCER_DELIVERIES = gql`
 					latitude
 					longitude
 				}
-				deliveryHours{
+				deliveryHours {
 					day
 					from
 					to
@@ -30,22 +30,22 @@ export const GET_PRODUCER_DELIVERIES = gql`
 export const GET_MY_ORDERS = gql`
 	query MyOrder($id: ID!) {
 		order(id: $id) {
+			id
+			reference
+			purchaseOrders {
 				id
 				reference
-				purchaseOrders{
-					id
-					reference
-					totalOnSalePrice
-					expectedDelivery{
-						expectedDeliveryDate
-						day
-						from
-						to
-					}
-					vendor{
-						name
-					}
+				totalOnSalePrice
+				expectedDelivery {
+					expectedDeliveryDate
+					day
+					from
+					to
 				}
+				vendor {
+					name
+				}
+			}
 		}
 	}
 `;
@@ -68,7 +68,6 @@ export const GET_ORDER = gql`
 		}
 	}
 `;
-
 
 export const GET_MY_CONSUMER_LEGALS = gql`
 	query GetMyConsumerLegals {

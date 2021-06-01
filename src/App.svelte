@@ -1,10 +1,10 @@
 <script>
 	import { InitGraphQL } from "./services/SheaftGraphQL.js";
-  	import { InitAuth } from "./services/SheaftAuth.js";
+	import { InitAuth } from "./services/SheaftAuth.js";
 	import { InitSignalr } from "./services/SheaftSignalr.js";
 	import { InitRouter } from "./services/SheaftRouter.js";
 	import { InitGuard } from "./services/SheaftGuard.js";
-  	import { InitNotifications } from "./services/SheaftNotifications.js";
+	import { InitNotifications } from "./services/SheaftNotifications.js";
 	import SheaftErrors from "./services/SheaftErrors.js";
 	import Oidc from "oidc-client";
 	import GraphQLContext from "./components/GraphQLContext.svelte";
@@ -12,14 +12,14 @@
 	import { config } from "./configs/config.js";
 
 	var authSettings = config.auth.settings;
-	authSettings.userStore = new Oidc.WebStorageStateStore({store: window.localStorage});
+	authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
 
 	const authInstance = InitAuth(authSettings);
 	const notificationsInstance = InitNotifications({
 		duration: 6000,
 		ripple: true,
 		dismissible: true,
-		position: { x: "right", y: "top" }
+		position: { x: "right", y: "top" },
 	});
 
 	const errorsHandlers = new SheaftErrors(notificationsInstance);
@@ -32,6 +32,7 @@
 		notificationsInstance,
 		apiInstance
 	);
+
 </script>
 
 <GraphQLContext>

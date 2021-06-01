@@ -1,353 +1,311 @@
 <script>
-  import {
-    beforeUpdate,
-    createEventDispatcher,
-    onDestroy,
-    onMount,
-    tick
-  } from "svelte";
+	import { beforeUpdate, createEventDispatcher, onDestroy, onMount, tick } from "svelte";
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
-  export let container = undefined;
+	export let container = undefined;
 
-  import ItemComponent from "./Item.svelte";
-  import VirtualList from "./VirtualList.svelte";
+	import ItemComponent from "./Item.svelte";
+	import VirtualList from "./VirtualList.svelte";
 
-  export let Item = ItemComponent;
-  export let TopItem = undefined;
-  export let TopItemHandleClick = undefined;
-  export let isVirtualList = false;
-  export let items = [];
-  export let getOptionLabel = (option, filterText) => {
-    if (option)
-      return option.isCreator ? `Create \"${filterText}\"` : option.label;
-  };
-  export let getGroupHeaderLabel = option => {
-    return option.label;
-  };
-  export let itemHeight = 40;
-  export let hoverItemIndex = 0;
-  export let selectedValue = undefined;
-  export let optionIdentifier = "value";
-  export let hideEmptyState = false;
-  export let noOptionsMessage = "No options";
-  export let isMulti = false;
-  export let activeItemIndex = 0;
-  export let filterText = "";
-  export let isWaiting = false;
+	export let Item = ItemComponent;
+	export let TopItem = undefined;
+	export let TopItemHandleClick = undefined;
+	export let isVirtualList = false;
+	export let items = [];
+	export let getOptionLabel = (option, filterText) => {
+		if (option) return option.isCreator ? `Create \"${filterText}\"` : option.label;
+	};
+	export let getGroupHeaderLabel = (option) => {
+		return option.label;
+	};
+	export let itemHeight = 40;
+	export let hoverItemIndex = 0;
+	export let selectedValue = undefined;
+	export let optionIdentifier = "value";
+	export let hideEmptyState = false;
+	export let noOptionsMessage = "No options";
+	export let isMulti = false;
+	export let activeItemIndex = 0;
+	export let filterText = "";
+	export let isWaiting = false;
 
-  let isScrollingTimer = 0;
-  let isScrolling = false;
-  let prev_items;
-  let prev_activeItemIndex;
-  let prev_selectedValue;
+	let isScrollingTimer = 0;
+	let isScrolling = false;
+	let prev_items;
+	let prev_activeItemIndex;
+	let prev_selectedValue;
 
-  onMount(() => {
-    if (items.length > 0 && !isMulti && selectedValue) {
-      const _hoverItemIndex = items.findIndex(
-        item => item[optionIdentifier] === selectedValue[optionIdentifier]
-      );
+	onMount(() => {
+		if (items.length > 0 && !isMulti && selectedValue) {
+			const _hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
 
-      if (_hoverItemIndex) {
-        hoverItemIndex = _hoverItemIndex;
-      }
-    }
+			if (_hoverItemIndex) {
+				hoverItemIndex = _hoverItemIndex;
+			}
+		}
 
-    scrollToActiveItem("ssp-active");
+		scrollToActiveItem("ssp-active");
 
-    container.addEventListener(
-      "scroll",
-      () => {
-        clearTimeout(isScrollingTimer);
+		container.addEventListener(
+			"scroll",
+			() => {
+				clearTimeout(isScrollingTimer);
 
-        isScrollingTimer = setTimeout(() => {
-          isScrolling = false;
-        }, 100);
-      },
-      false
-    );
-  });
+				isScrollingTimer = setTimeout(() => {
+					isScrolling = false;
+				}, 100);
+			},
+			false
+		);
+	});
 
-  onDestroy(() => {
-    // clearTimeout(isScrollingTimer);
-  });
+	onDestroy(() => {
+		// clearTimeout(isScrollingTimer);
+	});
 
-  beforeUpdate(() => {
-    if (items !== prev_items && items.length > 0) {
-      hoverItemIndex = 0;
-    }
+	beforeUpdate(() => {
+		if (items !== prev_items && items.length > 0) {
+			hoverItemIndex = 0;
+		}
 
-    // if (prev_activeItemIndex && activeItemIndex > -1) {
-    //   hoverItemIndex = activeItemIndex;
+		// if (prev_activeItemIndex && activeItemIndex > -1) {
+		//   hoverItemIndex = activeItemIndex;
 
-    //   scrollToActiveItem('ssp-active');
-    // }
-    // if (prev_selectedValue && selectedValue) {
-    //   scrollToActiveItem('ssp-active');
+		//   scrollToActiveItem('ssp-active');
+		// }
+		// if (prev_selectedValue && selectedValue) {
+		//   scrollToActiveItem('ssp-active');
 
-    //   if (items && !isMulti) {
-    //     const hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
+		//   if (items && !isMulti) {
+		//     const hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
 
-    //     if (hoverItemIndex) {
-    //       hoverItemIndex = hoverItemIndex;
-    //     }
-    //   }
-    // }
+		//     if (hoverItemIndex) {
+		//       hoverItemIndex = hoverItemIndex;
+		//     }
+		//   }
+		// }
 
-    prev_items = items;
-    prev_activeItemIndex = activeItemIndex;
-    prev_selectedValue = selectedValue;
-  });
+		prev_items = items;
+		prev_activeItemIndex = activeItemIndex;
+		prev_selectedValue = selectedValue;
+	});
 
-  function itemClasses(
-    hoverItemIndex,
-    item,
-    itemIndex,
-    items,
-    selectedValue,
-    optionIdentifier,
-    isMulti
-  ) {
-    return `${
-      selectedValue &&
-      !isMulti &&
-      selectedValue[optionIdentifier] === item[optionIdentifier]
-        ? "ssp-active "
-        : ""
-    }${hoverItemIndex === itemIndex || items.length === 1 ? "ssp-hover" : ""}`;
-  }
+	function itemClasses(hoverItemIndex, item, itemIndex, items, selectedValue, optionIdentifier, isMulti) {
+		return `${
+			selectedValue && !isMulti && selectedValue[optionIdentifier] === item[optionIdentifier] ? "ssp-active " : ""
+		}${hoverItemIndex === itemIndex || items.length === 1 ? "ssp-hover" : ""}`;
+	}
 
-  function handleSelect(item) {
-    if (item.isCreator) return;
-    dispatch("itemSelected", item);
-  }
+	function handleSelect(item) {
+		if (item.isCreator) return;
+		dispatch("itemSelected", item);
+	}
 
-  function handleHover(i) {
-    if (isScrolling) return;
-    hoverItemIndex = i;
-  }
+	function handleHover(i) {
+		if (isScrolling) return;
+		hoverItemIndex = i;
+	}
 
-  function handleClick(args) {
-    const { item, i, event } = args;
-    event.stopPropagation();
+	function handleClick(args) {
+		const { item, i, event } = args;
+		event.stopPropagation();
 
-    if (
-      selectedValue &&
-      !isMulti &&
-      selectedValue[optionIdentifier] === item[optionIdentifier]
-    )
-      return closeList();
+		if (selectedValue && !isMulti && selectedValue[optionIdentifier] === item[optionIdentifier]) return closeList();
 
-    if (item.isCreator) {
-      dispatch("itemCreated", filterText);
-    } else {
-      activeItemIndex = i;
-      hoverItemIndex = i;
-      handleSelect(item);
-    }
-  }
+		if (item.isCreator) {
+			dispatch("itemCreated", filterText);
+		} else {
+			activeItemIndex = i;
+			hoverItemIndex = i;
+			handleSelect(item);
+		}
+	}
 
-  function closeList() {
-    dispatch("closeList");
-  }
+	function closeList() {
+		dispatch("closeList");
+	}
 
-  async function updateHoverItem(increment) {
-    if (isVirtualList) return;
+	async function updateHoverItem(increment) {
+		if (isVirtualList) return;
 
-    let isNonSelectableItem = true;
+		let isNonSelectableItem = true;
 
-    while (isNonSelectableItem) {
-      if (increment > 0 && hoverItemIndex === items.length - 1) {
-        hoverItemIndex = 0;
-      } else if (increment < 0 && hoverItemIndex === 0) {
-        hoverItemIndex = items.length - 1;
-      } else {
-        hoverItemIndex = hoverItemIndex + increment;
-      }
+		while (isNonSelectableItem) {
+			if (increment > 0 && hoverItemIndex === items.length - 1) {
+				hoverItemIndex = 0;
+			} else if (increment < 0 && hoverItemIndex === 0) {
+				hoverItemIndex = items.length - 1;
+			} else {
+				hoverItemIndex = hoverItemIndex + increment;
+			}
 
-      isNonSelectableItem =
-        items[hoverItemIndex].isGroupHeader &&
-        !items[hoverItemIndex].isSelectable;
-    }
+			isNonSelectableItem = items[hoverItemIndex].isGroupHeader && !items[hoverItemIndex].isSelectable;
+		}
 
-    await tick();
+		await tick();
 
-    scrollToActiveItem("ssp-hover");
-  }
+		scrollToActiveItem("ssp-hover");
+	}
 
-  function handleKeyDown(e) {
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        items.length && updateHoverItem(1);
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        items.length && updateHoverItem(-1);
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (items.length === 0) break;
-        const hoverItem = items[hoverItemIndex];
-        if (
-          selectedValue &&
-          !isMulti &&
-          selectedValue[optionIdentifier] === hoverItem[optionIdentifier]
-        ) {
-          closeList();
-          break;
-        }
+	function handleKeyDown(e) {
+		switch (e.key) {
+			case "ArrowDown":
+				e.preventDefault();
+				items.length && updateHoverItem(1);
+				break;
+			case "ArrowUp":
+				e.preventDefault();
+				items.length && updateHoverItem(-1);
+				break;
+			case "Enter":
+				e.preventDefault();
+				if (items.length === 0) break;
+				const hoverItem = items[hoverItemIndex];
+				if (selectedValue && !isMulti && selectedValue[optionIdentifier] === hoverItem[optionIdentifier]) {
+					closeList();
+					break;
+				}
 
-        if (hoverItem.isCreator) {
-          dispatch("itemCreated", filterText);
-        } else {
-          activeItemIndex = hoverItemIndex;
-          handleSelect(items[hoverItemIndex]);
-        }
-        break;
-      case "Tab":
-        e.preventDefault();
-        if (items.length === 0) break;
-        if (
-          selectedValue &&
-          selectedValue[optionIdentifier] ===
-            items[hoverItemIndex][optionIdentifier]
-        )
-          return closeList();
-        activeItemIndex = hoverItemIndex;
-        handleSelect(items[hoverItemIndex]);
-        break;
-    }
-  }
+				if (hoverItem.isCreator) {
+					dispatch("itemCreated", filterText);
+				} else {
+					activeItemIndex = hoverItemIndex;
+					handleSelect(items[hoverItemIndex]);
+				}
+				break;
+			case "Tab":
+				e.preventDefault();
+				if (items.length === 0) break;
+				if (selectedValue && selectedValue[optionIdentifier] === items[hoverItemIndex][optionIdentifier])
+					return closeList();
+				activeItemIndex = hoverItemIndex;
+				handleSelect(items[hoverItemIndex]);
+				break;
+		}
+	}
 
-  function scrollToActiveItem(className) {
-    if (isVirtualList || !container) return;
+	function scrollToActiveItem(className) {
+		if (isVirtualList || !container) return;
 
-    let offsetBounding;
-    const focusedElemBounding = container.querySelector(
-      `.listItem .${className}`
-    );
+		let offsetBounding;
+		const focusedElemBounding = container.querySelector(`.listItem .${className}`);
 
-    if (focusedElemBounding) {
-      offsetBounding =
-        container.getBoundingClientRect().bottom -
-        focusedElemBounding.getBoundingClientRect().bottom;
-    }
+		if (focusedElemBounding) {
+			offsetBounding = container.getBoundingClientRect().bottom - focusedElemBounding.getBoundingClientRect().bottom;
+		}
 
-    container.scrollTop -= offsetBounding;
-  }
+		container.scrollTop -= offsetBounding;
+	}
 
-  function isItemActive(item, selectedValue, optionIdentifier) {
-    return (
-      selectedValue &&
-      selectedValue[optionIdentifier] === item[optionIdentifier]
-    );
-  }
+	function isItemActive(item, selectedValue, optionIdentifier) {
+		return selectedValue && selectedValue[optionIdentifier] === item[optionIdentifier];
+	}
 
-  function isItemFirst(itemIndex) {
-    return itemIndex === 0;
-  }
+	function isItemFirst(itemIndex) {
+		return itemIndex === 0;
+	}
 
-  function isItemHover(hoverItemIndex, item, itemIndex, items) {
-    return hoverItemIndex === itemIndex || items.length === 1;
-  }
+	function isItemHover(hoverItemIndex, item, itemIndex, items) {
+		return hoverItemIndex === itemIndex || items.length === 1;
+	}
+
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
 
 {#if isVirtualList}
-  <div class="ssp-listContainer ssp-virtualList" bind:this={container}>
-
-    <VirtualList {items} {itemHeight} let:item let:i>
-
-      <div
-        on:mouseover={() => handleHover(i)}
-        on:click={event => handleClick({ item, i, event })}
-        class="listItem">
-        <svelte:component
-          this={Item}
-          {item}
-          {filterText}
-          {getOptionLabel}
-          isFirst={isItemFirst(i)}
-          isActive={isItemActive(item, selectedValue, optionIdentifier)}
-          isHover={isItemHover(hoverItemIndex, item, i, items)} />
-      </div>
-
-    </VirtualList>
-  </div>
+	<div class="ssp-listContainer ssp-virtualList" bind:this={container}>
+		<VirtualList {items} {itemHeight} let:item let:i>
+			<div on:mouseover={() => handleHover(i)} on:click={(event) => handleClick({ item, i, event })} class="listItem">
+				<svelte:component
+					this={Item}
+					{item}
+					{filterText}
+					{getOptionLabel}
+					isFirst={isItemFirst(i)}
+					isActive={isItemActive(item, selectedValue, optionIdentifier)}
+					isHover={isItemHover(hoverItemIndex, item, i, items)}
+				/>
+			</div>
+		</VirtualList>
+	</div>
 {/if}
 
 {#if !isVirtualList}
-  <div class="ssp-listContainer" bind:this={container} class:loading={isWaiting}>
-    {#if TopItem}
-      <svelte:component this={TopItem} {TopItemHandleClick} class="listItem" {isWaiting} />
-    {/if}
-    {#each items as item, i}
-      {#if item.isGroupHeader && !item.isSelectable}
-        <div class="ssp-listGroupTitle">{getGroupHeaderLabel(item)}</div>
-      {:else}
-        <div
-          on:mouseover={() => handleHover(i)}
-          on:click={event => handleClick({ item, i, event })}
-          class="listItem" disabled={isWaiting} class:disabled={isWaiting}>
-          <svelte:component
-            this={Item}
-            {item}
-            {filterText}
-            {getOptionLabel}
-            isFirst={isItemFirst(i)}
-            isActive={isItemActive(item, selectedValue, optionIdentifier)}
-            isHover={isItemHover(hoverItemIndex, item, i, items)} />
-        </div>
-      {/if}
-    {:else}
-      {#if !hideEmptyState && filterText.length > 0}
-        {#if isWaiting}
-          <div class="ssp-empty">Chargement des options...</div>
-        {:else}
-          <div class="ssp-empty">{noOptionsMessage}</div>
-        {/if}
-      {/if}
-    {/each}
-  </div>
+	<div class="ssp-listContainer" bind:this={container} class:loading={isWaiting}>
+		{#if TopItem}
+			<svelte:component this={TopItem} {TopItemHandleClick} class="listItem" {isWaiting} />
+		{/if}
+		{#each items as item, i}
+			{#if item.isGroupHeader && !item.isSelectable}
+				<div class="ssp-listGroupTitle">{getGroupHeaderLabel(item)}</div>
+			{:else}
+				<div
+					on:mouseover={() => handleHover(i)}
+					on:click={(event) => handleClick({ item, i, event })}
+					class="listItem"
+					disabled={isWaiting}
+					class:disabled={isWaiting}
+				>
+					<svelte:component
+						this={Item}
+						{item}
+						{filterText}
+						{getOptionLabel}
+						isFirst={isItemFirst(i)}
+						isActive={isItemActive(item, selectedValue, optionIdentifier)}
+						isHover={isItemHover(hoverItemIndex, item, i, items)}
+					/>
+				</div>
+			{/if}
+		{:else}
+			{#if !hideEmptyState && filterText.length > 0}
+				{#if isWaiting}
+					<div class="ssp-empty">Chargement des options...</div>
+				{:else}
+					<div class="ssp-empty">{noOptionsMessage}</div>
+				{/if}
+			{/if}
+		{/each}
+	</div>
 {/if}
 
 <style lang="scss">
-  .ssp-listContainer {
-    box-shadow: var(--listShadow, 0 2px 3px 0 rgba(44, 62, 80, 0.24));
-    border-radius: var(--listBorderRadius, 4px);
-    max-height: var(--listMaxHeight, 250px);
-    overflow-y: auto;
-    background: var(--listBackground, #fff);
+	.ssp-listContainer {
+		box-shadow: var(--listShadow, 0 2px 3px 0 rgba(44, 62, 80, 0.24));
+		border-radius: var(--listBorderRadius, 4px);
+		max-height: var(--listMaxHeight, 250px);
+		overflow-y: auto;
+		background: var(--listBackground, #fff);
 
-    &.loading {
-      background: #dddddd;
-      color: #9d9d9d !important;
-    }
-  }
+		&.loading {
+			background: #dddddd;
+			color: #9d9d9d !important;
+		}
+	}
 
-  .ssp-virtualList {
-    height: var(--virtualListHeight, 200px);
-  }
+	.ssp-virtualList {
+		height: var(--virtualListHeight, 200px);
+	}
 
-  .ssp-listGroupTitle {
-    color: var(--groupTitleColor, #8f8f8f);
-    cursor: default;
-    font-size: var(--groupTitleFontSize, 12px);
-    height: var(--height, 42px);
-    line-height: var(--height, 42px);
-    padding: var(--groupTitlePadding, 0 20px);
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    white-space: nowrap;
-    text-transform: var(--groupTitleTextTransform, uppercase);
-  }
+	.ssp-listGroupTitle {
+		color: var(--groupTitleColor, #8f8f8f);
+		cursor: default;
+		font-size: var(--groupTitleFontSize, 12px);
+		height: var(--height, 42px);
+		line-height: var(--height, 42px);
+		padding: var(--groupTitlePadding, 0 20px);
+		text-overflow: ellipsis;
+		overflow-x: hidden;
+		white-space: nowrap;
+		text-transform: var(--groupTitleTextTransform, uppercase);
+	}
 
-  .ssp-empty {
-    text-align: var(--listEmptyTextAlign, center);
-    padding: var(--listEmptyPadding, 20px 0);
-    color: var(--listEmptyColor, #78848f);
-  }
+	.ssp-empty {
+		text-align: var(--listEmptyTextAlign, center);
+		padding: var(--listEmptyPadding, 20px 0);
+		color: var(--listEmptyColor, #78848f);
+	}
+
 </style>

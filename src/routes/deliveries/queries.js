@@ -2,10 +2,8 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERIES = gql`
 	query Deliveries {
-		deliveries(
-			first: 50
-			where: { kind: { in: [PRODUCER_TO_STORE] }}) {
-			pageInfo{
+		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
+			pageInfo {
 				hasPreviousPage
 				hasNextPage
 				startCursor

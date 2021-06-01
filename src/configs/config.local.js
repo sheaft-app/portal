@@ -5,8 +5,8 @@ export const config = {
 	signalr: "https://sprint.signalr.sheaft.com",
 	content: "https://sprint.content.sheaft.com",
 	psp: {
-		clientId:"sheaft-sprint",
-		url:"https://api.sandbox.mangopay.com"
+		clientId: "sheaft-sprint",
+		url: "https://api.sandbox.mangopay.com",
 	},
 	auth: {
 		url: "https://sprint.auth.sheaft.com",
@@ -24,5 +24,5 @@ export const config = {
 			response_mode: "query",
 		},
 	},
-	production: false
+	production: false,
 };

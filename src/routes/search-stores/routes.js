@@ -8,7 +8,7 @@ const search = "";
 
 const SearchStoreRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Producer.Value],
+	Roles: [Roles.Producer.Value],
 	Search: {
 		Name: "Magasins",
 		Icon: faStore,
@@ -20,8 +20,8 @@ const SearchStoreRoutes = {
 				orderBy: "createdOn",
 				direction: OrderByDirection.DESC,
 				take: 20,
-				paginate: Paginate.First
-			}
+				paginate: Paginate.First,
+			},
 		},
 	},
 	NoResultsPage: {
@@ -35,11 +35,11 @@ const SearchStoreRoutes = {
 				orderBy: "createdOn",
 				direction: OrderByDirection.DESC,
 				take: 20,
-				paginate: Paginate.First
-			}
+				paginate: Paginate.First,
+			},
 		},
-		Text: "Aucun partenariat avec des magasins"
-	}
+		Text: "Aucun partenariat avec des magasins",
+	},
 };
 
 export default SearchStoreRoutes;

@@ -11,7 +11,9 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
-	export let isInModal = false, onClose, close;
+	export let isInModal = false,
+		onClose,
+		close;
 
 	const errorsHandler = new SheaftErrors();
 	const { mutate } = getContext("api");
@@ -28,7 +30,7 @@
 			},
 			successNotification: "Votre consigne a bien été créée",
 			errorNotification: "Impossible de créer votre consigne",
-			clearCache: [GET_RETURNABLES]
+			clearCache: [GET_RETURNABLES],
 		});
 	};
 
@@ -36,16 +38,14 @@
 		close();
 		if (onClose) await onClose(res);
 	};
+
 </script>
 
 <TransitionWrapper>
 	{#if !isInModal}
-		<PageHeader name="Créer une consigne" previousPage={ReturnableRoutes.List}/>
+		<PageHeader name="Créer une consigne" previousPage={ReturnableRoutes.List} />
 	{/if}
 	<PageBody {errorsHandler}>
-		<ReturnableForm
-			{isInModal}
-			submit={handleSubmit}
-			close={handleClose}/>
+		<ReturnableForm {isInModal} submit={handleSubmit} close={handleClose} />
 	</PageBody>
 </TransitionWrapper>

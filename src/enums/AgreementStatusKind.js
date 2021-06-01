@@ -1,23 +1,18 @@
-import {
-	faThumbsDown,
-	faCheck,
-	faTimes,
-	faSpinner
-} from "@fortawesome/free-solid-svg-icons";
-import GetEnumObjectFor from './helpers.js';
+import { faThumbsDown, faCheck, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
 	WaitingForProducerApproval: {
 		Value: "WAITING_FOR_PRODUCER_APPROVAL",
 		Label: "En attente du producteur",
 		Icon: faSpinner,
-		Color: "blue-400"
+		Color: "blue-400",
 	},
 	WaitingForStoreApproval: {
 		Value: "WAITING_FOR_STORE_APPROVAL",
 		Label: "En attente du magasin",
 		Icon: faSpinner,
-		Color: "blue-400"
+		Color: "blue-400",
 	},
 	Refused: {
 		Value: "REFUSED",
@@ -55,10 +50,10 @@ let AgreementStatusKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => AgreementStatusKind[key] = enums[key]);
+Object.keys(enums).map((key) => (AgreementStatusKind[key] = enums[key]));
 Object.freeze(AgreementStatusKind);
 
 export default AgreementStatusKind;

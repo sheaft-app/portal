@@ -19,7 +19,7 @@ export const SEARCH_PRODUCERS = gql`
 				tags {
 					name
 				}
-				agreement{
+				agreement {
 					id
 					status
 				}
@@ -70,20 +70,20 @@ export const GET_PRODUCER_DETAILS = gql`
 				latitude
 				longitude
 			}
-			agreement{
+			agreement {
 				id
 				status
-				delivery{
+				delivery {
 					id
 					name
-					deliveryHours{
+					deliveryHours {
 						from
 						to
 						day
 					}
 				}
 			}
-			products{
+			products {
 				id
 				name
 				wholeSalePricePerUnit
@@ -129,8 +129,8 @@ export const GET_AGREEMENTS = gql`
 					id
 				}
 				producer {
-						id
-					}
+					id
+				}
 			}
 		}
 	}
@@ -138,7 +138,7 @@ export const GET_AGREEMENTS = gql`
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds:[PRODUCER_TO_STORE]) {
+		nextProducersDeliveries(ids: $input, kinds: [PRODUCER_TO_STORE]) {
 			id
 			name
 			deliveries {
@@ -169,13 +169,8 @@ export const GET_PRODUCER_AGREEMENTS = gql`
 		producerAgreements(
 			input: $id
 			first: 50
-			where: {
-				status: { in: [
-					ACCEPTED
-					WAITING_FOR_PRODUCER_APPROVAL
-					WAITING_FOR_STORE_APPROVAL
-				]
-			}}) {
+			where: { status: { in: [ACCEPTED, WAITING_FOR_PRODUCER_APPROVAL, WAITING_FOR_STORE_APPROVAL] } }
+		) {
 			nodes {
 				id
 				status

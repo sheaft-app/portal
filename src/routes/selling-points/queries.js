@@ -4,9 +4,9 @@ export const GET_SELLING_POINTS = gql`
 	query SellingPoints {
 		deliveries(
 			first: 50
-			where: { kind: { nin: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] }}
+			where: { kind: { nin: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] } }
 		) {
-			pageInfo{
+			pageInfo {
 				hasPreviousPage
 				hasNextPage
 				startCursor
@@ -77,8 +77,7 @@ export const GET_SELLING_POINT_DETAILS = gql`
 
 export const GET_BUSINESS_CLOSINGS = gql`
 	query GetBusinessClosings {
-		businessClosings
-		{
+		businessClosings {
 			nodes {
 				id
 				from
@@ -87,4 +86,4 @@ export const GET_BUSINESS_CLOSINGS = gql`
 			}
 		}
 	}
-`
+`;

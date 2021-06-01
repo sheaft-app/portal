@@ -8,13 +8,13 @@ class SheaftNotificationManager {
 	constructor(notifSettings) {
 		this.notificationSubscribe = notifications.subscribe((items) => {
 			allNotifications = items;
-		})
+		});
 
 		this.notify = new Notyf({
 			...notifSettings,
 			types: [
 				{
-					type:"success",
+					type: "success",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -24,7 +24,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"error",
+					type: "error",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -34,7 +34,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"info",
+					type: "info",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -44,7 +44,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"help",
+					type: "help",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -54,7 +54,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"warning",
+					type: "warning",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -64,7 +64,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"hold",
+					type: "hold",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -74,7 +74,7 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"progress",
+					type: "progress",
 					background: "#ffffff",
 					className: "text-normal",
 					icon: {
@@ -84,13 +84,13 @@ class SheaftNotificationManager {
 					},
 				},
 				{
-					type:"primary",
+					type: "primary",
 					background: "#009688",
 					className: "text-white",
 					icon: false,
 				},
 				{
-					type:"accent",
+					type: "accent",
 					className: "text-white",
 					background: "#ff4081",
 					icon: {
@@ -139,8 +139,8 @@ class SheaftNotificationManager {
 		this.formatAndSendNotification(message, "warning", url, addToStore, show);
 	}
 
-	formatAndSendNotification(message, type, url, addToStore, show){		
-		var notif = getFormattedNotification(null, {message, type, url, addToStore, show}, true);
+	formatAndSendNotification(message, type, url, addToStore, show) {
+		var notif = getFormattedNotification(null, { message, type, url, addToStore, show }, true);
 		this.sendNotification(notif);
 	}
 
@@ -154,7 +154,9 @@ class SheaftNotificationManager {
 		if (notification.show)
 			this.notify.open({
 				type: notification.type,
-				message: notification.url ? `<p class="mb-2">${notification.message}</p><a href="${notification.url}">Voir les détails</a>` : notification.message,
+				message: notification.url
+					? `<p class="mb-2">${notification.message}</p><a href="${notification.url}">Voir les détails</a>`
+					: notification.message,
 			});
 	}
 
@@ -162,7 +164,7 @@ class SheaftNotificationManager {
 		return this.notify.dismissAll();
 	}
 
-	unregister(){
+	unregister() {
 		this.notificationSubscribe.unsubscribe();
 	}
 }

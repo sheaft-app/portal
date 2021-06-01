@@ -1,12 +1,12 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-    Category : { Value: "CATEGORY", Label: "Catégorie"},
-    Label : { Value: "LABEL", Label: "Label"},
-    Diet: { Value: "DIET", Label: "Régime alimentaire"},
-    Allergen : { Value: "ALLERGEN", Label: "Allergène"},
-    Ingredient: { Value: "INGREDIENT", Label: "Ingrédient"}
-}
+	Category: { Value: "CATEGORY", Label: "Catégorie" },
+	Label: { Value: "LABEL", Label: "Label" },
+	Diet: { Value: "DIET", Label: "Régime alimentaire" },
+	Allergen: { Value: "ALLERGEN", Label: "Allergène" },
+	Ingredient: { Value: "INGREDIENT", Label: "Ingrédient" },
+};
 
 let TagKind = {
 	...enums,
@@ -24,10 +24,10 @@ let TagKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => TagKind[key] = enums[key]);
+Object.keys(enums).map((key) => (TagKind[key] = enums[key]));
 Object.freeze(TagKind);
 
 export default TagKind;

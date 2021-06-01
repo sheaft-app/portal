@@ -1,32 +1,34 @@
 <script>
-    import { GET_BUSINESS_CLOSINGS } from "./queries";
-    import Icon from "svelte-awesome";
+	import { GET_BUSINESS_CLOSINGS } from "./queries";
+	import Icon from "svelte-awesome";
 	import { faEdit } from "@fortawesome/free-solid-svg-icons";
-    import ManageYearlyClosingsModal from "./ManageYearlyClosingsModal.svelte";
+	import ManageYearlyClosingsModal from "./ManageYearlyClosingsModal.svelte";
 	import { format } from "date-fns";
-    import fr from "date-fns/locale/fr";
+	import fr from "date-fns/locale/fr";
 	import SheaftErrors from "./../services/SheaftErrors";
-    import { onMount, getContext } from "svelte";
+	import { onMount, getContext } from "svelte";
 
 	export let container = "";
 
 	const errorsHandler = new SheaftErrors();
-	const { open } = getContext('modal');
-	const { query } = getContext('api');
-	
-    let closings = [];
+	const { open } = getContext("modal");
+	const { query } = getContext("api");
+
+	let closings = [];
 
 	onMount(async () => {
 		closings = await query({
-            query: GET_BUSINESS_CLOSINGS,
-            errorsHandler,
-            errorNotification: "Impossible de récupérer les informations de fermetures"
+			query: GET_BUSINESS_CLOSINGS,
+			errorsHandler,
+			errorNotification: "Impossible de récupérer les informations de fermetures",
 		});
 	});
-    
-    const openManageClosingsModal = () => open(ManageYearlyClosingsModal, {
-		onClose: (res) => closings = res
-	});
+
+	const openManageClosingsModal = () =>
+		open(ManageYearlyClosingsModal, {
+			onClose: (res) => (closings = res),
+		});
+
 </script>
 
 <div class={container}>
@@ -38,7 +40,11 @@
 		<p class="font-semibold mt-2">Fermetures configurées :</p>
 		<ul style="list-style: circle;padding: revert;">
 			{#each closings as closing}
-				<li>du {format(new Date(closing.from), 'PPPP', {locale: fr })} au {format(new Date(closing.to), 'PPPP', {locale: fr })}</li>
+				<li>
+					du {format(new Date(closing.from), "PPPP", { locale: fr })} au {format(new Date(closing.to), "PPPP", {
+						locale: fr,
+					})}
+				</li>
 			{/each}
 		</ul>
 	{/if}

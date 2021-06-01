@@ -11,29 +11,25 @@
 
 	const { mutate, isLoading } = getContext("api");
 
-	const handleSubmit = async () => await mutate({
-		mutation: DELETE_CATALOGS,
-		variables: { ids: [catalog.id] },
-		errorsHandler,
-		success: (res) => handleClose(res),
-		successNotification: "Le catalogue a bien été supprimé",
-		errorNotification: "Impossible de supprimer ce catalogue",
-		clearCache: [GET_CATALOGS]
-	});
+	const handleSubmit = async () =>
+		await mutate({
+			mutation: DELETE_CATALOGS,
+			variables: { ids: [catalog.id] },
+			errorsHandler,
+			success: (res) => handleClose(res),
+			successNotification: "Le catalogue a bien été supprimé",
+			errorNotification: "Impossible de supprimer ce catalogue",
+			clearCache: [GET_CATALOGS],
+		});
 
 	const handleClose = async (res) => {
 		close();
 		if (onClose) await onClose(res);
 	};
+
 </script>
 
-<ActionConfirm
-	title="Suppression"
-	level="danger"
-	isLoading={$isLoading}
-	submit={handleSubmit}
-	{errorsHandler}
-	{close}>
+<ActionConfirm title="Suppression" level="danger" isLoading={$isLoading} submit={handleSubmit} {errorsHandler} {close}>
 	<p class="leading-5">
 		Vous vous apprêtez à
 		<span class="text-gray-700">supprimer le catalogue {catalog.name}</span>

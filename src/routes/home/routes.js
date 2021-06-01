@@ -5,27 +5,27 @@ const notFound = "/notfound";
 
 const HomeRoutes = {
 	Prefix: `${prefix}`,
-	Roles:null,
-	Unauthorized:{
+	Roles: null,
+	Unauthorized: {
 		Name: "Accès non authorisé",
 		Icon: null,
-		Path:`${unauthorized}`,
-		SubPart:`${unauthorized}`,
-		Params: null
+		Path: `${unauthorized}`,
+		SubPart: `${unauthorized}`,
+		Params: null,
 	},
-	Error:{
+	Error: {
 		Name: "Erreur",
 		Icon: null,
-		Path:`${error}`,
-		SubPart:`${error}`,
-		Params: null
+		Path: `${error}`,
+		SubPart: `${error}`,
+		Params: null,
 	},
-	NotFound:{
+	NotFound: {
 		Name: "Ressource introuvable",
 		Icon: null,
-		Path:`${notFound}`,
-		SubPart:`${notFound}`,
-		Params: null
+		Path: `${notFound}`,
+		SubPart: `${notFound}`,
+		Params: null,
 	},
 };
 

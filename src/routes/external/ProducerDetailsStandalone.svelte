@@ -1,28 +1,28 @@
 <script>
-	import {getContext, onMount} from "svelte";
+	import { getContext, onMount } from "svelte";
 	import ReadMoreModal from "./ReadMoreModal.svelte";
 	import Icon from "svelte-awesome";
-	import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-	import {fly} from "svelte/transition";
+	import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+	import { fly } from "svelte/transition";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
 	import ProductCard from "../search-products/ProductCard.svelte";
 	import Cart from "../search-products/Cart.svelte";
 	import SearchProductsRoutes from "../search-products/routes";
 	import ProductDetails from "../search-products/ProductDetails.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import {GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE} from "./queries.js";
+	import { GET_PRODUCER_DELIVERIES, GET_PRODUCER_PROFILE } from "./queries.js";
 	import GetAuthInstance from "../../services/SheaftAuth.js";
-	import {timeSpanToFrenchHour} from "../../helpers/app.js";
+	import { timeSpanToFrenchHour } from "../../helpers/app.js";
 	import DayOfWeekKind from "../../enums/DayOfWeekKind";
 	import Roles from "../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import DeliveryKind from "../../enums/DeliveryKind";
-	import {groupBy, encodeQuerySearchUrl} from "../../helpers/app";
+	import { groupBy, encodeQuerySearchUrl } from "../../helpers/app";
 	import "leaflet/dist/leaflet.css";
-	import {Tabs, Tab, TabList, TabPanel} from 'svelte-tabs';
-	import {selectedItem} from "../../stores/app.js";
+	import { Tabs, Tab, TabList, TabPanel } from "svelte-tabs";
+	import { selectedItem } from "../../stores/app.js";
 	import SkeletonCard from "../search-products/SkeletonCard.svelte";
-	import {format} from "date-fns";
+	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import AccountRoutes from "../account/routes";
 	import Meta from "../../components/Meta.svelte";
@@ -34,8 +34,8 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-	const {open} = getContext('modal');
-	const {query} = getContext("api");
+	const { open } = getContext("modal");
+	const { query } = getContext("api");
 
 	export let params = {};
 
@@ -44,9 +44,9 @@
 	let deliveries = [];
 
 	const tabs = [
-		{id: 'data', icon: 'fas fa-barcode', label: 'Produits'},
-		{id: 'layout', icon: 'fas fa-arrows-alt', label: 'Points de retrait'},
-		{id: 'stores', icon: 'fas fa-store', label: 'Magasins'}
+		{ id: "data", icon: "fas fa-barcode", label: "Produits" },
+		{ id: "layout", icon: "fas fa-arrows-alt", label: "Points de retrait" },
+		{ id: "stores", icon: "fas fa-store", label: "Magasins" },
 	];
 
 	onMount(async () => {
@@ -54,36 +54,38 @@
 		isLoading = true;
 		producer = await query({
 			query: GET_PRODUCER_PROFILE,
-			variables: {id: params.id},
+			variables: { id: params.id },
 			errorsHandler,
 			success: async (res) => {
 				await query({
 					query: GET_PRODUCER_DELIVERIES,
-					variables: {input: [params.id]},
+					variables: { input: [params.id] },
 					errorsHandler,
 					success: (res) => {
 						if (res.data[0] && res.data[0].deliveries)
 							deliveries = res.data[0].deliveries.map((d) => ({
 								...d,
-								deliveryHours: groupBy(d.deliveryHours, item => [item.day]).map((g) => g.filter((delivery, index, self) =>
-									index === self.findIndex((d) => (
-										d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
-									))
-								))
+								deliveryHours: groupBy(d.deliveryHours, (item) => [item.day]).map((g) =>
+									g.filter(
+										(delivery, index, self) =>
+											index ===
+											self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
+									)
+								),
 							}));
 					},
-					error: () => deliveries = [],
-					errorNotification: "Impossible de récupérer les informations de livraison du producteur."
+					error: () => (deliveries = []),
+					errorNotification: "Impossible de récupérer les informations de livraison du producteur.",
 				});
 			},
-			errorNotification: "Impossible de récupérer les informations du producteur."
+			errorNotification: "Impossible de récupérer les informations du producteur.",
 		});
 		isLoading = false;
-	})
+	});
 
-	const openReadMoreModal = () => open(ReadMoreModal, {entity: producer});
+	const openReadMoreModal = () => open(ReadMoreModal, { entity: producer });
 	const openGMap = (store) => {
-		routerInstance.goTo(ExternalRoutes.StoreDetails, {id: store.id});
+		routerInstance.goTo(ExternalRoutes.StoreDetails, { id: store.id });
 	};
 
 	$: metadata = {
@@ -91,34 +93,36 @@
 		description: producer && producer.summary ? producer.summary : null,
 		image: producer && producer.picture ? producer.picture : null,
 	};
+
 </script>
 
-<Meta metadata={metadata}/>
+<Meta {metadata} />
 
 <TransitionWrapper hasRightPanel={authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}>
 	{#if isLoading}
 		<div class="flex flex-wrap mt-5 mb-5 justify-center xl:justify-between">
-			<div
-				class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 skeleton-box"/>
+			<div class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 skeleton-box" />
 			<div class="w-full xl:w-10/12 xl:pl-3 text-center xl:text-left mt-3 xl:mt-0">
-				<div class="w-64 h-6 mb-3 skeleton-box border-b border-gray-300 pb-2 m-auto xl:mx-0"/>
+				<div class="w-64 h-6 mb-3 skeleton-box border-b border-gray-300 pb-2 m-auto xl:mx-0" />
 				<div class="flex flex-wrap justify-between w-full pt-2" style="align-items: baseline;">
-					<div class="w-full h-32 skeleton-box"/>
+					<div class="w-full h-32 skeleton-box" />
 					<!-- <div class="w-full xl:w-auto">
 						<div class="w-64 h-32 skeleton-box" />
 					</div> -->
 				</div>
 				<div class="flex flex-row flex-wrap social-medias justify-center xl:justify-start">
-					<div class="h-6 w-6rounded-full skeleton-box"/>
-					<div class="h-6 w-6rounded-full skeleton-box"/>
-					<div class="h-6 w-6rounded-full skeleton-box"/>
+					<div class="h-6 w-6rounded-full skeleton-box" />
+					<div class="h-6 w-6rounded-full skeleton-box" />
+					<div class="h-6 w-6rounded-full skeleton-box" />
 				</div>
 			</div>
 		</div>
-		<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-      xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+		<div
+			class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+      xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0"
+		>
 			{#each Array(9) as _i}
-				<SkeletonCard/>
+				<SkeletonCard />
 			{/each}
 		</div>
 	{:else}
@@ -126,15 +130,24 @@
 			{#if !authInstance.isInRole([Roles.Producer.Value])}
 				<button
 					class="text-gray-600 items-center flex uppercase mb-2"
-					on:click={() => routerInstance.goTo(SearchProductsRoutes.Search)}>
-					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline"/>
+					on:click={() => routerInstance.goTo(SearchProductsRoutes.Search)}
+				>
+					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
 					Retourner à la recherche
 				</button>
 			{:else if authInstance.isInRole([Roles.Producer.Value])}
 				<div class="mb-3 p-4 text-white bg-blue-500 rounded">
-					<p>Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
-						avoir une référence directe vers votre boutique.</p>
-					<p>Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a class="text-white underline" href="javascript:void(0)" on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant ici</a>.</p>
+					<p>
+						Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
+						avoir une référence directe vers votre boutique.
+					</p>
+					<p>
+						Si certaines informations sont incorrectes, dirigez-vous sur votre profil en <a
+							class="text-white underline"
+							href="javascript:void(0)"
+							on:click={() => routerInstance.goTo(AccountRoutes.Profile)}>cliquant ici</a
+						>.
+					</p>
 				</div>
 			{/if}
 			{#if !producer}
@@ -145,12 +158,16 @@
 					<img
 						class="h-20 w-20 md:h-32 md:w-32 rounded-full p-1 md:mx-0 border
           border-gray-800 border-solid"
-						src={producer.picture ? producer.picture : 'img/icons/farmer.svg'}
-						alt="Photo du producteur"/>
+						src={producer.picture ? producer.picture : "img/icons/farmer.svg"}
+						alt="Photo du producteur"
+					/>
 					<div class="w-full xl:w-10/12 xl:pl-3 text-center xl:text-left mt-3 xl:mt-0">
 						<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">{producer.name}</h3>
-						<div class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2" class:xl:-mt-6={producer.summary}
-								 style="align-items: baseline;">
+						<div
+							class="flex flex-wrap justify-between w-full pt-2 xl:-mt-6 xl:pt-2"
+							class:xl:-mt-6={producer.summary}
+							style="align-items: baseline;"
+						>
 							{#if producer.summary}
 								<div class="w-full xl:w-7/12">
 									<p class="text-sm">{producer.summary}</p>
@@ -172,7 +189,10 @@
 											<a
 												class="mt-1"
 												target="_blank"
-												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(producer.address)}`}>
+												href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+													producer.address
+												)}`}
+											>
 												Voir sur Google Maps
 											</a>
 										</div>
@@ -181,31 +201,46 @@
 							</div>
 						</div>
 						{#if producer.facebook || producer.instagram}
-							<p class="text-gray-600 mb-2 text-sm mt-4" class:xl:mt-0={producer.summary}>Retrouvez-nous sur les réseaux
-								sociaux !</p>
+							<p class="text-gray-600 mb-2 text-sm mt-4" class:xl:mt-0={producer.summary}>
+								Retrouvez-nous sur les réseaux sociaux !
+							</p>
 							<div class="flex flex-row flex-wrap social-medias justify-center xl:justify-start">
 								{#if producer.facebook}
 									<a href={producer.facebook} target="_blank">
-										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#1877F2"><title>
-											Facebook</title>
+										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#1877F2"
+											><title> Facebook</title>
 											<path
-												d="M23.9981 11.9991C23.9981 5.37216 18.626 0 11.9991 0C5.37216 0 0 5.37216 0 11.9991C0 17.9882 4.38789 22.9522 10.1242 23.8524V15.4676H7.07758V11.9991H10.1242V9.35553C10.1242 6.34826 11.9156 4.68714 14.6564 4.68714C15.9692 4.68714 17.3424 4.92149 17.3424 4.92149V7.87439H15.8294C14.3388 7.87439 13.8739 8.79933 13.8739 9.74824V11.9991H17.2018L16.6698 15.4676H13.8739V23.8524C19.6103 22.9522 23.9981 17.9882 23.9981 11.9991Z"/>
+												d="M23.9981 11.9991C23.9981 5.37216 18.626 0 11.9991 0C5.37216 0 0 5.37216 0 11.9991C0 17.9882 4.38789 22.9522 10.1242 23.8524V15.4676H7.07758V11.9991H10.1242V9.35553C10.1242 6.34826 11.9156 4.68714 14.6564 4.68714C15.9692 4.68714 17.3424 4.92149 17.3424 4.92149V7.87439H15.8294C14.3388 7.87439 13.8739 8.79933 13.8739 9.74824V11.9991H17.2018L16.6698 15.4676H13.8739V23.8524C19.6103 22.9522 23.9981 17.9882 23.9981 11.9991Z"
+											/>
 										</svg>
 									</a>
 								{/if}
 								{#if producer.instagram}
 									<a href={producer.instagram} target="_blank">
-										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#E4405F"><title>
-											Instagram</title>
+										<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#E4405F"
+											><title> Instagram</title>
 											<path
-												d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+												d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"
+											/>
 										</svg>
 									</a>
 								{/if}
 								{#if producer.website}
-								  <a href={producer.website} target="_blank">
-									<svg class="mr-5" enable-background="new 0 0 24 24" height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"><title>Site web</title><path d="m12 0c-6.62 0-12 5.38-12 12s5.38 12 12 12c.75 0 1.48-.07 2.2-.2l-.82-2.46c-.12.12-.25.22-.38.31v-1.46l-1.86-5.57c-.1-.29-.14-.59-.14-.88v2.03c-.95.04-1.88.12-2.76.27-.18-.94-.3-1.96-.35-3.06h3.11v.76c0-.71.28-1.4.81-1.93.51-.52 1.2-.81 1.94-.81.3 0 .59.05.88.14l5.51 1.84h1.81c-.02.2-.04.39-.08.58l1.93.64c.13-.72.2-1.45.2-2.2 0-6.62-5.38-12-12-12zm-1 17.77v3.88c-.86-.58-1.68-1.86-2.26-3.67.73-.11 1.48-.18 2.26-.21zm-7.4-11.18c.8.38 1.7.7 2.68.96-.21 1.07-.34 2.22-.39 3.43h-3.84c.16-1.6.72-3.09 1.55-4.39zm-1.55 6.39h3.84c.05 1.23.18 2.39.39 3.47-.98.26-1.88.58-2.68.96-.84-1.3-1.39-2.81-1.55-4.43zm5.89 8.15c-1.15-.51-2.18-1.23-3.05-2.11.57-.25 1.2-.46 1.87-.63.32 1.03.72 1.96 1.18 2.74zm-1.18-15.52c-.67-.17-1.3-.38-1.87-.63.87-.88 1.9-1.6 3.05-2.11-.46.78-.86 1.71-1.18 2.74zm4.24 5.37h-3.11c.05-1.08.17-2.09.35-3.02.88.15 1.81.23 2.76.27zm0-4.75c-.78-.03-1.53-.1-2.26-.21.58-1.81 1.4-3.09 2.26-3.67zm2-3.88c.86.58 1.68 1.86 2.26 3.67-.73.11-1.48.18-2.26.21zm0 8.63v-2.75c.95-.04 1.88-.12 2.76-.27.18.93.3 1.94.35 3.02zm3.06-8.11c1.15.51 2.18 1.23 3.05 2.11-.57.25-1.2.46-1.87.63-.32-1.03-.72-1.96-1.18-2.74zm2.05 8.11c-.05-1.21-.18-2.36-.39-3.43.98-.26 1.88-.58 2.68-.96.83 1.3 1.39 2.79 1.55 4.39z"/><path d="m16.917 24c-.005 0-.011 0-.017 0-.316-.007-.594-.212-.694-.513l-3.167-9.5c-.09-.27-.02-.567.181-.768.201-.202.498-.272.768-.181l9.5 3.167c.3.1.505.378.513.694.007.316-.185.604-.481.717l-4.263 1.64-1.64 4.263c-.112.291-.391.481-.7.481z"/></svg>
-								  </a>
+									<a href={producer.website} target="_blank">
+										<svg
+											class="mr-5"
+											enable-background="new 0 0 24 24"
+											height="30"
+											viewBox="0 0 24 24"
+											width="30"
+											xmlns="http://www.w3.org/2000/svg"
+											><title>Site web</title><path
+												d="m12 0c-6.62 0-12 5.38-12 12s5.38 12 12 12c.75 0 1.48-.07 2.2-.2l-.82-2.46c-.12.12-.25.22-.38.31v-1.46l-1.86-5.57c-.1-.29-.14-.59-.14-.88v2.03c-.95.04-1.88.12-2.76.27-.18-.94-.3-1.96-.35-3.06h3.11v.76c0-.71.28-1.4.81-1.93.51-.52 1.2-.81 1.94-.81.3 0 .59.05.88.14l5.51 1.84h1.81c-.02.2-.04.39-.08.58l1.93.64c.13-.72.2-1.45.2-2.2 0-6.62-5.38-12-12-12zm-1 17.77v3.88c-.86-.58-1.68-1.86-2.26-3.67.73-.11 1.48-.18 2.26-.21zm-7.4-11.18c.8.38 1.7.7 2.68.96-.21 1.07-.34 2.22-.39 3.43h-3.84c.16-1.6.72-3.09 1.55-4.39zm-1.55 6.39h3.84c.05 1.23.18 2.39.39 3.47-.98.26-1.88.58-2.68.96-.84-1.3-1.39-2.81-1.55-4.43zm5.89 8.15c-1.15-.51-2.18-1.23-3.05-2.11.57-.25 1.2-.46 1.87-.63.32 1.03.72 1.96 1.18 2.74zm-1.18-15.52c-.67-.17-1.3-.38-1.87-.63.87-.88 1.9-1.6 3.05-2.11-.46.78-.86 1.71-1.18 2.74zm4.24 5.37h-3.11c.05-1.08.17-2.09.35-3.02.88.15 1.81.23 2.76.27zm0-4.75c-.78-.03-1.53-.1-2.26-.21.58-1.81 1.4-3.09 2.26-3.67zm2-3.88c.86.58 1.68 1.86 2.26 3.67-.73.11-1.48.18-2.26.21zm0 8.63v-2.75c.95-.04 1.88-.12 2.76-.27.18.93.3 1.94.35 3.02zm3.06-8.11c1.15.51 2.18 1.23 3.05 2.11-.57.25-1.2.46-1.87.63-.32-1.03-.72-1.96-1.18-2.74zm2.05 8.11c-.05-1.21-.18-2.36-.39-3.43.98-.26 1.88-.58 2.68-.96.83 1.3 1.39 2.79 1.55 4.39z"
+											/><path
+												d="m16.917 24c-.005 0-.011 0-.017 0-.316-.007-.594-.212-.694-.513l-3.167-9.5c-.09-.27-.02-.567.181-.768.201-.202.498-.272.768-.181l9.5 3.167c.3.1.505.378.513.694.007.316-.185.604-.481.717l-4.263 1.64-1.64 4.263c-.112.291-.391.481-.7.481z"
+											/></svg
+										>
+									</a>
 								{/if}
 							</div>
 						{/if}
@@ -214,7 +249,7 @@
 				{#if producer.pictures && producer.pictures.length > 0}
 					<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Gallerie d'images</h3>
 					<div class="relative w-full py-6 m-auto" style="max-width: 600px;">
-						<PictureSlider elements={producer.pictures ? producer.pictures.map(p => ({url: p.large})) : []}/>
+						<PictureSlider elements={producer.pictures ? producer.pictures.map((p) => ({ url: p.large })) : []} />
 					</div>
 				{/if}
 				<Tabs>
@@ -225,10 +260,12 @@
 					</TabList>
 
 					<TabPanel>
-						<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+						<div
+							class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0"
+						>
 							{#each producer.products as product}
-								<ProductCard {product} displayProducerData={false} useAddToCartButtonCTA={true}/>
+								<ProductCard {product} displayProducerData={false} useAddToCartButtonCTA={true} />
 							{/each}
 						</div>
 					</TabPanel>
@@ -237,14 +274,18 @@
 						<div class="lg:w-2/3 w-full">
 							<div
 								class="bg-white overflow-hidden rounded-l p-3 lg:p-6 shadow
-              relative">
+              relative"
+							>
 								{#if producer.closings.length > 0}
-									<p class="text-orange-500 font-semibold">Tous les points de retrait seront fermés aux dates suivantes
-										: </p>
+									<p class="text-orange-500 font-semibold">
+										Tous les points de retrait seront fermés aux dates suivantes :
+									</p>
 									<ul style="list-style: circle;padding: revert;">
 										{#each producer.closings as closing}
-											<li>du {format(new Date(closing.from), 'PPPP', {locale: fr})}
-												au {format(new Date(closing.to), 'PPPP', {locale: fr})}</li>
+											<li>
+												du {format(new Date(closing.from), "PPPP", { locale: fr })}
+												au {format(new Date(closing.to), "PPPP", { locale: fr })}
+											</li>
 										{/each}
 									</ul>
 								{/if}
@@ -264,7 +305,10 @@
 													<a
 														class="mt-1"
 														target="_blank"
-														href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}>
+														href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+															delivery.address
+														)}`}
+													>
 														Voir sur Google Maps
 													</a>
 												{/if}
@@ -272,9 +316,11 @@
 										</div>
 										<div class="mt-2">
 											{#each delivery.deliveryHours as deliveryHour, index}
-												<div class="flex mb-2 border-gray-300"
-														 class:pb-2={index !== delivery.deliveryHours.length - 1}
-														 class:border-b={index !== delivery.deliveryHours.length - 1}>
+												<div
+													class="flex mb-2 border-gray-300"
+													class:pb-2={index !== delivery.deliveryHours.length - 1}
+													class:border-b={index !== delivery.deliveryHours.length - 1}
+												>
 													<p style="min-width: 100px;">
 														{DayOfWeekKind.label(deliveryHour[0].day)}
 													</p>
@@ -288,16 +334,18 @@
 										</div>
 										{#if delivery.closings.length > 0}
 											{#if producer.closings.length > 0}
-												<p class="font-semibold text-orange-500">En plus des dates de fermeture citées plus haut, ce
-													point
-													sera fermé aux dates suivantes :</p>
+												<p class="font-semibold text-orange-500">
+													En plus des dates de fermeture citées plus haut, ce point sera fermé aux dates suivantes :
+												</p>
 											{:else}
 												<p class="font-semibold text-orange-500">Ce point sera fermé aux dates suivantes :</p>
 											{/if}
 											<ul style="list-style: circle;padding: revert;">
 												{#each delivery.closings as closing}
-													<li>du {format(new Date(closing.from), 'PPPP', {locale: fr})}
-														au {format(new Date(closing.to), 'PPPP', {locale: fr})}</li>
+													<li>
+														du {format(new Date(closing.from), "PPPP", { locale: fr })}
+														au {format(new Date(closing.to), "PPPP", { locale: fr })}
+													</li>
 												{/each}
 											</ul>
 										{/if}
@@ -313,10 +361,12 @@
 					</TabPanel>
 					<TabPanel>
 						{#if producer.stores && producer.stores.length > 0}
-							<div class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+							<div
+								class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+          xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0"
+							>
 								{#each producer.stores as store}
-									<StoreCard {store} clicked="{() => openGMap(store)}"/>
+									<StoreCard {store} clicked={() => openGMap(store)} />
 								{/each}
 							</div>
 						{:else}
@@ -333,13 +383,14 @@
 				transition:fly={{ x: -600, duration: 300 }}
 				class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
         h-screen product-details bg-white"
-				style="z-index: 10; padding-bottom: 70px;">
-				<ProductDetails displayProducerData={false}/>
+				style="z-index: 10; padding-bottom: 70px;"
+			>
+				<ProductDetails displayProducerData={false} />
 			</div>
 		{/if}
 
 		{#if authInstance.isInRole([Roles.Consumer, Roles.Anonymous])}
-			<Cart/>
+			<Cart />
 		{/if}
 	{/if}
 </TransitionWrapper>
@@ -421,4 +472,5 @@
 			padding-bottom: 115px !important;
 		}
 	}
+
 </style>

@@ -22,7 +22,7 @@
 			success: async (res) => await handleClose(res),
 			successNotification: "Commande acceptée",
 			errorNotification: "Impossible d'accepter la commande.",
-			clearCache: [GET_ORDERS]
+			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
 	};
@@ -31,23 +31,23 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={purchaseOrders.length > 1 ? 'Accepter les commandes' : 'Accepter la commande'}
+	title={purchaseOrders.length > 1 ? "Accepter les commandes" : "Accepter la commande"}
 	icon={faCheck}
 	submit={handleSubmit}
 	submitText="Accepter"
 	closeText="Fermer"
 	{isLoading}
-	{close}>
+	{close}
+>
 	<p class="leading-5">
-		Vous vous apprêtez à accepter {purchaseOrders.length > 1 ? 'ces commandes' : 'cette commande'}.
+		Vous vous apprêtez à accepter {purchaseOrders.length > 1 ? "ces commandes" : "cette commande"}.
 	</p>
-	<p class="leading-5">
-		Le client sera automatiquement notifié de cette validation.
-	</p>
+	<p class="leading-5">Le client sera automatiquement notifié de cette validation.</p>
 </ActionConfirm>
 
 <style lang="scss">
@@ -57,4 +57,5 @@
 			color: #ffffff;
 		}
 	}
+
 </style>

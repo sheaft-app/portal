@@ -16,4 +16,4 @@ export const CANCEL_AGREEMENT = gql`
 			status
 		}
 	}
-`
+`;

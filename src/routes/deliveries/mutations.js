@@ -53,8 +53,8 @@ export const UPDATE_DELIVERY = gql`
 export const SET_DELIVERY_AVAILABILITY = gql`
 	mutation SetDeliveryAvailability($input: SetDeliveryModesAvailabilityInput!) {
 		setDeliveryModesAvailability(input: $input) {
-				id
-				available
+			id
+			available
 		}
 	}
 `;

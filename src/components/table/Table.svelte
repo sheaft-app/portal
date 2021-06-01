@@ -3,11 +3,11 @@
 	import OrderByDirection from "./../../enums/OrderByDirection";
 	import Loader from "./../Loader.svelte";
 	import Icon from "svelte-awesome";
-	import {querystring} from "svelte-spa-router";
+	import { querystring } from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
-	import {faLongArrowAltDown} from "@fortawesome/free-solid-svg-icons";
+	import { faLongArrowAltDown } from "@fortawesome/free-solid-svg-icons";
 	import InputCheckbox from "../controls/InputCheckbox.svelte";
-	import {toggleMoreActions} from "../../stores/app";
+	import { toggleMoreActions } from "../../stores/app";
 	import PageEmpty from "../PageEmpty.svelte";
 	import { getContext } from "svelte";
 
@@ -26,7 +26,7 @@
 			orderBy: "createdOn",
 			direction: OrderByDirection.DESC,
 			paginate: Paginate.After,
-			take: 20
+			take: 20,
 		},
 		selectedItems = null,
 		getRowBackgroundColor = null,
@@ -50,34 +50,27 @@
 		_searchValues.orderBy = sortLabel;
 		_searchValues.paginate = Paginate.First;
 		_searchValues.direction =
-			_searchValues.direction == OrderByDirection.ASC
-				? OrderByDirection.DESC
-				: OrderByDirection.ASC;
+			_searchValues.direction == OrderByDirection.ASC ? OrderByDirection.DESC : OrderByDirection.ASC;
 
 		routerInstance.replaceQueryParams(_searchValues);
 	};
 
 	const toggleSelectAll = () => {
-		if (selectedItems && selectedItems.length > 0)
-			selectedItems = [];
-		else
-			selectedItems = items.filter((i) => !disableRowSelection(i));
+		if (selectedItems && selectedItems.length > 0) selectedItems = [];
+		else selectedItems = items.filter((i) => !disableRowSelection(i));
 	};
 
 	const selectRow = (item) => {
 		if (!selectedItems) return;
 
 		var filteredItems = selectedItems.filter((si) => si.id != item.id);
-		if (filteredItems.length != selectedItems.length)
-			selectedItems = filteredItems;
+		if (filteredItems.length != selectedItems.length) selectedItems = filteredItems;
 		else selectedItems = [...selectedItems, item];
 	};
 
 	const getArrowClass = (headerSortLabel, status) => {
 		var direction = routerInstance.getQueryParams()["direction"];
-		return direction === status && headerSortLabel === _searchValues.orderBy
-			? "text-gray-700"
-			: "text-gray-300";
+		return direction === status && headerSortLabel === _searchValues.orderBy ? "text-gray-700" : "text-gray-300";
 	};
 
 	const refetch = async (querystring) => {
@@ -99,7 +92,7 @@
 				items = res.data;
 				window.scrollTo(0, 0);
 			},
-			errorNotification: "Impossible de récupérer la liste"
+			errorNotification: "Impossible de récupérer la liste",
 		});
 		isLoading = false;
 	};
@@ -184,7 +177,7 @@
 					after: _searchValues.cursor,
 					before: null,
 					orderBy: {},
-					where: _searchValues.where ? {} : null
+					where: _searchValues.where ? {} : null,
 				};
 				break;
 			case Paginate.Before:
@@ -194,7 +187,7 @@
 					before: _searchValues.cursor,
 					after: null,
 					orderBy: {},
-					where: _searchValues.where ? {} : null
+					where: _searchValues.where ? {} : null,
 				};
 				break;
 			case Paginate.Last:
@@ -204,7 +197,7 @@
 					after: null,
 					before: _searchValues.cursor,
 					orderBy: {},
-					where: _searchValues.where ? {} : null
+					where: _searchValues.where ? {} : null,
 				};
 				break;
 			case Paginate.First:
@@ -215,7 +208,7 @@
 					before: null,
 					after: _searchValues.cursor,
 					orderBy: {},
-					where: _searchValues.where ? {} : null
+					where: _searchValues.where ? {} : null,
 				};
 				break;
 		}
@@ -223,7 +216,7 @@
 		if (_searchValues.where && _searchValues.whereValues) {
 			var splittedFilter = _searchValues.where.split("_");
 			var filter = {};
-			filter[splittedFilter[1]] = _searchValues.whereValues.split(',');
+			filter[splittedFilter[1]] = _searchValues.whereValues.split(",");
 			settings.where[splittedFilter[0]] = filter;
 		}
 
@@ -232,7 +225,10 @@
 	};
 
 	$: canSelect = selectedItems && items.length > 0;
-	$: hasSelectedAllItems = selectedItems && selectedItems.length >= 1 && selectedItems.length == items.filter((i) => !disableRowSelection(i)).length;
+	$: hasSelectedAllItems =
+		selectedItems &&
+		selectedItems.length >= 1 &&
+		selectedItems.length == items.filter((i) => !disableRowSelection(i)).length;
 	$: isRowSelected = (item) => selectedItems && selectedItems.some((si) => si.id == item.id);
 	$: rowColor = (item) => {
 		if (isRowSelected(item)) return "bg-gray-100";
@@ -240,111 +236,127 @@
 		if (getRowBackgroundColor) return getRowBackgroundColor(item);
 		else return "";
 	};
-	$: noResults = !isLoading && items.length < 1 && !(_searchValues && _searchValues.where && _searchValues.where.length > 1);
+	$: noResults =
+		!isLoading && items.length < 1 && !(_searchValues && _searchValues.where && _searchValues.where.length > 1);
 
 	$: refetch($querystring);
+
 </script>
 
 {#if !hideIfNoResults}
 	{#if $toggleMoreActions}
-		<div class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0" style="z-index: 1;"
-				 on:click={() => toggleMoreActions.set(false)}></div>
+		<div
+			class="fixed w-full h-full bg-black opacity-25 -mx-4 md:mx-0"
+			style="z-index: 1;"
+			on:click={() => toggleMoreActions.set(false)}
+		/>
 	{/if}
 	<div class="overflow-x-auto bg-white shadow -mx-4 md:mx-0 -my-4 lg:mx:0 lg:my-0">
-		<slot name="filters"></slot>
+		<slot name="filters" />
 		<table class={classes}>
 			<thead>
-			<tr class="bg-white">
-				{#if canSelect}
-					<th
-						class="px-3 md:px-6 py-3 border-b border-gray-300
+				<tr class="bg-white">
+					{#if canSelect}
+						<th
+							class="px-3 md:px-6 py-3 border-b border-gray-300
 							text-left text-xs leading-4 font-medium text-gray-500 uppercase
 							tracking-wider"
-						style="width:30px;">
-						<InputCheckbox
-							onClick={() => toggleSelectAll()}
-							checked={hasSelectedAllItems}/>
-					</th>
-				{/if}
-				{#each headers as header}
-					{#if header.sortLabel}
-						<th
-							class:px-3={!header.noMobilePadding}
-							on:click={sort(header.sortLabel)}
-							class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
-								md:px-6 py-3 cursor-pointer hover:text-gray-700 border-b
-								border-gray-300 text-left text-xs leading-4
-								font-medium text-gray-600 uppercase tracking-wider">
-							{header.name}
-							<Icon
-								data={faLongArrowAltDown}
-								class="{getArrowClass(header.sortLabel, OrderByDirection.DESC)}
-									inline ml-2 transition duration-200 ease-linear"/>
-							<Icon
-								data={faLongArrowAltDown}
-								class="{getArrowClass(header.sortLabel, OrderByDirection.ASC)}
-									inline transition duration-200 ease-linear transform
-									rotate-180"/>
-						</th>
-					{:else}
-						<th
-							class:px-3={!header.noMobilePadding}
-							class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
-								md:px-6 py-3 border-b border-gray-300 text-left
-								text-xs leading-4 font-medium text-gray-600 uppercase
-								tracking-wider">
-							{header.name}
+							style="width:30px;"
+						>
+							<InputCheckbox onClick={() => toggleSelectAll()} checked={hasSelectedAllItems} />
 						</th>
 					{/if}
-				{/each}
-			</tr>
+					{#each headers as header}
+						{#if header.sortLabel}
+							<th
+								class:px-3={!header.noMobilePadding}
+								on:click={sort(header.sortLabel)}
+								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
+								md:px-6 py-3 cursor-pointer hover:text-gray-700 border-b
+								border-gray-300 text-left text-xs leading-4
+								font-medium text-gray-600 uppercase tracking-wider"
+							>
+								{header.name}
+								<Icon
+									data={faLongArrowAltDown}
+									class="{getArrowClass(header.sortLabel, OrderByDirection.DESC)}
+									inline ml-2 transition duration-200 ease-linear"
+								/>
+								<Icon
+									data={faLongArrowAltDown}
+									class="{getArrowClass(header.sortLabel, OrderByDirection.ASC)}
+									inline transition duration-200 ease-linear transform
+									rotate-180"
+								/>
+							</th>
+						{:else}
+							<th
+								class:px-3={!header.noMobilePadding}
+								class="{header.displayOn ? `hidden ${header.displayOn}:table-cell` : `table-cell`}
+								md:px-6 py-3 border-b border-gray-300 text-left
+								text-xs leading-4 font-medium text-gray-600 uppercase
+								tracking-wider"
+							>
+								{header.name}
+							</th>
+						{/if}
+					{/each}
+				</tr>
 			</thead>
 			<tbody>
-			{#if !isLoading && items.length > 0}
-				{#each items as item}
-					<tr
-						on:click|stopPropagation={() => onRowClick(item)}
-						class="{rowColor(item)} cursor-pointer ripple border-b
-							border-gray-200">
-						{#if canSelect}
-							<td
-								class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
+				{#if !isLoading && items.length > 0}
+					{#each items as item}
+						<tr
+							on:click|stopPropagation={() => onRowClick(item)}
+							class="{rowColor(item)} cursor-pointer ripple border-b
+							border-gray-200"
+						>
+							{#if canSelect}
+								<td
+									class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200"
-								class:disabled={disableRowSelection(item)}
-								on:click|stopPropagation={(e) => {
+									class:disabled={disableRowSelection(item)}
+									on:click|stopPropagation={(e) => {
 										if (!disableRowSelection(item)) {
 											selectRow(item);
 										}
-									}}>
-								<div class="flex items-center">
-									<div class="flex-shrink-0">
-										<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)}/>
+									}}
+								>
+									<div class="flex items-center">
+										<div class="flex-shrink-0">
+											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)} />
+										</div>
 									</div>
-								</div>
-							</td>
-						{/if}
-						<slot rowItem={item}/>
+								</td>
+							{/if}
+							<slot rowItem={item} />
+						</tr>
+					{/each}
+				{:else if !isLoading && items.length < 1}
+					<tr>
+						<td
+							colspan={canSelect ? headers.length + 1 : headers.length}
+							class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
+						border-gray-200 hover:bg-white"
+						>
+							{#if noResultsPage}
+								<PageEmpty {noResultsPage} />
+							{:else}
+								Aucun résultat
+							{/if}
+						</td>
 					</tr>
-				{/each}
-			{:else if !isLoading && items.length < 1}
-				<tr>
-					<td colspan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 py-4 whitespace-no-wrap border-b
-						border-gray-200 hover:bg-white">
-						{#if noResultsPage}
-							<PageEmpty {noResultsPage}/>
-						{:else}
-							Aucun résultat
-						{/if}
-					</td>
-				</tr>
-			{:else}
-				<tr>
-					<td colSpan={canSelect ? headers.length + 1 : headers.length} class="text-center px-3 md:px-6 p-4 whitespace-no-wrap border-b
-						border-gray-200 hover:bg-white">
-						<Loader text={loadingMessage}/>
-					</td>
-				</tr>
-			{/if}
+				{:else}
+					<tr>
+						<td
+							colSpan={canSelect ? headers.length + 1 : headers.length}
+							class="text-center px-3 md:px-6 p-4 whitespace-no-wrap border-b
+						border-gray-200 hover:bg-white"
+						>
+							<Loader text={loadingMessage} />
+						</td>
+					</tr>
+				{/if}
 			</tbody>
 		</table>
 		{#if _pageInfo.hasPreviousPage || _pageInfo.hasNextPage}
@@ -358,7 +370,8 @@
 						border-gray-400 text-sm leading-5 font-medium rounded-md
 						text-gray-700 bg-white hover:text-gray-500 focus:outline-none
 						focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100
-						active:text-gray-700 transition ease-in-out duration-150">
+						active:text-gray-700 transition ease-in-out duration-150"
+					>
 						Précédent
 					</button>
 					<button
@@ -369,7 +382,8 @@
 						border-gray-400 text-sm leading-5 font-medium rounded-md
 						text-gray-700 bg-white hover:text-gray-500 focus:outline-none
 						focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100
-						active:text-gray-700 transition ease-in-out duration-150">
+						active:text-gray-700 transition ease-in-out duration-150"
+					>
 						Suivant
 					</button>
 				</div>
@@ -456,4 +470,5 @@
 			}
 		}
 	}
+
 </style>

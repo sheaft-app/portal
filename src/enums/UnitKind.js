@@ -1,12 +1,12 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-    ML : { Value: "ML", Label: "ml"},
-    L: { Value: "L", Label: "L"},
-    G : { Value: "G", Label: "g"},
-    KG : { Value: "KG", Label: "kg"},
-    NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
-}
+	ML: { Value: "ML", Label: "ml" },
+	L: { Value: "L", Label: "L" },
+	G: { Value: "G", Label: "g" },
+	KG: { Value: "KG", Label: "kg" },
+	NotSpecified: { Value: "NOT_SPECIFIED", Label: "Non spécifié" },
+};
 
 let UnitKind = {
 	...enums,
@@ -24,10 +24,10 @@ let UnitKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => UnitKind[key] = enums[key]);
+Object.keys(enums).map((key) => (UnitKind[key] = enums[key]));
 Object.freeze(UnitKind);
 
 export default UnitKind;

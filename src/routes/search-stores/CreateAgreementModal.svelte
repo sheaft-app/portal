@@ -28,7 +28,7 @@
 			success: async (res) => closeModal(res),
 			successNotification: "Demande de partenariat envoyée !",
 			errorNotification: "Impossible de faire une demande de partenariat.",
-			clearCache: [GET_AGREEMENTS]
+			clearCache: [GET_AGREEMENTS],
 		});
 		isLoading = false;
 	};
@@ -37,6 +37,7 @@
 		close();
 		if (onClosed) await onClosed(obj);
 	}
+
 </script>
 
 <ActionConfirm
@@ -48,13 +49,12 @@
 	valid={isValid}
 	submitText="Confirmer"
 	closeText="Annuler"
-	{close}>
+	{close}
+>
 	<p class="leading-5">
 		Vous vous apprêtez à demander un accord de partenariat avec {store.name}
 	</p>
-	<p class="leading-5 mb-5">
-		Le magasin sera automatiquement notifié de votre demande.
-	</p>
+	<p class="leading-5 mb-5">Le magasin sera automatiquement notifié de votre demande.</p>
 	<SelectTime bind:selectedDelivery {errorsHandler} />
 	<SelectCatalog bind:selectedCatalog {errorsHandler} />
 </ActionConfirm>

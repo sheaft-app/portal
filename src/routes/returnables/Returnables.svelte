@@ -10,9 +10,10 @@
 	const routes = {
 		"/": ListReturnables,
 		"/create": CreateReturnable,
-		"/:id": EditReturnable
+		"/:id": EditReturnable,
 	};
+
 </script>
 
-<Meta/>
+<Meta />
 <Router {routes} {prefix} />

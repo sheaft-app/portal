@@ -13,7 +13,7 @@ const AccountRoutes = {
 		Icon: faUser,
 		Path: `${prefix}${profile}`,
 		SubPart: `${profile}`,
-	}
+	},
 };
 
 export default AccountRoutes;

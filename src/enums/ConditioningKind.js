@@ -1,14 +1,14 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-    Bulk : { Value: "BULK", Label: "Poids"},
-    Box : { Value: "BOX", Label: "Boite"},
-    Bunch: { Value: "BUNCH", Label: "Botte"},
-    Bouquet : { Value: "BOUQUET", Label: "Bouquet"},
-    Piece : { Value: "PIECE", Label: "Pièce"},
-    Basket : { Value: "BASKET", Label: "Panier garni"},
-    NotSpecified : { Value: "NOT_SPECIFIED", Label: "Non spécifié"}
-}
+	Bulk: { Value: "BULK", Label: "Poids" },
+	Box: { Value: "BOX", Label: "Boite" },
+	Bunch: { Value: "BUNCH", Label: "Botte" },
+	Bouquet: { Value: "BOUQUET", Label: "Bouquet" },
+	Piece: { Value: "PIECE", Label: "Pièce" },
+	Basket: { Value: "BASKET", Label: "Panier garni" },
+	NotSpecified: { Value: "NOT_SPECIFIED", Label: "Non spécifié" },
+};
 
 let ConditioningKind = {
 	...enums,
@@ -26,10 +26,10 @@ let ConditioningKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => ConditioningKind[key] = enums[key]);
+Object.keys(enums).map((key) => (ConditioningKind[key] = enums[key]));
 Object.freeze(ConditioningKind);
 
 export default ConditioningKind;

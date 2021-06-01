@@ -1,15 +1,11 @@
 <script>
-	import {querystring} from "svelte-spa-router";
-	import {onMount, onDestroy, getContext} from "svelte";
-	import {fly} from "svelte/transition";
-	import {SEARCH_PRODUCTS, GET_PRODUCER_NAME} from "./queries.js";
-	import {isLoading, isFetchingMore, filters} from "./store";
+	import { querystring } from "svelte-spa-router";
+	import { onMount, onDestroy, getContext } from "svelte";
+	import { fly } from "svelte/transition";
+	import { SEARCH_PRODUCTS, GET_PRODUCER_NAME } from "./queries.js";
+	import { isLoading, isFetchingMore, filters } from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import {
-		selectedItem,
-		searchResults,
-		allDepartmentsProgress,
-	} from "./../../stores/app.js";
+	import { selectedItem, searchResults, allDepartmentsProgress } from "./../../stores/app.js";
 	import cart from "./../../stores/cart";
 	import Cart from "./Cart.svelte";
 	import ProductCard from "./ProductCard.svelte";
@@ -20,20 +16,23 @@
 	import GetAuthInstance from "../../services/SheaftAuth.js";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import Icon from "svelte-awesome";
-	import {
-		faFilter,
-		faTimesCircle
-	} from "@fortawesome/free-solid-svg-icons";
+	import { faFilter, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 	import SkeletonCard from "./SkeletonCard.svelte";
 	import Roles from "./../../enums/Roles";
 	import QuickOrderRoutes from "../quick-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Meta from "../../components/Meta.svelte";
-	import { normalizeSearchProducts, retrieveUserLocationInQueryString, retrieveUserLocationInStorage, updateUserLocationInQueryString, QUERY_SIZE } from "./searchProductsForm";
+	import {
+		normalizeSearchProducts,
+		retrieveUserLocationInQueryString,
+		retrieveUserLocationInStorage,
+		updateUserLocationInQueryString,
+		QUERY_SIZE,
+	} from "./searchProductsForm";
 
 	const errorsHandler = new SheaftErrors();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const { query } = getContext("api");
 	const authManager = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -53,7 +52,7 @@
 		currentProducerId = null;
 		$filters.producerId = null;
 
-		routerInstance.pushQueryParams({["producerId"]: null});
+		routerInstance.pushQueryParams({ ["producerId"]: null });
 	};
 
 	const observer = new IntersectionObserver(async (entries) => {
@@ -73,7 +72,7 @@
 		};
 	};
 
-	const showFiltersModal = () => open(FiltersModal, {filters, visibleNav: true, producer});
+	const showFiltersModal = () => open(FiltersModal, { filters, visibleNav: true, producer });
 
 	const renderSort = (sort) => {
 		switch (sort) {
@@ -118,7 +117,7 @@
 				lastFetchLength = res.products.length;
 				searchResults.set(prevFeed);
 			},
-			errorNotification: "Impossible de récupérer les informations des produits."
+			errorNotification: "Impossible de récupérer les informations des produits.",
 		});
 		isLoading.set(false);
 	};
@@ -142,9 +141,7 @@
 
 		const departmentCode = address.insee.substring(0, 2);
 
-		let department = $allDepartmentsProgress.find(
-			(d) => d.Code == departmentCode
-		);
+		let department = $allDepartmentsProgress.find((d) => d.Code == departmentCode);
 
 		if (department) {
 			return (departmentProgress = department);
@@ -179,7 +176,7 @@
 		if (tag == "bio") queryParam = "labels";
 		else queryParam = "category";
 
-		return routerInstance.pushQueryParams({[queryParam]: ""});
+		return routerInstance.pushQueryParams({ [queryParam]: "" });
 	};
 
 	onMount(async () => {
@@ -239,27 +236,26 @@
 		}
 
 		currentProducerId = producerId;
-		
+
 		producer = await query({
 			query: GET_PRODUCER_NAME,
-			variables: {id: producerId},
+			variables: { id: producerId },
 			errorsHandler,
-			errorNotification: "Impossible de récupérer les producteurs"
+			errorNotification: "Impossible de récupérer les producteurs",
 		});
 	};
 
 	$: getProducerFilter($filters.producerId);
-	let metadata = {title: "Explorer"};
+	let metadata = { title: "Explorer" };
+
 </script>
 
-<Meta metadata={metadata}/>
+<Meta {metadata} />
 
 <TransitionWrapper hasRightPanel style="margin:0;">
 	<ErrorCard {errorsHandler} bind:componentErrors={errors} retry={true} />
 	{#if errors.length < 1}
-		<div
-			class:has-bottom-mobile-cta={$cart.products.length > 0}
-			class="search-products md:-my-4 container m-auto">
+		<div class:has-bottom-mobile-cta={$cart.products.length > 0} class="search-products md:-my-4 container m-auto">
 			<div class="filters -mx-4 md:-mx-6 lg:my-0 lg:mx-0 mb-3">
 				<CitySearch
 					withGeolocationButton={true}
@@ -267,34 +263,31 @@
 					initAddress={initLocation}
 					bind:selectedAddress={selectedLocation}
 					containerStyles="background-color: #ffffff; border: none; border-radius:
-          0px; color: #205164; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-bottom: 10px;" />
+          0px; color: #205164; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-bottom: 10px;"
+				/>
 			</div>
 			{#if authManager.isInRole([Roles.Store.Value, Roles.Producer.Value])}
 				<div
 					class="py-5 px-5 md:px-4 overflow-x-auto -mx-5 md:mx-0 bg-orange-200
-						shadow rounded mb-5 lg:mt-3">
+						shadow rounded mb-5 lg:mt-3"
+				>
 					<div class="flex">
 						<div>
-							<p class="uppercase font-bold leading-none">
-								Module consommateur
-							</p>
+							<p class="uppercase font-bold leading-none">Module consommateur</p>
 							<div class="mt-2 text-sm">
 								<p>
-									Cette page est réservée aux consommateurs. Vous ne pouvez
-									l'utiliser qu'à des fins de consultation.
+									Cette page est réservée aux consommateurs. Vous ne pouvez l'utiliser qu'à des fins de consultation.
 								</p>
 								<div class="mt-1 flex flex-wrap">
 									{#if authManager.isInRole([Roles.Store.Value])}
 										<button
 											class="btn btn-accent btn-lg"
-											on:click={() => routerInstance.goTo(QuickOrderRoutes.Purchase)}>
+											on:click={() => routerInstance.goTo(QuickOrderRoutes.Purchase)}
+										>
 											Passer une commande
 										</button>
 									{/if}
-									<button
-										class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow">
-										Changer de compte
-									</button>
+									<button class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow"> Changer de compte </button>
 								</div>
 							</div>
 						</div>
@@ -302,7 +295,7 @@
 				</div>
 			{/if}
 			<!-- si on ne trouve pas de produits alors qu'il n'y a pas de filtre, on affiche un écran "Nous ne sommes pas encore arrivés !" -->
-			{#if !$isLoading && totalProducts < 1 && (activeFilters <= 0) && !$filters.text}
+			{#if !$isLoading && totalProducts < 1 && activeFilters <= 0 && !$filters.text}
 				<div class="text-lg">
 					{#if departmentProgress}
 						<h2 class="mt-5 mb-5 font-semibold">
@@ -312,25 +305,19 @@
 						<h2 class="mt-5 mb-5 font-semibold">On arrive bientôt !</h2>
 					{/if}
 					<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
-					<p class="mt-5 mb-5">
-						Nous n'avons pas encore de producteur enregistré autour de vous 😔.
-					</p>
+					<p class="mt-5 mb-5">Nous n'avons pas encore de producteur enregistré autour de vous 😔.</p>
 					<p class="mb-5">
-						Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider
-						à faire connaître la plateforme auprès des producteurs de votre
-						département !
+						Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme auprès
+						des producteurs de votre département !
 					</p>
-					<img
-						src="./img/maps.svg"
-						width="230"
-						class="m-auto"
-						alt="Nous ne sommes pas encore dans ce département" />
+					<img src="./img/maps.svg" width="230" class="m-auto" alt="Nous ne sommes pas encore dans ce département" />
 				</div>
 			{:else if $filters.latitude && $filters.longitude}
 				{#if departmentProgress && departmentProgress.ProducersCount >= 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
 					<div
 						class="py-5 px-5 md:px-4 overflow-x-auto -mx-4 md:mx-0 bg-white
-							shadow lg:rounded mb-5 lg:mt-3">
+							shadow lg:rounded mb-5 lg:mt-3"
+					>
 						<div class="flex">
 							<div>
 								<p class="uppercase font-bold leading-none">
@@ -341,29 +328,27 @@
 								<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 								<div class="mt-2 text-sm">
 									{#if departmentProgress.ProducersCount == 0}
-										<p class="mb-2">
-											Nous avons trouvé des producteurs dans les départements
-											voisins.
-										</p>
+										<p class="mb-2">Nous avons trouvé des producteurs dans les départements voisins.</p>
 									{:else if departmentProgress.ProducersCount == 1}
 										<p class="mb-2">
-											<span
-												class="font-semibold">{departmentProgress.ProducersCount}
-												producteur</span>
+											<span class="font-semibold"
+												>{departmentProgress.ProducersCount}
+												producteur</span
+											>
 											est enregistré dans ce département.
 										</p>
 									{:else}
 										<p class="mb-2">
-											<span
-												class="font-semibold">{departmentProgress.ProducersCount}
-												producteurs</span>
+											<span class="font-semibold"
+												>{departmentProgress.ProducersCount}
+												producteurs</span
+											>
 											sont enregistrés dans ce département.
 										</p>
 									{/if}
 									<p>
-										Parlez de Sheaft sur les réseaux et sur les marchés pour
-										nous aider à faire connaître la plateforme et amener plus de
-										producteurs !
+										Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme
+										et amener plus de producteurs !
 									</p>
 								</div>
 							</div>
@@ -374,13 +359,14 @@
 					class="inline-flex items-center mb-3 themed text-center sticky py-1
 						lg:py-2 -mx-4 px-4 filter-bar"
 					style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
-            width: -webkit-fill-available; width: fill-available;">
+            width: -webkit-fill-available; width: fill-available;"
+				>
 					{#if $isLoading}
 						<div class="mb-1 h-6 w-16 md:w-24 skeleton-box" />
 					{:else}
 						<p class="text-xs lg:text-xl pr-2 border-r border-gray-400">
 							{totalProducts}
-							résultat{totalProducts > 1 ? 's' : ''}
+							résultat{totalProducts > 1 ? "s" : ""}
 						</p>
 					{/if}
 					<SearchInput containerClasses="ml-2" />
@@ -389,17 +375,17 @@
 							items-center ml-2 {activeFilters > 0 ? 'flex-nowrap' : 'flex-wrap'}"
 						class:text-white={activeFilters > 0}
 						class:bg-accent={activeFilters > 0}
-						on:click={showFiltersModal}>
+						on:click={showFiltersModal}
+					>
 						<Icon
 							style="width: .8em;"
 							class="lg:mr-1 m-auto lg:m-0 {activeFilters > 0 ? 'text-white' : 'text-accent'}"
-							data={faFilter} />
+							data={faFilter}
+						/>
 						{#if activeFilters > 0}
 							<span class="text-white">{activeFilters}</span>
 						{:else}
-							<p style="font-size: .8em;" class="text-center text-accent">
-								Filtres
-							</p>
+							<p style="font-size: .8em;" class="text-center text-accent">Filtres</p>
 						{/if}
 					</button>
 				</div>
@@ -408,7 +394,8 @@
 						<span
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-								items-center bg-gray-200">
+								items-center bg-gray-200"
+						>
 							tri :
 							{renderSort($filters.sort)}
 						</span>
@@ -418,7 +405,8 @@
 							on:click={() => clearProducer()}
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-								items-center bg-gray-200 cursor-pointer">
+								items-center bg-gray-200 cursor-pointer"
+						>
 							producteur: '{producer.name}'
 
 							<Icon data={faTimesCircle} scale=".7" class="ml-2" />
@@ -428,7 +416,8 @@
 						<span
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-								items-center bg-gray-200">
+								items-center bg-gray-200"
+						>
 							termes: '{$filters.text}'
 						</span>
 					{/if}
@@ -438,7 +427,8 @@
 								on:click={() => removeTag(tag)}
 								style="font-size: .6rem"
 								class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-									items-center bg-gray-200 cursor-pointer">
+									items-center bg-gray-200 cursor-pointer"
+							>
 								{tag}
 								<Icon data={faTimesCircle} scale=".7" class="ml-2" />
 							</span>
@@ -448,7 +438,8 @@
 				{#if $isLoading}
 					<div
 						class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-							xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+							xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0"
+					>
 						{#each Array(9) as _i}
 							<SkeletonCard />
 						{/each}
@@ -456,7 +447,8 @@
 				{:else}
 					<div
 						class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2
-							xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0">
+							xl:grid-cols-3 md:gap-3 -mx-4 md:mx-0"
+					>
 						{#each $searchResults as product, index}
 							<ProductCard {product} bind:hoveredProduct />
 							{#if index === $searchResults.length - 1 && lastFetchLength >= QUERY_SIZE}
@@ -474,28 +466,18 @@
 					{#if totalProducts < 1}
 						<div class="m-auto text-center">
 							<p class="mb-5 text-gray-600">
-								Zut, nous n'avons pas encore de produit qui réponde à ces
-								critères. Essayez de retirer des filtres.
+								Zut, nous n'avons pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.
 							</p>
-							<img
-								src="./img/empty_results.svg"
-								alt="Pas de résultat"
-								style="width: 200px;"
-								class="m-auto" />
+							<img src="./img/empty_results.svg" alt="Pas de résultat" style="width: 200px;" class="m-auto" />
 						</div>
 					{/if}
 				{/if}
 			{:else}
 				<div class="text-lg text-gray-600 text-center">
 					<p class="mt-5 mb-5 px-8">
-						Pour commencer, cliquez dans la barre en haut et entrez un code
-						postal ou une adresse !
+						Pour commencer, cliquez dans la barre en haut et entrez un code postal ou une adresse !
 					</p>
-					<img
-						src="./img/maps.svg"
-						width="340"
-						class="m-auto"
-						alt="Renseignez votre localisation" />
+					<img src="./img/maps.svg" width="340" class="m-auto" alt="Renseignez votre localisation" />
 				</div>
 			{/if}
 		</div>
@@ -510,7 +492,8 @@
 		transition:fly={{ x: -600, duration: 300 }}
 		class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
 			h-screen product-details bg-white"
-		style="z-index: 10; padding-bottom: 70px;">
+		style="z-index: 10; padding-bottom: 70px;"
+	>
 		<ProductDetails />
 	</div>
 {/if}
@@ -591,4 +574,5 @@
 			transform: translateY(0px);
 		}
 	}
+
 </style>

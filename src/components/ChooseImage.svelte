@@ -1,10 +1,11 @@
 <script>
-	import {onMount} from "svelte";
-	import {faCheck} from "@fortawesome/free-solid-svg-icons";
+	import { onMount } from "svelte";
+	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../components/modal/ActionConfirm.svelte";
-	import Cropper from 'cropperjs';
+	import Cropper from "cropperjs";
 
-	export let close, onClose,
+	export let close,
+		onClose,
 		newElementMinWidth = 100,
 		newElementMinHeight = 100,
 		newElementMaxWidth = 100,
@@ -24,15 +25,13 @@
 		src = URL.createObjectURL(file);
 		reader.readAsDataURL(file);
 
-		if (!cropper)
-			initCropper();
+		if (!cropper) initCropper();
 
 		cropper.replace(src);
 	}
 
 	const handleSubmit = async () => {
-		if (!imageChosen)
-			return await handleClose({success: false, data: null});
+		if (!imageChosen) return await handleClose({ success: false, data: null });
 
 		let res = cropper.getCroppedCanvas({
 			minWidth: parseInt(newElementMinWidth),
@@ -40,14 +39,14 @@
 			maxWidth: parseInt(newElementMaxWidth ? newElementMaxWidth : newElementMinWidth),
 			maxHeight: parseInt(newElementMaxHeight ? newElementMaxHeight : newElementMinHeight),
 			imageSmoothingEnabled: imageSmoothing,
-			imageSmoothingQuality: 'high',
+			imageSmoothingQuality: "high",
 		});
 
-		res.toBlob(blob => {
+		res.toBlob((blob) => {
 			reader.readAsDataURL(blob);
 			reader.onloadend = async () => {
-				await handleClose({success: true, data: reader.result});
-			}
+				await handleClose({ success: true, data: reader.result });
+			};
 		});
 	};
 
@@ -55,12 +54,11 @@
 		close();
 		await onClose(res);
 
-		if(cropper)
-			cropper.destroy();
-	}
+		if (cropper) cropper.destroy();
+	};
 
 	const initCropper = () => {
-		const image = document.getElementById('image');
+		const image = document.getElementById("image");
 		cropper = new Cropper(image, {
 			viewMode: 0,
 			dragMode: "move",
@@ -70,13 +68,14 @@
 			scalable: true,
 			modal: true,
 			minCropBoxHeight: parseInt(newElementMinHeight),
-			minCropBoxWidth: parseInt(newElementMinWidth)
+			minCropBoxWidth: parseInt(newElementMinWidth),
 		});
-	}
+	};
 
 	onMount(() => {
-		document.getElementById('avatar').click();
-	})
+		document.getElementById("avatar").click();
+	});
+
 </script>
 
 <ActionConfirm
@@ -87,24 +86,20 @@
 	submit={handleSubmit}
 	submitText="Valider"
 	closeText="Annuler"
-	close={() => handleClose({success:false, data:null})}>
+	close={() => handleClose({ success: false, data: null })}
+>
 	<form>
 		<div class="image-container" style="max-height: {containerMaxHeight}px; max-width:{containerMaxWidth}px;">
-			<img id="image" src="{src}">
+			<img id="image" {src} />
 		</div>
 		<div class="pt-5 m-auto text-center">
-			<input
-				on:change={loadFile}
-				type="file"
-				hidden
-				id="avatar"
-				name="avatar"
-				accept="image/png, image/jpeg"/>
+			<input on:change={loadFile} type="file" hidden id="avatar" name="avatar" accept="image/png, image/jpeg" />
 			<div class="mt-5 mb-5 m-auto text-center">
 				<label
 					class="bg-accent px-8 py-3 shadow rounded-full text-lg justify-center
           cursor-pointer"
-					for="avatar">
+					for="avatar"
+				>
 					Choisir une nouvelle image
 				</label>
 			</div>
@@ -128,4 +123,5 @@
 	.modal {
 		max-width: 48em !important;
 	}
+
 </style>

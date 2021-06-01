@@ -1,7 +1,7 @@
 <script>
-	import {onMount, getContext} from "svelte";
+	import { onMount, getContext } from "svelte";
 	import Icon from "svelte-awesome";
-	import {format} from "date-fns";
+	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "../../components/table/Table.svelte";
@@ -28,11 +28,8 @@
 		canDeliverOrders,
 		canShipOrders,
 	} from "./validators";
-	import {formatMoney} from "./../../helpers/app";
-	import {
-		GET_ORDERS,
-		HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
-	} from "./queries.js";
+	import { formatMoney } from "./../../helpers/app";
+	import { GET_ORDERS, HAS_PICKING_ORDERS_EXPORT_INPROGRESS } from "./queries.js";
 	import {
 		faTimes,
 		faBackspace,
@@ -44,26 +41,26 @@
 		faClock,
 		faCalendarAlt,
 		faFileExport,
-		faMapMarkerAlt
+		faMapMarkerAlt,
 	} from "@fortawesome/free-solid-svg-icons";
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import {toggleMoreActions} from "./../../stores/app";
+	import { toggleMoreActions } from "./../../stores/app";
 	import JobKind from "../../enums/JobKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const { query } = getContext("api");
 
 	const headers = [
-		{name: "Commande", sortLabel: "reference"},
-		{name: "Panier"},
-		{name: "Livraison/Récupération", displayOn: "md"},
-		{name: "Statut", displayOn: "md"},
-		{name: "Passée le", displayOn: "md", sortLabel: "createdOn"},
+		{ name: "Commande", sortLabel: "reference" },
+		{ name: "Panier" },
+		{ name: "Livraison/Récupération", displayOn: "md" },
+		{ name: "Statut", displayOn: "md" },
+		{ name: "Passée le", displayOn: "md", sortLabel: "createdOn" },
 	];
 
 	let selectedItems = [];
@@ -75,33 +72,35 @@
 
 	$: routerInstance.replaceQueryParams({
 		where: selectedStatus ? "status_in" : null,
-		whereValues: selectedStatus ? selectedStatus.map((s) => s.value) : null
+		whereValues: selectedStatus ? selectedStatus.map((s) => s.value) : null,
 	});
 
-	const filterStatus = Object.entries(PurchaseOrderStatusKind).map(([key, value]) => {
-		if (value.Value && value.Label) {
-			return {
-				value: value.Value,
-				label: value.Label
+	const filterStatus = Object.entries(PurchaseOrderStatusKind)
+		.map(([key, value]) => {
+			if (value.Value && value.Label) {
+				return {
+					value: value.Value,
+					label: value.Label,
+				};
 			}
-		}
-	}).filter((o) => o && o.value && o.value !== "NONE");
+		})
+		.filter((o) => o && o.value && o.value !== "NONE");
 
 	const checkHasExportInProgress = async () => {
 		hasPendingJobs = await query({
 			query: HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
 			variables: { kinds: [JobKind.ExportPickingOrders.Value] },
 			errorsHandler,
-			error: () => hasPendingJobs = false,
+			error: () => (hasPendingJobs = false),
 			errorNotification: "Impossible de terminer la commande.",
-			clearCache: [GET_ORDERS]
+			clearCache: [GET_ORDERS],
 		});
 	};
 
 	onMount(async () => {
 		const values = routerInstance.getQueryParams();
 		if (values["where"] && values["whereValues"] && filterStatus.length >= 1) {
-			selectedStatus = values["whereValues"].split(',').map((v) => filterStatus.find((o) => o.value == v));
+			selectedStatus = values["whereValues"].split(",").map((v) => filterStatus.find((o) => o.value == v));
 		}
 
 		await checkHasExportInProgress();
@@ -124,19 +123,20 @@
 
 	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
 
-	const handleOrdersModal = (modal) => open(modal, {
-		purchaseOrders: selectedItems,
-		onClose: () => {
-			routerInstance.refresh();
-			toggleMoreActions.set(false);
-			selectedItems = [];
-		},
-	});
+	const handleOrdersModal = (modal) =>
+		open(modal, {
+			purchaseOrders: selectedItems,
+			onClose: () => {
+				routerInstance.refresh();
+				toggleMoreActions.set(false);
+				selectedItems = [];
+			},
+		});
 
 	const getRowBackgroundColor = (item) => "";
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(PurchaseOrderRoutes.Details, {id: item.id});
+		routerInstance.goTo(PurchaseOrderRoutes.Details, { id: item.id });
 	};
 
 	$: actions = [
@@ -146,7 +146,7 @@
 			icon: faCheck,
 			text: "Accepter",
 			color: "green",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => refuseOrders(),
@@ -154,7 +154,7 @@
 			icon: faTimes,
 			text: "Refuser",
 			color: "red",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => cancelOrders(),
@@ -162,7 +162,7 @@
 			icon: faBackspace,
 			text: "Annuler",
 			color: "orange",
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => processOrders(),
@@ -171,7 +171,7 @@
 			text: "Démarrer la préparation",
 			color: "green",
 			hideIfDisabled: true,
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => completeOrders(),
@@ -180,17 +180,20 @@
 			text: "Marquer comme prêtes",
 			color: "green",
 			hideIfDisabled: true,
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => createPickingOrder(),
 			disabled: !canCreatePickingOrders(selectedItems),
 			icon: faFileExport,
-			text: selectedItems.filter((o) => o.status == PurchaseOrderStatusKind.Waiting.Value).length >= 1 ? "Accepter et faire un bon de préparation" : "Faire un bon de préparation",
+			text:
+				selectedItems.filter((o) => o.status == PurchaseOrderStatusKind.Waiting.Value).length >= 1
+					? "Accepter et faire un bon de préparation"
+					: "Faire un bon de préparation",
 			color: "indigo",
 			hideIfDisabled: true,
 
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => deliverOrders(),
@@ -199,28 +202,27 @@
 			text: "Marquer comme livrées",
 			color: "teal",
 			hideIfDisabled: true,
-			displaySelectedItemsNumber: true
+			displaySelectedItemsNumber: true,
 		},
 	];
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Mes commandes"/>
+	<PageHeader name="Mes commandes" />
 	<PageBody {errorsHandler}>
-		<Actions {actions} selectedItemsNumber={selectedItems.length}/>
+		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 		{#if !isLoading && hasPendingJobs}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
-			text-gray-600 shadow rounded mb-5">
+			text-gray-600 shadow rounded mb-5"
+			>
 				<div class="flex">
-					<Icon data={faCircleNotch} spin scale="1.3" class="mr-5"/>
+					<Icon data={faCircleNotch} spin scale="1.3" class="mr-5" />
 					<div>
-						<p class="uppercase font-bold leading-none mb-2">
-							Génération de bons de préparations
-						</p>
+						<p class="uppercase font-bold leading-none mb-2">Génération de bons de préparations</p>
 						<p>
-							Plusieurs bons de préparations sont en train d'être générés. Nous
-							vous informerons quand ce sera terminé.
+							Plusieurs bons de préparations sont en train d'être générés. Nous vous informerons quand ce sera terminé.
 						</p>
 						<div class="mt-2">
 							<a
@@ -228,7 +230,8 @@
 								on:click={() => routerInstance.goTo(JobRoutes.List)}
 								class="btn btn-large bg-white shadow font-semibold text-normal
 							hover:bg-gray-100"
-								style="width: fit-content;">
+								style="width: fit-content;"
+							>
 								Voir les tâches en cours
 							</a>
 						</div>
@@ -247,9 +250,14 @@
 			loadingMessage="Chargement de vos commandes en cours... veuillez patienter."
 			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
 			bind:selectedItems
-			disableRowSelection={(order) => order && (order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Refused.Value || order.status == PurchaseOrderStatusKind.Delivered.Value)}
+			disableRowSelection={(order) =>
+				order &&
+				(order.status == PurchaseOrderStatusKind.Cancelled.Value ||
+					order.status == PurchaseOrderStatusKind.Refused.Value ||
+					order.status == PurchaseOrderStatusKind.Delivered.Value)}
 			{getRowBackgroundColor}
-			{onRowClick}>
+			{onRowClick}
+		>
 			<section slot="filters">
 				<div class="themed">
 					<Select
@@ -266,9 +274,7 @@
 				<div class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(order.status)} block md:hidden">
 					{PurchaseOrderStatusKind.label(order.status)}
 				</div>
-				<div
-					class="text-sm leading-5 font-medium text-gray-900 truncate"
-					style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium text-gray-900 truncate" style="max-width: 180px;">
 					{order.sender.name}
 				</div>
 				<div class="text-sm leading-5 text-gray-600">#{order.reference}</div>
@@ -281,44 +287,41 @@
 					{order.productsCount} produits
 				</div>
 			</td>
-			<td
-				class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+			<td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
 				{#if order.expectedDelivery.expectedDeliveryDate}
 					<div>
 						<p>
-							<Icon data={faCalendarAlt} scale=".8" class=" inline"/>
-							{format(
-								new Date(order.expectedDelivery.expectedDeliveryDate),
-								'PP',
-								{
-									locale: fr,
-								}
-							)}
+							<Icon data={faCalendarAlt} scale=".8" class=" inline" />
+							{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PP", {
+								locale: fr,
+							})}
 						</p>
 						<p class="text-gray-600">
-							<Icon data={faMapMarkerAlt} scale=".8" class=" inline"/>
+							<Icon data={faMapMarkerAlt} scale=".8" class=" inline" />
 							{DeliveryKind.label(order.expectedDelivery.kind)}
 						</p>
 					</div>
 				{/if}
 			</td>
 			<td class="px-6 py-4 whitespace-no-wrap hidden md:table-cell">
-			<span
-				class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full
-				{order.status == PurchaseOrderStatusKind.Delivered.Value ? `bg-white border border-green-500 text-green-500` : `bg-${PurchaseOrderStatusKind.color(order.status)} text-white`}">
-				{PurchaseOrderStatusKind.label(order.status)}
-			</span>
+				<span
+					class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full
+				{order.status == PurchaseOrderStatusKind.Delivered.Value
+						? `bg-white border border-green-500 text-green-500`
+						: `bg-${PurchaseOrderStatusKind.color(order.status)} text-white`}"
+				>
+					{PurchaseOrderStatusKind.label(order.status)}
+				</span>
 			</td>
-			<td
-				class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
+			<td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 hidden md:table-cell">
 				<div>
 					<p>
-						<Icon data={faCalendarAlt} scale=".8" class=" inline"/>
-						{format(new Date(order.createdOn), 'PP', {locale: fr})}
+						<Icon data={faCalendarAlt} scale=".8" class=" inline" />
+						{format(new Date(order.createdOn), "PP", { locale: fr })}
 					</p>
 					<p class="text-gray-600">
-						<Icon data={faClock} scale=".8" class=" inline"/>
-						{format(new Date(order.createdOn), 'p', {locale: fr})}
+						<Icon data={faClock} scale=".8" class=" inline" />
+						{format(new Date(order.createdOn), "p", { locale: fr })}
 					</p>
 				</div>
 			</td>
@@ -338,8 +341,8 @@
 
 	tr {
 		&:hover {
-			box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0,
-			0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+			box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, 0.3),
+				0 1px 3px 1px rgba(60, 64, 67, 0.15);
 		}
 	}
 
@@ -357,4 +360,5 @@
 			transition: background 0s;
 		}
 	}
+
 </style>

@@ -1,8 +1,8 @@
 <script>
-	import {onMount, getContext} from "svelte";
+	import { onMount, getContext } from "svelte";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
 	import { UPDATE_RETURNABLE } from "./mutations";
-	import {GET_RETURNABLE_DETAILS, GET_RETURNABLES} from "./queries";
+	import { GET_RETURNABLE_DETAILS, GET_RETURNABLES } from "./queries";
 	import ReturnableForm from "./ReturnableForm.svelte";
 	import DeleteReturnable from "./DeleteReturnable.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
@@ -28,32 +28,39 @@
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(ReturnableRoutes.List),
-			errorNotification: "Impossible de récupérer les informations de la consigne."
+			errorNotification: "Impossible de récupérer les informations de la consigne.",
 		});
 		isLoading = false;
 	});
 
-	const handleSubmit = async () => await mutate({
-		mutation: UPDATE_RETURNABLE,
-		variables: returnable,
-		errorsHandler,
-		success: () => routerInstance.goTo(ReturnableRoutes.List),
-		successNotification: "La consigne a bien été modifiée",
-		errorNotification: "La modification de la consigne a échoué",
-		clearCache: [GET_RETURNABLES]
-	});
+	const handleSubmit = async () =>
+		await mutate({
+			mutation: UPDATE_RETURNABLE,
+			variables: returnable,
+			errorsHandler,
+			success: () => routerInstance.goTo(ReturnableRoutes.List),
+			successNotification: "La consigne a bien été modifiée",
+			errorNotification: "La modification de la consigne a échoué",
+			clearCache: [GET_RETURNABLES],
+		});
 
-	const showDeleteModal = () => open(DeleteReturnable, {
-		returnable,
-		onClose: () => routerInstance.goTo(ReturnableRoutes.List)
-	});
+	const showDeleteModal = () =>
+		open(DeleteReturnable, {
+			returnable,
+			onClose: () => routerInstance.goTo(ReturnableRoutes.List),
+		});
 
-	const buttons = [{ text:'Supprimer', click: () => showDeleteModal(), color:'red' }];
+	const buttons = [{ text: "Supprimer", click: () => showDeleteModal(), color: "red" }];
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Modifier la consigne" previousPage={ReturnableRoutes.List} {buttons}/>
-	<PageBody {errorsHandler} {isLoading} loadingMessage="Récupération des informations de votre consigne en cours... veuillez patienter">
+	<PageHeader name="Modifier la consigne" previousPage={ReturnableRoutes.List} {buttons} />
+	<PageBody
+		{errorsHandler}
+		{isLoading}
+		loadingMessage="Récupération des informations de votre consigne en cours... veuillez patienter"
+	>
 		<ReturnableForm submit={handleSubmit} bind:returnable />
 	</PageBody>
 </TransitionWrapper>

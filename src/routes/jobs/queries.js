@@ -1,13 +1,7 @@
 import gql from "graphql-tag";
 
 export const GET_JOBS = gql`
-	query GetJobs(
-		$first: Int
-		$after: String
-		$last: Int
-		$before: String
-		$orderBy: [JobSortInput!]
-	) {
+	query GetJobs($first: Int, $after: String, $last: Int, $before: String, $orderBy: [JobSortInput!]) {
 		jobs(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			pageInfo {
 				startCursor

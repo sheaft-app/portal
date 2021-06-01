@@ -22,7 +22,7 @@
 			success: async (res) => handleClose(res),
 			successNotification: "La tâche a bien été relancée",
 			errorNotification: "Impossible de relancer la tâche",
-			clearCache: [GET_JOBS]
+			clearCache: [GET_JOBS],
 		});
 		isLoading = false;
 	};
@@ -31,18 +31,20 @@
 		close();
 		if (onClose) await onClose(res);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={jobs.length > 1 ? 'Réinitialiser les tâches' : 'Réinitialiser la tâche'}
+	title={jobs.length > 1 ? "Réinitialiser les tâches" : "Réinitialiser la tâche"}
 	submit={handleSubmit}
 	{close}
 	submitText="Oui"
 	icon={faCheck}
-	{isLoading}>
+	{isLoading}
+>
 	<p class="py-2 leading-5">
-		Êtes-vous sûr de vouloir réinitialiser {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}
+		Êtes-vous sûr de vouloir réinitialiser {jobs.length > 1 ? "ces tâches" : "cette tâche"}
 		?
 	</p>
 </ActionConfirm>
@@ -54,4 +56,5 @@
 			color: #ffffff;
 		}
 	}
+
 </style>

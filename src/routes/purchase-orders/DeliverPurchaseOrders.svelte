@@ -21,7 +21,7 @@
 			success: async (res) => await handleClose(res),
 			successNotification: "Commande livrée",
 			errorNotification: "Impossible de marquer la commande comme livrée.",
-			clearCache: [GET_ORDERS]
+			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
 	};
@@ -30,19 +30,21 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={purchaseOrders.length > 1 ? 'Marquer ces commandes comme livrées' : 'Marquer cette commande comme livrée'}
+	title={purchaseOrders.length > 1 ? "Marquer ces commandes comme livrées" : "Marquer cette commande comme livrée"}
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"
 	icon={faCheck}
 	{isLoading}
-	{close}>
+	{close}
+>
 	<p class="leading-5">
-		Marquer {purchaseOrders.length > 1 ? 'ces commandes comme livrées' : 'cette commande comme livrée'}
+		Marquer {purchaseOrders.length > 1 ? "ces commandes comme livrées" : "cette commande comme livrée"}
 		indiquera au client que la commande a été réceptionnée.
 	</p>
 </ActionConfirm>

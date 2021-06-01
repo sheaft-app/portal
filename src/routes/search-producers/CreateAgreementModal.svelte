@@ -10,7 +10,7 @@
 
 	export let onClosed, close, producer, storeId;
 
-	const { mutate } = getContext("api");;
+	const { mutate } = getContext("api");
 
 	let isLoading = false;
 
@@ -18,12 +18,12 @@
 		isLoading = true;
 		await mutate({
 			mutation: CREATE_AGREEMENT,
-			variables: { storeId, producerId: producer.id},
+			variables: { storeId, producerId: producer.id },
 			errorsHandler,
 			success: async (res) => closeModal(res),
 			successNotification: "Demande de partenariat envoyée !",
 			errorNotification: "Impossible de faire une demande de partenariat.",
-			clearCache: [GET_AGREEMENTS]
+			clearCache: [GET_AGREEMENTS],
 		});
 		isLoading = false;
 	};
@@ -32,6 +32,7 @@
 		close();
 		if (onClosed) await onClosed(obj);
 	}
+
 </script>
 
 <ActionConfirm
@@ -42,11 +43,10 @@
 	{isLoading}
 	submitText="Confirmer"
 	closeText="Annuler"
-	{close}>
+	{close}
+>
 	<p class="leading-5">
 		Vous vous apprêtez à demander un accord de partenariat avec {producer.name}
 	</p>
-	<p class="leading-5">
-		Le producteur sera automatiquement notifié de votre demande.
-	</p>
+	<p class="leading-5">Le producteur sera automatiquement notifié de votre demande.</p>
 </ActionConfirm>

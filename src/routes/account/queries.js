@@ -45,11 +45,11 @@ export const GET_STORE_DETAILS = gql`
 				from
 				to
 			}
-			tags{
+			tags {
 				id
 				name
 			}
-			pictures{
+			pictures {
 				id
 				position
 				large
@@ -83,7 +83,7 @@ export const GET_PRODUCER_DETAILS = gql`
 			facebook
 			instagram
 			website
-			pictures{
+			pictures {
 				id
 				position
 				large

@@ -1,4 +1,4 @@
-import {querystring, push, pop, replace, location as locat} from "svelte-spa-router";
+import { querystring, push, pop, replace, location as locat } from "svelte-spa-router";
 import qs from "qs";
 import Guid from "../helpers/Guid";
 
@@ -15,10 +15,8 @@ class SheaftRouter {
 
 	async goTo(route, routeParams, refresh) {
 		let url = handleUrl(route, routeParams);
-		if (refresh == null || !refresh)
-			await push(url);
-		else
-			await replace(url);
+		if (refresh == null || !refresh) await push(url);
+		else await replace(url);
 	}
 
 	async goBack() {
@@ -36,12 +34,7 @@ class SheaftRouter {
 	}
 
 	replaceQueryParams(params) {
-		return handleParams(
-			replace,
-			this.currentQueryString,
-			params,
-			this.currentUrl
-		);
+		return handleParams(replace, this.currentQueryString, params, this.currentUrl);
 	}
 
 	pushQueryParams(params) {
@@ -62,16 +55,14 @@ class SheaftRouter {
 	}
 
 	unregister() {
-		if (this.locSubscription && this.locSubscription.unsubscribe)
-			this.locSubscription.unsubscribe();
+		if (this.locSubscription && this.locSubscription.unsubscribe) this.locSubscription.unsubscribe();
 
-		if (this.queryStrSubscription && this.queryStrSubscription.unsubscribe)
-			this.queryStrSubscription.unsubscribe();
+		if (this.queryStrSubscription && this.queryStrSubscription.unsubscribe) this.queryStrSubscription.unsubscribe();
 	}
 }
 
 function handleUrl(route, routeParams) {
-	let isObject = typeof (route) === "object";
+	let isObject = typeof route === "object";
 	let url = isObject ? route.Path : route;
 
 	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
@@ -91,9 +82,9 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 
 		if (paramKey.toLowerCase() !== "query") {
 			let param = routeParam ? routeParam : defaultRouteParam;
-			if (param == null)
-				throw `Invalid ${paramKey} parameter for route: ${url}`;
-			url = url.replace(`:${paramKey}`, param);``
+			if (param == null) throw `Invalid ${paramKey} parameter for route: ${url}`;
+			url = url.replace(`:${paramKey}`, param);
+			``;
 			return;
 		}
 
@@ -103,18 +94,23 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 			let param = queryParam ? queryParam : defaultQueryParam;
 
 			if (param != null && Array.isArray(param)) {
-				param.forEach(p => {
-					queryParams = [...queryParams, {
+				param.forEach((p) => {
+					queryParams = [
+						...queryParams,
+						{
+							key: queryKey,
+							value: p,
+						},
+					];
+				});
+			} else if (param != null) {
+				queryParams = [
+					...queryParams,
+					{
 						key: queryKey,
-						value: p,
-					}];
-				})
-			}
-			else if(param != null){
-				queryParams = [...queryParams, {
-					key: queryKey,
-					value: param,
-				}];
+						value: param,
+					},
+				];
 			}
 		});
 	});
@@ -130,8 +126,7 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 }
 
 function sanitizeUrl(url) {
-	if (!url)
-		throw "url to navigate to cannot be null";
+	if (!url) throw "url to navigate to cannot be null";
 
 	if (url.indexOf("/#/") === 0) url = url.substr(2);
 
@@ -175,8 +170,7 @@ function createOrUpdateQueryStringParams(queryString, newParams) {
 
 function removeEmptyParams(params) {
 	return Object.keys(params).reduce((object, queryKey) => {
-		if (!Array.isArray(params[queryKey]) && params[queryKey] != null)
-			params[queryKey] = params[queryKey].toString();
+		if (!Array.isArray(params[queryKey]) && params[queryKey] != null) params[queryKey] = params[queryKey].toString();
 
 		if (params[queryKey] && params[queryKey].length > 0) {
 			object[queryKey] = params[queryKey];

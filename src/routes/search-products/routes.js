@@ -8,7 +8,7 @@ const search = "";
 
 const SearchProductRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Anonymous.Value, Roles.Consumer.Value, Roles.Admin.Value, Roles.Support.Value],
+	Roles: [Roles.Anonymous.Value, Roles.Consumer.Value, Roles.Admin.Value, Roles.Support.Value],
 	Search: {
 		Name: "Explorer",
 		Icon: faSearch,
@@ -21,8 +21,8 @@ const SearchProductRoutes = {
 				direction: OrderByDirection.ASC,
 				take: 20,
 				paginate: Paginate.First,
-				producerId: null
-			}
+				producerId: null,
+			},
 		},
 	},
 	NoResults: {
@@ -37,11 +37,11 @@ const SearchProductRoutes = {
 				direction: OrderByDirection.ASC,
 				take: 20,
 				paginate: Paginate.First,
-				producerId: null
-			}
+				producerId: null,
+			},
 		},
-		Text:"Vous n'avez aucune commande."
-	}
+		Text: "Vous n'avez aucune commande.",
+	},
 };
 
 export default SearchProductRoutes;

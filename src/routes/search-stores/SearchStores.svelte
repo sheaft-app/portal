@@ -1,16 +1,16 @@
 <script>
-	import {onMount, onDestroy, getContext} from "svelte";
-	import {fly} from "svelte/transition";
-	import {SEARCH_STORES, GET_MY_BUSINESS_LOCATION} from "./queries.js";
-	import {isLoading, isFetchingMore, filters, items} from "./store";
+	import { onMount, onDestroy, getContext } from "svelte";
+	import { fly } from "svelte/transition";
+	import { SEARCH_STORES, GET_MY_BUSINESS_LOCATION } from "./queries.js";
+	import { isLoading, isFetchingMore, filters, items } from "./store";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import {selectedItem} from "./../../stores/app.js";
+	import { selectedItem } from "./../../stores/app.js";
 	import StoreCard from "./StoreCard.svelte";
 	import FiltersModal from "./FiltersModal.svelte";
 	import StoreDetails from "./StoreDetails.svelte";
 	import Icon from "svelte-awesome";
-	import {faFilter} from "@fortawesome/free-solid-svg-icons";
-	import {querystring} from "svelte-spa-router";
+	import { faFilter } from "@fortawesome/free-solid-svg-icons";
+	import { querystring } from "svelte-spa-router";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import SearchInput from "./../../components/controls/SearchInput.svelte";
 	import SkeletonStoreCard from "./SkeletonStoreCard.svelte";
@@ -22,7 +22,7 @@
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const observer = new IntersectionObserver(onIntersect);
 	const { query } = getContext("api");
 
@@ -38,7 +38,7 @@
 		return {
 			destroy() {
 				observer.unobserve(node);
-			}
+			},
 		};
 	}
 
@@ -50,7 +50,7 @@
 		}
 	}
 
-	const showFiltersModal = () => open(FiltersModal, {filters, visibleNav: true});
+	const showFiltersModal = () => open(FiltersModal, { filters, visibleNav: true });
 
 	async function refetch() {
 		isLoading.set(true);
@@ -70,15 +70,15 @@
 				lastFetchLength = prevFeed.length;
 				items.set(prevFeed);
 			},
-			errorNotification: "Impossible de récupérer les informations des magasins."
+			errorNotification: "Impossible de récupérer les informations des magasins.",
 		});
-	}
+	};
 
 	var popStateListener = (event) => {
 		if ($selectedItem) {
 			return selectedItem.set(null);
 		}
-	}
+	};
 
 	onMount(async () => {
 		items.set([]);
@@ -86,8 +86,10 @@
 		await query({
 			query: GET_MY_BUSINESS_LOCATION,
 			errorsHandler,
-			success: (res) => { businessLocation = res.address; },
-			errorNotification: "Impossible de récupérer la localisation de votre société."
+			success: (res) => {
+				businessLocation = res.address;
+			},
+			errorNotification: "Impossible de récupérer la localisation de votre société.",
 		});
 
 		window.addEventListener("popstate", popStateListener, false);
@@ -97,75 +99,82 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	$: history.pushState({selected: $selectedItem}, "Trouver des magasins");
+	$: history.pushState({ selected: $selectedItem }, "Trouver des magasins");
 	$: refetch($querystring);
+
 </script>
 
-<Meta/>
+<Meta />
 
 <TransitionWrapper>
-	<PageHeader name="Trouver des magasins"/>
+	<PageHeader name="Trouver des magasins" />
 	<PageBody {errorsHandler}>
 		<div
 			class="inline-flex items-center mb-3 themed text-center sticky -mx-4 px-4 filter-bar"
 			style="background-color: #fbfbfb; z-index: 2; width: -moz-available;
-      width: -webkit-fill-available; width: fill-available;">
-			<SearchInput placeholder="Rechercher un magasin"/>
+      width: -webkit-fill-available; width: fill-available;"
+		>
+			<SearchInput placeholder="Rechercher un magasin" />
 			<button
 				class="filter-btn bg-white py-2 px-3 rounded
         text-sm shadow-md flex flex-nowrap items-center ml-2"
 				class:text-white={$filters.tags && $filters.tags.length > 0}
 				class:bg-accent={$filters.tags && $filters.tags.length > 0}
-				on:click={showFiltersModal}>
-				<Icon class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
-							data={faFilter}/>
+				on:click={showFiltersModal}
+			>
+				<Icon
+					class="m-auto {$filters.tags && $filters.tags.length > 0 ? 'text-white' : 'text-accent'}"
+					data={faFilter}
+				/>
 				{#if $filters.tags && $filters.tags.length > 0}
 					<span class="text-white">{$filters.tags.length}</span>
 				{/if}
 			</button>
 		</div>
 		{#if $isLoading}
-			<div
-				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-3">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-3">
 				{#each Array(9) as _i}
-					<SkeletonStoreCard/>
+					<SkeletonStoreCard />
 				{/each}
 			</div>
 		{:else}
 			<div class="flex flex-wrap mb-3">
 				{#if $filters.tags && $filters.tags.length > 0}
 					{#each $filters.tags as tag}
-            <span
+						<span
 							style="font-size: .6rem"
 							class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-              items-center bg-gray-200">
-              {tag}
-            </span>
+              items-center bg-gray-200"
+						>
+							{tag}
+						</span>
 					{/each}
 				{/if}
 				{#if $filters.text}
-          <span
+					<span
 						style="font-size: .6rem"
 						class="mx-1 mb-2 px-3 h-6 rounded-full font-semibold flex
-            items-center bg-gray-200">
-            termes: '{$filters.text}'
-          </span>
+            items-center bg-gray-200"
+					>
+						termes: '{$filters.text}'
+					</span>
 				{/if}
 			</div>
 			<div
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-        md:gap-3 -mx-4 md:mx-0">
+        md:gap-3 -mx-4 md:mx-0"
+			>
 				{#each $items as store, index}
-					<StoreCard {store} bind:hoveredStore {businessLocation}/>
+					<StoreCard {store} bind:hoveredStore {businessLocation} />
 					{#if index === $items.length - 1 && lastFetchLength >= QUERY_SIZE}
 						<div use:fetchMoreOnIntersect>
-							<SkeletonStoreCard/>
+							<SkeletonStoreCard />
 						</div>
 					{/if}
 				{/each}
 				{#if $isFetchingMore}
 					{#each Array(3) as _i}
-						<SkeletonStoreCard/>
+						<SkeletonStoreCard />
 					{/each}
 				{/if}
 			</div>
@@ -178,8 +187,9 @@
 		class="fixed overflow-y-scroll overflow-x-hidden shadow right-0 top-0 h-screen
     store-details bg-white"
 		transition:fly={{ x: 600, duration: 300 }}
-		style="z-index: 10; padding-bottom: 60px;">
-		<StoreDetails/>
+		style="z-index: 10; padding-bottom: 60px;"
+	>
+		<StoreDetails />
 	</div>
 {/if}
 
@@ -201,7 +211,6 @@
 	}
 
 	@media (max-width: 1024px) {
-
 		.filter-btn {
 			max-width: 55px;
 		}
@@ -247,4 +256,5 @@
 			transform: translateY(0px);
 		}
 	}
+
 </style>

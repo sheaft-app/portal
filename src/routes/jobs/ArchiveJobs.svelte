@@ -22,7 +22,7 @@
 			success: async (res) => handleClose(res),
 			successNotification: "La tâche a bien été archivée",
 			errorNotification: "Impossible d'archiver la tâche",
-			clearCache: [GET_JOBS]
+			clearCache: [GET_JOBS],
 		});
 		isLoading = false;
 	};
@@ -31,19 +31,21 @@
 		close();
 		if (onClose) await onClose(res);
 	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={jobs.length > 1 ? 'Archiver les tâches' : 'Archiver la tâche'}
+	title={jobs.length > 1 ? "Archiver les tâches" : "Archiver la tâche"}
 	submit={handleSubmit}
 	{close}
 	submitText="Oui"
 	icon={faCheck}
 	{isLoading}
-	closeText="Non">
+	closeText="Non"
+>
 	<p class="py-2 leading-5">
-		Êtes-vous sûr de vouloir archiver {jobs.length > 1 ? 'ces tâches' : 'cette tâche'}
+		Êtes-vous sûr de vouloir archiver {jobs.length > 1 ? "ces tâches" : "cette tâche"}
 		?
 	</p>
 </ActionConfirm>
@@ -55,4 +57,5 @@
 			color: #ffffff;
 		}
 	}
+
 </style>

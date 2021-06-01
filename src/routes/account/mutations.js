@@ -38,7 +38,7 @@ export const UPDATE_STORE = gql`
 				from
 				to
 			}
-			pictures{
+			pictures {
 				id
 				position
 				medium
@@ -71,7 +71,7 @@ export const UPDATE_PRODUCER = gql`
 				latitude
 				longitude
 			}
-			pictures{
+			pictures {
 				id
 				position
 				medium

@@ -4,15 +4,15 @@ import ProductRoutes from "../routes/products/routes";
 import QuickOrderRoutes from "../routes/quick-orders/routes";
 
 export const goToHome = (authManager, routerInstance) => {
-  if (authManager.isInRole([Roles.Producer.Value])) {
-    routerInstance.goTo(ProductRoutes.List);
-    return;
-  }
-
-  if (authManager.isInRole([Roles.Store.Value])) {
-    routerInstance.goTo(QuickOrderRoutes.Purchase);
+	if (authManager.isInRole([Roles.Producer.Value])) {
+		routerInstance.goTo(ProductRoutes.List);
 		return;
-  }
+	}
 
-	routerInstance.goTo(SearchProductRoutes.Search)
-}
+	if (authManager.isInRole([Roles.Store.Value])) {
+		routerInstance.goTo(QuickOrderRoutes.Purchase);
+		return;
+	}
+
+	routerInstance.goTo(SearchProductRoutes.Search);
+};

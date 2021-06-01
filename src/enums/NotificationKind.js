@@ -1,9 +1,9 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	None: { Value: "NONE", Label: "Non spécifié"},
-	Technical: { Value: "TECHNICAL", Label: "Technique"},
-	Business: { Value: "BUSINESS", Label: "Métier"},
+	None: { Value: "NONE", Label: "Non spécifié" },
+	Technical: { Value: "TECHNICAL", Label: "Technique" },
+	Business: { Value: "BUSINESS", Label: "Métier" },
 };
 
 let NotificationKind = {
@@ -22,10 +22,10 @@ let NotificationKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => NotificationKind[key] = enums[key]);
+Object.keys(enums).map((key) => (NotificationKind[key] = enums[key]));
 Object.freeze(NotificationKind);
 
 export default NotificationKind;

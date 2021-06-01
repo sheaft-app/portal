@@ -1,6 +1,4 @@
-
 export default class CityService {
-
 	async SearchByAddress(filterText) {
 		var res = {
 			data: null,
@@ -9,15 +7,12 @@ export default class CityService {
 		};
 
 		try {
-			const response = await fetch(
-				`https://api-adresse.data.gouv.fr/search/?q=${filterText}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
+			const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${filterText}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 
 			var results = await response.json();
 			if (results.features.length == 0) return res;
@@ -31,7 +26,7 @@ export default class CityService {
 					city: address.properties.city,
 					latitude: address.geometry.coordinates[1],
 					longitude: address.geometry.coordinates[0],
-					insee: address.properties.id
+					insee: address.properties.id,
 				};
 			});
 
@@ -74,7 +69,7 @@ export default class CityService {
 				city: address.properties.city,
 				latitude: address.geometry.coordinates[1],
 				longitude: address.geometry.coordinates[0],
-				insee: address.properties.id
+				insee: address.properties.id,
 			};
 
 			return res;

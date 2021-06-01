@@ -12,7 +12,8 @@
 	const routes = {};
 	routes[AgreementRoutes.List.SubPart] = ListAgreements;
 	routes[AgreementRoutes.Details.SubPart] = AgreementDetails;
+
 </script>
 
-<Meta/>
+<Meta />
 <Router {routes} {prefix} />

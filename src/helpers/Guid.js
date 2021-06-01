@@ -1,5 +1,4 @@
-export default class Guid {
-}
+export default class Guid {}
 
 Guid.NewGuid = () => {
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {

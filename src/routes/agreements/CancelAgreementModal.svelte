@@ -1,9 +1,9 @@
 <script>
-	import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+	import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import {CANCEL_AGREEMENTS} from "./mutations.js";
+	import { CANCEL_AGREEMENTS } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
-	import {GET_AGREEMENTS} from "./queries.js";
+	import { GET_AGREEMENTS } from "./queries.js";
 	import Roles from "../../enums/Roles";
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import { getContext } from "svelte";
@@ -24,34 +24,36 @@
 		await mutate({
 			mutation: CANCEL_AGREEMENTS,
 			variables: {
-				ids: agreements.map(a => a.id),
-				reason
+				ids: agreements.map((a) => a.id),
+				reason,
 			},
 			errorsHandler,
 			success: async (res) => handleClose(res),
 			successNotification: "L'accord a bien été annulé",
 			errorNotification: "Impossible d'annuler l'accord",
-			clearCache: [GET_AGREEMENTS]
+			clearCache: [GET_AGREEMENTS],
 		});
 		isLoading = false;
-	}
+	};
 
 	const handleClose = async (res) => {
 		close();
 		if (onClose) await onClose(res);
-	}
+	};
+
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title={agreements.length > 1 ? "Annuler les accords": "Annuler l'accord"}
+	title={agreements.length > 1 ? "Annuler les accords" : "Annuler l'accord"}
 	level="danger"
 	icon={faExclamationTriangle}
 	submit={handleSubmit}
 	{isLoading}
 	submitText="Confirmer"
 	closeText="Annuler"
-	{close}>
+	{close}
+>
 	{#if agreements.length > 1}
 		<p class="leading-5">
 			VoclassNameus apprêtez à annuler les accords avec les {isProducer ? "magasins" : "producteurs"} suivants:
@@ -67,14 +69,7 @@
 		</p>
 	{/if}
 	<div class="form-control w-full mt-3">
-		<label
-			for="reason">
-			Raison
-		</label>
-		<input
-			bind:value={reason}
-			id="reason"
-			type="text"
-			placeholder="Expliquez brièvement la raison (optionnel)"/>
+		<label for="reason"> Raison </label>
+		<input bind:value={reason} id="reason" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
 	</div>
 </ActionConfirm>

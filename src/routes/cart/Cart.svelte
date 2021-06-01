@@ -14,7 +14,8 @@
 	routes[CartRoutes.Resume.SubPart] = CartResume;
 	routes[CartRoutes.Success.SubPart] = CartSuccess;
 	routes[CartRoutes.Checkout.SubPart] = CartCheckout;
+
 </script>
 
-<Meta/>
+<Meta />
 <Router {routes} {prefix} />

@@ -17,8 +17,8 @@ const CartRoutes = {
 		SubPart: `${resume}`,
 		Params: {
 			Query: {
-				step: "cart"
-			}
+				step: "cart",
+			},
 		},
 	},
 	Success: {
@@ -38,7 +38,7 @@ const CartRoutes = {
 		Path: `${prefix}${checkout}`,
 		SubPart: `${checkout}`,
 		Params: null,
-	}
+	},
 };
 
 export default CartRoutes;

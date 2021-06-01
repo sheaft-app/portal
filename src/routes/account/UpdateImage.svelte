@@ -1,16 +1,20 @@
 <script>
-	import {faCheck} from "@fortawesome/free-solid-svg-icons";
+	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ImgEncoder from "svelte-image-encoder";
-  	import GetAuthInstance from "./../../services/SheaftAuth";
+	import GetAuthInstance from "./../../services/SheaftAuth";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import SheaftErrors from "./../../services/SheaftErrors";
-	import {config} from "../../configs/config";
+	import { config } from "../../configs/config";
 	import { getContext } from "svelte";
 
-	export let id, mutation, close, onClose, initialSrc = config.content + "/pictures/users/profile.svg";
+	export let id,
+		mutation,
+		close,
+		onClose,
+		initialSrc = config.content + "/pictures/users/profile.svg";
 
 	const errorsHandler = new SheaftErrors();
-  	const authInstance = GetAuthInstance();
+	const authInstance = GetAuthInstance();
 	const { mutate } = getContext("api");
 
 	let src = initialSrc;
@@ -39,18 +43,19 @@
 		isLoading = true;
 		await mutate({
 			mutation,
-			variables: {id: authInstance.user.id, picture: url },
+			variables: { id: authInstance.user.id, picture: url },
 			errorsHandler,
 			success: (res) => handleClose(res),
-			errorNotification: "Impossible de mettre à jour votre photo de profil."
+			errorNotification: "Impossible de mettre à jour votre photo de profil.",
 		});
 		isLoading = false;
 	};
 
-	const handleClose = async res => {
+	const handleClose = async (res) => {
 		close();
 		return await onClose(res);
 	};
+
 </script>
 
 <ActionConfirm
@@ -58,11 +63,12 @@
 	title="Modifier la photo"
 	icon={faCheck}
 	{valid}
-	isLoading={isLoading}
+	{isLoading}
 	submit={handleSubmit}
 	submitText="Modifier"
 	closeText="Annuler"
-	{close}>
+	{close}
+>
 	<form>
 		<div class="pt-5 m-auto text-center">
 			<ImgEncoder
@@ -74,18 +80,11 @@
 				width={128}
 				height={128}
 				crossOrigin="anonymous"
-				classes="profile-image"/>
-			<input
-				on:change={loadFile}
-				type="file"
-				hidden
-				id="avatar"
-				name="avatar"
-				accept="image/png, image/jpeg"/>
+				classes="profile-image"
+			/>
+			<input on:change={loadFile} type="file" hidden id="avatar" name="avatar" accept="image/png, image/jpeg" />
 			<div class="mt-5 mb-5 m-auto text-center">
-				<label
-					class="btn px-3 py-2 btn-accent cursor-pointer justify-center"
-					for="avatar">
+				<label class="btn px-3 py-2 btn-accent cursor-pointer justify-center" for="avatar">
 					Choisir une nouvelle photo
 				</label>
 			</div>
@@ -100,4 +99,5 @@
 		@apply cursor-move;
 		margin: auto;
 	}
+
 </style>

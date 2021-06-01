@@ -12,7 +12,7 @@
 		CREATE_CONSUMER_LEGALS,
 		UPDATE_CONSUMER_LEGALS,
 		CREATE_CARD_REGISTRATION,
-		CREATE_PRE_AUTHORIZATION
+		CREATE_PRE_AUTHORIZATION,
 	} from "./mutations";
 	import Loader from "../../components/Loader.svelte";
 	import { authUserAccount } from "./../../stores/auth.js";
@@ -23,7 +23,7 @@
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import PreAuthorizationStatus from "../../enums/PreAuthorizationStatus";
-	import mangoPay from './../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js';
+	import mangoPay from "./../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js";
 	import CreditCard from "./CreditCard.svelte";
 	import { normalizeUpdateLegals, normalizeCreateLegals } from "./cartForm";
 
@@ -64,9 +64,9 @@
 	$: if (!$cart.isInitializing && (!$cart.userCurrentOrder || $cart.products.length <= 0)) {
 		// todo : terminée, envoyer une notif
 		if ($cart.products.length > 0) {
-			 routerInstance.goTo(CartRoutes.Resume);
+			routerInstance.goTo(CartRoutes.Resume);
 		} else {
-			 routerInstance.goTo(SearchProductsRoutes.Search);
+			routerInstance.goTo(SearchProductsRoutes.Search);
 		}
 	}
 
@@ -78,16 +78,14 @@
 			query: GET_MY_CONSUMER_LEGALS,
 			errorsHandler,
 			success: (res) => {
-				if(res) {
+				if (res) {
 					user = res.owner;
 					legalId = res.id;
 					userLegalsFound = true;
 					step = 2;
-				}
-				else
-					userLegalsFound = false;
+				} else userLegalsFound = false;
 			},
-			error: () => userLegalsFound = false
+			error: () => (userLegalsFound = false),
 		});
 		isLoading = false;
 	});
@@ -101,80 +99,85 @@
 		$card.data.cardExpirationDate = `${$card.month.toString()}${$card.year.toString().substring(2)}`;
 		$card.data.cardCvx = $card.data.cardCvx.toString();
 
-		mangoPay.cardRegistration.registerCard({
-			...$card.data,
-			cardNumber: $card.data.cardNumber.toString().replace(/\s/g, "")
-		}, async (res) => {
-			await mutate({
-				mutation: CREATE_PRE_AUTHORIZATION,
-				variables: {
-					id: $cart.userCurrentOrder,
-					cardIdentifier: res.CardId,
-					browserInfo: {
-						colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
-						javaEnabled: navigator.javaEnabled(),
-						javascriptEnabled: true,
-						language: navigator.language,
-						screenHeight: window.screen.height,
-						screenWidth: window.screen.width,
-						timeZoneOffset: new Date().getTimezoneOffset().toString(),
-						userAgent: navigator.userAgent
-					}
-				},
-				errorsHandler,
-				success: (result) => {
-					if(result.status == PreAuthorizationStatus.Failed){
-						isPaying = false;
-						//TODO handle authorization error
-						return;
-					}
+		mangoPay.cardRegistration.registerCard(
+			{
+				...$card.data,
+				cardNumber: $card.data.cardNumber.toString().replace(/\s/g, ""),
+			},
+			async (res) => {
+				await mutate({
+					mutation: CREATE_PRE_AUTHORIZATION,
+					variables: {
+						id: $cart.userCurrentOrder,
+						cardIdentifier: res.CardId,
+						browserInfo: {
+							colorDepth: screen.colorDepth == 30 ? 24 : screen.colorDepth, // fixos macOS chrome de la muerte
+							javaEnabled: navigator.javaEnabled(),
+							javascriptEnabled: true,
+							language: navigator.language,
+							screenHeight: window.screen.height,
+							screenWidth: window.screen.width,
+							timeZoneOffset: new Date().getTimezoneOffset().toString(),
+							userAgent: navigator.userAgent,
+						},
+					},
+					errorsHandler,
+					success: (result) => {
+						if (result.status == PreAuthorizationStatus.Failed) {
+							isPaying = false;
+							//TODO handle authorization error
+							return;
+						}
 
-					if (result.secureModeRedirectURL) {
-						window.location = result.secureModeRedirectURL;
-						return;
-					} else {
-						isPaying = false;
-						return routerInstance.goTo({
-							Path: CartRoutes.Success.Path,
-							Params: {
-								Query: {
-									id: $cart.userCurrentOrder
-								}
-							}
-						})
-					}
-				},
-				errorNotification: "Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support."
-			});
-			isPaying = false;
-		}, async (response) => {
-			isPaying = false;
+						if (result.secureModeRedirectURL) {
+							window.location = result.secureModeRedirectURL;
+							return;
+						} else {
+							isPaying = false;
+							return routerInstance.goTo({
+								Path: CartRoutes.Success.Path,
+								Params: {
+									Query: {
+										id: $cart.userCurrentOrder,
+									},
+								},
+							});
+						}
+					},
+					errorNotification: "Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support.",
+				});
+				isPaying = false;
+			},
+			async (response) => {
+				isPaying = false;
 
-			switch (response.ResultMessage) {
-				case 'PAST_EXPIRY_DATE_ERROR':
-					cardError =  'La date d\'expiration de votre carte est passée.';
-					break;
-				default:
-					cardError = 'Les informations de votre carte ne sont pas valides.';
-					break;
+				switch (response.ResultMessage) {
+					case "PAST_EXPIRY_DATE_ERROR":
+						cardError = "La date d'expiration de votre carte est passée.";
+						break;
+					default:
+						cardError = "Les informations de votre carte ne sont pas valides.";
+						break;
+				}
 			}
-		});
+		);
 	};
 
-	const createCardRegistration = async (userId) => await mutate({
-		mutation: CREATE_CARD_REGISTRATION,
-		variables: { userId },
-		errorsHandler,
-		success: async (res) => {
-			await mangoPay.cardRegistration.init({
-				cardRegistrationURL: res.url,
-				preregistrationData: res.preRegistrationData,
-				accessKey: res.accessKey,
-				Id: res.identifier,
-			});
-		},
-		errorNotification: "Impossible de traiter les informations de votre carte."
-	});
+	const createCardRegistration = async (userId) =>
+		await mutate({
+			mutation: CREATE_CARD_REGISTRATION,
+			variables: { userId },
+			errorsHandler,
+			success: async (res) => {
+				await mangoPay.cardRegistration.init({
+					cardRegistrationURL: res.url,
+					preregistrationData: res.preRegistrationData,
+					accessKey: res.accessKey,
+					Id: res.identifier,
+				});
+			},
+			errorNotification: "Impossible de traiter les informations de votre carte.",
+		});
 
 	const handleSubmitLegals = async () => {
 		isSavingLegals = true;
@@ -187,10 +190,11 @@
 				user = res.owner;
 				++step;
 			},
-			errorNotification: "Impossible d'enregistrer vos informations de facturation"
-		})
+			errorNotification: "Impossible d'enregistrer vos informations de facturation",
+		});
 		clearApolloCache(user.id);
 	};
+
 </script>
 
 {#if isLoading}
@@ -200,41 +204,35 @@
 		<div class="mb-10 p-4 bg-red-500 text-white text-center lg:text-left">
 			<p class="mb-2">{paymentError}</p>
 			<p class="mb-2">
-				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service technique.
+				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service
+				technique.
 			</p>
 			<button
 				class="btn btn-lg btn-white m-auto lg:m-0"
 				disabled={isPaying}
 				class:disabled={isPaying}
-				on:click={handleSubmit}>Réessayer</button>
+				on:click={handleSubmit}>Réessayer</button
+			>
 		</div>
 	{/if}
-	<div
-		class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0"
-		in:fly|local={{ x: 300, duration: 300 }}>
+	<div class="flex flex-wrap justify-between -mx-4 -my-4 lg:mx-0 lg:my-0" in:fly|local={{ x: 300, duration: 300 }}>
 		<div class="w-full lg:w-8/12">
 			<ErrorCard {errorsHandler} />
 			{#if step == 1}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<FacturationForm
-						bind:user
-						bind:invalid={facturationFormInvalid}
-						{errorsHandler} />
+					<FacturationForm bind:user bind:invalid={facturationFormInvalid} {errorsHandler} />
 				</div>
 			{:else if step == 2}
 				<div in:fly|local={{ x: 300, duration: 300 }}>
-					<SummaryForm
-						bind:user
-						bind:step
-						{isSavingLegals}
-						{errorsHandler} />
+					<SummaryForm bind:user bind:step {isSavingLegals} {errorsHandler} />
 				</div>
 			{/if}
 		</div>
 		<div class="w-full lg:w-4/12">
 			<div
 				class="py-2 lg:mb-6 pb-5 px-5 lg:px-6 xl:pl-12 lg:block w-full border-t border-gray-400 lg:border-none lg:mt-0 follow-screen"
-				style="height: fit-content;">
+				style="height: fit-content;"
+			>
 				<CreditCard on:submit={handleSubmit} {isPaying} {cardError} showCard={step == 2}>
 					<div>
 						<div class="flex justify-between w-full pb-2">
@@ -243,7 +241,7 @@
 								<p class="text-sm text-gray-600">
 									{$cart.productsCount} articles
 									{#if $cart.returnablesCount >= 1}
-										dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? 's' : ''}
+										dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? "s" : ""}
 									{/if}
 								</p>
 							</div>
@@ -252,7 +250,7 @@
 								{#if $cart.returnablesCount >= 1}
 									<p class="text-blue-500 font-medium text-sm">
 										dont
-										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;"  />
+										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;" />
 										{formatMoney($cart.totalReturnableOnSalePrice)}
 									</p>
 								{/if}
@@ -262,8 +260,7 @@
 							<div class="text-left">
 								<p>Frais bancaires</p>
 								<p class="leading-none text-gray-600 text-sm">
-									<button class="btn-link" on:click={showTransactionInfo}>C'est
-										quoi ?</button>
+									<button class="btn-link" on:click={showTransactionInfo}>C'est quoi ?</button>
 								</p>
 							</div>
 							<div>
@@ -280,8 +277,7 @@
 								</div>
 							</div>
 						{/if}
-						<div
-							class="flex justify-between w-full border-b border-gray-400 pb-2 text-lg">
+						<div class="flex justify-between w-full border-b border-gray-400 pb-2 text-lg">
 							<div class="text-left">
 								<p class="uppercase font-semibold">Total</p>
 							</div>
@@ -310,7 +306,8 @@
 									class:disabled={isSavingLegals || facturationFormInvalid}
 									class="btn btn-accent btn-lg uppercase w-full lg:w-8/12
 										justify-center m-auto"
-									style="padding-left: 50px; padding-right: 50px;">
+									style="padding-left: 50px; padding-right: 50px;"
+								>
 									Suivant {#if isSavingLegals}
 										<Icon data={faCircleNotch} spin class="ml-2" />
 									{/if}
@@ -326,9 +323,10 @@
 
 <style lang="scss">
 	.follow-screen {
-		@media(min-width: 1024px) {
+		@media (min-width: 1024px) {
 			position: fixed;
 			width: inherit;
 		}
 	}
+
 </style>

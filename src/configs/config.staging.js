@@ -4,9 +4,9 @@ export const config = {
 	api: "https://staging.api.sheaft.com",
 	signalr: "https://staging.signalr.sheaft.com",
 	content: "https://staging.content.sheaft.com",
-	psp:{
-		clientId:"sheaft-staging",
-		url:"https://api.sandbox.mangopay.com"
+	psp: {
+		clientId: "sheaft-staging",
+		url: "https://api.sandbox.mangopay.com",
 	},
 	auth: {
 		url: "https://staging.auth.sheaft.com",
@@ -24,5 +24,5 @@ export const config = {
 			response_mode: "query",
 		},
 	},
-	production: false
+	production: false,
 };

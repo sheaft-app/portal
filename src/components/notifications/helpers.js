@@ -1,23 +1,22 @@
 import {
-    faCheck,
-    faInfo,
-    faPause,
-    faRedoAlt,
-    faQuestion,
-    faTimes,
-    faExclamationTriangle,
-    faExclamation
-  } from "@fortawesome/free-solid-svg-icons";
-  import Guid from "./../../helpers/Guid.js";
-  import {GET_PRODUCTS} from "./../../routes/products/queries";
-
+	faCheck,
+	faInfo,
+	faPause,
+	faRedoAlt,
+	faQuestion,
+	faTimes,
+	faExclamationTriangle,
+	faExclamation,
+} from "@fortawesome/free-solid-svg-icons";
+import Guid from "./../../helpers/Guid.js";
+import { GET_PRODUCTS } from "./../../routes/products/queries";
 
 export const getFormattedNotification = (graphql, notification, local, display) => {
-	if(notification.content && typeof(notification.content) == "string" && notification.content.length > 0){
+	if (notification.content && typeof notification.content == "string" && notification.content.length > 0) {
 		notification.content = JSON.parse(notification.content);
 	}
 
-	if(notification.content == null){
+	if (notification.content == null) {
 		notification.content = {};
 	}
 
@@ -193,10 +192,9 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				local
 			);
 		case "ProductImportSucceededEvent":
-			if(graphql){
+			if (graphql) {
 				graphql.clearApolloCache(GET_PRODUCTS);
-				if(location.hash.indexOf('products') > -1)
-					location.reload();
+				if (location.hash.indexOf("products") > -1) location.reload();
 			}
 
 			return getNotification(
@@ -239,34 +237,11 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				local
 			);
 		case "PurchaseOrderWithdrawnedEvent":
-			return getNotification(
-				notification,
-				"warning",
-				`La commande a été annulée.`,
-				null,
-				true,
-				true,
-				local
-			);
+			return getNotification(notification, "warning", `La commande a été annulée.`, null, true, true, local);
 		case "PurchaseOrderCancelledEvent":
-			return getNotification(
-				notification,
-				"error",
-				`La commande a été annulée.`,
-				null,
-				true,
-				true,
-				local
-			);
+			return getNotification(notification, "error", `La commande a été annulée.`, null, true, true, local);
 		case "PurchaseOrderExpiredEvent":
-			return getNotification(
-				notification,
-				"error",
-				`La commande a expirée.`,
-				null,
-				true,
-				local
-			);
+			return getNotification(notification, "error", `La commande a expirée.`, null, true, local);
 		case "PurchaseOrderCompletedEvent":
 			return getNotification(
 				notification,
@@ -365,17 +340,9 @@ export const getFormattedNotification = (graphql, notification, local, display) 
 				local
 			);
 		default:
-			return getNotification(
-				notification,
-				null,
-				null,
-				null,
-				display,
-				null,
-				local
-			);
+			return getNotification(notification, null, null, null, display, null, local);
 	}
-}
+};
 
 export const getNotificationIcon = (notification) => {
 	switch (notification.type) {
@@ -401,23 +368,23 @@ export const getNotificationIcon = (notification) => {
 		default:
 			return null;
 	}
-}
+};
 
 export const getNotificationColor = (notification) => {
 	return `${notification.type}-color`;
-}
+};
 
 const getNotification = (notification, type, message, url, show, addToStore, local) => {
 	return {
 		id: notification.id ? notification.id : Guid.NewGuid(),
-		type: type ? type : (notification.type ? notification.type : 'info'),
-		message: message ? message : (notification.message ? notification.message : notification.content.Message),
+		type: type ? type : notification.type ? notification.type : "info",
+		message: message ? message : notification.message ? notification.message : notification.content.Message,
 		url: url ? url : notification.url,
-		show: show != null ? show : (notification.show != null ? notification.show : true),
-		unread:notification.unread != null ? notification.unread : true,
+		show: show != null ? show : notification.show != null ? notification.show : true,
+		unread: notification.unread != null ? notification.unread : true,
 		createdOn: notification.createdOn ? new Date(notification.createdOn) : new Date(),
-		addToStore: addToStore != null ? addToStore : (notification.addToStore != null ? notification.addToStore : true),
+		addToStore: addToStore != null ? addToStore : notification.addToStore != null ? notification.addToStore : true,
 		content: notification.content,
-		local: local
-	}
-}
+		local: local,
+	};
+};

@@ -1,13 +1,13 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-    NOT_SPECIFIED : { Value: "NOT_SPECIFIED", Label: "Non spécifié"},
-    CREATED : { Value: "CREATED", Label: "Créée"},
-    SUCCEEDED: { Value: "SUCCEEDED", Label: "Succès"},
-    FAILED : { Value: "FAILED", Label: "Échec"}
-}
+	NOT_SPECIFIED: { Value: "NOT_SPECIFIED", Label: "Non spécifié" },
+	CREATED: { Value: "CREATED", Label: "Créée" },
+	SUCCEEDED: { Value: "SUCCEEDED", Label: "Succès" },
+	FAILED: { Value: "FAILED", Label: "Échec" },
+};
 
-let PreAuthorizationStatus = {	
+let PreAuthorizationStatus = {
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},
@@ -22,10 +22,10 @@ let PreAuthorizationStatus = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => PreAuthorizationStatus[key] = enums[key]);
+Object.keys(enums).map((key) => (PreAuthorizationStatus[key] = enums[key]));
 Object.freeze(PreAuthorizationStatus);
 
 export default PreAuthorizationStatus;

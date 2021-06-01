@@ -9,15 +9,17 @@
 		color = "gray",
 		selectedItemsNumber = 0,
 		displaySelectedItemsNumber = false;
+
 </script>
 
 {#if !disabled || !hideIfDisabled}
 	<button
 		on:click={click}
-		disabled={disabled}
+		{disabled}
 		aria-label={text}
 		class="{!disabled ? `text-${color}-500 hover:text-${color}-300 cursor-pointer` : `text-gray-500 cursor-not-allowed`}
-		py-3 px-3 md:py-1 rounded items-center flex transition duration-300 ease-in-out">
+		py-3 px-3 md:py-1 rounded items-center flex transition duration-300 ease-in-out"
+	>
 		{#if icon}
 			<Icon data={icon} class="mr-2 inline w-4 h-3" />
 		{/if}

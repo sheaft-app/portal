@@ -1,9 +1,9 @@
 <script>
-	import {onMount, onDestroy, getContext} from "svelte";
+	import { onMount, onDestroy, getContext } from "svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import {UPDATE_DELIVERY} from "./mutations";
-	import {GET_DELIVERIES, GET_DELIVERY_DETAILS} from "./queries";
+	import { UPDATE_DELIVERY } from "./mutations";
+	import { GET_DELIVERIES, GET_DELIVERY_DETAILS } from "./queries";
 	import DeliveryForm from "./DeliveryForm.svelte";
 	import DeleteDelivery from "./DeleteDelivery.svelte";
 	import DeliveryRoutes from "./routes";
@@ -13,7 +13,7 @@
 	import { normalizeDelivery } from "./deliveryForm";
 
 	const errorsHandler = new SheaftErrors();
-	const {open} = getContext("modal");
+	const { open } = getContext("modal");
 	const { query, mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
@@ -27,10 +27,10 @@
 		isLoading = true;
 		delivery = await query({
 			query: GET_DELIVERY_DETAILS,
-			variables: {id: params.id},
+			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
-			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus."
+			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
 	});
@@ -44,26 +44,30 @@
 			success: () => routerInstance.goTo(DeliveryRoutes.List),
 			successNotification: "Votre créneau de livraison a bien été modifié",
 			errorNotification: "Impossible de modifier ce créneau de livraison",
-			clearCache: [GET_DELIVERIES]
+			clearCache: [GET_DELIVERIES],
 		});
 	};
 
-	const showDeleteModal = () => open(DeleteDelivery, {
-		delivery,
-		onClose: () => routerInstance.goTo(DeliveryRoutes.List)
-	});
+	const showDeleteModal = () =>
+		open(DeleteDelivery, {
+			delivery,
+			onClose: () => routerInstance.goTo(DeliveryRoutes.List),
+		});
 
 	onDestroy(() => (delivery = null));
 
-	const buttons = [{
-		text: 'Supprimer',
-		color: 'red',
-		click: () => showDeleteModal()
-	}];
+	const buttons = [
+		{
+			text: "Supprimer",
+			color: "red",
+			click: () => showDeleteModal(),
+		},
+	];
+
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Modifier un créneau de livraison" previousPage={DeliveryRoutes.List} {buttons}/>
+	<PageHeader name="Modifier un créneau de livraison" previousPage={DeliveryRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<DeliveryForm submit={handleSubmit} bind:delivery />
 	</PageBody>

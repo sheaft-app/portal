@@ -25,7 +25,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			}
 			currentUserHasRatedProduct
 			picture
-			pictures{
+			pictures {
 				id
 				position
 				large
@@ -61,7 +61,7 @@ export const GET_PRODUCT_DETAILS = gql`
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds:[FARM, MARKET, COLLECTIVE]) {
+		nextProducersDeliveries(ids: $input, kinds: [FARM, MARKET, COLLECTIVE]) {
 			id
 			name
 			deliveries {
@@ -93,54 +93,24 @@ export const GET_PRODUCER_DELIVERIES = gql`
 `;
 
 export const GET_PRODUCER_PROFILE = gql`
-query GetProducerProfile($id: ID!) {
-	producer(id: $id) {
-		id
-		name
-		picture
-		pictures{
-			id
-			position
-			large
-		}
-		summary
-		closings {
-			id
-			from
-			to
-			reason
-		}
-		address {
-			line1
-			line2
-			city
-			latitude
-			longitude
-			zipcode
-		}
-		description
-		facebook
-		instagram
-		twitter
-		website
-		products{
-			id
-			name
-			onSalePricePerUnit
-			wholeSalePricePerUnit
-			imageMedium
-			imageSmall
-			rating
-			quantityPerUnit
-			conditioning
-			unit
-			available
-		}
-		stores{
+	query GetProducerProfile($id: ID!) {
+		producer(id: $id) {
 			id
 			name
 			picture
-			address{
+			pictures {
+				id
+				position
+				large
+			}
+			summary
+			closings {
+				id
+				from
+				to
+				reason
+			}
+			address {
 				line1
 				line2
 				city
@@ -148,52 +118,60 @@ query GetProducerProfile($id: ID!) {
 				longitude
 				zipcode
 			}
+			description
+			facebook
+			instagram
+			twitter
+			website
+			products {
+				id
+				name
+				onSalePricePerUnit
+				wholeSalePricePerUnit
+				imageMedium
+				imageSmall
+				rating
+				quantityPerUnit
+				conditioning
+				unit
+				available
+			}
+			stores {
+				id
+				name
+				picture
+				address {
+					line1
+					line2
+					city
+					latitude
+					longitude
+					zipcode
+				}
+			}
 		}
 	}
-}
 `;
 
 export const GET_STORE_PROFILE = gql`
-query GetStoreProfile($id: ID!) {
-	store(id: $id) {
-		id
-		name
-		picture
-		pictures{
-			id
-			position
-			large
-		}
-		summary
-		closings {
-			id
-			from
-			to
-			reason
-		}
-		address {
-			line1
-			line2
-			city
-			latitude
-			longitude
-			zipcode
-		}
-		description
-		facebook
-		instagram
-		twitter
-		website
-		openingHours {
-			day
-			from
-			to
-		}
-		producers{
+	query GetStoreProfile($id: ID!) {
+		store(id: $id) {
 			id
 			name
 			picture
-			address{
+			pictures {
+				id
+				position
+				large
+			}
+			summary
+			closings {
+				id
+				from
+				to
+				reason
+			}
+			address {
 				line1
 				line2
 				city
@@ -201,14 +179,35 @@ query GetStoreProfile($id: ID!) {
 				longitude
 				zipcode
 			}
+			description
+			facebook
+			instagram
+			twitter
+			website
+			openingHours {
+				day
+				from
+				to
+			}
+			producers {
+				id
+				name
+				picture
+				address {
+					line1
+					line2
+					city
+					latitude
+					longitude
+					zipcode
+				}
+			}
 		}
 	}
-}
 `;
 
 export const GET_PRODUCER_PRODUCTS = gql`
-	query($id: ID!) {
-
+	query ($id: ID!) {
 		producer(id: $id) {
 			products {
 				id
@@ -223,5 +222,5 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				available
 			}
 		}
-  	}
-`
+	}
+`;

@@ -7,13 +7,13 @@ const purchase = "/purchase";
 
 const QuickOrderRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Store.Value],
+	Roles: [Roles.Store.Value],
 	Purchase: {
 		Name: "Passer commande",
 		Icon: faShoppingCart,
 		Path: `${prefix}${purchase}`,
-		SubPart: `${purchase}`
-	}
+		SubPart: `${purchase}`,
+	},
 };
 
 export default QuickOrderRoutes;

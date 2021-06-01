@@ -5,11 +5,11 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { getContext } from "svelte";
 
-	const { mutate, isLoading } = getContext('api');
+	const { mutate, isLoading } = getContext("api");
 	const errorsHandler = new SheaftErrors();
 
 	export let returnable, close, onClose;
-	
+
 	const handleSubmit = async () => {
 		mutate({
 			mutation: DELETE_RETURNABLE,
@@ -18,7 +18,7 @@
 			success: async (res) => await handleClose(res),
 			successNotification: "La consigne a été supprimée avec succès",
 			errorNotification: "Impossible de supprimer la consigne",
-			clearCache: [GET_RETURNABLES]
+			clearCache: [GET_RETURNABLES],
 		});
 	};
 
@@ -26,6 +26,7 @@
 		if (onClose) await onClose(res);
 		close();
 	};
+
 </script>
 
 <ActionConfirm
@@ -34,7 +35,8 @@
 	isLoading={$isLoading}
 	submit={handleSubmit}
 	{errorsHandler}
-	close={() => handleClose({ success: false, data: null })}>
+	close={() => handleClose({ success: false, data: null })}
+>
 	<p class="leading-5">
 		Vous vous apprêtez à
 		<span class="text-gray-700">supprimer la consigne {returnable.name}</span>

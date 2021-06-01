@@ -11,9 +11,10 @@
 	const routes = {
 		"/": ListCatalogs,
 		"/create": CreateCatalog,
-		"/:id": EditCatalog
+		"/:id": EditCatalog,
 	};
+
 </script>
 
-<Meta/>
+<Meta />
 <Router {routes} {prefix} />

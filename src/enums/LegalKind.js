@@ -1,9 +1,9 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	Organization: { Value: "ORGANIZATION", Label: "Association ou collectivité"},
-	Business: { Value: "BUSINESS", Label: "Société"},
-	Individual: { Value: "INDIVIDUAL", Label: "Individuel"},
+	Organization: { Value: "ORGANIZATION", Label: "Association ou collectivité" },
+	Business: { Value: "BUSINESS", Label: "Société" },
+	Individual: { Value: "INDIVIDUAL", Label: "Individuel" },
 };
 
 let LegalKind = {
@@ -22,10 +22,10 @@ let LegalKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => LegalKind[key] = enums[key]);
+Object.keys(enums).map((key) => (LegalKind[key] = enums[key]));
 Object.freeze(LegalKind);
 
 export default LegalKind;

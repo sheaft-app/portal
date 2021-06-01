@@ -12,7 +12,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 
 	export let close, filters, producer;
-	
+
 	const routerInstance = GetRouterInstance();
 	const { query } = getContext("api");
 	const errorsHandler = new SheaftErrors();
@@ -20,24 +20,21 @@
 	let isLoading = false;
 
 	const getOptionLabel = (option) =>
-		!option ||
-		!option.address ||
-		!option.address.city ||
-		!option.address.zipcode 
-			? "" 
-			: `<p class="leading-none mt-1 uppercase">${option.name}</p><p class="leading-none text-xs mt-1 uppercase">${option.address.zipcode} ${option.address.city}</p>`; 
-	
+		!option || !option.address || !option.address.city || !option.address.zipcode
+			? ""
+			: `<p class="leading-none mt-1 uppercase">${option.name}</p><p class="leading-none text-xs mt-1 uppercase">${option.address.zipcode} ${option.address.city}</p>`;
+
 	const getSelectionLabel = (option) => option.name;
 
 	const loadData = async (filterText) => {
 		let data = [];
 		await query({
 			query: SUGGEST_PRODUCER,
-			variables: { input: { text: filterText }},
+			variables: { input: { text: filterText } },
 			errorsHandler,
-			success: (res) => data = res,
-			error: () => data = [],
-			errorNotification: "Impossible de récupérer les producteurs."
+			success: (res) => (data = res),
+			error: () => (data = []),
+			errorNotification: "Impossible de récupérer les producteurs.",
 		});
 		return data;
 	};
@@ -78,9 +75,8 @@
 		routerInstance.replaceQueryParams({ producerId: producer });
 	}
 
-	$: activeLabels = routerInstance.getQueryParams()["labels"]
-		? routerInstance.getQueryParams()["labels"]
-		: [];
+	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : [];
+
 </script>
 
 <div class="flex justify-between items-center pb-2">
@@ -91,16 +87,12 @@
 </div>
 <hr />
 <div class="mt-6">
-	<label class="block uppercase tracking-wide text-xs font-bold mb-2">
-		Tri
-	</label>
+	<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Tri </label>
 	<SortingSelect {filters} callback={close} inline={true} />
 </div>
 <div class="mt-6">
 	<div class="themed">
-		<label class="block uppercase tracking-wide text-xs font-bold mb-2">
-			Producteur
-		</label>
+		<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Producteur </label>
 		<Select
 			loadOptions={(text) => loadData(text)}
 			{getOptionLabel}
@@ -115,33 +107,23 @@
 			hideSelectedOnFocus={true}
 			optionIdentifier="id"
 			placeholder="Entrez le nom d'un producteur"
-			inputAttributes={{ style: 'cursor: pointer !important;' }}
+			inputAttributes={{ style: "cursor: pointer !important;" }}
 			Item={ProducerItem}
 			noOptionsMessage="Aucune correspondance trouvée pour ce nom"
 			bind:selectedValue={producer}
-			containerStyles="height: 60px; font-weight: 600; color: #4a5568; padding-left:1em;" />
+			containerStyles="height: 60px; font-weight: 600; color: #4a5568; padding-left:1em;"
+		/>
 	</div>
 </div>
 <div class="mt-6">
-	<label class="block uppercase tracking-wide text-xs font-bold mb-2">
-		Labels
-	</label>
-	<Toggle
-		classNames="ml-3"
-		isChecked={activeLabels.includes('bio')}
-		onChange={() => toggleBio()}>
+	<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Labels </label>
+	<Toggle classNames="ml-3" isChecked={activeLabels.includes("bio")} onChange={() => toggleBio()}>
 		<span>Produit issu de l'agriculture biologique</span>
 	</Toggle>
 </div>
 <div class="mt-6">
-	<label class="block uppercase tracking-wide text-xs font-bold mb-2">
-		Catégories
-	</label>
-	<CategorySelect
-		callback={close}
-		{errorsHandler}
-		withSearch={true}
-		grid="grid grid-cols-2 lg:grid-cols-3 gap-2" />
+	<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Catégories </label>
+	<CategorySelect callback={close} {errorsHandler} withSearch={true} grid="grid grid-cols-2 lg:grid-cols-3 gap-2" />
 </div>
 
 <style lang="scss">
@@ -157,4 +139,5 @@
 		--indicatorTop: 16px;
 		--indicatorColor: #ff4081;
 	}
+
 </style>

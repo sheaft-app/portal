@@ -9,49 +9,43 @@ export const GET_AGREEMENTS = gql`
 		$orderBy: [AgreementSortInput!]
 		$where: AgreementFilterInput
 	) {
-		agreements (
-			first: $first,
-			after: $after,
-			last: $last,
-			before: $before,
-			order: $orderBy
-			where: $where) {
-				pageInfo {
-					startCursor
-					endCursor
-					hasNextPage
-					hasPreviousPage
-				}
-				edges {
-					cursor
-					node {
+		agreements(first: $first, after: $after, last: $last, before: $before, order: $orderBy, where: $where) {
+			pageInfo {
+				startCursor
+				endCursor
+				hasNextPage
+				hasPreviousPage
+			}
+			edges {
+				cursor
+				node {
+					id
+					status
+					createdOn
+					store {
 						id
-						status
-						createdOn
-						store {
-							id
-							name
-						}
-						producer {
-							id
-							name
-						}
-						catalog{
-							id
-							name
-						}
-						delivery {
-							id
-							name
-							deliveryHours{
+						name
+					}
+					producer {
+						id
+						name
+					}
+					catalog {
+						id
+						name
+					}
+					delivery {
+						id
+						name
+						deliveryHours {
 							from
 							to
 							day
-							}
 						}
 					}
 				}
 			}
+		}
 	}
 `;
 
@@ -75,11 +69,11 @@ export const GET_AGREEMENT_DETAILS = gql`
 				}
 				phone
 				email
-				closings{
+				closings {
 					from
 					to
 				}
-				tags{
+				tags {
 					name
 					kind
 				}
@@ -87,7 +81,7 @@ export const GET_AGREEMENT_DETAILS = gql`
 			delivery {
 				id
 				name
-				deliveryHours{
+				deliveryHours {
 					from
 					to
 					day
@@ -107,16 +101,16 @@ export const GET_AGREEMENT_DETAILS = gql`
 				}
 				phone
 				email
-				closings{
+				closings {
 					from
 					to
 				}
-				tags{
+				tags {
 					name
 					kind
 				}
 			}
-			catalog{
+			catalog {
 				id
 				name
 				products {

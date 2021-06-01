@@ -1,9 +1,9 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	Producer: { Value: "PRODUCER", Label: "Producteur"},
-	Store: { Value: "STORE", Label: "Commerçant"},
-	Consumer: { Value: "CONSUMER", Label: "Consommateur"},
+	Producer: { Value: "PRODUCER", Label: "Producteur" },
+	Store: { Value: "STORE", Label: "Commerçant" },
+	Consumer: { Value: "CONSUMER", Label: "Consommateur" },
 };
 
 let ProfileKind = {
@@ -22,10 +22,10 @@ let ProfileKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => ProfileKind[key] = enums[key]);
+Object.keys(enums).map((key) => (ProfileKind[key] = enums[key]));
 Object.freeze(ProfileKind);
 
 export default ProfileKind;

@@ -1,10 +1,5 @@
-import {
-	faThumbsUp,
-	faTimes,
-	faSpinner,
-	faArchive
-} from "@fortawesome/free-solid-svg-icons";
-import GetEnumObjectFor from './helpers.js';
+import { faThumbsUp, faTimes, faSpinner, faArchive } from "@fortawesome/free-solid-svg-icons";
+import GetEnumObjectFor from "./helpers.js";
 
 export const OrderStatus = {
 	CREATED: "CREATED",
@@ -12,7 +7,7 @@ export const OrderStatus = {
 	VALIDATED: "VALIDATED",
 	REFUSED: "REFUSED",
 	EXPIRED: "EXPIRED",
-	ARCHIVED: "ARCHIVED"
+	ARCHIVED: "ARCHIVED",
 };
 
 let enums = {
@@ -51,7 +46,7 @@ let enums = {
 		Label: "Archivée",
 		Icon: faArchive,
 		Color: "black-400",
-	}
+	},
 };
 
 let OrderStatusKind = {
@@ -70,10 +65,10 @@ let OrderStatusKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => OrderStatusKind[key] = enums[key]);
+Object.keys(enums).map((key) => (OrderStatusKind[key] = enums[key]));
 Object.freeze(OrderStatusKind);
 
 export default OrderStatusKind;

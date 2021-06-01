@@ -1,5 +1,5 @@
 import Roles from "../../enums/Roles";
-import {faHandshake} from "@fortawesome/free-solid-svg-icons";
+import { faHandshake } from "@fortawesome/free-solid-svg-icons";
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 
@@ -23,7 +23,7 @@ const AgreementRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 				where: null,
-				whereValues: null
+				whereValues: null,
 			},
 		},
 	},
@@ -34,8 +34,8 @@ const AgreementRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
-	}
+		},
+	},
 };
 
 export default AgreementRoutes;

@@ -18,5 +18,5 @@
 
 </script>
 
-<Meta/>
+<Meta />
 <Router {routes} {prefix} />

@@ -1,10 +1,10 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	Billing: { Value: "BILLING", Label: "Facturation"},
-	Shipping: { Value: "SHIPPING", Label: "Livraison"},
-	Legals: { Value: "LEGALS", Label: "Administrative"},
-	Contact: { Value: "CONTACT", Label: "Contact"},
+	Billing: { Value: "BILLING", Label: "Facturation" },
+	Shipping: { Value: "SHIPPING", Label: "Livraison" },
+	Legals: { Value: "LEGALS", Label: "Administrative" },
+	Contact: { Value: "CONTACT", Label: "Contact" },
 };
 
 let AddressKind = {
@@ -23,10 +23,10 @@ let AddressKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => AddressKind[key] = enums[key]);
+Object.keys(enums).map((key) => (AddressKind[key] = enums[key]));
 Object.freeze(AddressKind);
 
 export default AddressKind;

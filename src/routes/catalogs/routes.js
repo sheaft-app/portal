@@ -23,9 +23,9 @@ const CatalogRoutes = {
 				orderBy: "name",
 				direction: OrderByDirection.ASC,
 				take: 20,
-				paginate: Paginate.First
-			}
-		}
+				paginate: Paginate.First,
+			},
+		},
 	},
 	Create: {
 		Name: "Créer un catalogue",
@@ -41,7 +41,7 @@ const CatalogRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	NoResults: {
 		Name: "Créer un catalogue",

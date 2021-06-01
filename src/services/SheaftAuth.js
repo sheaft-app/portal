@@ -1,5 +1,5 @@
 import Oidc from "oidc-client";
-import {config} from "./../configs/config.js";
+import { config } from "./../configs/config.js";
 import {
 	authAuthenticated,
 	authUserAccount,
@@ -7,12 +7,12 @@ import {
 	authRegistered,
 	authAuthorized,
 } from "./../stores/auth.js";
-import {clearLocalStorage} from "./../helpers/storage";
-import {stringify} from "qs";
+import { clearLocalStorage } from "./../helpers/storage";
+import { stringify } from "qs";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
-		this.user = {profile: {role: "ANONYMOUS"}};
+		this.user = { profile: { role: "ANONYMOUS" } };
 		this.registered = false;
 		this.initialized = false;
 		this.authorized = false;
@@ -37,24 +37,26 @@ class SheaftAuth {
 			this.authorized = value;
 		});
 
-		this.userManager.getUser().then(async (user) => {
-			if (user) {
-				await this.retrieveUser(user, true);
-				return;
-			}
+		this.userManager.getUser().then(
+			async (user) => {
+				if (user) {
+					await this.retrieveUser(user, true);
+					return;
+				}
 
-			this.setAuthStatus({profile: {role: ["ANONYMOUS"]}}, false, false, false, true);
-		}, reason => {
-			localStorage.removeItem("user");
-			this.setAuthStatus({profile: {role: ["ANONYMOUS"]}}, false, false, false, true);
-		});
+				this.setAuthStatus({ profile: { role: ["ANONYMOUS"] } }, false, false, false, true);
+			},
+			(reason) => {
+				localStorage.removeItem("user");
+				this.setAuthStatus({ profile: { role: ["ANONYMOUS"] } }, false, false, false, true);
+			}
+		);
 
 		this.userManager.events.addUserLoaded(async (user) => {
 			await this.retrieveUser(user, false);
 		});
 
-		this.userManager.events.addUserUnloaded((e) => {
-		});
+		this.userManager.events.addUserUnloaded((e) => {});
 
 		this.userManager.events.addAccessTokenExpiring(async () => {
 			await this.loginSilent();
@@ -73,10 +75,7 @@ class SheaftAuth {
 		}
 
 		try {
-			var result = await fetch(
-				config.api + "/graphql",
-				getUserInfoSettings(user)
-			);
+			var result = await fetch(config.api + "/graphql", getUserInfoSettings(user));
 
 			if (result.status === 401) {
 				await this.userManager.removeUser();
@@ -86,7 +85,6 @@ class SheaftAuth {
 
 			if (localUser)
 				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
-
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
 			await this.refreshPageAsUnauthorized(true);
@@ -106,7 +104,7 @@ class SheaftAuth {
 	}
 
 	async refreshPageAsUnauthorized(hasError) {
-		if (location.hash.indexOf('/callback') > -1 || hasError) {
+		if (location.hash.indexOf("/callback") > -1 || hasError) {
 			await this.userManager.removeUser();
 			location.hash = "/";
 			location.reload();
@@ -114,25 +112,23 @@ class SheaftAuth {
 	}
 
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
-		if (this.user != user)
-			authUserAccount.set(user);
-		if (this.authorized != authorized)
-			authAuthorized.set(authorized);
-		if (this.registered != registered)
-			authRegistered.set(registered);
-		if (this.authenticated != authenticated)
-			authAuthenticated.set(authenticated);
-		if (this.initialized != initialized)
-			authInitialized.set(initialized);
+		if (this.user != user) authUserAccount.set(user);
+		if (this.authorized != authorized) authAuthorized.set(authorized);
+		if (this.registered != registered) authRegistered.set(registered);
+		if (this.authenticated != authenticated) authAuthenticated.set(authenticated);
+		if (this.initialized != initialized) authInitialized.set(initialized);
 
-		localStorage.setItem("user", JSON.stringify({
-			id: user.id,
-			profileId: user.profile.id,
-			authenticated: authenticated,
-			authorized: authorized,
-			registered: registered,
-			role: user.profile.role
-		}));
+		localStorage.setItem(
+			"user",
+			JSON.stringify({
+				id: user.id,
+				profileId: user.profile.id,
+				authenticated: authenticated,
+				authorized: authorized,
+				registered: registered,
+				role: user.profile.role,
+			})
+		);
 	}
 
 	userIsAnonymous() {
@@ -140,8 +136,7 @@ class SheaftAuth {
 	}
 
 	userIsLoggedIn() {
-		var result =
-			!this.userIsAnonymous() && this.initialized && this.authenticated;
+		var result = !this.userIsAnonymous() && this.initialized && this.authenticated;
 		if (!result) this.login(window.location.hash);
 
 		return result;
@@ -177,7 +172,7 @@ class SheaftAuth {
 				}
 
 				return await this.userManager.signinRedirect({
-					state: {redirectTo: redirectUrl},
+					state: { redirectTo: redirectUrl },
 				});
 			}
 
@@ -232,20 +227,15 @@ class SheaftAuth {
 	}
 
 	unregister() {
-		if (this.authorizedSub && this.authorizedSub.unsubscribe)
-			this.authorizedSub.unsubscribe();
+		if (this.authorizedSub && this.authorizedSub.unsubscribe) this.authorizedSub.unsubscribe();
 
-		if (this.authenticatedSub && this.authenticatedSub.unsubscribe)
-			this.authenticatedSub.unsubscribe();
+		if (this.authenticatedSub && this.authenticatedSub.unsubscribe) this.authenticatedSub.unsubscribe();
 
-		if (this.registeredSub && this.registeredSub.unsubscribe)
-			this.registeredSub.unsubscribe();
+		if (this.registeredSub && this.registeredSub.unsubscribe) this.registeredSub.unsubscribe();
 
-		if (this.initializedSub && this.initializedSub.unsubscribe)
-			this.initializedSub.unsubscribe();
+		if (this.initializedSub && this.initializedSub.unsubscribe) this.initializedSub.unsubscribe();
 
-		if (this.userSub && this.userSub.unsubscribe)
-			this.userSub.unsubscribe();
+		if (this.userSub && this.userSub.unsubscribe) this.userSub.unsubscribe();
 
 		this.userManager.events.removeAccessTokenExpiring();
 		this.userManager.events.removeAccessTokenExpired();
@@ -258,8 +248,7 @@ class SheaftAuth {
 function getUserInfoSettings(user) {
 	return {
 		method: "POST",
-		body:
-			'{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id profileId}}"}',
+		body: '{"operationName":"GetMeDetails","variables":{},"query":"query GetMeDetails {me {id profileId}}"}',
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: "Bearer " + user.access_token,

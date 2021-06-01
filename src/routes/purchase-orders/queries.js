@@ -9,14 +9,7 @@ export const GET_ORDERS = gql`
 		$order: [PurchaseOrderSortInput!]
 		$where: PurchaseOrderFilterInput
 	) {
-		purchaseOrders(
-			first: $first
-			last: $last
-			after: $after
-			before: $before
-			order: $order
-			where: $where
-		) {
+		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $order, where: $where) {
 			pageInfo {
 				startCursor
 				endCursor
@@ -103,6 +96,6 @@ export const GET_ORDER_DETAILS = gql`
 
 export const HAS_PICKING_ORDERS_EXPORT_INPROGRESS = gql`
 	query hasPendingJobs($kinds: [JobKind!]) {
-		hasPendingJobs(kinds:$kinds)
+		hasPendingJobs(kinds: $kinds)
 	}
 `;

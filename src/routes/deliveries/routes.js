@@ -11,7 +11,7 @@ const details = "/:id";
 
 const DeliveryRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Producer.Value],
+	Roles: [Roles.Producer.Value],
 	List: {
 		Name: "Livraisons",
 		Icon: faTruck,
@@ -25,14 +25,14 @@ const DeliveryRoutes = {
 				take: 20,
 				paginate: Paginate.First,
 			},
-		}
+		},
 	},
 	Create: {
 		Name: "Créer une nouvelle livraison",
 		Icon: faTruck,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Details: {
 		Name: "Editer une livraison",
@@ -41,7 +41,7 @@ const DeliveryRoutes = {
 		SubPart: `${details}`,
 		Params: {
 			id: null,
-		}
+		},
 	},
 	NoResults: {
 		Name: "Ajouter un nouveau créneau",
@@ -49,7 +49,7 @@ const DeliveryRoutes = {
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
-		Text:"Aucun créneau de livraison disponible"
+		Text: "Aucun créneau de livraison disponible",
 	},
 };
 

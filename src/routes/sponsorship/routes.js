@@ -7,14 +7,14 @@ const share = "/share";
 
 const SponsorshipRoutes = {
 	Prefix: `${prefix}`,
-	Roles:[Roles.Store.Value, Roles.Consumer.Value, Roles.Producer.Value],
+	Roles: [Roles.Store.Value, Roles.Consumer.Value, Roles.Producer.Value],
 	Share: {
 		Name: "Parrainage",
 		Icon: faHandHoldingHeart,
 		Path: `${prefix}${share}`,
 		SubPart: `${share}`,
-		Params: null
-	}
+		Params: null,
+	},
 };
 
 export default SponsorshipRoutes;

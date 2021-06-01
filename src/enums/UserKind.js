@@ -1,10 +1,10 @@
-import GetEnumObjectFor from './helpers.js';
+import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-    Owner : { Value: "OWNER", Label: "Propriétaire"},
-    User : { Value: "USER", Label: "Utilisateur"},
-    Consumer : { Value: "CONSUMER", Label: "Consommateur"}
-}
+	Owner: { Value: "OWNER", Label: "Propriétaire" },
+	User: { Value: "USER", Label: "Utilisateur" },
+	Consumer: { Value: "CONSUMER", Label: "Consommateur" },
+};
 
 let UserKind = {
 	...enums,
@@ -22,10 +22,10 @@ let UserKind = {
 	},
 	icon: (value) => {
 		return GetEnumObjectFor(enums, value).Icon;
-	}
+	},
 };
 
-Object.keys(enums).map(key => UserKind[key] = enums[key]);
+Object.keys(enums).map((key) => (UserKind[key] = enums[key]));
 Object.freeze(UserKind);
 
 export default UserKind;
