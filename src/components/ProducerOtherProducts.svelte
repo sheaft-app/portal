@@ -31,7 +31,7 @@
 				query: GET_PRODUCER_PRODUCTS,
 				variables: {id: producerId},
 				errorsHandler,
-				success: (res) => products = res.products.filter((p) => p.id !== productParentId),
+				success: (res) => products = res.products ? res.products.filter((p) => p.id !== productParentId) : [],
 				errorNotification: "Impossible de récupérer les autres produits du producteur"
 			});
 		}
@@ -65,12 +65,12 @@
 		isBeginning = swipper.isBeginning;
 	}
 
-	$: suggestedProductIsInCart = product => $cart.products.find(c => c.id === product.id);
+	$: suggestedProductIsInCart = product => $cart.products ? $cart.products.find(c => c.id === product.id) : false;
 </script>
 
 {#if isLoading}
 	<Loader/>
-{:else if products.length > 0}
+{:else if products && products.length > 0}
 	<p
 		class="font-semibold pt-5 mb-3">{productParentId ? `Autres produits de ${producerName}` : `Produits de ${producerName}`}</p>
 	<div class="relative">
