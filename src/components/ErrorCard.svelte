@@ -10,7 +10,8 @@
 	let bgColor = "bg-red-500";
 	const getErrors = () => {
 		if (!errorsHandler) {
-			return;//console.error("Prop errorsHandler cannot be null.");
+			console.error("Prop errorsHandler cannot be null.");
+			return;
 		}
 
 		componentErrors = errorsHandler.getErrors();

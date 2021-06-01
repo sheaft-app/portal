@@ -49,7 +49,6 @@
 			isLoading = false;
 
 			if (!authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])) {
-				console.log("passed");
 				await cart.initialize({ query, mutate }, errorsHandlers, authInstance.authenticated, $authRegistered);
 			}
 		}

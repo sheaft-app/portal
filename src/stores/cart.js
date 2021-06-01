@@ -46,7 +46,6 @@ const store = () => {
 			let selectedCart = null;
 
 			context = c;
-			console.log(context);
 			errorsHandler = errorsHandlerInstance;
 
 			let currentOrder = null;
@@ -135,7 +134,6 @@ const store = () => {
 				variables,
 				errorsHandler,
 				success: (res) => {
-					console.log("success");
 					setters.updateWholeCart(res);
 				},
 				errorNotification: "Impossible de mettre à jour votre panier",
