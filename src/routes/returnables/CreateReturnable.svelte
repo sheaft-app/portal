@@ -19,10 +19,12 @@
 	const { mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
+	let returnable = undefined; // hack en attendant le multi form
+
 	const handleSubmit = async () => {
 		return await mutate({
 			mutation: CREATE_RETURNABLE,
-			variables: form.values(),
+			variables: returnable,
 			errorsHandler,
 			success: async (res) => {
 				if (isInModal) await handleClose(res);
@@ -46,6 +48,6 @@
 		<PageHeader name="Créer une consigne" previousPage={ReturnableRoutes.List} />
 	{/if}
 	<PageBody {errorsHandler}>
-		<ReturnableForm {isInModal} submit={handleSubmit} close={handleClose} />
+		<ReturnableForm {isInModal} submit={handleSubmit} bind:returnable close={handleClose} />
 	</PageBody>
 </TransitionWrapper>

@@ -119,10 +119,8 @@
 		open(CreateReturnable, {
 			isInModal: true,
 			onClose: async (res) => {
-				if (res.success) {
-					returnables = [...returnables, res.data];
-					product.returnable = res.data;
-				}
+				returnables = [...returnables, res];
+				product.returnable = res;
 			},
 		});
 	};
