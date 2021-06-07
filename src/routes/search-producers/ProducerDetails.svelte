@@ -91,7 +91,6 @@
 		});
 
 	$: if ($selectedItem) openAndLoad($selectedItem);
-
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
@@ -330,8 +329,7 @@
 									<div class="relative py-4 w-full">
 										<div class="bg-white rounded-lg p-0 w-full flex justify-between">
 											<div
-												style="background-image: url({product.imageSmall}); background-size: cover;
-                background-position: top;"
+												style="background-image: url({product.imageSmall}); background-size: cover; background-position: center;"
 												class="h-12 w-12 mr-2 mt-1 rounded-lg items-center justify-center mb-2 relative"
 											/>
 											<div class="pr-8 w-8/12">
