@@ -128,7 +128,7 @@
 								</div>
 							{/if}
 							<div
-								style="height: 95px; background-image: url({product.picture}); background-size: cover; background-position: top;"
+								style="height: 95px; background-image: url({product.picture}); background-size: contain; background-position: top;background-repeat:no-repeat;"
 								class:opacity-50={suggestedProductIsInCart(product)}
 								class="transition duration-200 ease-in-out w-full rounded-t-md"
 							>

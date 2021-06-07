@@ -77,7 +77,6 @@
 			? product.wholeSalePricePerUnit
 			: product.onSalePricePerUnit
 		: null;
-
 </script>
 
 {#if product}
@@ -102,8 +101,7 @@
 					</TransitionWrapper>
 				{/if}
 				<div
-					style="height: 150px; background-image: url({src}); background-size:
-        cover; background-position: top;"
+					style="height: 150px; background-image: url({src}); background-size: contain; background-position: top;background-repeat:no-repeat;"
 					class:opacity-50={$cart.products.find((i) => i.id == product.id)}
 					class:skeleton-box={!src}
 					class="transition duration-200 ease-in-out w-full rounded-t-md"
@@ -118,8 +116,7 @@
 			<div class="relative lg:block flex p-3 lg:p-0">
 				<div class="block lg:hidden w-1/4 text-xs">
 					<div
-						style="background-image: url({src}); background-size: cover;
-          background-position: top;"
+						style="background-image: url({src}); background-size: contain; background-position: top;background-repeat:no-repeat;"
 						class:skeleton-box={!src}
 						class="h-20 mt-1 rounded-lg flex items-center justify-center mb-2 relative"
 					>
@@ -262,5 +259,4 @@
 			@apply text-center;
 		}
 	}
-
 </style>

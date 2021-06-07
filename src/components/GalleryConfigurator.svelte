@@ -22,28 +22,31 @@
 	let buttonAddSize = parseInt(elementHeight) < parseInt(elementWidth) ? elementHeight : elementWidth;
 
 	const addElement = () => {
-		open(ChooseImage, {
-			newElementMinWidth,
-			newElementMinHeight,
-			newElementMaxWidth: newElementMaxWidth ? newElementMaxWidth : newElementMinWidth,
-			newElementMaxHeight: newElementMaxHeight ? newElementMaxHeight : newElementMinHeight,
-			containerMaxHeight,
-			containerMaxWidth,
-			imageSmoothing,
-			onClose: (res) => {
-				if (res.success) {
+		let input = document.createElement("input");
+		input.type = "file";
+		input.multiple = true;
+		input.accept = "image/jpeg, image/png, image/jpg";
+
+		input.onchange = (e) => {
+			for (let i = 0; i < e.target.files.length; i++) {
+				let reader = new FileReader();
+				reader.readAsDataURL(e.target.files[i]);
+
+				reader.onload = (readerEvent) => {
 					elements = [
 						...elements,
 						{
 							id: `${incrementer.next().value}`,
-							data: res.data,
+							data: readerEvent.target.result,
 							position: elements.length,
 							new: true,
 						},
 					];
-				}
-			},
-		});
+				};
+			}
+		};
+
+		input.click();
 	};
 
 	const removeElement = (id) => {
@@ -81,7 +84,6 @@
 	});
 
 	const incrementer = getNextId();
-
 </script>
 
 <div class="border border-gray-400 cursor-pointer text-center h-full">
@@ -126,5 +128,4 @@
 		background-repeat: no-repeat !important;
 		background-color: white !important;
 	}
-
 </style>
