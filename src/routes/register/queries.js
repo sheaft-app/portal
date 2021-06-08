@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const SEARCH_COMPANY_SIRET = gql`
 	query SearchBusinessWithSiret($input: String!) {
-		searchBusinessWithSiret(input: $input) {
+		siretInfo(input: $input) {
 			address {
 				line1
 				line2
