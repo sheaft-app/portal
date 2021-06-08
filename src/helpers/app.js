@@ -190,7 +190,7 @@ export const unfreezeBody = () => {
 export const formatMoney = (price) => `${price.toFixed(2).replace(".", ",")}€`;
 
 export const isBio = (tags) => {
-	return tags && tags.map((t) => t.name.toLower()).includes("bio");
+	return tags && tags.map((t) => t.name.toLowerCase()).includes("bio");
 };
 
 export const formatConditioningDisplay = (conditioning, quantityPerUnit, unit) => {
