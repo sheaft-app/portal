@@ -188,6 +188,7 @@
 			success: (res) => {
 				legalId = res.id;
 				user = res.owner;
+				userLegalsFound = true;
 				++step;
 			},
 			errorNotification: "Impossible d'enregistrer vos informations de facturation",
