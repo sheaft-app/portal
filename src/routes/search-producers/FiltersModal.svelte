@@ -5,6 +5,7 @@
 	import Icon from "svelte-awesome";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "./../../services/SheaftErrors";
+	import { isBio } from "../../helpers/app";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -30,7 +31,6 @@
 	};
 
 	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : [];
-
 </script>
 
 <div class="flex justify-between items-center pb-2">
@@ -42,7 +42,7 @@
 <hr />
 <div class="mt-6">
 	<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Labels </label>
-	<Toggle classNames="ml-3" isChecked={activeLabels.includes("bio")} onChange={() => toggleBio()}>
+	<Toggle classNames="ml-3" isChecked={isBio(activeLabels)} onChange={() => toggleBio()}>
 		<span>Producteur pratiquant l'agriculture biologique</span>
 	</Toggle>
 </div>

@@ -10,6 +10,7 @@
 	import { SUGGEST_PRODUCER } from "./queries";
 	import { getContext } from "svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
+	import { isBio } from "../../helpers/app";
 
 	export let close, filters, producer;
 
@@ -76,7 +77,6 @@
 	}
 
 	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : [];
-
 </script>
 
 <div class="flex justify-between items-center pb-2">
@@ -117,7 +117,7 @@
 </div>
 <div class="mt-6">
 	<label class="block uppercase tracking-wide text-xs font-bold mb-2"> Labels </label>
-	<Toggle classNames="ml-3" isChecked={activeLabels.includes("bio")} onChange={() => toggleBio()}>
+	<Toggle classNames="ml-3" isChecked={isBio(activeLabels)} onChange={() => toggleBio()}>
 		<span>Produit issu de l'agriculture biologique</span>
 	</Toggle>
 </div>
@@ -139,5 +139,4 @@
 		--indicatorTop: 16px;
 		--indicatorColor: #ff4081;
 	}
-
 </style>

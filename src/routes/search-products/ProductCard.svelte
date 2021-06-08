@@ -13,6 +13,7 @@
 	import { formatMoney, formatConditioningDisplay } from "./../../helpers/app";
 	import { config } from "../../configs/config";
 	import Roles from "../../enums/Roles";
+	import { isBio } from "../../helpers/app";
 
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
@@ -153,7 +154,7 @@
 				</div>
 				<div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
 					<div style="width: 30px; right: 15px;" class="absolute">
-						{#if product.tags && product.tags.map((t) => t.name).includes("bio")}
+						{#if isBio(product.tags)}
 							<img src={config.content + "/pictures/tags/icons/bio.png"} alt="Bio" class="mb-1" />
 						{/if}
 						{#if product.isReturnable}
