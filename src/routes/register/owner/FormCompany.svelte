@@ -37,7 +37,6 @@
 			phoneRegionCode: "fr",
 		});
 	};
-
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -160,7 +159,7 @@
 					<ErrorContainer field={$form.fields.email} />
 				</div>
 				<div class="w-full form-control">
-					<label for="$company_email">Téléphone</label>
+					<label for="$company_email">Téléphone *</label>
 					<input
 						id="$company_phone"
 						class="input-phone"
@@ -275,5 +274,4 @@
 	input[type="number"] {
 		-moz-appearance: textfield;
 	}
-
 </style>
