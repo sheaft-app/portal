@@ -76,7 +76,7 @@
 		routerInstance.replaceQueryParams({ producerId: producer });
 	}
 
-	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : [];
+	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : null;
 </script>
 
 <div class="flex justify-between items-center pb-2">
