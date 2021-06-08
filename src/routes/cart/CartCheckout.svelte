@@ -123,7 +123,7 @@
 					},
 					errorsHandler,
 					success: (result) => {
-						if (result.status == PreAuthorizationStatus.Failed) {
+						if (result.status === PreAuthorizationStatus.FAILED.Value) {
 							isPaying = false;
 							//TODO handle authorization error
 							return;
@@ -133,7 +133,6 @@
 							window.location = result.secureModeRedirectURL;
 							return;
 						} else {
-							isPaying = false;
 							return routerInstance.goTo({
 								Path: CartRoutes.Success.Path,
 								Params: {
@@ -145,12 +144,12 @@
 						}
 					},
 					errorNotification: "Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support.",
+					error: () => {
+						isPaying = false;
+					},
 				});
-				isPaying = false;
 			},
 			async (response) => {
-				isPaying = false;
-
 				switch (response.ResultMessage) {
 					case "PAST_EXPIRY_DATE_ERROR":
 						cardError = "La date d'expiration de votre carte est passée.";
@@ -159,6 +158,7 @@
 						cardError = "Les informations de votre carte ne sont pas valides.";
 						break;
 				}
+				isPaying = false;
 			}
 		);
 	};
@@ -195,7 +195,6 @@
 		});
 		clearApolloCache(user.id);
 	};
-
 </script>
 
 {#if isLoading}
@@ -329,5 +328,4 @@
 			width: inherit;
 		}
 	}
-
 </style>

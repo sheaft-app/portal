@@ -8,6 +8,7 @@ let enums = {
 };
 
 let PreAuthorizationStatus = {
+	...enums,
 	get: (value) => {
 		return GetEnumObjectFor(enums, value);
 	},
