@@ -11,7 +11,6 @@
 			$stepper++;
 		}
 	};
-
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -46,7 +45,6 @@
 					Renseignez vos horaires d'ouverture pour qu'un producteur évite de vous contacter si vos horaires ne
 					correspondent pas à ses plages de livraison.
 				</p>
-				<p class="text-sm">Ces horaires ne seront visibles que par les producteurs.</p>
 			</div>
 			<OpeningHoursContainer bind:openings={$businessHours} />
 		{/if}
