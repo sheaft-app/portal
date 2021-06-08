@@ -71,15 +71,14 @@ const store = () => {
 					variables: { input: currentOrder },
 					errorsHandler,
 					success: (res) => {
-						if (!res || !res.data || ["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.data.status))
-							return this.clearStorage();
+						if (!res || ["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.status)) return this.clearStorage();
 						else if (selectedCart)
 							return update((state) => {
-								state.conflicts = [selectedCart, res.data];
+								state.conflicts = [selectedCart, res];
 								state.isInitializing = false;
 								return state;
 							});
-						else selectedCart = res.data;
+						else selectedCart = res;
 					},
 					error: () => {
 						this.clearStorage();
@@ -176,7 +175,7 @@ const store = () => {
 				query: GET_CART,
 				variables: { input: cartId },
 				errorsHandler,
-				success: (res) => setters.updateWholeCart(res.data),
+				success: (res) => setters.updateWholeCart(res),
 				errorNotification: "Impossible de choisir le panier",
 			});
 		},
