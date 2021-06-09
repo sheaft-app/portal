@@ -20,8 +20,8 @@
 			variables: { ids: purchaseOrders.map((o) => o.id) },
 			errorsHandler,
 			success: async (res) => await handleClose(res),
-			successNotification: "Commande acceptée",
-			errorNotification: "Impossible d'accepter la commande.",
+			successNotification: "Commande en traitement",
+			errorNotification: "Impossible de traiter la commande.",
 			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
@@ -31,7 +31,6 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
-
 </script>
 
 <ActionConfirm

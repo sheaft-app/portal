@@ -21,8 +21,8 @@
 			variables: { ids: purchaseOrders.map((o) => o.id), reason },
 			errorsHandler,
 			success: async (res) => await handleClose(res),
-			successNotification: "Commande acceptée",
-			errorNotification: "Impossible d'accepter la commande.",
+			successNotification: "Commande refusée",
+			errorNotification: "Impossible de refuser la commande.",
 			clearCache: [GET_ORDERS],
 		});
 		isLoading = false;
@@ -32,7 +32,6 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
-
 </script>
 
 <ActionConfirm

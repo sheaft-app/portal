@@ -187,12 +187,11 @@
 			disabled: !canCreatePickingOrders(selectedItems),
 			icon: faFileExport,
 			text:
-				selectedItems.filter((o) => o.status == PurchaseOrderStatusKind.Waiting.Value).length >= 1
+				selectedItems.filter((o) => o.status === PurchaseOrderStatusKind.Waiting.Value).length >= 1
 					? "Accepter et faire un bon de préparation"
 					: "Faire un bon de préparation",
 			color: "indigo",
 			hideIfDisabled: true,
-
 			displaySelectedItemsNumber: true,
 		},
 		{
@@ -205,7 +204,6 @@
 			displaySelectedItemsNumber: true,
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
@@ -252,9 +250,10 @@
 			bind:selectedItems
 			disableRowSelection={(order) =>
 				order &&
-				(order.status == PurchaseOrderStatusKind.Cancelled.Value ||
-					order.status == PurchaseOrderStatusKind.Refused.Value ||
-					order.status == PurchaseOrderStatusKind.Delivered.Value)}
+				(order.status === PurchaseOrderStatusKind.Cancelled.Value ||
+					order.status === PurchaseOrderStatusKind.Refused.Value ||
+					order.status === PurchaseOrderStatusKind.Withdrawned.Value ||
+					order.status === PurchaseOrderStatusKind.Delivered.Value)}
 			{getRowBackgroundColor}
 			{onRowClick}
 		>
@@ -360,5 +359,4 @@
 			transition: background 0s;
 		}
 	}
-
 </style>

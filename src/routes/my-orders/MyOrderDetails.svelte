@@ -53,6 +53,11 @@
 		});
 
 	onMount(async () => {
+		if (!params.id) {
+			await routerInstance.goTo(MyOrderRoutes.List);
+			return;
+		}
+
 		isLoading = true;
 		order = await query({
 			query: GET_MY_ORDER_DETAILS,
@@ -73,7 +78,6 @@
 		order.status != PurchaseOrderStatusKind.Shipping.Value &&
 		order.status != PurchaseOrderStatusKind.Processing.Value &&
 		order.status != PurchaseOrderStatusKind.Refused.Value;
-
 </script>
 
 <TransitionWrapper>
@@ -621,5 +625,4 @@
 		right: 50%;
 		margin-right: 20px;
 	}
-
 </style>

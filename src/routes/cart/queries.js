@@ -32,6 +32,26 @@ export const GET_MY_ORDERS = gql`
 		order(id: $id) {
 			id
 			reference
+			totalOnSalePrice
+			deliveries {
+				deliveryMode {
+					name
+					producer {
+						name
+					}
+					address {
+						line1
+						line2
+						zipcode
+						city
+					}
+				}
+				expectedDelivery {
+					expectedDeliveryDate
+					from
+					to
+				}
+			}
 			purchaseOrders {
 				id
 				reference
