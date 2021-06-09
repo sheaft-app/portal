@@ -19,12 +19,18 @@ let enums = {
 	},
 	Waiting: {
 		Value: "WAITING",
-		Label: "Validation du paiement",
+		Label: "En attente du paiement",
 		Icon: faSpinner,
 		Color: "blue-400",
 	},
 	Validated: {
 		Value: "VALIDATED",
+		Label: "Validation du paiement",
+		Icon: faSpinner,
+		Color: "blue-600",
+	},
+	Confirmed: {
+		Value: "CONFIRMED",
 		Label: "Paiement accepté",
 		Icon: faThumbsUp,
 		Color: "green-500",

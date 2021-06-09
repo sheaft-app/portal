@@ -31,12 +31,16 @@ export const GET_MY_ORDERS = gql`
 	query MyOrder($id: ID!) {
 		order(id: $id) {
 			id
+			status
 			reference
 			totalOnSalePrice
 			deliveries {
+				id
 				deliveryMode {
+					id
 					name
 					producer {
+						id
 						name
 					}
 					address {
@@ -74,7 +78,31 @@ export const GET_MY_ORDER_FROM_TRANSACTION = gql`
 	query MyOrderFromTransaction($id: StringType!) {
 		orderFromTransaction(identifier: $id) {
 			id
+			status
 			reference
+			totalOnSalePrice
+			deliveries {
+				id
+				deliveryMode {
+					id
+					name
+					producer {
+						id
+						name
+					}
+					address {
+						line1
+						line2
+						zipcode
+						city
+					}
+				}
+				expectedDelivery {
+					expectedDeliveryDate
+					from
+					to
+				}
+			}
 			purchaseOrders {
 				id
 				reference

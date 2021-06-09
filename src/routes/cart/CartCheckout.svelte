@@ -132,7 +132,7 @@
 						if (result.secureModeNeeded && result.secureModeRedirectURL) {
 							window.location = result.secureModeRedirectURL;
 						} else {
-							return routerInstance.goTo({
+							routerInstance.goTo({
 								Path: CartRoutes.Success.Path,
 								Params: {
 									Query: {

@@ -4,13 +4,13 @@
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import cart from "./../../stores/cart.js";
 	import { GET_MY_ORDER_FROM_TRANSACTION, GET_MY_ORDERS } from "./queries.js";
-	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import ErrorCard from "./../../components/ErrorCard.svelte";
 	import Loader from "../../components/Loader.svelte";
 	import Icon from "svelte-awesome";
 	import { faLink } from "@fortawesome/free-solid-svg-icons";
+	import OrderStatusKind from "../../enums/OrderStatusKind";
 
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
@@ -21,32 +21,28 @@
 
 	onMount(async () => {
 		isLoading = true;
-		clearApolloCache([MY_ORDERS, MY_VALIDATING_ORDERS]);
+		let id = $cart.userCurrentOrder;
+		let orderQuery = GET_MY_ORDERS;
 		await cart.reset();
 
 		let values = routerInstance.getQueryParams();
-
-		if (values.id) {
-			await query({
-				query: GET_MY_ORDERS,
-				variables: { id: values.id },
-				success: (res) => {
-					order = res;
-				},
-				errorsHandler,
-				error: () => routerInstance.goTo(MyOrderRoutes.List),
-			});
-		} else if (values.transactionId) {
-			await query({
-				query: GET_MY_ORDER_FROM_TRANSACTION,
-				variables: { id: values.transactionId },
-				success: (res) => {
-					order = res;
-				},
-				errorsHandler,
-				error: () => routerInstance.goTo(MyOrderRoutes.List),
-			});
+		if (values.id) id = values.id;
+		else if (values.transactionId) {
+			id = values.transactionId;
+			orderQuery = GET_MY_ORDER_FROM_TRANSACTION;
 		}
+
+		await query({
+			query: orderQuery,
+			variables: { id: id },
+			success: (res) => {
+				if (res.status === OrderStatusKind.Validated.Value || res.status === OrderStatusKind.Confirmed.Value)
+					order = res;
+				else routerInstance.goTo(MyOrderRoutes.List);
+			},
+			errorsHandler,
+			error: () => routerInstance.goTo(MyOrderRoutes.List),
+		});
 
 		isLoading = false;
 	});
