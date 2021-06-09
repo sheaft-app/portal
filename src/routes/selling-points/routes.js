@@ -43,12 +43,13 @@ const SellingPointRoutes = {
 			id: null,
 		},
 	},
-	NoResultsPage: {
+	NoResults: {
 		Name: "Ajouter un point de vente",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
+		Text: "Aucun point de vente disponible",
 	},
 };
 

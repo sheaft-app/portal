@@ -32,7 +32,6 @@
 	const onRowClick = (item) => {
 		routerInstance.goTo(DeliveryRoutes.Details, { id: item.id });
 	};
-
 </script>
 
 <TransitionWrapper>
@@ -46,7 +45,7 @@
 			graphQuery={GET_DELIVERIES}
 			{errorsHandler}
 			{onRowClick}
-			noResultsPage={DeliveryRoutes.NoResultsPage}
+			noResultsPage={DeliveryRoutes.NoResults}
 			loadingMessage="Chargement de vos créneaux de livraisons en cours... veuillez patienter."
 			getRowBackgroundColor={(i) => (!i.available ? "bg-orange-200" : "")}
 			headers={[{ name: "Nom" }, { name: "Horaires" }]}

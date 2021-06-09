@@ -41,9 +41,11 @@
 				localStorage.removeItem("user_sponsoring");
 				await authInstance.refreshLogin("/");
 			},
+			error: () => {
+				isRegistering = false;
+			},
 			errorNotification: "Impossible d'enregistrer le compte. Veuillez réessayer ou contacter le support technique.",
 		});
-		isRegistering = false;
 	};
 
 	const handleCancel = () => {
@@ -54,7 +56,6 @@
 	onDestroy(() => {
 		if (sub != null) sub.unsubscribe();
 	});
-
 </script>
 
 <svelte:head>
@@ -239,5 +240,4 @@
 		--inputPadding: 1rem;
 		--inputColor: #205164;
 	}
-
 </style>

@@ -54,7 +54,6 @@
 	};
 
 	$: isValid = $siret && $siret.toString().length == 14;
-
 </script>
 
 <svelte:window on:keydown={handleKeydown} />

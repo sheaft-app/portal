@@ -32,18 +32,18 @@
 			color: "green",
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Mes catalogues" />
-	<PageBody {errorsHandler} {noResults} noResultsPage={CatalogRoutes.NoResults}>
+	<PageBody {errorsHandler}>
 		<Actions {actions} />
 		<Table
 			bind:items
 			bind:isLoading
 			bind:noResults
 			loadingMessage="Récupération des catalogues en cours... veuillez patienter"
+			noResultsPage={CatalogRoutes.NoResults}
 			{errorsHandler}
 			{headers}
 			let:rowItem={catalog}

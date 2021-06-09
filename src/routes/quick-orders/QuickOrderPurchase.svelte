@@ -26,7 +26,7 @@
 	let dirty = false;
 	let isLoadingDeliveries = true;
 
-	$: isValid = normalizedProducts.filter((p) => p.quantity >= 1 && !p.producer.deliveryHour).length == 0;
+	$: isValid = normalizedProducts.filter((p) => p.quantity > 0 && !p.producer.delivery).length === 0;
 
 	const getAllAvailableProducts = async () => {
 		isLoading = true;
@@ -45,7 +45,9 @@
 					)
 				);
 
-				if (normalizedProducts.length > 1) {
+				console.log(normalizedProducts);
+
+				if (normalizedProducts.length > 0) {
 					await loadDeliveries(
 						res
 							.map((p) => p.producer.id)
@@ -81,7 +83,6 @@
 		}
 
 		normalizedProducts = normalizedProducts;
-
 		dirty = true;
 	};
 
@@ -159,7 +160,6 @@
 			(product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) * (product.quantity || 0)
 		);
 	}, 0);
-
 </script>
 
 <TransitionWrapper>
@@ -212,8 +212,8 @@
 										{product.producer.name}
 									</p>
 									<DeliveryModePicker
-										selected={product.producer.delivery}
-										selectedDeliveryHour={product.producer.deliveryHour}
+										bind:selected={product.producer.delivery}
+										bind:selectedDeliveryHour={product.producer.deliveryHour}
 										bind:businessQuickOrderProducts={normalizedProducts}
 										data={getProducerDeliveries(product.producer.id)}
 										displayLocation={false}
@@ -431,5 +431,4 @@
 		--multiItemActiveColor: #205164;
 		--multiClearHoverFill: #ff4081;
 	}
-
 </style>

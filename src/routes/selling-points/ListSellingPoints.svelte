@@ -32,7 +32,6 @@
 	const onRowClick = (item) => {
 		routerInstance.goTo(SellingPointRoutes.Details, { id: item.id });
 	};
-
 </script>
 
 <TransitionWrapper>
@@ -45,7 +44,7 @@
 			bind:noResults
 			graphQuery={GET_SELLING_POINTS}
 			{errorsHandler}
-			noResultsPage={SellingPointRoutes.NoResultsPage}
+			noResultsPage={SellingPointRoutes.NoResults}
 			loadingMessage="Chargement de vos points de vente en cours... veuillez patienter."
 			{onRowClick}
 			getRowBackgroundColor={(i) => (!i.available ? "bg-orange-200" : "")}

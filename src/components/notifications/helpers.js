@@ -68,7 +68,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`Votre export de données est en cours.`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					false
 				);
@@ -77,7 +77,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre export de données est terminé.`,
-					`${notification.content.Url}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					true
 				);
@@ -86,7 +86,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`Votre export de données a échoué.`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					true
 				);
@@ -95,7 +95,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`La création de votre bon de préparation a échoué.`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					true
 				);
@@ -104,7 +104,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`Votre bon de préparation est en cours de génération...`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					false
 				);
@@ -113,7 +113,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre bon de préparation est prêt !`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					true
 				);
@@ -122,7 +122,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`L'import de vos produits a échoué.`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					true
 				);
@@ -131,7 +131,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`L'import de vos produits est en cours...`,
-					`#/jobs/${notification.content.JobId}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
 					true,
 					false
 				);

@@ -36,10 +36,12 @@
 				await authInstance.refreshLogin("/");
 			},
 			errorsHandler,
+			error: () => {
+				isRegistering = false;
+			},
 			errorNotification: "Impossible de créer votre compte. Veuillez réessayer ou contacter le support",
 			successNotification: "Votre compte a bien été créé !",
 		});
-		isRegistering = false;
 	};
 
 	onDestroy(() => {
@@ -47,7 +49,6 @@
 	});
 
 	$: isStore = params.id == Roles.Store.Value;
-
 </script>
 
 <svelte:head>
@@ -81,5 +82,4 @@
 		height: 80px;
 		width: 100%;
 	}
-
 </style>
