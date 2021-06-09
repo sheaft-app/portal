@@ -8,9 +8,11 @@
 	import ChangeCatalogModal from "./ChangeCatalogModal.svelte";
 	import ChangeDeliveryModal from "./ChangeDeliveryModal.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
+	import SheaftErrors from "../../services/SheaftErrors";
 
 	const { open } = getContext("modal");
 	const routerInstance = GetRouterInstance();
+	const errorsHandler = new SheaftErrors();
 
 	export let agreement, distanceInfos;
 
@@ -27,6 +29,7 @@
 	const showChangeDeliveryModal = () => {
 		open(ChangeDeliveryModal, {
 			agreement: agreement,
+			errorsHandler: errorsHandler,
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.reload();
@@ -38,6 +41,7 @@
 	const showChangeCatalogModal = () => {
 		open(ChangeCatalogModal, {
 			agreement: agreement,
+			errorsHandler: errorsHandler,
 			onClose: async (res) => {
 				if (res.success) {
 					routerInstance.reload();
@@ -45,7 +49,6 @@
 			},
 		});
 	};
-
 </script>
 
 {#if isLoading}

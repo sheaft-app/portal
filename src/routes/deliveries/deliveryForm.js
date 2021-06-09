@@ -30,9 +30,10 @@ export const validators = (delivery) => ({
 		"maxPurchaseOrdersPerTimeSlot",
 		"deliveryHours",
 		"lockOrderHoursBeforeDelivery",
+		"closings",
 		"denormalizedClosings",
 	]),
-	denormalizedDeliveryHours: {
+	openings: {
 		value: delivery.denormalizedDeliveryHours,
 		validators: ["required", "openingsDays", "openingsDates"],
 		enabled: true,
@@ -57,6 +58,7 @@ export const normalizeDelivery = (delivery) =>
 			deliveryHours: normalizeOpeningHours(delivery.denormalizedDeliveryHours),
 			closings: normalizeClosingDates(delivery.denormalizedClosings),
 			lockOrderHoursBeforeDelivery: delivery.limitOrders ? delivery.lockOrderHoursBeforeDelivery : null,
+			maxPurchaseOrdersPerTimeSlot: delivery.limitOrders ? delivery.maxPurchaseOrdersPerTimeSlot : null,
 		},
 		["denormalizedDeliveryHours", "denormalizedClosings", "limitOrders"]
 	);

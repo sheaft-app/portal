@@ -43,7 +43,6 @@
 		`Le ${DayOfWeekKind.label(selectedHour.day).toLowerCase()} entre ${timeSpanToFrenchHour(
 			selectedHour.from
 		)} et ${timeSpanToFrenchHour(selectedHour.to)}`;
-
 </script>
 
 <div class="form-control mt-2" style="display: block;">
@@ -53,7 +52,7 @@
 	{#if isLoading}
 		<Loader />
 	{:else if deliveries && deliveries.length < 1}
-		<p>Vous devez renseigner vos livraisons pour demander un accord avec un magasin.</p>
+		<p>Vous devez renseigner vos créneaux de livraisons pour accepter un partenariat.</p>
 		<button class="btn btn-accent btn-lg" on:click={() => routerInstance.goTo(DeliveryRoutes.List)}
 			>Renseigner mes livraisons
 		</button>
@@ -80,5 +79,4 @@
 			@apply text-white;
 		}
 	}
-
 </style>

@@ -12,6 +12,7 @@
 		errorsHandler;
 
 	onMount(async () => {
+		isLoading = true;
 		catalogs = await query({
 			query: GET_CATALOGS,
 			errorsHandler,
@@ -19,7 +20,6 @@
 		});
 		isLoading = false;
 	});
-
 </script>
 
 <div class="form-control mt-2" style="display: block;">
@@ -28,7 +28,7 @@
 	</div>
 	{#if isLoading}
 		<Loader />
-	{:else if catalogs.length > 0}
+	{:else if catalogs && catalogs.length > 0}
 		{#each catalogs as catalog}
 			<div
 				class:active={selectedCatalog && selectedCatalog.id == catalog.id}
@@ -52,5 +52,4 @@
 			@apply text-white;
 		}
 	}
-
 </style>

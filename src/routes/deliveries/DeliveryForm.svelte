@@ -26,7 +26,6 @@
 
 	$: if (delivery.limitOrders && !delivery.lockOrderHoursBeforeDelivery) delivery.lockOrderHoursBeforeDelivery = 24;
 	$: if (delivery.limitOrders && !delivery.maxPurchaseOrdersPerTimeSlot) delivery.maxPurchaseOrdersPerTimeSlot = 5;
-
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -50,10 +49,10 @@
 		<Toggle labelPosition="left" disabled={$form.isSubmitting} classNames="ml-1" bind:isChecked={delivery.available} />
 	</div>
 	<div class="form-control">
-		<div class="w-full" use:bindClass={{ form, name: "denormalizedDeliveryHours" }}>
+		<div class="w-full" use:bindClass={{ form, name: "openings" }}>
 			<label>Horaires de livraison *</label>
 			<OpeningHoursContainer bind:openings={delivery.denormalizedDeliveryHours} />
-			<ErrorContainer field={$form.fields.deliveryHours} />
+			<ErrorContainer field={$form.fields.openings} />
 		</div>
 	</div>
 	<hr class="my-5" />

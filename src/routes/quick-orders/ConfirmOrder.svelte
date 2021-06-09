@@ -20,7 +20,6 @@
 			variables: { products: data.products, producersExpectedDeliveries: data.producersExpectedDeliveries },
 			errorsHandler,
 			success: async () => onClose && (await onClose()),
-			successNotification: "La commande a été envoyée",
 			errorNotification: "Impossible d'envoyer la commande",
 			clearCache: [MY_ORDERS],
 		});
@@ -35,7 +34,6 @@
 			products,
 		};
 	};
-
 </script>
 
 <ActionConfirm

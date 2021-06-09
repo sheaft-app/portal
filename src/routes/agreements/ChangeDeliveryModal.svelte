@@ -7,10 +7,9 @@
 	import { UPDATE_AGREEMENT_DELIVERY } from "./mutations";
 	import { getContext } from "svelte";
 
-	export let onClose, close, agreement;
+	export let onClose, close, agreement, errorsHandler;
 
 	const { mutate } = getContext("api");
-	const errorsHandler = new SheaftErrors();
 
 	let isLoading = false;
 	let selectedDelivery = null;
@@ -35,7 +34,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -50,5 +48,5 @@
 	{close}
 >
 	<div class="leading-5 text-gray-600 mt-2 mb-5">Choisissez un nouveau créneau de livraison</div>
-	<SelectTime bind:selectedDelivery />
+	<SelectTime {errorsHandler} bind:selectedDelivery />
 </ActionConfirm>

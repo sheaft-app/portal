@@ -60,7 +60,6 @@
 			store.address.longitude
 		);
 	}
-
 </script>
 
 <div
@@ -82,7 +81,7 @@
 					{#if store.agreement.status == AgreementStatusKind.Accepted.Value}
 						<span class="bg-white px-3 py-2 uppercase">déjà partenaire</span>
 					{/if}
-					{#if store.agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value}
+					{#if store.agreement.status == AgreementStatusKind.WaitingForStoreApproval.Value || store.agreement.status == AgreementStatusKind.WaitingForProducerApproval.Value}
 						<span class="bg-blue-400 text-white px-3 py-2 uppercase">en attente</span>
 					{/if}
 				</div>

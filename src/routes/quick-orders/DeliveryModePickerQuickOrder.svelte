@@ -62,12 +62,11 @@
 				})
 				.sort((a, b) => (a.producer.name > b.producer.name ? 1 : 0));
 
-			if (businessQuickOrderProducts.length > 1) {
+			if (businessQuickOrderProducts.length > 0) {
 				businessQuickOrderProducts = newItems;
 			}
 		}
 	};
-
 </script>
 
 {#if isLoading}

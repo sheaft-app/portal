@@ -57,5 +57,5 @@ export const normalizeSellingPoint = (sellingPoint) =>
 			lockOrderHoursBeforeDelivery: sellingPoint.limitOrders ? sellingPoint.lockOrderHoursBeforeDelivery : null,
 			maxPurchaseOrdersPerTimeSlot: sellingPoint.limitOrders ? sellingPoint.maxPurchaseOrdersPerTimeSlot : null,
 		},
-		["denormalizedDeliveryHours", "denormalizedClosings", "openings", "limitOrders"]
+		["denormalizedDeliveryHours", "denormalizedClosings", "limitOrders"]
 	);

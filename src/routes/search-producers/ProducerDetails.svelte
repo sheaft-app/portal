@@ -167,14 +167,14 @@
 						<Icon data={faEye} scale="1.3" class="mr-2" />
 						voir accord
 					</button>
-				{:else if producer.deliveries.length == 0}
-					<button
-						disabled
-						class="flex items-center justify-center p-2 uppercase
-        disabled rounded-full shadow cursor-blocked text-sm mb-2 m-auto"
-					>
-						<Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible
-					</button>
+					<!--{:else if producer.deliveries.length == 0}-->
+					<!--	<button-->
+					<!--		disabled-->
+					<!--		class="flex items-center justify-center p-2 uppercase-->
+					<!--disabled rounded-full shadow cursor-blocked text-sm mb-2 m-auto"-->
+					<!--	>-->
+					<!--		<Icon data={faHandshake} scale="1.3" class="mr-2" /> accord impossible-->
+					<!--	</button>-->
 				{:else}
 					<button
 						on:click={showCreateAgreementModal}

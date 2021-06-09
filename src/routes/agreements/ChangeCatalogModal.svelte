@@ -7,9 +7,7 @@
 	import { UPDATE_AGREEMENT_CATALOG } from "./mutations";
 	import { getContext } from "svelte";
 
-	const errorsHandler = new SheaftErrors();
-
-	export let onClose, close, agreement;
+	export let onClose, close, agreement, errorsHandler;
 	const { mutate } = getContext("api");
 
 	let isLoading = false;
@@ -35,7 +33,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -50,5 +47,5 @@
 	close={() => handleClose({ success: false, data: null })}
 >
 	<div class="leading-5 text-gray-600 mt-2 mb-5">Choisissez un nouveau catalogue pour ce magasin</div>
-	<SelectCatalog bind:selectedCatalog />
+	<SelectCatalog {errorsHandler} bind:selectedCatalog />
 </ActionConfirm>
