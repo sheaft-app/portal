@@ -129,9 +129,8 @@
 							return;
 						}
 
-						if (result.secureModeRedirectURL) {
+						if (result.secureModeNeeded && result.secureModeRedirectURL) {
 							window.location = result.secureModeRedirectURL;
-							return;
 						} else {
 							return routerInstance.goTo({
 								Path: CartRoutes.Success.Path,
