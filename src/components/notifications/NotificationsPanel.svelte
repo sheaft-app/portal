@@ -94,7 +94,7 @@
 			return;
 		}
 
-		const results = notifs.map((n) => getFormattedNotification(null, n, false));
+		const results = notifs.map((n) => getFormattedNotification(n, null, false)).filter((f) => f);
 		const arr = [...$notifications, results][0];
 
 		notifications.set(arr);
@@ -113,7 +113,6 @@
 
 		await getNextResults();
 	});
-
 </script>
 
 <div
@@ -217,5 +216,4 @@
 			top: 64px;
 		}
 	}
-
 </style>

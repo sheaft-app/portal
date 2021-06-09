@@ -140,8 +140,8 @@ class SheaftNotificationManager {
 	}
 
 	formatAndSendNotification(message, type, url, addToStore, show) {
-		var notif = getFormattedNotification(null, { message, type, url, addToStore, show }, true);
-		this.sendNotification(notif);
+		let notif = getFormattedNotification(null, { message, type, url, addToStore, show }, true);
+		if (notif) this.sendNotification(notif);
 	}
 
 	sendNotification(notification) {

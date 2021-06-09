@@ -11,7 +11,7 @@
 	import Main from "./Main.svelte";
 	import { config } from "./configs/config.js";
 
-	var authSettings = config.auth.settings;
+	let authSettings = config.auth.settings;
 	authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
 
 	const authInstance = InitAuth(authSettings);
@@ -26,13 +26,7 @@
 	const apiInstance = InitGraphQL(authInstance, config.api, errorsHandlers);
 	const routerInstance = InitRouter();
 	const guardInstance = InitGuard(authInstance, routerInstance);
-	const signalrInstance = InitSignalr(
-		config.signalr + "/hubs/sheaft",
-		authInstance,
-		notificationsInstance,
-		apiInstance
-	);
-
+	const signalrInstance = InitSignalr(config.signalr + "/hubs/sheaft", authInstance, notificationsInstance);
 </script>
 
 <GraphQLContext>

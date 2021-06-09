@@ -253,7 +253,8 @@
 				(order.status === PurchaseOrderStatusKind.Cancelled.Value ||
 					order.status === PurchaseOrderStatusKind.Refused.Value ||
 					order.status === PurchaseOrderStatusKind.Withdrawned.Value ||
-					order.status === PurchaseOrderStatusKind.Delivered.Value)}
+					order.status === PurchaseOrderStatusKind.Delivered.Value ||
+					order.status === PurchaseOrderStatusKind.Expired.Value)}
 			{getRowBackgroundColor}
 			{onRowClick}
 		>

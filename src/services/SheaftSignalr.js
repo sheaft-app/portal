@@ -3,11 +3,10 @@ import { config } from "../configs/config.js";
 import { getFormattedNotification } from "./../components/notifications/helpers.js";
 
 class SheaftSignalr {
-	constructor(url, authManager, notifManager, graphQL) {
+	constructor(url, authManager, notifManager) {
 		this.url = url;
 		this.authManager = authManager;
 		this.notifManager = notifManager;
-		this.graphQL = graphQL;
 
 		this.connection = new HubConnectionBuilder()
 			.withUrl(url, {
@@ -21,8 +20,9 @@ class SheaftSignalr {
 			.build();
 
 		this.connection.on("event", (message) => {
+			console.log(message);
 			var notif = { method: message.method, content: message.content };
-			var notification = getFormattedNotification(this.graphQL, notif, false, message.display ? message.display : true);
+			var notification = getFormattedNotification(notif, false, message.display ? message.display : true);
 
 			this.notifManager.sendNotification(notification);
 		});

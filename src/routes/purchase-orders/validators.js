@@ -31,8 +31,6 @@ export const canCreatePickingOrder = (o) =>
 
 export const canCancelOrder = (o) =>
 	o &&
-	o.status !== PurchaseOrderStatusKind.Completed.Value &&
-	o.status !== PurchaseOrderStatusKind.Shipping.Value &&
 	o.status !== PurchaseOrderStatusKind.Delivered.Value &&
 	o.status !== PurchaseOrderStatusKind.Cancelled.Value &&
 	o.status !== PurchaseOrderStatusKind.Refused.Value &&

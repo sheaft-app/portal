@@ -58,9 +58,9 @@
 
 <TransitionWrapper>
 	<ErrorCard {errorsHandler} />
-	{#if isLoading && !order}
+	{#if isLoading}
 		<Loader />
-	{:else}
+	{:else if order}
 		<div class="px-0 md:px-5 overflow-x-auto lg:-mx-4 md:-mx-5 mb-5">
 			<div class="flex flex-wrap w-full items-start flex-col-reverse lg:flex-row">
 				<div class="w-full lg:w-2/3 lg:pr-12">
@@ -80,14 +80,16 @@
 						</p>
 					{/if}
 
-					<ul>
-						{#each order.deliveries as delivery}
-							<li>
-								<strong>{delivery.deliveryMode.producer.name}</strong> prévue pour le
-								<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong>.
-							</li>
-						{/each}
-					</ul>
+					{#if !order.purchaseOrders || order.purchaseOrders.length < 1}
+						<ul>
+							{#each order.deliveries as delivery}
+								<li>
+									<strong>{delivery.deliveryMode.producer.name}</strong> prévue pour le
+									<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong>.
+								</li>
+							{/each}
+						</ul>
+					{/if}
 					<p class="text-xl font-semibold mb-2 mt-6">Besoin d'une information ?</p>
 					<p>
 						Vous voulez savoir où en est votre commande ? Vous avez oublié où aller la chercher ? À quelle heure ? Vous
