@@ -20,11 +20,12 @@ class SheaftSignalr {
 			.build();
 
 		this.connection.on("event", (message) => {
-			console.log(message);
-			var notif = { method: message.method, content: message.content };
-			var notification = getFormattedNotification(notif, false, message.display ? message.display : true);
-
-			this.notifManager.sendNotification(notification);
+			let notification = getFormattedNotification(
+				{ method: message.method, content: message.content },
+				null,
+				message.display ? message.display : true
+			);
+			if (notification) this.notifManager.sendNotification(notification);
 		});
 	}
 
