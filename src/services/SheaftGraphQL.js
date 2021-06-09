@@ -36,6 +36,7 @@ class SheaftGraphQL {
 
 			return res;
 		} catch (ex) {
+			console.error(ex);
 			var res = this.formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
