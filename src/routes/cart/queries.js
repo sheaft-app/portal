@@ -50,6 +50,29 @@ export const GET_MY_ORDERS = gql`
 	}
 `;
 
+export const GET_MY_ORDER_FROM_TRANSACTION = gql`
+	query MyOrderFromTransaction($id: StringType!) {
+		orderFromTransaction(identifier: $id) {
+			id
+			reference
+			purchaseOrders {
+				id
+				reference
+				totalOnSalePrice
+				expectedDelivery {
+					expectedDeliveryDate
+					day
+					from
+					to
+				}
+				vendor {
+					name
+				}
+			}
+		}
+	}
+`;
+
 export const GET_ORDER = gql`
 	query order($input: ID!) {
 		order(id: $input) {

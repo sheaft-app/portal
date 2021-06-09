@@ -28,7 +28,7 @@ const CartRoutes = {
 		Path: `${prefix}${success}`,
 		SubPart: `${success}`,
 		Params: {
-			Query: { id: null },
+			Query: { id: null, transactionId: null },
 		},
 	},
 	Checkout: {

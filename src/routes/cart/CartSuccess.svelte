@@ -3,7 +3,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter.js";
 	import cart from "./../../stores/cart.js";
-	import { GET_MY_ORDERS } from "./queries.js";
+	import { GET_MY_ORDERS, GET_MY_ORDER_FROM_TRANSACTION } from "./queries.js";
 	import { MY_ORDERS, MY_VALIDATING_ORDERS } from "./../my-orders/queries.js";
 	import MyOrderRoutes from "./../my-orders/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -24,19 +24,31 @@
 		await cart.reset();
 
 		let values = routerInstance.getQueryParams();
-		await query({
-			query: GET_MY_ORDERS,
-			variables: { id: values.id },
-			success: (res) => {
-				order = res;
-			},
-			errorsHandler,
-			error: () => routerInstance.goTo(MyOrderRoutes.List),
-		});
+
+		if (values.id) {
+			await query({
+				query: GET_MY_ORDERS,
+				variables: { id: values.id },
+				success: (res) => {
+					order = res;
+				},
+				errorsHandler,
+				error: () => routerInstance.goTo(MyOrderRoutes.List),
+			});
+		} else if (values.transactionId) {
+			await query({
+				query: GET_MY_ORDER_FROM_TRANSACTION,
+				variables: { id: values.transactionId },
+				success: (res) => {
+					order = res;
+				},
+				errorsHandler,
+				error: () => routerInstance.goTo(MyOrderRoutes.List),
+			});
+		}
 
 		isLoading = false;
 	});
-
 </script>
 
 <svelte:head>
