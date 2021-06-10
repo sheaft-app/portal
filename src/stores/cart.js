@@ -90,6 +90,14 @@ const store = () => {
 				});
 			}
 
+			if (
+				selectedCart &&
+				![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(selectedCart.status)
+			) {
+				selectedCart = null;
+				this.clearStorage();
+			}
+
 			if (selectedCart) {
 				setters.updateWholeCart(selectedCart);
 			} else if (JSON.parse(localStorage.getItem("user_cart"))) {
