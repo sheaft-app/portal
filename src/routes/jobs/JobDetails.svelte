@@ -28,6 +28,9 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import GetAuthInstance from "../../services/SheaftAuth";
+	import Roles from "../../enums/Roles";
+	import AccountRoutes from "../account/routes";
 
 	export let params = {};
 
@@ -99,8 +102,12 @@
 		open(modal, {
 			jobs: [currentJob],
 			onClose: async () => {
-				await getJob(currentJob.id);
-				routerInstance.goTo(JobRoutes.List);
+				if (GetAuthInstance().isInRole([Roles.Consumer.Value])) {
+					await routerInstance.goTo(AccountRoutes.Profile);
+					return;
+				}
+
+				await routerInstance.goTo(JobRoutes.List);
 			},
 		});
 
@@ -117,7 +124,6 @@
 	$: canCancelJob = job && job.status != ProcessStatusKind.Done.Value && job.status != ProcessStatusKind.Failed.Value;
 
 	$: canRetryJob = job && job.status == ProcessStatusKind.Failed.Value;
-
 </script>
 
 <TransitionWrapper>
