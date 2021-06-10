@@ -90,12 +90,6 @@
 			error: () => (userLegalsFound = false),
 		});
 
-		if ($cart.status && $cart.status !== OrderStatusKind.Created && $cart.status !== OrderStatusKind.Waiting) {
-			$cart.reset();
-			routerInstance.goTo(MyOrderRoutes.List);
-			return;
-		}
-
 		isLoading = false;
 	});
 
@@ -132,6 +126,16 @@
 					},
 					errorsHandler,
 					success: (result) => {
+						if (!result)
+							routerInstance.goTo({
+								Path: CartRoutes.Success.Path,
+								Params: {
+									Query: {
+										id: $cart.userCurrentOrder,
+									},
+								},
+							});
+
 						if (result.status === PreAuthorizationStatus.FAILED.Value) {
 							isPaying = false;
 							//TODO handle authorization error
