@@ -75,7 +75,7 @@ export const GET_MY_ORDERS = gql`
 `;
 
 export const GET_MY_ORDER_FROM_TRANSACTION = gql`
-	query MyOrderFromTransaction($id: StringType!) {
+	query MyOrderFromTransaction($id: String!) {
 		orderFromTransaction(identifier: $id) {
 			id
 			status
