@@ -35,6 +35,7 @@ const store = () => {
 		returnablesCount: 0,
 		conflicts: [],
 		warningInfo: null,
+		status: null,
 	};
 
 	const { subscribe, set, update } = writable(state);
@@ -422,6 +423,7 @@ const store = () => {
 				state.totalReturnableOnSalePrice = selectedCart.totalReturnableOnSalePrice;
 				state.returnablesCount = selectedCart.returnablesCount;
 				state.userCurrentOrder = selectedCart.id;
+				state.status = selectedCart.status;
 				state.conflicts = [];
 
 				if (selectedCart.deliveries && selectedCart.deliveries.length > 0) {

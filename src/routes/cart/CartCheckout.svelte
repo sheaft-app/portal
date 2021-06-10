@@ -26,6 +26,8 @@
 	import mangoPay from "./../../../node_modules/mangopay-cardregistration-js-kit/kit/mangopay-kit.min.js";
 	import CreditCard from "./CreditCard.svelte";
 	import { normalizeUpdateLegals, normalizeCreateLegals } from "./cartForm";
+	import OrderStatusKind from "../../enums/OrderStatusKind";
+	import MyOrderRoutes from "../my-orders/routes";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -87,6 +89,13 @@
 			},
 			error: () => (userLegalsFound = false),
 		});
+
+		if ($cart.status && $cart.status !== OrderStatusKind.Created && $cart.status !== OrderStatusKind.Waiting) {
+			$cart.reset();
+			routerInstance.goTo(MyOrderRoutes.List);
+			return;
+		}
+
 		isLoading = false;
 	});
 
