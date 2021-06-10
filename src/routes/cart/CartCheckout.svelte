@@ -141,12 +141,14 @@
 						if (result.secureModeNeeded && result.secureModeRedirectURL) {
 							window.location = result.secureModeRedirectURL;
 						} else {
+							let orderId = $cart.userCurrentOrder;
 							await cart.reset();
+
 							await routerInstance.goTo({
 								Path: CartRoutes.Success.Path,
 								Params: {
 									Query: {
-										id: $cart.userCurrentOrder,
+										id: orderId,
 									},
 								},
 							});

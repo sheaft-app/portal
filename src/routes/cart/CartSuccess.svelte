@@ -75,17 +75,6 @@
 							pour chaque mise à jour.
 						</p>
 					{/if}
-
-					{#if !order.purchaseOrders || order.purchaseOrders.length < 1}
-						<ul>
-							{#each order.deliveries as delivery}
-								<li>
-									<strong>{delivery.deliveryMode.producer.name}</strong> prévue pour le
-									<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong>.
-								</li>
-							{/each}
-						</ul>
-					{/if}
 					<p class="text-xl font-semibold mb-2 mt-6">Besoin d'une information ?</p>
 					<p>
 						Vous voulez savoir où en est votre commande ? Vous avez oublié où aller la chercher ? À quelle heure ? Vous
@@ -123,6 +112,18 @@
 							<Icon data={faLink} />
 							voir le détail
 						</a>
+					</div>
+				{/each}
+			{:else}
+				{#if order.deliveries.length > 1}
+					<p class="text-xl mb-2 font-semibold mt-6">Vos commandes</p>
+				{:else}
+					<p class="text-xl mb-2 font-semibold mt-6">Votre commande</p>
+				{/if}
+				{#each order.deliveries as delivery}
+					<div class="mb-1">
+						- {delivery.deliveryMode.producer.name} prévue pour le
+						<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong>.
 					</div>
 				{/each}
 			{/if}

@@ -382,7 +382,7 @@ const store = () => {
 			methods.clearStorage();
 
 			update((state) => {
-				state.isInitializing = true;
+				state.isInitializing = false;
 				state.isSaving = false;
 				state.products = [];
 				state.selectedDeliveries = [];
