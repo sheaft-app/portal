@@ -33,7 +33,7 @@
 			query: SUGGEST_PRODUCER,
 			variables: { input: { text: filterText } },
 			errorsHandler,
-			success: (res) => (data = res),
+			success: (res) => (data = res.data),
 			error: () => (data = []),
 			errorNotification: "Impossible de récupérer les producteurs.",
 		});
