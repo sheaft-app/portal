@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import { GET_CART, GET_MOST_RECENT_CART } from "./queries";
 import { CREATE_CONSUMER_ORDER, UPDATE_CONSUMER_ORDER } from "./mutations.js";
 import orderBy from "lodash/orderBy";
+import OrderStatusKind from "../enums/OrderStatusKind";
 
 export const card = writable({
 	data: {
@@ -72,9 +73,10 @@ const store = () => {
 					variables: { input: currentOrder },
 					errorsHandler,
 					success: (res) => {
-						if (!res || ["SUCCEEDED", "WAITING", "VALIDATED"].includes(res.status)) return this.clearStorage();
+						if (!res || ![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(res.status))
+							this.clearStorage();
 						else if (selectedCart)
-							return update((state) => {
+							update((state) => {
 								state.conflicts = [selectedCart, res];
 								state.isInitializing = false;
 								return state;
