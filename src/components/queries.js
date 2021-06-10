@@ -36,6 +36,7 @@ export const GET_NATIONALITIES = gql`
 export const GET_PRODUCER_PRODUCTS = gql`
 	query GetProducerProducts($id: ID!) {
 		producer(id: $id) {
+			id
 			products {
 				id
 				name
