@@ -24,7 +24,7 @@
 		isSearchingSiret = true;
 		await query({
 			query: SEARCH_COMPANY_SIRET,
-			variables: { input: $siret },
+			variables: { input: `${$siret}` },
 			errorsHandler,
 			success: (res) => {
 				$company.address = res.address;
