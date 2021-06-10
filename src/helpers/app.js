@@ -187,7 +187,7 @@ export const unfreezeBody = () => {
 	window.scrollTo(0, parseInt(scrollY || "0") * -1);
 };
 
-export const formatMoney = (price) => `${price.toFixed(2).replace(".", ",")}€`;
+export const formatMoney = (price) => (price ? `${price.toFixed(2).replace(".", ",")}€` : "");
 
 export const isBio = (tags) => {
 	if (typeof tags === "string") return tags.indexOf("bio") > -1;

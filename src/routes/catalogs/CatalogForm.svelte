@@ -21,7 +21,6 @@
 	onDestroy(async () => {
 		await form.destroy();
 	});
-
 </script>
 
 <form class="w-full" on:submit|preventDefault={() => form.validateAndSubmit(submit)}>
@@ -36,7 +35,7 @@
 					disabled={$form.isSubmitting}
 					id="grid-product"
 					type="text"
-					placeholder="Catalogue petits magasins été"
+					placeholder="Catalogue GMS"
 				/>
 			</div>
 			<ErrorContainer field={$form.fields.name} />

@@ -13,6 +13,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeCatalog } from "./catalogForm";
+	import CatalogKind from "../../enums/CatalogKind";
 
 	export let params;
 
@@ -65,19 +66,22 @@
 			onClose: (res) => routerInstance.goTo(CatalogRoutes.Details, { id: res.id }),
 		});
 
-	const buttons = [
+	$: isConsumerCatalog = catalog && catalog.kind === CatalogKind.Consumers.Value;
+
+	$: buttons = [
 		{
 			text: "Dupliquer",
 			click: () => showCloneModal(),
 			color: "blue",
+			hidden: isConsumerCatalog,
 		},
 		{
 			text: "Supprimer",
 			click: () => showDeleteModal(),
 			color: "red",
+			hidden: isConsumerCatalog,
 		},
 	];
-
 </script>
 
 <TransitionWrapper>

@@ -15,7 +15,8 @@
 		errorsHandler;
 
 	const routerInstance = GetRouterInstance();
-	const { open, clearApolloCache } = getContext("modal");
+	const { open } = getContext("modal");
+	const { clearApolloCache } = getContext("api");
 
 	const headers = [
 		{ label: "Nom", mobile: true },
@@ -59,9 +60,7 @@
 		});
 
 	$: $products = catalog.products;
-	$: invalidCatalogProducts =
-		$products.length == 0 || ($products.length > 0 && $products.filter((p) => !p.wholeSalePricePerUnit).length);
-
+	$: invalidCatalogProducts = $products.length > 0 && $products.filter((p) => !p.wholeSalePricePerUnit).length;
 </script>
 
 <table class="shadow">
@@ -112,7 +111,9 @@
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
 					<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
-						{format(new Date(product.addedOn), "PP", { locale: fr })}
+						{product.addedOn
+							? format(new Date(product.addedOn), "PP", { locale: fr })
+							: format(new Date(), "PP", { locale: fr })}
 					</div>
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
@@ -137,7 +138,7 @@
 					Ajouter des produits
 				</button>
 			</td>
-			{#if catalog.id && catalog.id.length > 0}
+			{#if catalog.id && catalog.id.length > 0 && $products.length > 0 && $products.filter((p) => !p.addedOn).length < 1}
 				<td class="px-3 md:px-6 py-2 whitespace-no-wrap border-b border-gray-200">
 					<button type="button" class="flex items-center btn-link" on:click={showUpdateCatalogPricesModal}>
 						<Icon data={faEdit} class="mr-2" />

@@ -28,13 +28,14 @@ export const validators = (product) => ({
 		"returnableId",
 		"description",
 		"picture",
+		"producer",
 	]),
 	name: {
 		value: product.name,
 		validators: ["required", "minLength:3"],
 		enabled: true,
 	},
-	vat: { value: product.vat, validators: ["required"], enabled: !product.notSubjectToVat },
+	vat: { value: product.vat, validators: ["required"], enabled: !product.producer.notSubjectToVat },
 	unit: {
 		value: product.unit,
 		validators: ["required"],

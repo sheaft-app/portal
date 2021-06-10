@@ -124,7 +124,6 @@
 			},
 		});
 	};
-
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -160,47 +159,49 @@
 					<ErrorContainer field={$form.fields.name} />
 				</div>
 			</div>
-			<div class="form-control">
-				<div class="flex w-full">
-					<div class="w-full" class:hidden={product.producer?.notSubjectToVat}>
-						<label>TVA *</label>
-						<div
-							class="w-full text-lg justify-center button-group"
-							class:skeleton-box={$isLoading}
-							use:bindClass={{ form, name: "vat" }}
-						>
-							<button
-								on:click={() => selectVat(5.5)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 5.5}
+			{#if !product.producer.notSubjectToVat}
+				<div class="form-control">
+					<div class="flex w-full">
+						<div class="w-full">
+							<label>TVA *</label>
+							<div
+								class="w-full text-lg justify-center button-group"
 								class:skeleton-box={$isLoading}
+								use:bindClass={{ form, name: "vat" }}
 							>
-								5,5%
-							</button>
-							<button
-								on:click={() => selectVat(10)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 10}
-								class:skeleton-box={$isLoading}
-							>
-								10%
-							</button>
-							<button
-								on:click={() => selectVat(20)}
-								type="button"
-								class="text-sm md:text-base"
-								class:selected={product.vat === 20}
-								class:skeleton-box={$isLoading}
-							>
-								20%
-							</button>
+								<button
+									on:click={() => selectVat(5.5)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 5.5}
+									class:skeleton-box={$isLoading}
+								>
+									5,5%
+								</button>
+								<button
+									on:click={() => selectVat(10)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 10}
+									class:skeleton-box={$isLoading}
+								>
+									10%
+								</button>
+								<button
+									on:click={() => selectVat(20)}
+									type="button"
+									class="text-sm md:text-base"
+									class:selected={product.vat === 20}
+									class:skeleton-box={$isLoading}
+								>
+									20%
+								</button>
+							</div>
+							<ErrorContainer field={$form.fields.vat} />
 						</div>
-						<ErrorContainer field={$form.fields.vat} />
 					</div>
 				</div>
-			</div>
+			{/if}
 			<div class="form-control" style="display: block;">
 				<label>Labels</label>
 				<Toggle
@@ -425,5 +426,4 @@
 		--inputPadding: 18px;
 		--inputColor: #205164;
 	}
-
 </style>

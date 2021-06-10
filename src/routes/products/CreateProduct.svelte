@@ -25,7 +25,7 @@
 			errorsHandler,
 			success: (res) => (initialValues.producer.notSubjectToVat = res.notSubjectToVat),
 			error: () => routerInstance.goTo(ProductRoutes.List),
-			errorNotification: "Un problème est survenu pendant la récupération des informations du produit.",
+			errorNotification: "Un problème est survenu pendant la récupération des informations du producteur.",
 		});
 		isLoading = false;
 	});
@@ -41,7 +41,6 @@
 			clearCache: [GET_PRODUCTS],
 		});
 	};
-
 </script>
 
 <TransitionWrapper>

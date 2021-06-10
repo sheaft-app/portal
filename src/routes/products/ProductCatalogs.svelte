@@ -32,7 +32,6 @@
 	};
 
 	$: invalidCatalogs = catalogs.length > 0 && catalogs.filter((c) => !c.wholeSalePricePerUnit).length > 0;
-
 </script>
 
 <table class="shadow w-full">
@@ -87,7 +86,9 @@
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
 					<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
-						{format(new Date(catalog.addedOn), "PP", { locale: fr })}
+						{catalog.addedOn
+							? format(new Date(catalog.addedOn), "PP", { locale: fr })
+							: format(new Date(), "PP", { locale: fr })}
 					</div>
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200 hidden lg:table-cell">
