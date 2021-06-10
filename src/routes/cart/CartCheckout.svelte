@@ -125,16 +125,12 @@
 						},
 					},
 					errorsHandler,
-					success: (result) => {
-						if (!result)
-							routerInstance.goTo({
-								Path: CartRoutes.Success.Path,
-								Params: {
-									Query: {
-										id: $cart.userCurrentOrder,
-									},
-								},
-							});
+					success: async (result) => {
+						if (!result) {
+							console.error("null result from prepay api");
+							location.reload();
+							return;
+						}
 
 						if (result.status === PreAuthorizationStatus.FAILED.Value) {
 							isPaying = false;
@@ -145,7 +141,8 @@
 						if (result.secureModeNeeded && result.secureModeRedirectURL) {
 							window.location = result.secureModeRedirectURL;
 						} else {
-							routerInstance.goTo({
+							await cart.reset();
+							await routerInstance.goTo({
 								Path: CartRoutes.Success.Path,
 								Params: {
 									Query: {

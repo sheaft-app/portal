@@ -344,13 +344,14 @@ const store = () => {
 				});
 			});
 		},
-		removeProduct(productId) {
+		async removeProduct(productId) {
 			update((state) => {
 				state.products = state.products.filter((c) => c.id !== productId);
-				methods.updateCartInStorage();
-				methods.updateCart();
 				return state;
 			});
+
+			methods.updateCartInStorage();
+			await methods.updateCart();
 		},
 		async updateProduct(productId, quantity) {
 			update((state) => {
@@ -364,28 +365,43 @@ const store = () => {
 				}
 				return state;
 			});
-			const result = await methods.updateCart();
-			return result;
+			return await methods.updateCart();
 		},
-		removeProducerProducts(producerId) {
+		async removeProducerProducts(producerId) {
+			methods.resetSelectedDeliveryForProducerId(producerId);
+
 			update((state) => {
 				state.products = state.products.filter((c) => c.producer.id !== producerId);
-				resetSelectedDeliveryForProducerId(producerId);
-				methods.updateCartInStorage();
-				methods.updateCart();
 				return state;
 			});
+
+			methods.updateCartInStorage();
+			return await methods.updateCart();
 		},
 		reset() {
+			methods.clearStorage();
+
 			update((state) => {
+				state.isInitializing = true;
+				state.isSaving = false;
 				state.products = [];
-				methods.updateCartInStorage();
-				localStorage.removeItem("user_last_transaction");
-				localStorage.removeItem("user_current_order");
+				state.selectedDeliveries = [];
+				state.userCurrentOrder = null;
+				state.totalFees = 0;
+				state.donation = 0;
+				state.productsCount = 0;
+				state.totalOnSalePrice = 0;
+				state.totalPrice = 0;
+				state.totalReturnableOnSalePrice = 0;
+				state.returnablesCount = 0;
+				state.conflicts = [];
+				state.warningInfo = null;
+				state.status = null;
+
 				return state;
 			});
 		},
-		updateDelivery({ producerId, delivery, deliveryHour }) {
+		async updateDelivery({ producerId, delivery, deliveryHour }) {
 			update((state) => {
 				let deliveryMode = getters.getDeliveryByProducerId(producerId);
 
@@ -405,9 +421,10 @@ const store = () => {
 					];
 				}
 
-				methods.updateCart();
 				return state;
 			});
+
+			await methods.updateCart();
 		},
 		setSelectedDeliveries(deliveries) {
 			update((state) => {
@@ -444,6 +461,7 @@ const store = () => {
 
 				return state;
 			});
+
 			methods.updateCartInStorage();
 		},
 	};
