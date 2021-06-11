@@ -33,6 +33,7 @@
 			case PurchaseOrderStatusKind.Waiting.Value:
 			case PurchaseOrderStatusKind.Accepted.Value:
 			case PurchaseOrderStatusKind.Refused.Value:
+			case PurchaseOrderStatusKind.Expired.Value:
 				return 1;
 			case PurchaseOrderStatusKind.Processing.Value:
 				return 2;
@@ -77,7 +78,8 @@
 		order.status != PurchaseOrderStatusKind.Delivered.Value &&
 		order.status != PurchaseOrderStatusKind.Shipping.Value &&
 		order.status != PurchaseOrderStatusKind.Processing.Value &&
-		order.status != PurchaseOrderStatusKind.Refused.Value;
+		order.status != PurchaseOrderStatusKind.Refused.Value &&
+		order.status != PurchaseOrderStatusKind.Expired.Value;
 </script>
 
 <TransitionWrapper>
@@ -87,7 +89,21 @@
 		{isLoading}
 		loadingMessage="Récupération des informations de votre commande en cours... veuillez patienter."
 	>
-		{#if order.status == PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Withdrawned.Value}
+		{#if order.status === PurchaseOrderStatusKind.Expired.Value}
+			<div
+				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
+        shadow rounded mb-3"
+			>
+				<p class="uppercase font-bold leading-none">Commande expirée</p>
+				<div class="mt-2">
+					<p>La commande est expirée, vous ne pouvez plus interagir avec.</p>
+					{#if order.reason}
+						<p class="mt-2 font-semibold">Raison : {order.reason}</p>
+					{/if}
+				</div>
+			</div>
+		{/if}
+		{#if order.status === PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Withdrawned.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3"
@@ -101,7 +117,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Refused.Value}
+		{#if order.status === PurchaseOrderStatusKind.Refused.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-red-100
         shadow rounded mb-3"
@@ -130,7 +146,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Shipping.Value}
+		{#if order.status === PurchaseOrderStatusKind.Shipping.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3"
@@ -141,7 +157,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
+		{#if order.status === PurchaseOrderStatusKind.Delivered.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3"
@@ -159,7 +175,7 @@
 				{/if}
 			</div>
 		{/if}
-		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.expectedDelivery.expectedDeliveryDate}
+		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.status !== PurchaseOrderStatusKind.Expired.Value && order.expectedDelivery.expectedDeliveryDate}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3 border-t md:border-none border-gray-400"
@@ -232,7 +248,7 @@
 				</div>
 			</div>
 		{/if}
-		{#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Refused.Value}
+		{#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Expired.Value}
 			<div
 				class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
         border-t md:border-l md:border-r border-gray-400"
@@ -247,7 +263,7 @@
 							{/if}
 						</div>
 						<div class="md-step-title text-xs md:text-base">
-							{#if order.status == PurchaseOrderStatusKind.Waiting.Value}En attente{:else}Acceptée{/if}
+							{order.status === PurchaseOrderStatusKind.Waiting.Value ? "En attente" : "Acceptée"}
 						</div>
 						<div class="md-step-bar-left hidden md:block" />
 						<div class="md-step-bar-right hidden md:block" />
@@ -316,7 +332,7 @@
 								{format(new Date(order.createdOn), "PPPPp", { locale: fr })}
 							</p>
 						</div>
-						{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
+						{#if order.status === PurchaseOrderStatusKind.Delivered.Value}
 							<div class="flex items-center mb-2">
 								<p>
 									<span class="text-gray-600">Livrée le :</span>
@@ -497,17 +513,19 @@
 				</div>
 			</div>
 		</div>
-		<div class:hidden={!canCancelOrder} class="bg-white shadow md:rounded overflow-hidden md:mb-3 -mx-4 md:mx-0">
-			<div class="px-4 md:px-8 py-5">
-				<p class="uppercase font-bold">Annuler la commande</p>
-				<div class="mt-5">
-					<p>Vous pouvez annuler votre commande tant que celle-ci n'est pas en cours de préparation.</p>
-					<button on:click={cancelOrder} class="btn btn-lg btn-accent shadow mt-3 font-semibold">
-						Annuler ma commande
-					</button>
+		{#if canCancelOrder}
+			<div class="bg-white shadow md:rounded overflow-hidden md:mb-3 -mx-4 md:mx-0">
+				<div class="px-4 md:px-8 py-5">
+					<p class="uppercase font-bold">Annuler la commande</p>
+					<div class="mt-5">
+						<p>Vous pouvez annuler votre commande tant que celle-ci n'est pas en cours de préparation.</p>
+						<button on:click={cancelOrder} class="btn btn-lg btn-accent shadow mt-3 font-semibold">
+							Annuler ma commande
+						</button>
+					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 	</PageBody>
 </TransitionWrapper>
 

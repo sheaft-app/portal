@@ -14,7 +14,6 @@
 	import OrderStatus from "../../enums/OrderStatusKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import Actions from "../../components/table/Actions.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const { query } = getContext("api");
@@ -28,7 +27,7 @@
 		isLoading = true;
 		await query({
 			query: MY_ORDERS,
-			variables: { orderBy: { createdOn: OrderByDirection.DESC } },
+			variables: { orderBy: { createdOn: OrderByDirection.DESC }, first: 50 },
 			errorsHandler,
 			success: (res) => {
 				items.set(
@@ -38,7 +37,8 @@
 							p.status !== PurchaseOrderStatusKind.Cancelled.Value &&
 							p.status !== PurchaseOrderStatusKind.Withdrawned.Value &&
 							p.status !== PurchaseOrderStatusKind.Refused.Value &&
-							p.status !== PurchaseOrderStatusKind.Delivered.Value,
+							p.status !== PurchaseOrderStatusKind.Delivered.Value &&
+							p.status !== PurchaseOrderStatusKind.Expired.Value,
 					}))
 				);
 			},
@@ -93,7 +93,6 @@
 	});
 
 	$: hiddenNavigation = $items.filter((o) => !o.active).length < 1 || $items.filter((o) => o.active).length < 1;
-
 </script>
 
 <TransitionWrapper>
