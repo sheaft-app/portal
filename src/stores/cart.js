@@ -346,7 +346,7 @@ const store = () => {
 		},
 		reset() {
 			methods.clearStorage();
-			methods.clearState();
+			this.clearState();
 		},
 		clearState() {
 			update((state) => {
