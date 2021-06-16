@@ -79,6 +79,8 @@ const store = () => {
 					query: GET_MOST_RECENT_CART,
 					errorsHandler,
 					success: (res) => {
+						if (!res) return;
+
 						if (currentOrder && res.id !== currentOrder.id)
 							update((state) => {
 								state.conflicts = [currentOrder, res];
