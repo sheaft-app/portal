@@ -45,9 +45,8 @@
 		if (initialized) {
 			isLoading = false;
 
-			if (!authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])) {
-				await cart.initialize({ query, mutate }, errorsHandlers, authInstance.authenticated, $authRegistered);
-			}
+			if (!authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value]))
+				await cart.initialize({ query, mutate }, errorsHandlers, authInstance.authenticated);
 		}
 	});
 
@@ -58,6 +57,9 @@
 		} else {
 			signalrInstance.start();
 			await loginFreshdesk();
+
+			if (!authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value]))
+				await cart.initialize({ query, mutate }, errorsHandlers, authInstance.authenticated);
 
 			await query({
 				query: GET_UNREAD_NOTIFICATIONS_COUNT,
@@ -73,12 +75,8 @@
 		}
 	});
 
-	window.addEventListener("beforeinstallprompt", (e) => {});
-
-	window.addEventListener("appinstalled", (evt) => {
-		//TODO: register user points
-	});
-
+	window.addEventListener("beforeinstallprompt", () => {});
+	window.addEventListener("appinstalled", () => {});
 	window.addEventListener("load", () => {});
 
 	onMount(async () => {

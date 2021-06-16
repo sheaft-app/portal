@@ -19,7 +19,6 @@ export const card = writable({
 const store = () => {
 	let context = null;
 	let errorsHandler = null;
-	let initialized = false;
 
 	const state = {
 		isInitializing: true,
@@ -43,18 +42,35 @@ const store = () => {
 
 	const methods = {
 		async initialize(c, errorsHandlerInstance, authenticated = false) {
-			if (initialized) return;
-
-			let selectedCart = null;
+			let currentOrder = null;
 
 			context = c;
 			errorsHandler = errorsHandlerInstance;
 
-			let currentOrder = null;
+			this.clearState();
 
+			let currentOrderId = null;
 			try {
-				currentOrder = JSON.parse(localStorage.getItem("user_current_order"));
+				currentOrderId = JSON.parse(localStorage.getItem("user_currentOrderId"));
+				if (currentOrderId && currentOrderId.length > 0)
+					await context.query({
+						query: GET_CART,
+						variables: { input: currentOrderId },
+						errorsHandler,
+						success: (res) => {
+							if (!res || ![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(res.status))
+								this.clearStorage();
+							else {
+								currentOrder = res;
+							}
+						},
+						error: () => {
+							this.clearStorage();
+						},
+						errorNotification: "Imposible de récupérer les informations du panier",
+					});
 			} catch (e) {
+				currentOrderId = null;
 				currentOrder = null;
 			}
 
@@ -62,55 +78,26 @@ const store = () => {
 				await context.query({
 					query: GET_MOST_RECENT_CART,
 					errorsHandler,
-					success: (res) => (selectedCart = res),
+					success: (res) => {
+						if (currentOrder && res.id !== currentOrder.id)
+							update((state) => {
+								state.conflicts = [currentOrder, res];
+								return state;
+							});
+						else {
+							currentOrder = res;
+						}
+					},
 					errorNotification: "Impossible de récupérer les informations du panier le plus récent",
 				});
 			}
 
-			if (currentOrder && (!selectedCart || currentOrder !== selectedCart.id)) {
-				await context.query({
-					query: GET_CART,
-					variables: { input: currentOrder },
-					errorsHandler,
-					success: (res) => {
-						if (!res || ![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(res.status))
-							this.clearStorage();
-						else if (selectedCart)
-							update((state) => {
-								state.conflicts = [selectedCart, res];
-								state.isInitializing = false;
-								return state;
-							});
-						else selectedCart = res;
-					},
-					error: () => {
-						this.clearStorage();
-					},
-					errorNotification: "Imposible de récupérer les informations du panier",
-				});
-			}
-
-			if (
-				selectedCart &&
-				![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(selectedCart.status)
-			) {
-				selectedCart = null;
-				this.clearStorage();
-			}
-
-			if (selectedCart) {
-				setters.updateWholeCart(selectedCart);
-			} else if (JSON.parse(localStorage.getItem("user_cart"))) {
-				// on a des infos dans le storage mais le cart n'a pas été créé dans la DB
-				await this.updateCart();
-			}
+			if (currentOrder && (!state.conflicts || state.conflicts.length < 1)) setters.updateWholeCart(currentOrder);
 
 			update((state) => {
 				state.isInitializing = false;
 				return state;
 			});
-
-			initialized = true;
 		},
 		async updateCart(donation = "NONE") {
 			update((state) => {
@@ -122,7 +109,11 @@ const store = () => {
 				return;
 			}
 
-			state.isSaving = true;
+			update((state) => {
+				state.isSaving = true;
+				return state;
+			});
+
 			const orderMutation = state.userCurrentOrder ? UPDATE_CONSUMER_ORDER : CREATE_CONSUMER_ORDER;
 			const variables = {
 				id: state.userCurrentOrder,
@@ -148,8 +139,6 @@ const store = () => {
 
 					if (invalidProductsError) {
 						const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-						let products = JSON.parse(localStorage.getItem("user_cart"));
-						localStorage.setItem("user_cart", JSON.stringify(products.filter((p) => !ids.includes(p.id))));
 						setters.disableProducts(ids);
 					}
 
@@ -159,8 +148,6 @@ const store = () => {
 
 					if (disabledProductsError) {
 						const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-						let products = JSON.parse(localStorage.getItem("user_cart"));
-						localStorage.setItem("user_cart", JSON.stringify(products.filter((p) => !ids.includes(p.id))));
 						setters.disableProducts(ids);
 					}
 
@@ -178,10 +165,14 @@ const store = () => {
 				},
 			});
 
-			return res.status && ["CREATED", "UPDATED"].includes(res.status);
+			return res.status && ["CREATED"].includes(res.status);
 		},
 		async chooseCart(cartId) {
-			state.isSaving = true;
+			update((state) => {
+				state.isSaving = true;
+				return state;
+			});
+
 			await context.query({
 				query: GET_CART,
 				variables: { input: cartId },
@@ -189,36 +180,12 @@ const store = () => {
 				success: (res) => setters.updateWholeCart(res),
 				errorNotification: "Impossible de choisir le panier",
 			});
-		},
-		addProduct(productId, quantity) {
-			localStorage.setItem(
-				"user_cart",
-				JSON.stringify([
-					...getters.getValidProducts().map((i) => ({
-						id: i.id,
-						quantity: i.quantity,
-					})),
-					{
-						id: productId,
-						quantity,
-					},
-				])
-			);
-		},
-		updateCartInStorage() {
-			localStorage.setItem(
-				"user_cart",
-				JSON.stringify(
-					getters.getValidProducts().map((i) => ({
-						id: i.id,
-						quantity: i.quantity,
-					}))
-				)
-			);
+
+			await methods.updateCart();
 		},
 		clearStorage() {
 			localStorage.removeItem("user_last_transaction");
-			localStorage.removeItem("user_current_order");
+			localStorage.removeItem("user_currentOrderId");
 			localStorage.removeItem("user_cart");
 		},
 		normalizeDeliveries(deliveries) {
@@ -240,53 +207,54 @@ const store = () => {
 
 	const getters = {
 		getProductById(productId) {
-			return state.products.find((i) => i.id == productId);
+			return state.products.find((i) => i.id === productId);
 		},
 		getSortedProductsByProducerName() {
 			return orderBy(state.products, (i) => i.producer.name, ["asc"]);
 		},
 		getProducersIds() {
 			return state.products
+				.filter((p) => p.producer)
 				.map((p) => p.producer.id)
 				.reduce((unique, item) => (unique.includes(item) ? unique : [...unique, item]), []);
 		},
 		getProductsMappedByProducer() {
-			return state.products.reduce((producers, product) => {
-				let producer = producers.find((p) => p.id == product.producer.id);
+			return state.products
+				.filter((p) => p.producer)
+				.reduce((producers, product) => {
+					let producer = producers.find((p) => p.id === product.producer.id);
 
-				producer
-					? (producer.nbProducts += product.quantity)
-					: (producers = [
-							...producers,
-							{
-								...product.producer,
-								nbProducts: product.quantity,
-							},
-					  ]);
+					producer
+						? (producer.nbProducts += product.quantity)
+						: (producers = [
+								...producers,
+								{
+									...product.producer,
+									nbProducts: product.quantity,
+								},
+						  ]);
 
-				return producers;
-			}, []);
+					return producers;
+				}, []);
 		},
 		getValidProducts() {
 			return state.products.filter((p) => p.quantity > 0 && !p.disabled && !p.producer.disabled);
 		},
 		getDeliveryByProducerId(_producerId) {
-			return state.selectedDeliveries.find((d) => d.producerId == _producerId);
+			return state.selectedDeliveries.find((d) => d.producerId === _producerId);
 		},
 		getHasSelectedDeliveryForEveryProducer() {
-			return state.selectedDeliveries.length == this.getProducersIds().length;
+			return state.selectedDeliveries.length === this.getProducersIds().length;
 		},
 		getNormalizedProducts() {
-			let products = JSON.parse(localStorage.getItem("user_cart"));
-
-			return products.map((product) => ({
+			return state.products.map((product) => ({
 				id: product.id,
 				quantity: product.quantity,
 			}));
 		},
 		getNormalizedSelectedDeliveries() {
 			state.selectedDeliveries.map((d) => {
-				let hasProducerInCart = state.products.find((i) => i.producer.id == d.producerId);
+				let hasProducerInCart = state.products.filter((p) => p.producer).find((i) => i.producer.id === d.producerId);
 
 				if (!hasProducerInCart) {
 					setters.resetSelectedDeliveryForProducerId(d.producerId);
@@ -307,7 +275,7 @@ const store = () => {
 		},
 		getSelectedDelivery(deliveries) {
 			for (const delivery of deliveries) {
-				let _delivery = state.selectedDeliveries.find((p) => p.delivery.id == delivery.id);
+				let _delivery = state.selectedDeliveries.find((p) => p.delivery.id === delivery.id);
 				if (_delivery) return _delivery;
 			}
 
@@ -319,7 +287,6 @@ const store = () => {
 		setProducts(products) {
 			update((state) => {
 				state.products = products;
-				methods.updateCartInStorage();
 				return state;
 			});
 		},
@@ -330,9 +297,9 @@ const store = () => {
 			});
 		},
 		disableProducers(producersIds) {
-			producersIds.map((i) => {
+			producersIds.map((id) => {
 				state.products.map((c) => {
-					if (c.producer.id == i) {
+					if (c.producer.id === id) {
 						return {
 							...c,
 							producer: {
@@ -350,37 +317,36 @@ const store = () => {
 				return state;
 			});
 
-			methods.updateCartInStorage();
 			await methods.updateCart();
 		},
 		async updateProduct(productId, quantity) {
 			update((state) => {
 				let product = getters.getProductById(productId);
-
 				if (!product) {
-					methods.addProduct(productId, quantity);
+					state.products = [...state.products, { id: productId, quantity }];
 				} else {
 					product.quantity = quantity;
-					methods.updateCartInStorage();
 				}
 				return state;
 			});
-			return await methods.updateCart();
+
+			await methods.updateCart();
 		},
 		async removeProducerProducts(producerId) {
 			methods.resetSelectedDeliveryForProducerId(producerId);
 
 			update((state) => {
-				state.products = state.products.filter((c) => c.producer.id !== producerId);
+				state.products = state.products.filter((c) => !c.producer || c.producer.id !== producerId);
 				return state;
 			});
 
-			methods.updateCartInStorage();
 			return await methods.updateCart();
 		},
 		reset() {
 			methods.clearStorage();
-
+			methods.clearState();
+		},
+		clearState() {
 			update((state) => {
 				state.isInitializing = false;
 				state.isSaving = false;
@@ -438,31 +404,28 @@ const store = () => {
 				return state;
 			});
 		},
-		updateWholeCart(selectedCart) {
-			localStorage.setItem("user_current_order", JSON.stringify(selectedCart.id));
+		updateWholeCart(order) {
+			localStorage.setItem("user_currentOrderId", JSON.stringify(order.id));
 			update((state) => {
-				state.products = selectedCart.products;
-				state.totalFees = selectedCart.totalFees;
-				state.donation = selectedCart.donation;
-				state.productsCount = selectedCart.productsCount;
-				state.totalOnSalePrice = selectedCart.totalOnSalePrice;
-				state.totalPrice = selectedCart.totalPrice;
-				state.totalReturnableOnSalePrice = selectedCart.totalReturnableOnSalePrice;
-				state.returnablesCount = selectedCart.returnablesCount;
-				state.userCurrentOrder = selectedCart.id;
-				state.status = selectedCart.status;
+				state.products = order.products;
+				state.totalFees = order.totalFees;
+				state.donation = order.donation;
+				state.productsCount = order.productsCount;
+				state.totalOnSalePrice = order.totalOnSalePrice;
+				state.totalPrice = order.totalPrice;
+				state.totalReturnableOnSalePrice = order.totalReturnableOnSalePrice;
+				state.returnablesCount = order.returnablesCount;
+				state.userCurrentOrder = order.id;
+				state.status = order.status;
 				state.conflicts = [];
 
-				if (selectedCart.deliveries && selectedCart.deliveries.length > 0) {
-					setters.setSelectedDeliveries(methods.normalizeDeliveries(selectedCart.deliveries));
+				if (order.deliveries && order.deliveries.length > 0) {
+					setters.setSelectedDeliveries(methods.normalizeDeliveries(order.deliveries));
 				}
 
 				state.isSaving = false;
-
 				return state;
 			});
-
-			methods.updateCartInStorage();
 		},
 	};
 

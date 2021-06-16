@@ -8,7 +8,6 @@ import {
 	authAuthorized,
 } from "./../stores/auth.js";
 import { clearLocalStorage } from "./../helpers/storage";
-import { stringify } from "qs";
 
 class SheaftAuth {
 	constructor(oidcSettings) {
@@ -151,7 +150,7 @@ class SheaftAuth {
 	}
 
 	isInRole(roles) {
-		if (!roles || !this.authenticated) return false;
+		if (!roles) return false;
 
 		var rolesToTest = [];
 		if (!Array.isArray(roles)) rolesToTest = [roles];

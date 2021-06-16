@@ -155,7 +155,7 @@
 					>
 				</div>
 			{:else}
-				{#each $cart.products as line (line.id)}
+				{#each $cart.products.filter((p) => p.producer) as line (line.id)}
 					<div
 						transition:fly|local={{ duration: 300 }}
 						animate:flip={{ duration: 300 }}

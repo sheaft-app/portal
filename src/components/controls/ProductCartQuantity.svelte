@@ -16,7 +16,7 @@
 	let quantity = 0;
 	let displayFeedback = false;
 	$: isDisabled = disabled || $cart.isSaving || $cart.conflicts.length > 0;
-	$: product = $cart.products.find((i) => i.id == productId);
+	$: product = $cart.products.filter((p) => p.producer).find((i) => i.id === productId);
 
 	onMount(() => {
 		displayFeedback = false;
@@ -54,13 +54,7 @@
 	// avant l'exécution de la fonction, alors productId n'est plus défini. On passe donc directement la valeur de productId
 	// à la fonction comme paramètre pour éviter un problème lié à un unmount triggered "trop tôt"
 	const updateProductQuantity = debounce(async (quantity, _productId) => {
-		const hasUpdatedProductInCart = await cart.updateProduct(_productId, quantity);
-
-		if (!hasUpdatedProductInCart) {
-			quantity = 0;
-			disabled = true;
-		}
-
+		await cart.updateProduct(_productId, quantity);
 		if (userFeedback) triggerFeedback();
 	}, 800);
 
@@ -77,7 +71,6 @@
 	// reset de la quantité
 	$: if (!productId) quantity = 0;
 	$: product ? (quantity = product.quantity) : (quantity = 0);
-
 </script>
 
 <div class="m-auto {!noMargin ? 'lg:mt-4 lg:mb-4' : ''}">
@@ -184,5 +177,4 @@
 	input[type="number"] {
 		-moz-appearance: textfield;
 	}
-
 </style>
