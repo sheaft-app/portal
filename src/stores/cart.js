@@ -67,7 +67,7 @@ const store = () => {
 						error: () => {
 							this.clearStorage();
 						},
-						errorNotification: "Imposible de récupérer les informations du panier",
+						errorNotification: "Impossible de récupérer les informations du panier",
 					});
 			} catch (e) {
 				currentOrderId = null;

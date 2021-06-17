@@ -23,7 +23,7 @@
 			mutation: CLONE_CATALOG,
 			variables: { id: catalog.id, name: name, percent: percent },
 			errorsHandler,
-			success: async (res) => handleClose(res),
+			success: async (res) => await handleClose(res),
 			successNotification: "Votre catalogue a bien été dupliqué",
 			errorNotification: "Impossible de dupliquer votre catalogue",
 			clearCache: [GET_CATALOGS],
@@ -33,7 +33,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm

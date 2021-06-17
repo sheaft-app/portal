@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_CATALOGS = gql`
 	query Catalogs($first: Int, $after: String, $last: Int, $before: String) {
-		catalogs(first: $first, after: $after, last: $last, before: $before) {
+		catalogs(first: $first, after: $after, last: $last, before: $before, order: [{ name: ASC }]) {
 			edges {
 				cursor
 				node {

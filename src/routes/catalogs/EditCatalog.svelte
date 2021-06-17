@@ -57,13 +57,16 @@
 	const showDeleteModal = () =>
 		open(DeleteCatalog, {
 			catalog,
-			onClose: () => routerInstance.goTo(CatalogRoutes.List),
+			onClose: async () => await routerInstance.goTo(CatalogRoutes.List),
 		});
 
 	const showCloneModal = () =>
 		open(CloneCatalog, {
 			catalog,
-			onClose: (res) => routerInstance.goTo(CatalogRoutes.Details, { id: res.id }),
+			onClose: async (res) => {
+				await routerInstance.goTo(CatalogRoutes.Details, { id: res.id });
+				routerInstance.reload();
+			},
 		});
 
 	$: isConsumerCatalog = catalog && catalog.kind === CatalogKind.Consumers.Value;
