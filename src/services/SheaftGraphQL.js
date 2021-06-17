@@ -190,7 +190,14 @@ class SheaftGraphQL {
 	}
 
 	handleResults(data, dataTypes) {
-		var resultData = data[dataTypes[0]];
+		if (!data)
+			return {
+				data: null,
+				errors: null,
+				success: false,
+			};
+
+		let resultData = data[dataTypes[0]];
 		if (!resultData && !data.errors)
 			return {
 				data: null,
