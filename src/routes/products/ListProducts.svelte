@@ -51,16 +51,6 @@
 		});
 	});
 
-	onMount(async () => {
-		hasPendingJobs = await query({
-			query: HAS_PRODUCTS_IMPORT_INPROGRESS,
-			variables: { kinds: [JobKind.ImportProducts.Value] },
-			errorsHandler,
-			error: () => (hasPendingJobs = false),
-			errorNotification: "Un problème est survenu pendant la récupération des informations d'import.",
-		});
-	});
-
 	const headers = [
 		{ name: "Produit", sortLabel: "name" },
 		{ name: "Visible pour", displayOn: "md" },

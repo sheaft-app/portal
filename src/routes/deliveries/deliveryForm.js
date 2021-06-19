@@ -1,7 +1,7 @@
 import DeliveryKind from "../../enums/DeliveryKind.js";
 import { getDefaultFields } from "../../stores/form";
 import omit from "lodash/omit";
-import { normalizeOpeningHours, normalizeClosingDates } from "./../../helpers/app";
+import { normalizeOpeningHours, normalizeClosingDates, denormalizeClosingDates, denormalizeOpeningHours } from "./../../helpers/app";
 
 export const initialValues = {
 	name: "",
@@ -22,6 +22,7 @@ export const initialValues = {
 	lockOrderHoursBeforeDelivery: null,
 	denormalizedDeliveryHours: [],
 	denormalizedClosings: [],
+	agreements: [],
 	available: true,
 };
 
@@ -31,7 +32,7 @@ export const validators = (delivery) => ({
 		"deliveryHours",
 		"lockOrderHoursBeforeDelivery",
 		"closings",
-		"denormalizedClosings",
+		"denormalizedClosings"
 	]),
 	openings: {
 		value: delivery.denormalizedDeliveryHours,
@@ -51,12 +52,25 @@ export const validators = (delivery) => ({
 	name: { value: delivery.name, validators: ["required", "minLength:3"], enabled: true },
 });
 
+export const denormalizeDelivery = (delivery) => ({
+	...delivery,
+	agreements: delivery.agreements && delivery.agreements.length 
+		? delivery.agreements
+			.sort((a, b) => a.position >= b.position ? 1 : -1)
+			.map((a) => ({ ...a.store, agreementId: a.id}))
+		: [],
+	denormalizedDeliveryHours: denormalizeOpeningHours(delivery.deliveryHours),
+	denormalizedClosings: denormalizeClosingDates(delivery.closings),
+	limitOrders: delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null
+})
+
 export const normalizeDelivery = (delivery) =>
 	omit(
 		{
 			...delivery,
 			deliveryHours: normalizeOpeningHours(delivery.denormalizedDeliveryHours),
 			closings: normalizeClosingDates(delivery.denormalizedClosings),
+			agreements: delivery.agreements.map((store, position) => ({ id: store.agreementId, position })),
 			lockOrderHoursBeforeDelivery: delivery.limitOrders ? delivery.lockOrderHoursBeforeDelivery : null,
 			maxPurchaseOrdersPerTimeSlot: delivery.limitOrders ? delivery.maxPurchaseOrdersPerTimeSlot : null,
 		},

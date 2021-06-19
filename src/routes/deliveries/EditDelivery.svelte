@@ -10,7 +10,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import { normalizeDelivery } from "./deliveryForm";
+	import { normalizeDelivery, denormalizeDelivery } from "./deliveryForm";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -25,12 +25,13 @@
 
 	onMount(async () => {
 		isLoading = true;
-		delivery = await query({
+		await query({
 			query: GET_DELIVERY_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
-			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus.",
+			success: (res) => delivery = denormalizeDelivery(res),
+			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus."
 		});
 		isLoading = false;
 	});
@@ -44,7 +45,7 @@
 			success: () => routerInstance.goTo(DeliveryRoutes.List),
 			successNotification: "Votre créneau de livraison a bien été modifié",
 			errorNotification: "Impossible de modifier ce créneau de livraison",
-			clearCache: [GET_DELIVERIES],
+			clearCache: [GET_DELIVERIES, GET_DELIVERY_DETAILS],
 		});
 	};
 
