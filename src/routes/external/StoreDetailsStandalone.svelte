@@ -218,7 +218,7 @@
 					</div>
 				</div>
 				{#if store.pictures && store.pictures.length > 0}
-					<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Gallerie d'images</h3>
+					<h3 class="font-bold uppercase border-b border-gray-300 xl:w-1/2 pb-2">Galerie d'images</h3>
 					<div class="relative w-full py-6 m-auto" style="max-width: 600px;">
 						<PictureSlider elements={store.pictures ? store.pictures.map((p) => ({ url: p.large })) : []} />
 					</div>

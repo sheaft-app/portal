@@ -57,7 +57,7 @@
 	<div class="form-control" style="display:block;">
 		<div class="w-full">
 			<label
-				>Gallerie d'images
+				>Galerie d'images
 				<Icon data={faInfoCircle} />
 			</label>
 			<div class="text-xxs mb-3">
