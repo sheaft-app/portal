@@ -4,25 +4,20 @@
 	import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
-	import { denormalizeOpeningHours, denormalizeClosingDates } from "../../helpers/app";
 	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import ClosingDates from "./../../components/ClosingDates.svelte";
 	import form from "../../stores/form";
 	import { initialValues, validators } from "./deliveryForm";
+	import SortList from "../../components/SortList.svelte";
+	import SimpleStoreCard from "./SimpleStoreCard.svelte";
 
 	export let submit,
 		delivery = { ...initialValues };
 
 	(() => (delivery = form.initialize(delivery, validators, initialValues)))();
 
-	onDestroy(async () => {
-		await form.destroy();
-	});
-
-	delivery.denormalizedDeliveryHours = denormalizeOpeningHours(delivery.deliveryHours);
-	delivery.denormalizedClosings = denormalizeClosingDates(delivery.closings);
-	delivery.limitOrders = delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null;
+	onDestroy(async () => await form.destroy());
 
 	$: if (delivery.limitOrders && !delivery.lockOrderHoursBeforeDelivery) delivery.lockOrderHoursBeforeDelivery = 24;
 	$: if (delivery.limitOrders && !delivery.maxPurchaseOrdersPerTimeSlot) delivery.maxPurchaseOrdersPerTimeSlot = 5;
@@ -59,11 +54,25 @@
 	<div class="form-control">
 		<label>Plages de fermeture</label>
 		<p class="text-gray-600 mb-2">
-			Si cette n'est pas assurée durant certaines périodes de l'année, renseignez les dates pour que les magasins ne
+			Si ce créneau n'est pas assuré durant certaines périodes de l'année, renseignez les dates pour que les magasins ne
 			puissent pas placer de commandes avec livraison sur ces périodes.
 		</p>
 		<ClosingDates bind:closings={delivery.denormalizedClosings} />
 	</div>
+	{#if delivery.agreements.length > 1}
+		<hr class="my-5">
+		<div class="form-control">
+			<label>Ordre de livraison des magasins</label>
+			<p class="text-gray-600 mb-2">
+				C'est l'ordre par défaut dans lequel nous classons les magasins dans vos tournées. Vous pourrez toujours modifier l'ordre avant chaque tournée si cas exceptionnel.
+				Attrapez le bloc d'un magasin pour le faire glisser dans la liste.
+			</p>
+			<SortList 
+				bind:data={delivery.agreements}
+				component={SimpleStoreCard}
+			/>
+		</div>
+	{/if}
 	<hr class="my-5" />
 	<div class="form-control mt-6" style="display: block;">
 		<label>Limiter les commandes</label>

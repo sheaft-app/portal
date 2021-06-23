@@ -45,6 +45,20 @@ export const GET_DELIVERY_DETAILS = gql`
 			autoAcceptRelatedPurchaseOrder
 			maxPurchaseOrdersPerTimeSlot
 			autoCompleteRelatedPurchaseOrder
+			agreements {
+				id
+				position
+				store {
+					id
+					name
+					address {
+						line1
+						line2
+						city
+						zipcode
+					}
+				}
+			}
 			deliveryHours {
 				day
 				from

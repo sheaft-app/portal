@@ -4,16 +4,20 @@
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import { ACCEPT_AGREEMENTS } from "./mutations.js";
+	import Icon from "svelte-awesome";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { GET_AGREEMENTS } from "./queries.js";
 	import Roles from "../../enums/Roles";
 	import SelectTime from "../search-stores/SelectTime.svelte";
 	import SelectCatalog from "../search-stores/SelectCatalog.svelte";
-
-	const errorsHandler = new SheaftErrors();
+	import DeliveryRoutes from "../deliveries/routes";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	export let onClose, close, agreements;
+
+	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
+	const routerInstance = GetRouterInstance();
 	const { mutate, isLoading } = getContext("api");
 
 	let requireDeliverySelection = agreements.some((a) => !a.delivery);
@@ -21,6 +25,7 @@
 	let isProducer = authInstance.isInRole(Roles.Producer.Value);
 	let selectedDelivery = null;
 	let selectedCatalog = null;
+	let showSuccess = false;
 
 	$: isValid = isProducer
 		? (!requireDeliverySelection || selectedDelivery != null) && (!requireCatalogSelection || selectedCatalog != null)
@@ -35,21 +40,31 @@
 				catalogId: selectedCatalog?.id,
 			},
 			errorsHandler,
-			success: async (res) => handleClose(res),
+			success: async (res) => {
+				await onClose(res);
+				showSuccess = true
+			},
 			successNotification: "L'accord a bien été accepté",
 			errorNotification: "Impossible de traiter l'accord",
 			clearCache: [GET_AGREEMENTS],
 		});
 	};
-
-	const handleClose = async (res) => {
-		close();
-		if (onClose) await onClose(res);
-	};
-
 </script>
 
-{#if agreements.length > 1}
+{#if showSuccess}
+	<div class="m-auto text-center">
+		<div class="rounded-full bg-white shadow w-12 h-12 m-auto items-center flex justify-center text-green-500">
+			<Icon data={faCheck} scale="1.4" />
+		</div>
+		<p class="font-semibold mb-2 mt-2">Partenariat accepté !</p>
+		<p>Pour modifier la position du magasin dans la tournée de livraison, rendez-vous sur la page du créneau.</p>
+		<p>Si vous ne trouvez pas le module, c'est parce que vous n'avez qu'un seul magasin associé au créneau.</p>
+		<div class="flex justify-center mt-3">
+			<button type="button" class="px-4 py-2 mr-2" on:click={close}>Fermer</button>
+			<button type="button" class="mr-2 btn btn-primary btn-lg" on:click={() => routerInstance.goTo(DeliveryRoutes.Details, { id: selectedDelivery.id })}>Modifier la position du magasin</button>
+		</div>
+	</div>
+{:else if agreements.length > 1}
 	<ActionConfirm
 		{errorsHandler}
 		title="Accepter les accords"

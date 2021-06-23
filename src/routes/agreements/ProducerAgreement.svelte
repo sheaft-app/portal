@@ -9,10 +9,13 @@
 	import { GET_PRODUCER_DELIVERIES } from "../search-producers/queries";
 	import Loader from "../../components/Loader.svelte";
 	import ProductsCarousel from "../../components/ProductsCarousel.svelte";
+	import GetRouterInstance from "../../services/SheaftRouter";
+	import AgreementRoutes from "./routes";
 
 	export let agreement, distanceInfos;
 
 	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
 	const { query } = getContext("api");
 
 	let isLoading = true;
