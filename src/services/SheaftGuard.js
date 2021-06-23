@@ -23,6 +23,7 @@ import SearchProducers from "./../routes/search-producers/SearchProducers.svelte
 import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
+import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -46,6 +47,7 @@ import HomeRoutes from "./../routes/home/routes.js";
 import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
+import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -149,6 +151,17 @@ class SheaftGuard {
 				() =>
 					this.handleRouteNavigation(
 						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(SearchProductRoutes.Roles),
+						true
+					),
+			],
+		});
+		this.routes[`${DeliveryBatchesRoutes.Prefix}/*`] = wrap({
+			component: DeliveryBatches,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(DeliveryBatchesRoutes.Roles),
 						true
 					),
 			],
