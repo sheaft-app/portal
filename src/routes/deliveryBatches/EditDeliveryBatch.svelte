@@ -29,7 +29,7 @@
 			query: GET_DELIVERY_BATCH_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
-			success: (res) => deliveryBatch = denormalizeDeliveryBatch(res),
+			success: (res) => (deliveryBatch = denormalizeDeliveryBatch(res)),
 			error: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
 			errorNotification: "La programmation à laquelle vous essayez d'accéder n'existe plus.",
 		});
@@ -48,17 +48,27 @@
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
 	};
-		
+
 	onDestroy(() => (deliveryBatch = null));
 
 	const buttons = [
 		{
+			text: "Décaler",
+			color: "blue",
+			click: () =>
+				open(PostponeDeliveryBatch, {
+					deliveryBatch,
+					onClose: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
+				}),
+		},
+		{
 			text: "Supprimer",
 			color: "red",
-			click: () => open(DeleteDeliveryBatch, {
-                deliveryBatch,
-                onClose: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
-            })
+			click: () =>
+				open(DeleteDeliveryBatch, {
+					deliveryBatch,
+					onClose: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
+				}),
 		},
 	];
 </script>

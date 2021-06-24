@@ -46,20 +46,18 @@
 
 <TransitionWrapper>
 	<PageHeader name="Livraisons programmées" />
-	<PageBody
-		{errorsHandler}
-		{isLoading}
-		noResults={$items.length < 1}
-	>
+	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1}>
 		{#if $items.length > 0}
 			<Actions {actions} />
 		{/if}
-		
+
 		{#each $items as deliveryBatch}
 			<DeliveryBatchItem {deliveryBatch} />
 		{:else}
 			<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
-			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto">Programmer une livraison</button>
+			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
+				>Programmer une livraison</button
+			>
 		{/each}
 	</PageBody>
 </TransitionWrapper>
