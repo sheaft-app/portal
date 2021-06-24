@@ -14,11 +14,12 @@ export const GET_DELIVERY_BATCHES = gql`
 				}
 				assignedTo {
 					name
+					firstName
 				}
 				status
 				name
 				id
-				productsToDeliverCount
+				purchaseOrdersCount
 				deliveriesCount
 			}
 		}

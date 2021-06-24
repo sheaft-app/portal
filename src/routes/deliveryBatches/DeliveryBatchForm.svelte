@@ -1,6 +1,6 @@
 <script>
 	import Icon from "svelte-awesome";
-    import AddOrderModal from "./AddOrderModal.svelte";
+	import AddOrderModal from "./AddOrderModal.svelte";
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
@@ -11,22 +11,23 @@
 	import DeliveryWithOrdersCard from "./DeliveryWithOrdersCard.svelte";
 	import { getContext } from "svelte";
 
-	export let submit, deliveryBatch = { ...initialValues };
-	
+	export let submit,
+		deliveryBatch = { ...initialValues };
+
 	let isLoading = false;
 
 	const { open } = getContext("modal");
 
 	const deliveryBatchForm = form(() => validators(deliveryBatch), { initCheck: false });
-	
+
 	const handleSubmit = async () => {
-		deliveryBatchForm.validate();
+		await deliveryBatchForm.validate();
 		if ($deliveryBatchForm.valid) {
 			isLoading = true;
 			await submit();
 			isLoading = false;
 		}
-	}
+	};
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -65,9 +66,13 @@
 				{#if deliveryBatch.deliveries.length > 1}
 					<p class="text-gray-600 mb-2">Vous pouvez faire glisser les blocs pour changer l'ordre de livraison.</p>
 				{/if}
-				<button type="button" on:click|preventDefault={() => open(AddOrderModal, { deliveryBatch })} class="btn btn-outline btn-lg mb-2">Ajouter une commande</button>
+				<button
+					type="button"
+					on:click|preventDefault={() => open(AddOrderModal, { deliveryBatch })}
+					class="btn btn-outline btn-lg mb-2">Ajouter une commande</button
+				>
 				<SortList
-					disableGrab={deliveryBatch.deliveries.length <= 1} 
+					disableGrab={deliveryBatch.deliveries.length <= 1}
 					bind:data={deliveryBatch.deliveries}
 					component={DeliveryWithOrdersCard}
 				/>
