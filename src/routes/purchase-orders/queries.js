@@ -6,10 +6,10 @@ export const GET_ORDERS = gql`
 		$last: Int
 		$after: String
 		$before: String
-		$order: [PurchaseOrderSortInput!]
+		$orderBy: [PurchaseOrderSortInput!]
 		$where: PurchaseOrderFilterInput
 	) {
-		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $order, where: $where) {
+		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $orderBy, where: $where) {
 			pageInfo {
 				startCursor
 				endCursor

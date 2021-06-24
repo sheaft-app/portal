@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_RETURNABLES = gql`
-	query Returnables($first: Int, $after: String, $last: Int, $before: String, $order: [ReturnableSortInput!]) {
-		returnables(first: $first, after: $after, last: $last, before: $before, order: $order) {
+	query Returnables($first: Int, $after: String, $last: Int, $before: String, $orderBy: [ReturnableSortInput!]) {
+		returnables(first: $first, after: $after, last: $last, before: $before, order: $orderBy) {
 			edges {
 				cursor
 				node {
