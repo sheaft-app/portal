@@ -93,7 +93,7 @@ export const GET_MY_BUSINESS_LOCATION = gql`
 
 export const GET_DELIVERIES = gql`
 	query GetDeliveries {
-		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
+		deliveryModes(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
 			nodes {
 				id
 				name

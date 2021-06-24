@@ -32,7 +32,6 @@ export const GET_MY_ORDERS = gql`
 		order(id: $id) {
 			id
 			status
-			reference
 			totalOnSalePrice
 			deliveries {
 				id
@@ -79,7 +78,6 @@ export const GET_MY_ORDER_FROM_TRANSACTION = gql`
 		orderFromTransaction(identifier: $id) {
 			id
 			status
-			reference
 			totalOnSalePrice
 			deliveries {
 				id

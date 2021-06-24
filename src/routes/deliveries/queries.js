@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERIES = gql`
 	query Deliveries {
-		deliveries(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
+		deliveryModes(first: 50, where: { kind: { in: [PRODUCER_TO_STORE] } }) {
 			pageInfo {
 				hasPreviousPage
 				hasNextPage
@@ -36,7 +36,7 @@ export const GET_DELIVERIES = gql`
 
 export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
-		delivery(id: $id) {
+		deliveryMode(id: $id) {
 			id
 			name
 			kind

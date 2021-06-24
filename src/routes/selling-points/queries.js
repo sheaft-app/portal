@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_SELLING_POINTS = gql`
 	query SellingPoints {
-		deliveries(
+		deliveryModes(
 			first: 50
 			where: { kind: { nin: [PRODUCER_TO_STORE, EXTERNAL_TO_STORE, PRODUCER_TO_CONSUMER, EXTERNAL_TO_CONSUMER] } }
 		) {
@@ -44,7 +44,7 @@ export const GET_SELLING_POINTS = gql`
 
 export const GET_SELLING_POINT_DETAILS = gql`
 	query SellingPoint($id: ID!) {
-		delivery(id: $id) {
+		deliveryMode(id: $id) {
 			id
 			name
 			kind
