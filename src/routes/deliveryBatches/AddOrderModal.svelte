@@ -2,17 +2,17 @@
 	import { getContext, onMount } from "svelte";
 	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "./queries";
 	import { UPDATE_DELIVERY_BATCH } from "./mutations";
-    import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
-    import SheaftErrors from "../../services/SheaftErrors";
-    import { formatMoney } from "../../helpers/app";
-    import format from "date-fns/format";
+	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
+	import SheaftErrors from "../../services/SheaftErrors";
+	import { formatMoney } from "../../helpers/app";
+	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import Loader from "../../components/Loader.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 
-    export let close;
+	export let close;
 	export let deliveryBatch;
 
 	const errorsHandler = new SheaftErrors();
@@ -25,44 +25,59 @@
 
 	onMount(async () => {
 		await query({
-            query: GET_AVAILABLE_DELIVERY_BATCHES,
-            variables: { includeProcessingPurchaseOrders: false },
+			query: GET_AVAILABLE_DELIVERY_BATCHES,
+			variables: { includeProcessingPurchaseOrders: false },
 			errorsHandler,
 			success: (res) => {
-                res.data.map((availableOrder) => 
-                    availableOrders = [...availableOrders, ...availableOrder.clients.map((c) => c.purchaseOrders.map((p) => ({ ...p, name: c.name, clientId: c.id, position: c.position }))).flat()]
-                );
+				res.data.map(
+					(availableOrder) =>
+						(availableOrders = [
+							...availableOrders,
+							...availableOrder.clients
+								.map((c) => c.purchaseOrders.map((p) => ({ ...p, name: c.name, clientId: c.id, position: c.position })))
+								.flat(),
+						])
+				);
 			},
 			error: () => close(),
 			errorNotification: "Impossible de récupérer les informations des commandes",
 		});
 		isFetching = false;
-    });
+	});
 
-    const handleSubmit = async () => {
-		let deliveriesToSend = deliveryBatch.deliveries.map((o) => ({ clientId: o.clientId, position: o.position, purchaseOrderIds: o.purchaseOrders.map((p) => p.id) }));
+	const handleSubmit = async () => {
+		let deliveriesToSend = deliveryBatch.deliveries.map((o) => ({
+			clientId: o.clientId,
+			position: o.position,
+			purchaseOrderIds: o.purchaseOrders.map((p) => p.id),
+		}));
 
-		availableOrders.forEach((availableOrder) => {
-			const client = deliveriesToSend.find((d) => d.clientId == availableOrder.clientId);
+		availableOrders
+			.filter((a) => a.checked)
+			.forEach((availableOrder) => {
+				const client = deliveriesToSend.find((d) => d.clientId === availableOrder.clientId);
 
-			if (client) {
-				client.purchaseOrderIds = [...client.purchaseOrderIds, availableOrder.id]
-			} else {
-				deliveriesToSend = [...deliveriesToSend, {
-					clientId: availableOrder.clientId,
-					position: availableOrder.position,
-					purchaseOrderIds: availableOrder.id
-				}]
-			}
-		});
+				if (client) {
+					client.purchaseOrderIds = [...client.purchaseOrderIds, availableOrder.id];
+				} else {
+					deliveriesToSend = [
+						...deliveriesToSend,
+						{
+							clientId: availableOrder.clientId,
+							position: deliveriesToSend.length,
+							purchaseOrderIds: [availableOrder.id],
+						},
+					];
+				}
+			});
 
 		isLoading = true;
-        await mutate({
-            mutation: UPDATE_DELIVERY_BATCH,
+		await mutate({
+			mutation: UPDATE_DELIVERY_BATCH,
 			variables: {
-				id: deliveryBatch.id, 
-				name: deliveryBatch.name, 
-				deliveries: deliveriesToSend
+				id: deliveryBatch.id,
+				name: deliveryBatch.name,
+				deliveries: deliveriesToSend,
 			},
 			errorsHandler,
 			success: () => {
@@ -71,10 +86,10 @@
 			},
 			successNotification: "Commande(s) ajoutée(s) avec succès !",
 			errorNotification: "Impossible d'ajouter une commande",
-			clearCache: [GET_DELIVERY_BATCH_DETAILS, GET_DELIVERY_BATCHES]
+			clearCache: [GET_DELIVERY_BATCH_DETAILS, GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
-    }
+	};
 </script>
 
 <div class="pb-2">
@@ -84,7 +99,7 @@
 	{#if isFetching}
 		<Loader />
 	{:else if availableOrders.length > 0}
-        {#each availableOrders as order}
+		{#each availableOrders as order}
 			<div
 				class="flex border-b border-gray-400 py-2 items-center cursor-pointer"
 				on:click={() => (order.checked = !order.checked)}
@@ -93,14 +108,20 @@
 					<InputCheckbox checked={order.checked} />
 				</div>
 				<div class="px-4 py-2 shadow rounded">
-                    <p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.name}</p>
-                    <p class="mb-1">Montant HT : {formatMoney(order.totalWholeSalePrice)}</p>
-                    <p class="mb-1">Produits dans la commande : {order.productsCount}</p>
-                    <p class="mb-2">Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}</p>
-                </div>
+					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.name}</p>
+					<p class="mb-1">Montant HT : {formatMoney(order.totalWholeSalePrice)}</p>
+					<p class="mb-1">Produits dans la commande : {order.productsCount}</p>
+					<p class="mb-2">Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}</p>
+				</div>
 			</div>
 		{/each}
-		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" class:disabled={isLoading} disabled={isLoading} on:click={handleSubmit}>
+		<button
+			class="btn btn-accent btn-lg my-3 m-auto"
+			type="button"
+			class:disabled={isLoading}
+			disabled={isLoading}
+			on:click={handleSubmit}
+		>
 			{#if isLoading}
 				<Icon data={faCircleNotch} spin />
 			{/if}
