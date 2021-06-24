@@ -4,26 +4,26 @@ import omit from "lodash/omit";
 
 export const initialValues = {
 	name: "",
-	scheduledOn: new Date()
+	scheduledOn: new Date(),
 };
 
 export const validators = (delivery) => ({
-	...getDefaultFields(delivery, initialValues, [
-	]),
+	...getDefaultFields(delivery, initialValues, []),
 });
 
-export const normalizeDeliveryBatch = delivery => ({
+export const normalizeDeliveryBatch = (delivery) => ({
 	id: delivery.id,
 	name: delivery.name,
-	deliveries: delivery.deliveries.map((o, index) => ({ 
-		clientId: o.clientId, 
-		position: index, 
-		purchaseOrderIds: o.purchaseOrders.map((p) => p.id) 
-	}))
+	deliveries: delivery.deliveries.map((o, index) => ({
+		clientId: o.clientId,
+		position: index,
+		purchaseOrderIds: o.purchaseOrders.map((p) => p.id),
+	})),
 });
 
-export const denormalizeDeliveryBatch = delivery => ({
+export const denormalizeDeliveryBatch = (delivery) => ({
 	...delivery,
+	deliveries: delivery.deliveries.sort((a, b) => a.position - b.position),
 	from: timeSpanToTime(delivery.from),
-	scheduledOn: new Date(delivery.scheduledOn)
-})
+	scheduledOn: new Date(delivery.scheduledOn),
+});
