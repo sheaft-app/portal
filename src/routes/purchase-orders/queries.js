@@ -57,9 +57,11 @@ export const GET_ORDER_DETAILS = gql`
 			totalVatPrice
 			reason
 			productsCount
+			delivery {
+				deliveredOn
+			}
 			expectedDelivery {
 				expectedDeliveryDate
-				deliveredOn
 				day
 				from
 				to
