@@ -1,11 +1,12 @@
 import Roles from "../../enums/Roles";
-import { faClock, faEdit, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faEdit, faPlus, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/delivery-batches";
 
 const listing = "/";
 const create = "/create";
 const edit = "/:id";
+const deliver = "/deliver/:id";
 
 const DeliveryBatchesRoutes = {
 	Prefix: `${prefix}`,
@@ -31,6 +32,15 @@ const DeliveryBatchesRoutes = {
 		Icon: faEdit,
 		Path: `${prefix}${edit}`,
 		SubPart: `${edit}`,
+		Params: {
+			id: null
+		}
+	},
+	Process: {
+		Name: "Livraison",
+		Icon: faPlay,
+		Path: `${prefix}${deliver}`,
+		SubPart: `${deliver}`,
 		Params: {
 			id: null
 		}

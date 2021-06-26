@@ -23,3 +23,11 @@ export const UPDATE_DELIVERY_BATCH = gql`
 		}
 	}
 `;
+
+export const START_DELIVERY_BATCH = gql`
+mutation StartDeliveryBatch($input: StartDeliveryBatchInput) {
+	startDeliveryBatch(input: $input) {
+		id
+	}
+}
+`;

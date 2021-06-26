@@ -4,11 +4,16 @@
 	import { timeSpanToTime } from "../../helpers/app";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import DeliveryBatchesRoutes from "./routes";
+	import Icon from "svelte-awesome";
+	import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
-
+	import { getContext } from "svelte";
+	import StartDeliveryModal from "./StartDeliveryModal.svelte";
+	
 	export let deliveryBatch;
 
 	const routerInstance = GetRouterInstance();
+	const { open } = getContext("modal");
 	const from = timeSpanToTime(deliveryBatch.from);
 
 	const getFirstClientName = () => {
@@ -47,10 +52,17 @@
 			<p class="text-gray-500">Livré par</p>
 			<p class="font-medium text-lg">{deliveryBatch.assignedTo.firstName}</p>
 		</div>
-		<button
-			on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
-			class="btn btn-lg btn-accent text-lg font-semibold">Vérifier</button
-		>
+		<div class="flex space-x-2">
+			<button
+				on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
+				class="btn btn-lg btn-outline text-lg font-semibold">Modifier
+			</button>
+			<button
+				on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
+				class="btn btn-lg btn-accent text-lg font-semibold">Lancer
+				<Icon class="ml-2" data={faChevronRight} />
+			</button>
+		</div>
 	</div>
 </div>
 
