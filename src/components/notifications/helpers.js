@@ -220,6 +220,51 @@ export const getFormattedNotification = (notification, local, display) => {
 					true,
 					true
 				);
+			case "DeliveryFormGeneratedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Votre bon de livraison est disponible.`,
+					notification.content.Url,
+					true,
+					true
+				);
+			case "DeliveryReceiptGeneratedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Le bon de réception de votre commande est disponible.`,
+					notification.content.Url,
+					true,
+					true
+				);
+			case "DeliveryBatchFormsCompletedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Les bons de livraisons de votre tournée ont été mis à jour.`,
+					notification.content.Url,
+					true,
+					true
+				);
+			case "DeliveryBatchFormsGeneratedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Les bons de livraisons pour votre tournée sont prêt.`,
+					notification.content.Url,
+					true,
+					true
+				);
+			case "DeliveryPostponedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`La livraison de votre commande a été décalée.`,
+					`#/my-orders/`,
+					true,
+					true
+				);
 			default:
 				return null;
 		}
