@@ -240,7 +240,6 @@
 		!isLoading && items.length < 1 && !(_searchValues && _searchValues.where && _searchValues.where.length > 1);
 
 	$: refetch($querystring);
-
 </script>
 
 {#if !hideIfNoResults}
@@ -470,5 +469,4 @@
 			}
 		}
 	}
-
 </style>
