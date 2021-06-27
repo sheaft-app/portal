@@ -69,6 +69,7 @@ export const GET_MY_ORDER_DETAILS = gql`
 			totalVatPrice
 			reason
 			productsCount
+			comment
 			delivery {
 				status
 				scheduledOn

@@ -14,15 +14,10 @@
 	export let selected = null;
 	export let selectedDeliveryHour = null;
 	export let isLoading = false;
-	export let businessQuickOrderProducts = [];
 	export let disabled = false;
 
 	$: oneOptionOnly =
 		data && data.deliveries && data.deliveries.length === 1 && data.deliveries[0].deliveryHours.length === 1;
-
-	onMount(() => {
-		updateCartProducts();
-	});
 
 	const showDeliveryPickModal = () => {
 		if (disabled || (selected && selectedDeliveryHour && oneOptionOnly)) {
@@ -36,36 +31,8 @@
 			onClose: (pickedDelivery, pickedDeliveryHour) => {
 				selected = pickedDelivery;
 				selectedDeliveryHour = pickedDeliveryHour;
-				updateCartProducts();
 			},
 		});
-	};
-	const updateCartProducts = () => {
-		let items = businessQuickOrderProducts.sort((a, b) => (a.producer.name > b.producer.name ? 1 : 0));
-
-		if (data && selected && selectedDeliveryHour) {
-			// mettre à jour le lieu et l'horaire livraison dans le cartItem
-			let newItems = items
-				.map((item) => {
-					if (item.producer.id === data.id) {
-						return {
-							...item,
-							producer: {
-								...item.producer,
-								delivery: selected,
-								deliveryHour: selectedDeliveryHour,
-							},
-						};
-					} else {
-						return item;
-					}
-				})
-				.sort((a, b) => (a.producer.name > b.producer.name ? 1 : 0));
-
-			if (businessQuickOrderProducts.length > 0) {
-				businessQuickOrderProducts = newItems;
-			}
-		}
 	};
 </script>
 
@@ -78,12 +45,7 @@
 	</div>
 {:else}
 	{#if data && !selected && !selectedDeliveryHour}
-		<div
-			id={data.id}
-			class="cursor-pointer p-4 bg-gray-100 border border-gray-400"
-			class:disabled
-			on:click={showDeliveryPickModal}
-		>
+		<div class="cursor-pointer p-4 bg-gray-100 border border-gray-400" class:disabled on:click={showDeliveryPickModal}>
 			<div class="flex text-accent">
 				<Icon data={faEdit} class="mr-2 w-4" />
 				<p class="uppercase font-medium text-xs">Sélectionner l'horaire et le lieu de récupération</p>

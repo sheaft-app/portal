@@ -9,30 +9,30 @@
 	const errorsHandler = new SheaftErrors();
 	const { mutate } = getContext("api");
 
-	export let close, onClose, data;
+	export let close, onClose, producers;
 
 	let isLoading = false;
 
 	const handleSubmit = async () => {
 		isLoading = true;
+		const products = producers.map((p) => p.products.map((pr) => ({ id: pr.id, quantity: pr.quantity }))).flat();
+
+		const deliveries = producers.map((producer) => ({
+			producerId: producer.id,
+			comment: producer.comment,
+			deliveryModeId: producer.delivery ? producer.delivery.id : null,
+			expectedDeliveryDate: producer.deliveryHour ? producer.deliveryHour.expectedDeliveryDate : null,
+		}));
+
 		await mutate({
 			mutation: CREATE_BUSINESS_ORDER,
-			variables: { products: data.products, producersExpectedDeliveries: data.producersExpectedDeliveries },
+			variables: { products: products, producersExpectedDeliveries: deliveries },
 			errorsHandler,
 			success: async () => onClose && (await onClose()),
 			errorNotification: "Impossible d'envoyer la commande",
 			clearCache: [MY_ORDERS],
 		});
 		isLoading = false;
-	};
-
-	const getProducerInfo = (producerId) => {
-		const products = data.allProducts.filter((p) => p.producer.id === producerId);
-
-		return {
-			name: products[0].producer.name,
-			products,
-		};
 	};
 </script>
 
@@ -45,9 +45,9 @@
 	submitText="Envoyer"
 	closeText="Fermer"
 >
-	{#each data.producersExpectedDeliveries as producer}
+	{#each producers as producer}
 		<div class="mb-2">
-			<ProducerCardWithProducts producer={getProducerInfo(producer.producerId)} delivery={producer} />
+			<ProducerCardWithProducts {producer} />
 		</div>
 	{/each}
 </ActionConfirm>
