@@ -188,8 +188,8 @@
 			icon: faFileExport,
 			text:
 				selectedItems.filter((o) => o.status === PurchaseOrderStatusKind.Waiting.Value).length >= 1
-					? "Accepter et faire un bon de préparation"
-					: "Faire un bon de préparation",
+					? "Accepter et générer un bon de préparation"
+					: "Générer un bon de préparation",
 			color: "indigo",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
@@ -198,7 +198,7 @@
 			click: () => deliverOrders(),
 			disabled: !canDeliverOrders(selectedItems),
 			icon: faTruckLoading,
-			text: "Marquer comme livrées",
+			text: "Marquer comme récupérées",
 			color: "teal",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
@@ -245,7 +245,7 @@
 			bind:isLoading
 			graphQuery={GET_ORDERS}
 			{errorsHandler}
-			loadingMessage="Chargement de vos commandes en cours... veuillez patienter."
+			loadingMessage="Chargement de vos commandes en cours."
 			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
 			bind:selectedItems
 			disableRowSelection={(order) =>

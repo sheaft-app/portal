@@ -34,7 +34,7 @@
 	<PageBody
 		{errorsHandler}
 		isLoading={$isLoading}
-		loadingMessage="Création de votre créneau de livraison en cours... veuillez patienter."
+		loadingMessage="Création de votre créneau de livraison en cours."
 	>
 		<DeliveryForm submit={handleSubmit} />
 	</PageBody>

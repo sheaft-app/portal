@@ -21,7 +21,7 @@
 
 	let delivery = null;
 	let isLoading = true;
-	let loadingMessage = "Chargement des informations de votre créneau de livraison en cours... veuillez patienter.";
+	let loadingMessage = "Chargement des informations de votre créneau de livraison en cours.";
 
 	onMount(async () => {
 		isLoading = true;
@@ -37,7 +37,7 @@
 	});
 
 	const handleSubmit = async () => {
-		loadingMessage = "Mise à jour de votre créneau de livraison en cours... veuillez patienter.";
+		loadingMessage = "Mise à jour de votre créneau de livraison en cours.";
 		await mutate({
 			mutation: UPDATE_DELIVERY,
 			variables: normalizeDelivery(delivery),

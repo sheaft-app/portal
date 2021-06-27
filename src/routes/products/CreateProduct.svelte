@@ -45,7 +45,7 @@
 
 <TransitionWrapper>
 	<PageHeader name="Créer un produit" previousPage={ProductRoutes.List} />
-	<PageBody {errorsHandler} {isLoading} loadingMessage="Initialisation en cours... veuillez patienter.">
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Initialisation en cours.">
 		<ProductForm submit={handleSubmit} {errorsHandler} />
 	</PageBody>
 </TransitionWrapper>

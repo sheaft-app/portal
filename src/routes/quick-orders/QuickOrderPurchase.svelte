@@ -169,7 +169,7 @@
 		{isLoading}
 		noResults={normalizedProducts.length < 1}
 		noResultsPage={SearchProducerRoutes.NoResults}
-		loadingMessage="Chargement des produits disponibles... veuillez patienter."
+		loadingMessage="Chargement des produits disponibles."
 	>
 		<form on:submit|preventDefault={handleSubmit}>
 			{#if normalizedProducts.length > 0}

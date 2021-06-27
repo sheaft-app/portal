@@ -45,7 +45,7 @@
 			graphQuery={GET_SELLING_POINTS}
 			{errorsHandler}
 			noResultsPage={SellingPointRoutes.NoResults}
-			loadingMessage="Chargement de vos points de vente en cours... veuillez patienter."
+			loadingMessage="Chargement de vos points de vente en cours."
 			{onRowClick}
 			getRowBackgroundColor={(i) => (!i.available ? "bg-orange-200" : "")}
 			headers={[{ name: "Nom" }, { name: "Adresse" }, { name: "Type" }]}
