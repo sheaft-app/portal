@@ -378,9 +378,9 @@
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Montant :</span>
-								{formatMoney(purchaseOrder.totalWholeSalePrice)}
-								{#if purchaseOrder.totalReturnableWholeSalePrice > 0}
-									(dont {formatMoney(purchaseOrder.totalReturnableWholeSalePrice)} de consignes)
+								{formatMoney(purchaseOrder.totalOnSalePrice)}
+								{#if purchaseOrder.totalReturnableOnSalePrice > 0}
+									(dont {formatMoney(purchaseOrder.totalReturnableOnSalePrice)} de consignes)
 								{/if}
 							</p>
 						</div>
