@@ -121,7 +121,11 @@
 			job.status == ProcessStatusKind.Done.Value ||
 			job.status == ProcessStatusKind.Cancelled.Value);
 
-	$: canCancelJob = job && job.status != ProcessStatusKind.Done.Value && job.status != ProcessStatusKind.Failed.Value;
+	$: canCancelJob =
+		job &&
+		job.status != ProcessStatusKind.Done.Value &&
+		job.status != ProcessStatusKind.Failed.Value &&
+		job.status != ProcessStatusKind.Cancelled.Value;
 
 	$: canRetryJob = job && job.status == ProcessStatusKind.Failed.Value;
 </script>

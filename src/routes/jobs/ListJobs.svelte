@@ -113,8 +113,12 @@
 
 	$: canCancelJobs =
 		selectedItems.length > 0 &&
-		selectedItems.filter((o) => o.status != ProcessStatusKind.Done.Value && o.status != ProcessStatusKind.Failed.Value)
-			.length == selectedItems.length;
+		selectedItems.filter(
+			(o) =>
+				o.status != ProcessStatusKind.Done.Value &&
+				o.status != ProcessStatusKind.Failed.Value &&
+				o.status != ProcessStatusKind.Cancelled.Value
+		).length == selectedItems.length;
 
 	$: actions = [
 		{
@@ -163,7 +167,6 @@
 			displaySelectedItemsNumber: true,
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
