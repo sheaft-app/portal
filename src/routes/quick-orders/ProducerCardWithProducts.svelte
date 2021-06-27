@@ -6,7 +6,7 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 
-	export let producer, delivery;
+	export let producer;
 
 	const calculateTotal = () =>
 		producer.products.reduce((sum, product) => {
@@ -14,13 +14,12 @@
 		}, 0);
 
 	let productsExpanded = false;
-
 </script>
 
 <div class="px-4 py-2 shadow rounded">
 	<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{producer.name}</p>
 	<p class="mb-1">Montant HT : {formatMoney(calculateTotal())}</p>
-	<p class="mb-2">Livraison le {format(new Date(delivery.expectedDeliveryDate), "PP", { locale: fr })}</p>
+	<p class="mb-2">Livraison le {format(new Date(producer.deliveryHour.expectedDeliveryDate), "PP", { locale: fr })}</p>
 	<div on:click={() => (productsExpanded = !productsExpanded)} class="font-semibold text-accent cursor-pointer mt-1">
 		{#if !productsExpanded}
 			<Icon data={faChevronDown} class="mr-2" />

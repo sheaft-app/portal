@@ -55,6 +55,7 @@ export const GET_ORDER_DETAILS = gql`
 			totalReturnableOnSalePrice
 			createdOn
 			totalVatPrice
+			comment
 			reason
 			productsCount
 			delivery {

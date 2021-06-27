@@ -181,7 +181,7 @@
 									<b>
 										{format(
 											new Date(
-												purchaseOrder.delivery.scheduledOn
+												purchaseOrder.delivery && purchaseOrder.delivery.scheduledOn
 													? purchaseOrder.delivery.scheduledOn
 													: purchaseOrder.expectedDelivery.expectedDeliveryDate
 											),
@@ -412,6 +412,14 @@
 				</div>
 			</div>
 		</div>
+		{#if purchaseOrder.comment && purchaseOrder.comment.length > 0}
+			<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
+				<div class=" px-4 py-5">
+					<p class="uppercase font-bold pb-2">Remarques</p>
+					<p>{purchaseOrder.comment}</p>
+				</div>
+			</div>
+		{/if}
 		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-3">
 			<div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
 				<div class="w-full">

@@ -11,6 +11,7 @@
 	import MyOrdersRoutes from "../my-orders/routes";
 	import SearchProducerRoutes from "../search-producers/routes";
 	import orderBy from "lodash/orderBy";
+	import groupBy from "lodash/groupBy";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 
@@ -19,14 +20,12 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
-	let normalizedProducts = [];
-	let producerDeliveries = [];
-	let producersDisplayed = [];
+	let selectedProducers = [];
+	let producers = [];
+
 	let isLoading = false;
 	let dirty = false;
 	let isLoadingDeliveries = true;
-
-	$: isValid = normalizedProducts.filter((p) => p.quantity > 0 && !p.producer.delivery).length === 0;
 
 	const getAllAvailableProducts = async () => {
 		isLoading = true;
@@ -34,26 +33,28 @@
 			query: GET_ALL_PRODUCTS,
 			errorsHandler,
 			success: async (res) => {
-				normalizedProducts = orderBy(
-					res.map(
-						(i) => ({
-							...i,
-							quantity: 0,
-						}),
-						(i) => i.producer.name,
-						["asc"]
-					)
-				);
+				if (res && res.length > 0) {
+					const map = new Map();
+					for (const item of res.map((r) => r.producer)) {
+						if (!map.has(item.id)) {
+							map.set(item.id, true);
+							producers.push({
+								id: item.id,
+								name: item.name,
+							});
+						}
+					}
 
-				console.log(normalizedProducts);
+					let producerProducts = groupBy(res, (x) => x.producer.id);
+					Object.keys(producerProducts).forEach((key) => {
+						let producer = producers.find((p) => p.id === key);
+						producer.products = producerProducts[key].map((p) => ({ ...p, quantity: 0 }));
+					});
 
-				if (normalizedProducts.length > 0) {
-					await loadDeliveries(
-						res
-							.map((p) => p.producer.id)
-							.reduce((unique, item) => (unique.includes(item) ? unique : [...unique, item]), [])
-					);
+					producers = orderBy(producers, (p) => p.name, ["asc"]);
 				}
+
+				if (producers.length > 0) await loadDeliveries(producers.map((p) => p.id));
 			},
 			errorNotification: "Impossible de récupérer les produits commandables.",
 		});
@@ -68,56 +69,40 @@
 			variables: { input: ids },
 			errorsHandler,
 			success: (res) => {
-				producerDeliveries = res.data;
+				res.data.forEach((item) => {
+					let producer = producers.find((p) => p.id === item.id);
+					producer.deliveries = item.deliveries;
+				});
 			},
 			errorNotification: "Impossible de récupérer les informations de livraison.",
 		});
 		isLoadingDeliveries = false;
 	};
 
-	const handleLess = (productId) => {
-		let product = normalizedProducts.find((p) => p.id === productId);
+	const handleLess = (producerId, productId) => {
+		let producer = producers.find((p) => p.id === producerId);
+		let product = producer.products.find((p) => p.id === productId);
 
 		if (product.quantity !== 0) {
 			product.quantity = (product.quantity || 1) - 1;
 		}
 
-		normalizedProducts = normalizedProducts;
+		producers = producers;
 		dirty = true;
 	};
 
-	const handleMore = (productId) => {
-		let product = normalizedProducts.find((p) => p.id === productId);
+	const handleMore = (producerId, productId) => {
+		let producer = producers.find((p) => p.id === producerId);
+		let product = producer.products.find((p) => p.id === productId);
 		product.quantity = (product.quantity || 0) + 1;
 
-		normalizedProducts = normalizedProducts;
-
+		producers = producers;
 		dirty = true;
 	};
 
-	const handleSubmit = async (products) => {
-		const productsFiltered = normalizedProducts.filter((p) => p.quantity > 0);
-		const producersExpectedDeliveries = productsFiltered
-			.map((product) => {
-				return {
-					producerId: product.producer.id,
-					deliveryModeId: product.producer.delivery ? product.producer.delivery.id : null,
-					expectedDeliveryDate: product.producer.deliveryHour
-						? product.producer.deliveryHour.expectedDeliveryDate
-						: null,
-				};
-			})
-			.filter((producer, index, self) => index === self.findIndex((t) => t.producerId === producer.producerId));
-
+	const handleSubmit = async () => {
 		open(ConfirmOrder, {
-			data: {
-				allProducts: productsFiltered,
-				products: productsFiltered.map((product) => ({
-					id: product.id,
-					quantity: product.quantity,
-				})),
-				producersExpectedDeliveries,
-			},
+			producers: producerWithProducts,
 			onClose: () => routerInstance.goTo(MyOrdersRoutes.List),
 		});
 	};
@@ -126,40 +111,82 @@
 		await getAllAvailableProducts();
 	});
 
-	const getProducerDeliveries = (producerId) => {
-		if (!producerDeliveries || producerDeliveries.length < 1) return null;
+	$: displayedProducers =
+		selectedProducers.length > 0 ? producers.filter((p) => selectedProducers.includes(p.id)) : producers;
 
-		return producerDeliveries.find((p) => p.id === producerId);
-	};
+	$: producerWithProducts = producers
+		.map((p) => ({
+			...p,
+			products: p.products.filter((pr) => pr.quantity > 0),
+		}))
+		.filter((p) => p.products.length > 0);
 
-	$: productsCount = normalizedProducts.reduce((sum, product) => {
-		return sum + (product.quantity || 0);
-	}, 0);
-	$: totalReturnable = normalizedProducts.reduce((sum, product) => {
-		return parseFloat(sum) + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0);
-	}, 0);
-	$: totalProductsHt = normalizedProducts.reduce((sum, product) => {
-		return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
-	}, 0);
-	$: totalHt = normalizedProducts.reduce((sum, product) => {
+	$: productsCount = producerWithProducts.reduce((sum, producer) => {
 		return (
-			parseFloat(sum) +
-			(product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) *
-				(product.quantity || 0)
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return productSum + product.quantity;
+			}, 0)
 		);
 	}, 0);
-	$: totalVat = normalizedProducts.reduce((sum, product) => {
+
+	$: totalReturnable = producerWithProducts.reduce((sum, producer) => {
 		return (
-			parseFloat(sum) +
-			(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0)
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return productSum + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0);
+			}, 0)
 		);
 	}, 0);
-	$: totalTtc = normalizedProducts.reduce((sum, product) => {
+
+	$: totalProductsHt = producerWithProducts.reduce((sum, producer) => {
 		return (
-			parseFloat(sum) +
-			(product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) * (product.quantity || 0)
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return productSum + product.wholeSalePricePerUnit * (product.quantity || 0);
+			}, 0)
 		);
 	}, 0);
+
+	$: totalHt = producerWithProducts.reduce((sum, producer) => {
+		return (
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return (
+					productSum +
+					(product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) *
+						(product.quantity || 0)
+				);
+			}, 0)
+		);
+	}, 0);
+
+	$: totalVat = producerWithProducts.reduce((sum, producer) => {
+		return (
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return (
+					productSum +
+					(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0)
+				);
+			}, 0)
+		);
+	}, 0);
+
+	$: totalTtc = producerWithProducts.reduce((sum, producer) => {
+		return (
+			sum +
+			producer.products.reduce((productSum, product) => {
+				return (
+					productSum +
+					(product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) *
+						(product.quantity || 0)
+				);
+			}, 0)
+		);
+	}, 0);
+
+	$: isValid = producerWithProducts.filter((p) => !p.delivery).length === 0;
 </script>
 
 <TransitionWrapper>
@@ -167,59 +194,52 @@
 	<PageBody
 		{errorsHandler}
 		{isLoading}
-		noResults={normalizedProducts.length < 1}
+		noResults={producers.length < 1}
 		noResultsPage={SearchProducerRoutes.NoResults}
 		loadingMessage="Chargement des produits disponibles."
 	>
 		<form on:submit|preventDefault={handleSubmit}>
-			{#if normalizedProducts.length > 0}
-				{#if producerDeliveries.length > 1}
-					<div class="mb-5">
-						<div class="themed w-full">
-							<Select
-								items={producerDeliveries}
-								getOptionLabel={(l) => l.name}
-								getSelectionLabel={(l) => l.name}
-								showChevron={true}
-								hideSelectedOnFocus={true}
-								on:select={(selectedVal) => {
-									producersDisplayed = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [];
-								}}
-								optionIdentifier="id"
-								placeholder="Filtrez les producteurs"
-								noOptionsMessage="Aucun producteur trouvé"
-								isSearchable={true}
-								isMulti={true}
-								isClearable={false}
-								containerStyles="font-weight: 600; color: #4a5568;"
-							/>
-						</div>
+			{#if producers.length > 1}
+				<div class="mb-5">
+					<div class="themed w-full">
+						<Select
+							items={producers}
+							getOptionLabel={(l) => l.name}
+							getSelectionLabel={(l) => l.name}
+							showChevron={true}
+							hideSelectedOnFocus={true}
+							on:select={(selectedVal) => {
+								selectedProducers = selectedVal.detail ? selectedVal.detail.map((d) => d.id) : [];
+							}}
+							optionIdentifier="id"
+							placeholder="Filtrez les producteurs"
+							noOptionsMessage="Aucun producteur trouvé"
+							isSearchable={true}
+							isMulti={true}
+							isClearable={false}
+							containerStyles="font-weight: 600; color: #4a5568;"
+						/>
 					</div>
-				{/if}
-				<!-- <div class="block lg:hidden">
-					<button on:click={showFilterProducersModal} type="button" class="btn btn-lg bg-white shadow">Filtrer les producteurs</button>
-				</div> -->
-				<div class="lg:flex lg:flex-row">
-					<div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
-						<div class="align-middle inline-block min-w-full overflow-hidden items mb-5">
-							{#each producersDisplayed.length > 0 ? normalizedProducts.filter( (p) => producersDisplayed.includes(p.producer.id) ) : normalizedProducts as product, i}
-								{#if i === 0 || (producersDisplayed.length > 0 ? normalizedProducts.filter( (p) => producersDisplayed.includes(p.producer.id) ) : normalizedProducts)[i - 1].producer.name !== product.producer.name}
-									<p
-										style="border-bottom: 0;"
-										class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100"
-										class:mt-5={i >= 1}
-									>
-										{product.producer.name}
-									</p>
-									<DeliveryModePicker
-										bind:selected={product.producer.delivery}
-										bind:selectedDeliveryHour={product.producer.deliveryHour}
-										bind:businessQuickOrderProducts={normalizedProducts}
-										data={getProducerDeliveries(product.producer.id)}
-										displayLocation={false}
-										isLoading={isLoadingDeliveries}
-									/>
-								{/if}
+				</div>
+			{/if}
+			<div class="lg:flex lg:flex-row">
+				<div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
+					<div class="align-middle inline-block min-w-full overflow-hidden items mb-5">
+						{#each displayedProducers as producer}
+							<p
+								style="border-bottom: 0;"
+								class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100 mt-5"
+							>
+								{producer.name}
+							</p>
+							<DeliveryModePicker
+								bind:selected={producer.delivery}
+								bind:selectedDeliveryHour={producer.deliveryHour}
+								data={producer}
+								displayLocation={false}
+								isLoading={isLoadingDeliveries}
+							/>
+							{#each producer.products as product}
 								<div
 									class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
               border-gray-400 border-solid items-center"
@@ -248,7 +268,7 @@
 													aria-label="Retirer 1"
 													class="font-bold
                         transition duration-300 ease-in-out text-sm w-full rounded-l-full focus:outline-none  hover:bg-accent hover:text-white text-accent"
-													on:click|stopPropagation={() => handleLess(product.id)}
+													on:click|stopPropagation={() => handleLess(producer.id, product.id)}
 												>
 													-
 												</button>
@@ -276,7 +296,7 @@
 													class="font-bold
                         transition duration-300 ease-in-out text-sm w-full rounded-r-full focus:outline-none text-accent hover:bg-accent hover:text-white"
 													aria-label="Ajouter 1"
-													on:click|stopPropagation={() => handleMore(product.id)}
+													on:click|stopPropagation={() => handleMore(producer.id, product.id)}
 												>
 													+
 												</button>
@@ -293,74 +313,78 @@
 									</div>
 								</div>
 							{/each}
-						</div>
+							<div class="bg-white border-b border-l border-r border-gray-400 border-solid">
+								<p class="p-2">Remarques :</p>
+								<textarea bind:value={producer.comment} />
+							</div>
+						{/each}
 					</div>
-					<div class="w-full lg:w-4/12">
-						<div
-							class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
+				</div>
+				<div class="w-full lg:w-4/12">
+					<div
+						class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
             bg-white shadow w-full"
-							style="height: fit-content;"
-						>
-							<div class="flex justify-between w-full lg:px-3 pb-2">
-								<div class="text-left">
-									<p>Montant HT</p>
-									<p class="text-sm text-gray-600">
-										{#if productsCount > 0}
-											{productsCount} article{productsCount > 1 ? "s" : ""}
-										{:else}Aucun article
-										{/if}
-									</p>
-								</div>
-								<div>
-									<p>{formatMoney(totalProductsHt)}</p>
-								</div>
+						style="height: fit-content;"
+					>
+						<div class="flex justify-between w-full lg:px-3 pb-2">
+							<div class="text-left">
+								<p>Montant HT</p>
+								<p class="text-sm text-gray-600">
+									{#if productsCount > 0}
+										{productsCount} article{productsCount > 1 ? "s" : ""}
+									{:else}Aucun article
+									{/if}
+								</p>
 							</div>
-							<div class="flex justify-between w-full lg:px-3 pb-2">
-								<div class="text-left">
-									<p>Consignes HT</p>
-								</div>
-								<p>{formatMoney(totalReturnable)}</p>
+							<div>
+								<p>{formatMoney(totalProductsHt)}</p>
 							</div>
-							<div class="flex justify-between w-full lg:px-3 pb-2">
-								<div class="text-left">
-									<p>TVA</p>
-								</div>
-								<div>
-									<p>{formatMoney(totalVat)}</p>
-								</div>
+						</div>
+						<div class="flex justify-between w-full lg:px-3 pb-2">
+							<div class="text-left">
+								<p>Consignes HT</p>
 							</div>
-							<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
-								<div class="text-left">
-									<p class="uppercase font-semibold">Total HT</p>
-								</div>
-								<div>
-									<p class="font-bold text-lg">{formatMoney(totalHt)}</p>
-								</div>
+							<p>{formatMoney(totalReturnable)}</p>
+						</div>
+						<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
+							<div class="text-left">
+								<p class="uppercase font-semibold">Total HT</p>
 							</div>
-							<div class="flex justify-between w-full lg:px-3 pt-2">
-								<div class="text-left">
-									<p class="uppercase font-semibold">Total TTC</p>
-								</div>
-								<div>
-									<p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
-								</div>
+							<div>
+								<p class="font-bold text-lg">{formatMoney(totalHt)}</p>
 							</div>
-							<div class="pt-2 lg:pt-3">
-								<button
-									type="submit"
-									class:disabled={productsCount === 0 || !isValid}
-									disabled={productsCount === 0 || !isValid}
-									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+						</div>
+						<div class="flex justify-between w-full lg:px-3 pt-2">
+							<div class="text-left">
+								<p class="uppercase font-semibold">Total TVA</p>
+							</div>
+							<div>
+								<p class="font-bold text-lg">{formatMoney(totalVat)}</p>
+							</div>
+						</div>
+						<div class="flex justify-between w-full lg:px-3 pt-2">
+							<div class="text-left">
+								<p class="uppercase font-semibold">Total TTC</p>
+							</div>
+							<div>
+								<p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
+							</div>
+						</div>
+						<div class="pt-2 lg:pt-3">
+							<button
+								type="submit"
+								class:disabled={productsCount === 0 || !isValid}
+								disabled={productsCount === 0 || !isValid}
+								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
                 justify-center m-auto"
-									style="padding-left: 50px; padding-right: 50px;"
-								>
-									Valider
-								</button>
-							</div>
+								style="padding-left: 50px; padding-right: 50px;"
+							>
+								Valider
+							</button>
 						</div>
 					</div>
 				</div>
-			{/if}
+			</div>
 		</form>
 	</PageBody>
 </TransitionWrapper>

@@ -310,7 +310,7 @@
 					class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400"
 				>
-					<p class="uppercase font-bold pb-2">La commande</p>
+					<p class="uppercase font-bold pb-2">Commande</p>
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
@@ -338,7 +338,7 @@
 					class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400"
 				>
-					<p class="uppercase font-bold pb-2">Le panier</p>
+					<p class="uppercase font-bold pb-2">Contenu</p>
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
@@ -361,7 +361,7 @@
 					class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
           border-gray-400 px-4 lg:px-8 py-5"
 				>
-					<p class="uppercase font-bold pb-2">Le client</p>
+					<p class="uppercase font-bold pb-2">Client</p>
 					<div class="mt-3">
 						<div>
 							<p class="mb-2">
@@ -383,6 +383,14 @@
 				</div>
 			</div>
 		</div>
+		{#if order.comment && order.comment.length > 0}
+			<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
+				<div class=" px-4 py-5">
+					<p class="uppercase font-bold pb-2">Remarques</p>
+					<p>{order.comment}</p>
+				</div>
+			</div>
+		{/if}
 		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5">
 			<div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
 				<div class="w-full">
