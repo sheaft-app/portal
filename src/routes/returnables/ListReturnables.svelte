@@ -37,7 +37,6 @@
 			color: "green",
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
@@ -53,7 +52,7 @@
 			let:rowItem={returnable}
 			graphQuery={GET_RETURNABLES}
 			noResultsPage={ReturnableRoutes.NoResults}
-			loadingMessage="Chargement de vos consignes en cours... veuillez patienter."
+			loadingMessage="Chargement de vos consignes en cours."
 			defaultSearchValues={ReturnableRoutes.List.Params.Query}
 			{getRowBackgroundColor}
 			{onRowClick}

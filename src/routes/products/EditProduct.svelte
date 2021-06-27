@@ -71,16 +71,11 @@
 			click: () => showDeleteModal(),
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Modifier le produit" previousPage={ProductRoutes.List} {buttons} />
-	<PageBody
-		{errorsHandler}
-		{isLoading}
-		loadingMessage="Chargement des informations de votre produit en cours... veuillez patienter."
-	>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre produit en cours.">
 		<ProductForm submit={handleSubmit} bind:product {errorsHandler} />
 	</PageBody>
 </TransitionWrapper>

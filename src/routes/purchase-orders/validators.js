@@ -1,4 +1,5 @@
 import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
+import DeliveryKind from "../../enums/DeliveryKind";
 
 export const canCreatePickingOrders = (selectedItems) =>
 	selectedItems.length > 0 && selectedItems.filter((o) => canCreatePickingOrder(o)).length === selectedItems.length;
@@ -47,6 +48,11 @@ export const canProcessOrder = (o) => o && o.status === PurchaseOrderStatusKind.
 export const canCompleteOrder = (o) => o && o.status === PurchaseOrderStatusKind.Processing.Value;
 
 export const canDeliverOrder = (o) =>
-	(o && o.status === PurchaseOrderStatusKind.Completed.Value) || o.status === PurchaseOrderStatusKind.Shipping.Value;
+	o &&
+	o.status === PurchaseOrderStatusKind.Completed.Value &&
+	(o.expectedDelivery.kind === DeliveryKind.Collective.Value ||
+		o.expectedDelivery.kind === DeliveryKind.Farm.Value ||
+		o.expectedDelivery.kind === DeliveryKind.Market.Value ||
+		o.expectedDelivery.kind === DeliveryKind.Withdrawal.Value);
 
 export const canShipOrder = (o) => o && o.status === PurchaseOrderStatusKind.Completed.Value;

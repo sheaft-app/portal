@@ -1,10 +1,6 @@
 <script>
 	import CancelMyOrders from "./CancelMyOrders.svelte";
 	import { onMount, getContext } from "svelte";
-	import Icon from "svelte-awesome";
-	import { faTruck, faCheck, faMapMarkerAlt, faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
-	import { format } from "date-fns";
-	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetAuthInstance from "./../../services/SheaftAuth";
 	import GetRouterInstance from "./../../services/SheaftRouter";
@@ -13,9 +9,15 @@
 	import MyOrderRoutes from "./routes";
 	import { GET_MY_ORDER_DETAILS } from "./queries.js";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { timeSpanToFrenchHour, encodeQuerySearchUrl, formatMoney } from "./../../helpers/app";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import Icon from "svelte-awesome";
+	import { faTruck, faCheck, faCalendar, faMapMarkerAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
+	import DeliveryStatus from "../../enums/DeliveryStatus";
+	import { formatMoney } from "./../../helpers/app";
+	import { timeSpanToFrenchHour, encodeQuerySearchUrl } from "../../helpers/app";
 
 	export let params = {};
 
@@ -25,23 +27,21 @@
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
 
-	let order = null;
+	let purchaseOrder = null;
+	let processStep = null;
 	let isLoading = true;
 
-	const getProcessStep = (status) => {
+	const getProcessStep = (status, deliveryStatus) => {
 		switch (status) {
-			case PurchaseOrderStatusKind.Waiting.Value:
 			case PurchaseOrderStatusKind.Accepted.Value:
-			case PurchaseOrderStatusKind.Refused.Value:
-			case PurchaseOrderStatusKind.Expired.Value:
 				return 1;
 			case PurchaseOrderStatusKind.Processing.Value:
 				return 2;
 			case PurchaseOrderStatusKind.Completed.Value:
+				if (deliveryStatus && deliveryStatus !== DeliveryStatus.Delivered) return 4;
 				return 3;
-			case PurchaseOrderStatusKind.Shipping.Value:
 			case PurchaseOrderStatusKind.Delivered.Value:
-				return 4;
+				return 5;
 			default:
 				return 0;
 		}
@@ -49,7 +49,7 @@
 
 	const cancelOrder = () =>
 		open(CancelMyOrders, {
-			orders: [order],
+			orders: [purchaseOrder],
 			onClose: () => routerInstance.goTo(MyOrderRoutes.List),
 		});
 
@@ -60,36 +60,34 @@
 		}
 
 		isLoading = true;
-		order = await query({
+		purchaseOrder = await query({
 			query: GET_MY_ORDER_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(MyOrderRoutes.List),
 			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus",
 		});
+
+		processStep = getProcessStep(purchaseOrder.status, purchaseOrder.delivery?.status);
 		isLoading = false;
 	});
 
 	$: canCancelOrder =
-		order &&
-		order.status != PurchaseOrderStatusKind.Completed.Value &&
-		order.status != PurchaseOrderStatusKind.Cancelled.Value &&
-		order.status != PurchaseOrderStatusKind.Withdrawned.Value &&
-		order.status != PurchaseOrderStatusKind.Delivered.Value &&
-		order.status != PurchaseOrderStatusKind.Shipping.Value &&
-		order.status != PurchaseOrderStatusKind.Processing.Value &&
-		order.status != PurchaseOrderStatusKind.Refused.Value &&
-		order.status != PurchaseOrderStatusKind.Expired.Value;
+		purchaseOrder &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Completed.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Cancelled.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Withdrawned.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Delivered.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Shipping.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Processing.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Refused.Value &&
+		purchaseOrder.status != PurchaseOrderStatusKind.Expired.Value;
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Détails de la commande" previousPage={MyOrderRoutes.List} />
-	<PageBody
-		{errorsHandler}
-		{isLoading}
-		loadingMessage="Récupération des informations de votre commande en cours... veuillez patienter."
-	>
-		{#if order.status === PurchaseOrderStatusKind.Expired.Value}
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Récupération des informations de votre commande en cours.">
+		{#if purchaseOrder.status === PurchaseOrderStatusKind.Expired.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3"
@@ -97,13 +95,13 @@
 				<p class="uppercase font-bold leading-none">Commande expirée</p>
 				<div class="mt-2">
 					<p>La commande est expirée, vous ne pouvez plus interagir avec.</p>
-					{#if order.reason}
-						<p class="mt-2 font-semibold">Raison : {order.reason}</p>
+					{#if purchaseOrder.reason}
+						<p class="mt-2 font-semibold">Raison : {purchaseOrder.reason}</p>
 					{/if}
 				</div>
 			</div>
 		{/if}
-		{#if order.status === PurchaseOrderStatusKind.Cancelled.Value || order.status == PurchaseOrderStatusKind.Withdrawned.Value}
+		{#if purchaseOrder.status === PurchaseOrderStatusKind.Cancelled.Value || purchaseOrder.status === PurchaseOrderStatusKind.Withdrawned.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-gray-100
         shadow rounded mb-3"
@@ -111,13 +109,13 @@
 				<p class="uppercase font-bold leading-none">Commande annulée</p>
 				<div class="mt-2">
 					<p>La commande a été annulée, vous ne pouvez plus interagir avec.</p>
-					{#if order.reason}
-						<p class="mt-2 font-semibold">Raison : {order.reason}</p>
+					{#if purchaseOrder.reason}
+						<p class="mt-2 font-semibold">Raison : {purchaseOrder.reason}</p>
 					{/if}
 				</div>
 			</div>
 		{/if}
-		{#if order.status === PurchaseOrderStatusKind.Refused.Value}
+		{#if purchaseOrder.status === PurchaseOrderStatusKind.Refused.Value}
 			<div
 				class="py-5 px-8 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-red-100
         shadow rounded mb-3"
@@ -125,13 +123,13 @@
 				<p class="uppercase font-bold leading-none">Commande refusée</p>
 				<div class="mt-2">
 					<p>La commande a été refusée, vous ne pouvez plus interagir avec.</p>
-					{#if order.reason}
-						<p class="mt-2 font-semibold">Raison : {order.reason}</p>
+					{#if purchaseOrder.reason}
+						<p class="mt-2 font-semibold">Raison : {purchaseOrder.reason}</p>
 					{/if}
 				</div>
 			</div>
 		{/if}
-		{#if order.status === PurchaseOrderStatusKind.Waiting.Value}
+		{#if purchaseOrder.status === PurchaseOrderStatusKind.Waiting.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
         rounded mb-3"
@@ -142,94 +140,88 @@
 						Votre commande a été envoyée au producteur. Celui-ci doit maintenant définir s'il est apte à la traiter en
 						fonction de son stock et de sa capacité de production.
 					</p>
-					<p>Vous recevrez un e-mail dès l'instant où le producteur aura traité votre commande.</p>
+					<p>Vous recevrez un e-mail dès l'instant où le producteur aura accepté votre commande.</p>
 				</div>
 			</div>
 		{/if}
-		{#if order.status === PurchaseOrderStatusKind.Shipping.Value}
-			<div
-				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
-        rounded mb-3"
-			>
-				<p class="uppercase font-bold leading-none">Commande en livraison</p>
-				<div class="mt-2">
-					<p>Votre commande est en cours de livraison</p>
-				</div>
-			</div>
-		{/if}
-		{#if order.status === PurchaseOrderStatusKind.Delivered.Value}
+		{#if purchaseOrder.status === PurchaseOrderStatusKind.Delivered.Value}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         rounded mb-3"
 			>
 				{#if authInstance.isInRole([Roles.Store.Value])}
-					<p class="uppercase font-bold leading-none">Commande récupérée</p>
-					<div class="mt-2">
-						<p>Vous avez récupéré cette commande.</p>
-					</div>
-				{:else}
 					<p class="uppercase font-bold leading-none">Commande livrée</p>
 					<div class="mt-2">
 						<p>Cette commande vous a été livrée.</p>
 					</div>
+				{:else}
+					<p class="uppercase font-bold leading-none">Commande récupérée</p>
+					<div class="mt-2">
+						<p>Vous avez récupéré cette commande.</p>
+					</div>
 				{/if}
 			</div>
 		{/if}
-		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Delivered.Value && order.status !== PurchaseOrderStatusKind.Expired.Value && order.expectedDelivery.expectedDeliveryDate}
+		{#if purchaseOrder.status !== PurchaseOrderStatusKind.Refused.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Cancelled.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Withdrawned.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Delivered.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Expired.Value && purchaseOrder.expectedDelivery.expectedDeliveryDate}
 			<div
 				class="py-5 px-5 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3 border-t md:border-none border-gray-400"
 			>
 				<div class="flex">
-					{#if authInstance.isInRole([Roles.Store.Value])}
-						<Icon data={faTruck} scale="1" class="mr-5" />
-						<div>
+					<Icon data={faTruck} scale="1" class="mr-5" />
+					<div>
+						{#if authInstance.isInRole([Roles.Store.Value])}
 							<p class="uppercase font-bold leading-none">Livraison de la commande</p>
 							<div class="mt-2">
 								<p class="leading-none">
-									{#if order.status !== PurchaseOrderStatusKind.Accepted.Value}
-										Si votre commande est acceptée, la livraison aura lieu
+									{#if purchaseOrder.status === PurchaseOrderStatusKind.Waiting.Value}
+										Si votre commande est acceptée, la livraison aura lieu le
 									{:else}Votre commande sera livrée le
 									{/if}
 									<b>
-										{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPPP", {
-											locale: fr,
-										})}
+										{format(
+											new Date(
+												purchaseOrder.delivery.scheduledOn
+													? purchaseOrder.delivery.scheduledOn
+													: purchaseOrder.expectedDelivery.expectedDeliveryDate
+											),
+											"PPPP",
+											{
+												locale: fr,
+											}
+										)}
 									</b>
-									entre
-									<b>{timeSpanToFrenchHour(order.expectedDelivery.from)}</b>
-									et
-									<b>{timeSpanToFrenchHour(order.expectedDelivery.to)}</b>
 								</p>
 							</div>
-						</div>
-					{:else}
-						<div>
+						{:else}
 							<p class="uppercase font-bold leading-none">Où et quand récupérer ma commande ?</p>
 							<div class="mt-3">
 								<div class="flex mb-2">
 									<Icon data={faMapMarkerAlt} class="mr-3 w-3 h-3" style="margin-top: 0.5em;" />
 									<div>
-										<p>{order.expectedDelivery.address.line1}</p>
-										{#if order.expectedDelivery.address.line2}
-											<p>{order.expectedDelivery.address.line2}</p>
+										<p>{purchaseOrder.expectedDelivery.address.line1}</p>
+										{#if purchaseOrder.expectedDelivery.address.line2}
+											<p>{purchaseOrder.expectedDelivery.address.line2}</p>
 										{/if}
-										<p>{order.expectedDelivery.address.zipcode} {order.expectedDelivery.address.city}</p>
+										<p>
+											{purchaseOrder.expectedDelivery.address.zipcode}
+											{purchaseOrder.expectedDelivery.address.city}
+										</p>
 									</div>
 								</div>
 								<div class="mb-3">
 									<p class="mb-1">
 										<Icon data={faCalendar} class="mr-2 w-3 h-3" />
-										{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPPP", {
+										{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "PPPP", {
 											locale: fr,
 										})}
 									</p>
 									<p class="mb-1">
 										<Icon data={faClock} class="mr-2 w-3 h-3" />
 										entre
-										{timeSpanToFrenchHour(order.expectedDelivery.from)}
+										{timeSpanToFrenchHour(purchaseOrder.expectedDelivery.from)}
 										et
-										{timeSpanToFrenchHour(order.expectedDelivery.to)}
+										{timeSpanToFrenchHour(purchaseOrder.expectedDelivery.to)}
 									</p>
 								</div>
 								<a
@@ -237,40 +229,40 @@
 									class="btn btn-lg btn-accent font-semibold mt-2"
 									style="width: max-content;"
 									href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
-										order.expectedDelivery.address
+										purchaseOrder.expectedDelivery.address
 									)}`}
 								>
 									Voir sur Google Maps
 								</a>
 							</div>
-						</div>
-					{/if}
+						{/if}
+					</div>
 				</div>
 			</div>
 		{/if}
-		{#if order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.status !== PurchaseOrderStatusKind.Withdrawned.Value && order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Expired.Value}
+		{#if purchaseOrder.status !== PurchaseOrderStatusKind.Cancelled.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Withdrawned.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Refused.Value && purchaseOrder.status !== PurchaseOrderStatusKind.Expired.Value}
 			<div
 				class="px-0 py-5 md:py-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white
         border-t md:border-l md:border-r border-gray-400"
 			>
 				<div class="md-stepper-horizontal green mb-5">
-					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 1}>
+					<div class="md-step p-0 md:p-6" class:active={processStep >= 1}>
 						<div class="md-step-circle">
-							{#if getProcessStep(order.status) <= 1}
+							{#if processStep <= 1}
 								1
 							{:else}
 								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
 						<div class="md-step-title text-xs md:text-base">
-							{order.status === PurchaseOrderStatusKind.Waiting.Value ? "En attente" : "Acceptée"}
+							{purchaseOrder.status === PurchaseOrderStatusKind.Waiting.Value ? "En attente" : "Acceptée"}
 						</div>
 						<div class="md-step-bar-left hidden md:block" />
 						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 2}>
+					<div class="md-step p-0 md:p-6" class:active={processStep >= 2}>
 						<div class="md-step-circle">
-							{#if getProcessStep(order.status) <= 2}
+							{#if processStep <= 2}
 								<span>2</span>
 							{:else}
 								<Icon data={faCheck} class="mb-1" />
@@ -281,9 +273,9 @@
 						<div class="md-step-bar-left hidden md:block" />
 						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 3}>
+					<div class="md-step p-0 md:p-6" class:active={processStep >= 3}>
 						<div class="md-step-circle">
-							{#if getProcessStep(order.status) <= 3}
+							{#if processStep <= 3}
 								<span>3</span>
 							{:else}
 								<Icon data={faCheck} class="mb-1" />
@@ -293,19 +285,48 @@
 						<div class="md-step-bar-left hidden md:block" />
 						<div class="md-step-bar-right hidden md:block" />
 					</div>
-					<div class="md-step p-0 md:p-6" class:active={getProcessStep(order.status) >= 4}>
+					{#if authInstance.isInRole( [Roles.Store.Value] ) && purchaseOrder.delivery && purchaseOrder.delivery.status !== DeliveryStatus.Delivered.Value}
+						<div class="md-step p-0 md:p-6" class:active={processStep >= 4}>
+							<div class="md-step-circle">
+								{#if processStep <= 4 && purchaseOrder.status !== PurchaseOrderStatusKind.Delivered.Value}
+									<span>4</span>
+								{:else}
+									<Icon data={faCheck} class="mb-1" />
+								{/if}
+							</div>
+							<div class="md-step-title text-xs md:text-base">
+								{DeliveryStatus.label(purchaseOrder.delivery.status)}
+								{#if authInstance.isInRole([Roles.Store.Value])}
+									<div>
+										{#if (purchaseOrder.delivery.status === DeliveryStatus.Ready.Value || purchaseOrder.delivery.status === DeliveryStatus.InProgress.Value) && purchaseOrder.delivery.deliveryReceiptUrl}
+											(<a href={purchaseOrder.delivery.deliveryReceiptUrl}>Bon de réception</a>)
+										{/if}
+									</div>
+								{/if}
+							</div>
+							<div class="md-step-bar-left hidden md:block" />
+							<div class="md-step-bar-right hidden md:block" />
+						</div>
+					{/if}
+
+					<div class="md-step p-0 md:p-6" class:active={processStep >= 5}>
 						<div class="md-step-circle">
-							{#if getProcessStep(order.status) <= 4 && order.status !== PurchaseOrderStatusKind.Delivered.Value}
-								<span>4</span>
+							{#if processStep < 5}
+								<span>{authInstance.isInRole([Roles.Store.Value]) && purchaseOrder.delivery ? 5 : 4}</span>
 							{:else}
 								<Icon data={faCheck} class="mb-1" />
 							{/if}
 						</div>
-						{#if authInstance.isInRole([Roles.Store.Value])}
-							<div class="md-step-title text-xs md:text-base">Livrée</div>
-						{:else}
-							<div class="md-step-title text-xs md:text-base">Récupérée</div>
-						{/if}
+						<div class="md-step-title text-xs md:text-base">
+							{authInstance.isInRole([Roles.Store.Value]) ? "Livrée" : "Récupérée"}
+							{#if authInstance.isInRole( [Roles.Store.Value] ) && purchaseOrder.status === PurchaseOrderStatusKind.Delivered.Value}
+								<div>
+									{#if purchaseOrder.delivery.status === DeliveryStatus.Delivered.Value && purchaseOrder.delivery.deliveryFormUrl}
+										(<a href={purchaseOrder.delivery.deliveryFormUrl}>Bon de livraison</a>)
+									{/if}
+								</div>
+							{/if}
+						</div>
 						<div class="md-step-bar-left hidden md:block" />
 						<div class="md-step-bar-right hidden md:block" />
 					</div>
@@ -318,25 +339,25 @@
 					class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400"
 				>
-					<p class="uppercase font-bold pb-2">La commande</p>
+					<p class="uppercase font-bold pb-2">Commande</p>
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Référence :</span>
-								{order.reference}
+								{purchaseOrder.reference}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Passée le :</span>
-								{format(new Date(order.createdOn), "PPPPp", { locale: fr })}
+								{format(new Date(purchaseOrder.createdOn), "PPPPp", { locale: fr })}
 							</p>
 						</div>
-						{#if order.status === PurchaseOrderStatusKind.Delivered.Value}
+						{#if purchaseOrder.status === PurchaseOrderStatusKind.Delivered.Value}
 							<div class="flex items-center mb-2">
 								<p>
 									<span class="text-gray-600">Livrée le :</span>
-									{format(new Date(order.expectedDelivery.deliveredOn), "PPPPp", { locale: fr })}
+									{format(new Date(purchaseOrder.delivery.deliveredOn), "PPPPp", { locale: fr })}
 								</p>
 							</div>
 						{/if}
@@ -346,24 +367,20 @@
 					class="w-full lg:w-2/6 px-4 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400"
 				>
-					{#if authInstance.isInRole([Roles.Store.Value])}
-						<p class="uppercase font-bold pb-2">Le contenu</p>
-					{:else}
-						<p class="uppercase font-bold pb-2">Le panier</p>
-					{/if}
+					<p class="uppercase font-bold pb-2">Contenu</p>
 					<div class="mt-3">
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Articles :</span>
-								{order.productsCount}
+								{purchaseOrder.productsCount}
 							</p>
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Montant :</span>
-								{formatMoney(order.totalOnSalePrice)}
-								{#if order.totalReturnableOnSalePrice > 0}
-									(dont {formatMoney(order.totalReturnableOnSalePrice)} de consignes)
+								{formatMoney(purchaseOrder.totalWholeSalePrice)}
+								{#if purchaseOrder.totalReturnableWholeSalePrice > 0}
+									(dont {formatMoney(purchaseOrder.totalReturnableWholeSalePrice)} de consignes)
 								{/if}
 							</p>
 						</div>
@@ -373,21 +390,21 @@
 					class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
           border-gray-400 px-4 py-5"
 				>
-					<p class="uppercase font-bold pb-2">Le producteur</p>
+					<p class="uppercase font-bold pb-2">Producteur</p>
 					<div class="mt-3">
 						<div>
 							<p class="mb-2">
 								<span class="text-gray-600">Nom :</span>
-								{order.vendor.name}
+								{purchaseOrder.vendor.name}
 							</p>
 							<p class="text-base mb-2">
 								<span class="text-gray-600">Mail :</span>
-								<a href="mailto:{order.vendor.email}">{order.vendor.email}</a>
+								<a href="mailto:{purchaseOrder.vendor.email}">{purchaseOrder.vendor.email}</a>
 							</p>
 							<p class="text-base mb-2">
-								{#if order.vendor.phone}
+								{#if purchaseOrder.vendor.phone}
 									<span class="text-gray-600">Tél :</span>
-									<a href="tel:{order.vendor.phone}">{order.vendor.phone}</a>
+									<a href="tel:{purchaseOrder.vendor.phone}">{purchaseOrder.vendor.phone}</a>
 								{/if}
 							</p>
 						</div>
@@ -412,29 +429,36 @@
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider hidden lg:table-cell"
-										>
-											Prix unitaire TTC
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider"
 										>
 											Qté
 										</th>
 										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
+                      bg-gray-100 text-left text-xs font-semibold text-gray-600
+                      uppercase tracking-wider hidden lg:table-cell"
+										>
+											PU HT
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
+                      bg-gray-100 text-left text-xs font-semibold text-gray-600
+                      uppercase tracking-wider hidden lg:table-cell"
+										>
+											TVA
+										</th>
+										<th
 											class="px-4 md:px-8 py-3 border-b md:border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider"
 										>
-											Prix Total TTC
+											Total TTC
 										</th>
 									</tr>
 								</thead>
 								<tbody class="border-b md:border border-gray-400">
-									{#each order.products as line, index}
+									{#each purchaseOrder.products as line, index}
 										<tr>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-200
@@ -443,23 +467,31 @@
 												<div class="items-center">
 													<p>{line.name}</p>
 													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(line.unitOnSalePrice)} / unité
+														{formatMoney(line.unitWholeSalePrice)} / unité
 													</p>
 												</div>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base hidden lg:table-cell"
-											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(line.unitOnSalePrice)}
-												</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-200
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
 												<p class="whitespace-no-wrap">{line.quantity}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base hidden lg:table-cell"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(line.unitWholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base hidden lg:table-cell"
+											>
+												<p class="whitespace-no-wrap">
+													{line.vat}%
+												</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-200
@@ -486,14 +518,62 @@
 										<td
 											class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="2"
+											colspan="3"
+										>
+											Total HT:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
+											colspan="4"
+										>
+											Total HT:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right
+                      font-bold"
+											colspan="1"
+										>
+											{formatMoney(purchaseOrder.totalWholeSalePrice)}
+										</td>
+									</tr>
+									<tr>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+											colspan="3"
+										>
+											Total TVA:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
+											colspan="4"
+										>
+											Total TVA:
+										</td>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right
+                      font-bold"
+											colspan="1"
+										>
+											{formatMoney(purchaseOrder.totalVatPrice)}
+										</td>
+									</tr>
+									<tr>
+										<td
+											class="bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+											colspan="3"
 										>
 											Total TTC:
 										</td>
 										<td
 											class="bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="3"
+											colspan="4"
 										>
 											Total TTC:
 										</td>
@@ -503,7 +583,7 @@
                       font-bold"
 											colspan="1"
 										>
-											{formatMoney(order.totalOnSalePrice)}
+											{formatMoney(purchaseOrder.totalOnSalePrice)}
 										</td>
 									</tr>
 								</tbody>

@@ -54,14 +54,20 @@ export const GET_MY_ORDER_DETAILS = gql`
 			id
 			reference
 			totalOnSalePrice
+			totalWholeSalePrice
 			status
 			totalReturnableOnSalePrice
+			totalReturnableWholeSalePrice
 			createdOn
 			totalVatPrice
 			reason
 			productsCount
 			delivery {
+				status
+				scheduledOn
 				deliveredOn
+				deliveryFormUrl
+				deliveryReceiptUrl
 			}
 			expectedDelivery {
 				expectedDeliveryDate
@@ -93,10 +99,13 @@ export const GET_MY_ORDER_DETAILS = gql`
 				name
 				reference
 				quantity
+				vat
 				totalOnSalePrice
-				totalOnSalePrice
+				totalWholeSalePrice
 				unitOnSalePrice
+				unitWholeSalePrice
 				totalReturnableOnSalePrice
+				totalReturnableWholeSalePrice
 			}
 		}
 	}

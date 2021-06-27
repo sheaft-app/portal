@@ -88,16 +88,11 @@
 			purchaseOrders: [item],
 			onClose: async () => await getPurchaseOrder(item.id),
 		});
-
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Détails de la commande" previousPage={PurchaseOrderRoutes.List} />
-	<PageBody
-		{errorsHandler}
-		{isLoading}
-		loadingMessage="Chargement des informations de votre commande... veuillez patienter."
-	>
+	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre commande.">
 		{#if order.status === PurchaseOrderStatusKind.Waiting.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
@@ -301,7 +296,7 @@
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
 						<Icon data={faTruckLoading} class="mr-2 hidden lg:inline w-4 h-4" />
-						<span>Marquer comme livrée</span>
+						<span>Marquer comme récupérée</span>
 					</button>
 				</div>
 			</div>

@@ -46,7 +46,7 @@
 			{errorsHandler}
 			{onRowClick}
 			noResultsPage={DeliveryRoutes.NoResults}
-			loadingMessage="Chargement de vos créneaux de livraisons en cours... veuillez patienter."
+			loadingMessage="Chargement de vos créneaux de livraisons en cours."
 			getRowBackgroundColor={(i) => (!i.available ? "bg-orange-200" : "")}
 			headers={[{ name: "Nom" }, { name: "Horaires" }]}
 			let:rowItem={delivery}
