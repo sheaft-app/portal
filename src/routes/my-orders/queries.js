@@ -1,8 +1,15 @@
 import gql from "graphql-tag";
 
 export const MY_ORDERS = gql`
-	query MyOrders($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PurchaseOrderSortInput!]) {
-		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $orderBy) {
+	query MyOrders(
+		$first: Int
+		$last: Int
+		$after: String
+		$before: String
+		$orderBy: [PurchaseOrderSortInput!]
+		$where: PurchaseOrderFilterInput
+	) {
+		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $orderBy, where: $where) {
 			pageInfo {
 				startCursor
 				endCursor

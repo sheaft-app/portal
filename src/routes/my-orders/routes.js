@@ -23,6 +23,8 @@ const MyOrderRoutes = {
 				direction: OrderByDirection.DESC,
 				take: 20,
 				paginate: Paginate.First,
+				where: null,
+				whereValues: null,
 			},
 		},
 	},

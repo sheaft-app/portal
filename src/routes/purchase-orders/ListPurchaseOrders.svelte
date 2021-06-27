@@ -77,14 +77,14 @@
 
 	const filterStatus = Object.entries(PurchaseOrderStatusKind)
 		.map(([key, value]) => {
-			if (value.Value && value.Label) {
+			if (value.List && value.Value && value.Label) {
 				return {
 					value: value.Value,
 					label: value.Label,
 				};
 			}
 		})
-		.filter((o) => o && o.value && o.value !== "NONE");
+		.filter((p) => p);
 
 	const checkHasExportInProgress = async () => {
 		hasPendingJobs = await query({
