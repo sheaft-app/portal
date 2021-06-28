@@ -9,6 +9,7 @@
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import { getContext } from "svelte";
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
+import DeliveryBatches from "./DeliveryBatches.svelte";
 	
 	export let deliveryBatch;
 
@@ -53,15 +54,23 @@
 			<p class="font-medium text-lg">{deliveryBatch.assignedTo.firstName}</p>
 		</div>
 		<div class="flex space-x-2">
-			<button
-				on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
-				class="btn btn-lg btn-outline text-lg font-semibold">Modifier
-			</button>
-			<button
-				on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
-				class="btn btn-lg btn-accent text-lg font-semibold">Lancer
-				<Icon class="ml-2" data={faChevronRight} />
-			</button>
+			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value}
+				<button
+					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-accent text-lg font-semibold">Reprendre
+					<Icon class="ml-2" data={faChevronRight} />
+				</button>
+			{:else if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
+				<button
+					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-outline text-lg font-semibold">Modifier
+				</button>
+				<button
+					on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-accent text-lg font-semibold">Lancer
+					<Icon class="ml-2" data={faChevronRight} />
+				</button>
+			{/if}
 		</div>
 	</div>
 </div>

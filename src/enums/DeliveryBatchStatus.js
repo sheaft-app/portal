@@ -3,7 +3,7 @@ import GetEnumObjectFor from "./helpers.js";
 let enums = {
 	Waiting: { Value: "WAITING", Label: "En attente" },
 	Ready: { Value: "READY", Label: "Prête" },
-	InProgress: { Value: "INPROGRESS", Label: "En cours" },
+	InProgress: { Value: "IN_PROGRESS", Label: "En cours" },
 	Completed: { Value: "COMPLETED", Label: "Terminée" },
 	Partial: { Value: "PARTIAL", Label: "Partielle" },
 	Cancelled: { Value: "CANCELLED", Label: "Annulée" },

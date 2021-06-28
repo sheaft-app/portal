@@ -10,7 +10,7 @@
 	import "swiper/components/navigation/navigation.min.css";
 	import Modal from "./components/modal/Modal.svelte";
 	import Nav from "./components/nav/Nav.svelte";
-	import { selectedItem } from "./stores/app.js";
+	import { selectedItem, fullScreenMap } from "./stores/app.js";
 	import { authInitialized, authAuthenticated } from "./stores/auth.js";
 	import { navExpended } from "./components/nav/store.js";
 	import { config } from "./configs/config.js";
@@ -206,10 +206,10 @@
 	<main
 		class:relative={!$navExpended}
 		class:fixed={$navExpended}
-		class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value])}
+		class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value]) || $fullScreenMap}
 	>
 		<Modal>
-			<div class="p-4 md:px-6 md:py-4 lg:px-8 lg:py-4 h-full" id="main-content" class:noNav={!$authRegistered}>
+			<div class={`${$fullScreenMap ? '' : 'p-4 md:px-6 md:py-4 lg:px-8 lg:py-4'} h-full`} id="main-content" class:noNav={!$authRegistered || $fullScreenMap}>
 				<Router routes={guardInstance.routes} />
 			</div>
 		</Modal>
