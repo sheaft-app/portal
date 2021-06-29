@@ -238,7 +238,7 @@
 							</div>
 						</div>
 					{:else}
-						<p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
+						<p class="my-5">Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
 					{/if}
 				{/if}
 				<Tabs>
