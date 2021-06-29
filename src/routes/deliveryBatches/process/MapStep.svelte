@@ -1,136 +1,69 @@
 <script>
-	import { onDestroy } from "svelte";
-	import { fullScreenMap } from "../../../stores/app"; 
-    import L from 'leaflet';
+	import Map from "./Map.svelte";
+	import { GET_DELIVERY_BATCH_DETAILS } from "../queries";
+	import { onMount, getContext } from "svelte";
+	import SheaftErrors from "../../../services/SheaftErrors";
+	import GetRouterInstance from "../../../services/SheaftRouter";
+	import DeliveryBatchRoutes from "../routes";
+	import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
+
+	export let deliveryId;
+
+	const { query } = getContext("api");
+	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
+
+	let meLocation = [];
+	let otherStops = [];
+
+	let destination;
+	let destinationLocation = [];
+
+	let isLoading = true;
 	
-	fullScreenMap.set(true);
+	onMount(async () => {
+		isLoading = true;
+		await query({
+			query: GET_DELIVERY_BATCH_DETAILS,
+			variables: { id: deliveryId },
+			errorsHandler,
+			error: () => routerInstance.goTo(DeliveryBatchRoutes.List),
+			success: (res) => {
+				const deliveries = res.deliveries;
 
-	let map;
+				destination = deliveries.find((d) => d.status == DeliveryBatchStatus.InProgress.Value);
+				otherStops = deliveries.filter((d) => d.status == DeliveryBatchStatus.Waiting.Value).map((d) => [d.address.latitude, d.address.longitude]);
 
-	onDestroy(() => {
-		fullScreenMap.set(false);
-	})
-    
-    const meLocation = [45.784241690370365, 6.037268006613801];
-    const destinationLocation = [45.87884472947742, 6.089757988365797];
-    const otherStops = [
-        [45.914398049039654, 6.092165631341254],
-        [45.93926243060429, 6.122586492350054]
-    ];
+				const completedDeliveries = deliveries.filter((d) => d.status == DeliveryBatchStatus.Completed.Value);
 
-    const initialView = [45.914398049039654, 6.092165631341254];
-    
-	function createMap(container) {
-	    let m = L.map(container, { preferCanvas: true }).setView(initialView, 11);
-        L.tileLayer(
-            'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-            {
-            attribution: `&copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>,
-                &copy;<a href="https://carto.com/attributions" target="_blank">CARTO</a>`,
-            subdomains: 'abcd',
-            maxZoom: 14,
-            }
-        ).addTo(m);
-
-        return m;
-    }
-	
-	const meIcon = L.divIcon({
-		html: `<div class="marker"><div class="me-icon"></div><div class="marker-text">Vous</div></div>`,
-		className: 'me-marker'
+				if (completedDeliveries.length == 0) {
+					meLocation = [res.assignedTo.address.latitude, res.assignedTo.address.longitude];
+				} else {
+					lastCompletedDelivery = completedDeliveries.sort((a, b) => a.position >= b.position ? -1 : 1)[0];
+					meLocation = [lastCompletedDelivery.address.latitude, lastCompletedDelivery.address.longitude];
+				}
+			},
+			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
+		});
+		isLoading = false;
 	});
-    
-    const destinationIcon = L.divIcon({
-		html: `<div class="marker"><div class="destination-icon"></div><div class="marker-text">Biocoop Semnoz</div></div>`,
-		className: 'destination-marker'
-	});
-    
-    const stopIcon = L.divIcon({
-		html: `<div class="marker"><div class="stop-icon"></div></div>`,
-		className: 'stop-marker'
-	});
-    
-    function mapAction(container) {
-        map = createMap(container); 
-		
-		const otherStopsLayer = L.layerGroup();
-		const meLayer = L.layerGroup();
-        const destinationLayer = L.layerGroup();
-        
- 		for(let location of otherStops) {
- 			let m = L.marker(location, { icon: stopIcon })
-            otherStopsLayer.addLayer(m);
-         }
-        
-		meLayer.addLayer(L.marker(meLocation, { icon: meIcon }));
-        destinationLayer.addLayer(L.marker(destinationLocation, { icon: destinationIcon }));
-        
-        otherStopsLayer.addTo(map);
-        meLayer.addTo(map);
-		destinationLayer.addTo(map);
-		
-        return {
-            destroy: () => {
-                map.remove();
-                map = null;
-            }
-        };
-	}
-
-	function resizeMap() {
-	  if(map) { map.invalidateSize(); }
-  }
-
 </script>
-<svelte:window on:resize={resizeMap} />
 
-<div class="fixed left-0 bg-white w-full bottom-0 shadow-xl rounded-t-3xl py-2 px-4" style="z-index: 99999;">
-	<p class="text-gray-600 text-lg">On se dirige vers...</p>
-	<p class="text-primary text-2xl uppercase font-semibold">Biocoop Semnoz</p>
-	<div class="text-lg">
-		<p>12 avenue du gadada</p>
-		<p>74600 Seynod</p>
+{#if !isLoading}
+	<Map 
+		{meLocation} 
+		{otherStops}
+		{destination} />
+	<div class="fixed left-0 bg-white w-full bottom-0 shadow-xl rounded-t-3xl py-2 px-4" style="z-index: 99999;">
+		<p class="text-gray-600 text-lg">On se dirige vers...</p>
+		<p class="text-primary text-2xl uppercase font-semibold">{destination.client}</p>
+		<div class="text-lg">
+			<p>{destination.address.line1}</p>
+			<p>{destination.address.zipcode} {destination.address.city}</p>
+		</div>
+		<div class="flex justify-end space-x-2">
+			<button class="btn btn-outline btn-lg">Quitter le module</button>
+			<button class="btn btn-accent btn-lg">Je suis arrivé</button>
+		</div>
 	</div>
-	<div class="flex justify-end space-x-2">
-		<button class="btn btn-outline btn-lg">Quitter le module</button>
-		<button class="btn btn-accent btn-lg">Je suis arrivé</button>
-	</div>
-</div>
-
-<style lang="scss">
-	.map :global(.marker-text) {
-		@apply bg-white text-gray-800 shadow px-2 py-1 rounded-full shadow;
-		text-align:center;
-		width: max-content;
-		font-weight:600;
-		margin-top: 5px;
-	}
-
-	.map :global(.marker) {
-		width: fit-content;
-		max-width: 140px;
-	}
-
-	
-	.map :global(.destination-icon) {
-		@apply w-6 h-6 rounded-full shadow;
-		background-color: #009688;
-	}
-
-	.map :global(.stop-icon) {
-		@apply w-6 h-6 rounded-full opacity-75;
-		background-color: #009688;
-	}
-
-	.map :global(.me-icon) {
-		@apply w-8 h-8 rounded-full shadow-lg text-white;
-		background-color: #ff4081;
-	}
-
-	.map :global(.map-marker) {
-		width:30px;
-		transform:translateX(-50%) translateY(-25%);
-	}
-</style>
-
-<div class="map" style="height:100%;width:100%" use:mapAction />
+{/if}

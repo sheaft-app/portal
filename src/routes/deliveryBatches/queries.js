@@ -62,7 +62,10 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 				position
 				client
 				clientId
+				status
 				address {
+					latitude
+					longitude
 					line1
 					line2
 					zipcode
@@ -77,6 +80,10 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			}
 			assignedTo {
 				name
+				address {
+					latitude
+					longitude
+				}
 			}
 			status
 			name
