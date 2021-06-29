@@ -189,6 +189,10 @@ export const GET_STORE_PROFILE = gql`
 				from
 				to
 			}
+			tags {
+				id
+				name
+			}
 			producers {
 				id
 				name

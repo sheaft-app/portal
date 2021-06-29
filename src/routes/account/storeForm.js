@@ -24,6 +24,7 @@ export const initialValues = {
 	pictures: [],
 	openingHours: getDefaultDenormalizedOpeningHours(),
 	openForNewBusiness: true,
+	tags: [],
 };
 
 export const validators = (store) => ({

@@ -1,6 +1,6 @@
 <script>
 	import { UPDATE_STORE } from "./mutations.js";
-	import { GET_STORE_DETAILS } from "./queries.js";
+	import { GET_STORE_DETAILS, GET_TAGS } from "./queries.js";
 	import { slide } from "svelte/transition";
 	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import CitySearch from "./../../components/search/CitySearch.svelte";
@@ -13,11 +13,22 @@
 	import GalleryConfigurator from "../../components/GalleryConfigurator.svelte";
 	import Icon from "svelte-awesome";
 	import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+	import Select from "../../components/controls/select/Select.svelte";
+	import { getContext, onMount } from "svelte";
 
 	export let errorsHandler;
+	const { query } = getContext("api");
 
 	let store = { ...initialValues };
+	let tags = [];
 
+	onMount(async () => {
+		tags = await query({ query: GET_TAGS, errorsHandler });
+	});
+
+	const removeTag = (tagId) => {
+		store.tags = store.tags.filter((t) => t.id !== tagId);
+	};
 </script>
 
 <ProfileForm
@@ -172,6 +183,19 @@
 				<span class="ml-1">Je veux que les producteurs puissent me contacter pour me proposer leurs produits</span>
 			</div>
 		</Toggle>
+	</div>
+	<div class="form-control mt-5">
+		<div class="w-full">
+			<label>Catégories des produits recherché *</label>
+			<Select
+				isMulti={true}
+				bind:selectedValue={store.tags}
+				getOptionLabel={(option) => option.name}
+				getSelectionLabel={(option) => option.name}
+				optionIdentifier="id"
+				items={tags}
+			/>
+		</div>
 	</div>
 	{#if store.openForNewBusiness}
 		<div class="form-control mt-5" transition:slide|local>
