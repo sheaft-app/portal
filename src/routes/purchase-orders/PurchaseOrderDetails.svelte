@@ -12,8 +12,6 @@
 	import fr from "date-fns/locale/fr";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-
-	``;
 	import { timeSpanToFrenchHour, formatMoney } from "./../../helpers/app";
 	import { GET_ORDERS, GET_ORDER_DETAILS } from "./queries.js";
 	import {
@@ -41,6 +39,8 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import DeliveryStatus from "../../enums/DeliveryStatus";
+	import ProfileKind from "../../enums/ProfileKind";
 
 	export let params = {};
 
@@ -101,12 +101,12 @@
 				<p class="font-semibold leading-none">Commande en attente de traitement.</p>
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Cancelled.Value}
+		{#if order.status === PurchaseOrderStatusKind.Cancelled.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3"
 			>
-				<p class="font-semibold leading-none">Commande annulée par vous même.</p>
+				<p class="font-semibold leading-none">Commande annulée.</p>
 				{#if order.reason}
 					<div class="mt-2">
 						<p>Raison : {order.reason}</p>
@@ -114,7 +114,7 @@
 				{/if}
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Expired.Value}
+		{#if order.status === PurchaseOrderStatusKind.Expired.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3"
@@ -127,7 +127,7 @@
 				{/if}
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Withdrawned.Value}
+		{#if order.status === PurchaseOrderStatusKind.Withdrawned.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-gray-100 shadow
         md:rounded mb-3"
@@ -140,7 +140,7 @@
 				{/if}
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Refused.Value}
+		{#if order.status === PurchaseOrderStatusKind.Refused.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-100 shadow
         md:rounded mb-3"
@@ -153,7 +153,7 @@
 				{/if}
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Shipping.Value}
+		{#if order.status === PurchaseOrderStatusKind.Completed.Value && order.delivery}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded mb-3"
@@ -161,29 +161,47 @@
 				<div class="flex">
 					<Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
 					<div>
-						<p class="uppercase font-bold leading-none">Commande en cours de livraison</p>
+						<p class="uppercase font-bold leading-none">Livraison</p>
 						<div class="mt-2">
-							<p>Cette commande est en cours de livraison.</p>
+							{#if order.delivery.status === DeliveryStatus.Waiting.Value}
+								<p>Cette commande est en attente de validation de la tournée de livraison.</p>
+							{:else if order.delivery.status === DeliveryStatus.Ready.Value}
+								<p>
+									Cette commande est prête à être livrée. (<a href={order.delivery.deliveryFormUrl}>bon de livraison</a
+									>)
+								</p>
+							{:else if order.delivery.status === DeliveryStatus.InProgress.Value}
+								<p>Cette commande est en cours de livraison.</p>
+							{:else if order.delivery.status === DeliveryStatus.Delivered.Value}
+								<p>Cette commande est livrée.</p>
+							{:else if order.delivery.status === DeliveryStatus.Rejected.Value}
+								<p>Cette commande a été refusée à la livraison.</p>
+							{:else if order.delivery.status === DeliveryStatus.Skipped.Value}
+								<p>Cette commande a été passée lors de la livraison.</p>
+							{/if}
 						</div>
 					</div>
 				</div>
 			</div>
 		{/if}
-		{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
+		{#if order.status === PurchaseOrderStatusKind.Delivered.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-100 shadow
         md:rounded mb-3"
 			>
-				<p class="font-semibold leading-none">Commande terminée.</p>
+				<p class="font-semibold leading-none">
+					Commande {order.sender.kind === ProfileKind.Store.Value ? "livrée" : "récupérée"}
+					{#if order.delivery.deliveryFormUrl}(<a href={order.delivery.deliveryFormUrl}>bon de livraison</a>).{/if}
+				</p>
 			</div>
 		{/if}
-		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status != PurchaseOrderStatusKind.Delivered.Value}
+		{#if order.status !== PurchaseOrderStatusKind.Refused.Value && order.status !== PurchaseOrderStatusKind.Cancelled.Value && order.expectedDelivery.expectedDeliveryDate && order.status !== PurchaseOrderStatusKind.Delivered.Value}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-white shadow
         md:rounded md:mb-3"
 			>
 				<div class="flex">
-					{#if order.status == "COMPLETED"}
+					{#if order.status === PurchaseOrderStatusKind.Completed.Value}
 						<Icon data={faCheck} scale="1.2" class="mr-5" />
 					{:else}
 						<Icon data={faTruck} scale="1.2" class="mr-5" />
@@ -328,7 +346,7 @@
 							<div class="flex items-center mb-2">
 								<p>
 									<span class="text-gray-600">Livrée le :</span>
-									{format(new Date(order.expectedDelivery.deliveredOn), "PPPPp", { locale: fr })}
+									{format(new Date(order.delivery.deliveredOn), "PPPPp", { locale: fr })}
 								</p>
 							</div>
 						{/if}
@@ -348,7 +366,7 @@
 						</div>
 						<div class="flex items-center mb-2">
 							<p>
-								<span class="text-gray-600">Montant :</span>
+								<span class="text-gray-600">Montant TTC :</span>
 								{formatMoney(order.totalOnSalePrice)}
 								{#if order.totalReturnableOnSalePrice > 0}
 									(dont {formatMoney(order.totalReturnableOnSalePrice)} consignes)
@@ -409,9 +427,9 @@
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider hidden lg:table-cell"
+                      uppercase tracking-wider hidden md:table-cell"
 										>
-											Prix unitaire TTC
+											PU HT
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -421,11 +439,18 @@
 											Qté
 										</th>
 										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
+                      bg-gray-100 text-center md:text-left text-xs font-semibold
+                      text-gray-600 uppercase tracking-wider"
+										>
+											TVA
+										</th>
+										<th
 											class="px-4 md:px-8 py-3 border-b border-r border-gray-400
                       bg-gray-100 text-right text-xs font-semibold text-gray-600
                       uppercase tracking-wider"
 										>
-											Prix Total TTC
+											Total TTC
 										</th>
 									</tr>
 								</thead>
@@ -439,7 +464,7 @@
 												<div class="items-center">
 													<p>{line.name}</p>
 													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(line.unitOnSalePrice)}
+														{formatMoney(line.unitWholeSalePrice)}
 													</p>
 													<p class="text-gray-600 whitespace-no-wrap">
 														#{line.reference}
@@ -448,10 +473,10 @@
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden lg:table-cell"
+                        bg-white text-sm lg:text-base hidden md:table-cell"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(line.unitOnSalePrice)}
+													{formatMoney(line.unitWholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -459,6 +484,12 @@
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
 												<p class="whitespace-no-wrap">{line.quantity}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{line.vat}%</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
@@ -485,14 +516,60 @@
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="2"
+											colSpan="3"
+										>
+											Total HT:
+										</td>
+										<td
+											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
+											colSpan="4"
+										>
+											Total HT:
+										</td>
+										<td
+											class="border-b border-gray-400 bg-white px-4 md:px-8
+                      py-5 text-lg text-right font-bold col-span-1 border-r"
+											colSpan="1"
+										>
+											{formatMoney(order.totalWholeSalePrice)}
+										</td>
+									</tr>
+									<tr>
+										<td
+											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+											colspan="3"
+										>
+											Total TVA:
+										</td>
+										<td
+											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
+											colspan="4"
+										>
+											Total TVA:
+										</td>
+										<td
+											class="border-b border-gray-400 bg-white px-4 md:px-8
+                      py-5 text-lg text-right font-bold col-span-1 border-r"
+											colspan="1"
+										>
+											{formatMoney(order.totalVatPrice)}
+										</td>
+									</tr>
+									<tr>
+										<td
+											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
+                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
+											colspan="3"
 										>
 											Total TTC:
 										</td>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="3"
+											colspan="4"
 										>
 											Total TTC:
 										</td>

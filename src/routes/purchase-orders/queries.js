@@ -50,16 +50,21 @@ export const GET_ORDER_DETAILS = gql`
 		purchaseOrder(id: $id) {
 			id
 			reference
+			totalWholeSalePrice
 			totalOnSalePrice
+			totalVatPrice
 			status
 			totalReturnableOnSalePrice
+			totalReturnableWholeSalePrice
 			createdOn
-			totalVatPrice
 			comment
 			reason
 			productsCount
 			delivery {
+				scheduledOn
 				deliveredOn
+				status
+				deliveryFormUrl
 			}
 			expectedDelivery {
 				expectedDeliveryDate
@@ -83,6 +88,7 @@ export const GET_ORDER_DETAILS = gql`
 				name
 				email
 				phone
+				kind
 			}
 			products {
 				id
@@ -90,8 +96,12 @@ export const GET_ORDER_DETAILS = gql`
 				reference
 				quantity
 				totalOnSalePrice
+				totalWholeSalePrice
+				vat
 				unitOnSalePrice
+				unitWholeSalePrice
 				totalReturnableOnSalePrice
+				totalReturnableWholeSalePrice
 			}
 		}
 	}
