@@ -58,6 +58,19 @@ export const GET_STORE_DETAILS = gql`
 	}
 `;
 
+export const GET_TAGS = gql`
+	query Tags {
+		tags {
+			nodes {
+				id
+				name
+				icon
+				kind
+			}
+		}
+	}
+`;
+
 export const GET_PRODUCER_DETAILS = gql`
 	query GetProducerDetails {
 		myProducerProfile {

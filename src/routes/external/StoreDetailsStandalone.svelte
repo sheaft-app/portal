@@ -67,7 +67,6 @@
 		description: store && store.summary ? store.summary : null,
 		image: store && store.picture ? store.picture : null,
 	};
-
 </script>
 
 <Meta {metadata} />
@@ -222,6 +221,25 @@
 					<div class="relative w-full py-6 m-auto" style="max-width: 600px;">
 						<PictureSlider elements={store.pictures ? store.pictures.map((p) => ({ url: p.large })) : []} />
 					</div>
+				{/if}
+				{#if authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+					{#if store.tags && store.tags.length > 0}
+						<div class="w-full px-4 my-5">
+							<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"> Intéressé par </label>
+							<div class="flex flex-wrap">
+								{#each store.tags as tag}
+									<span
+										class="mx-2 mb-2 px-4 h-6 rounded-full text-xs font-semibold flex
+              					items-center cursor-pointer bg-gray-100 text-gray-600"
+									>
+										{tag.name}
+									</span>
+								{/each}
+							</div>
+						</div>
+					{:else}
+						<p>Ce magasin n'a pas renseigné les produits qui l'intéressait</p>
+					{/if}
 				{/if}
 				<Tabs>
 					<TabList>
@@ -378,5 +396,4 @@
 			padding-bottom: 115px !important;
 		}
 	}
-
 </style>
