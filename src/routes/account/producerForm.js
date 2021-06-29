@@ -43,6 +43,7 @@ export const normalizeProducer = (producer) =>
 	omit(
 		{
 			...producer,
+			address: omit({...producer.address, country: 'FR'}, ['insee']),
 			pictures: producer.pictures.map((p) => ({
 				id: p.new ? null : p.id,
 				data: p.new ? p.data : null,
