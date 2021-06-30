@@ -320,70 +320,72 @@
 						{/each}
 					</div>
 				</div>
-				<div class="w-full lg:w-4/12">
-					<div
-						class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
+				{#if producers && producers.length > 0}
+					<div class="w-full lg:w-4/12">
+						<div
+							class="py-2 mb-6 pb-5 px-2 lg:px-6 lg:py-8 static lg:block
             bg-white shadow w-full"
-						style="height: fit-content;"
-					>
-						<div class="flex justify-between w-full lg:px-3 pb-2">
-							<div class="text-left">
-								<p>Montant HT</p>
-								<p class="text-sm text-gray-600">
-									{#if productsCount > 0}
-										{productsCount} article{productsCount > 1 ? "s" : ""}
-									{:else}Aucun article
-									{/if}
-								</p>
+							style="height: fit-content;"
+						>
+							<div class="flex justify-between w-full lg:px-3 pb-2">
+								<div class="text-left">
+									<p>Montant HT</p>
+									<p class="text-sm text-gray-600">
+										{#if productsCount > 0}
+											{productsCount} article{productsCount > 1 ? "s" : ""}
+										{:else}Aucun article
+										{/if}
+									</p>
+								</div>
+								<div>
+									<p>{formatMoney(totalProductsHt)}</p>
+								</div>
 							</div>
-							<div>
-								<p>{formatMoney(totalProductsHt)}</p>
+							<div class="flex justify-between w-full lg:px-3 pb-2">
+								<div class="text-left">
+									<p>Consignes HT</p>
+								</div>
+								<p>{formatMoney(totalReturnable)}</p>
 							</div>
-						</div>
-						<div class="flex justify-between w-full lg:px-3 pb-2">
-							<div class="text-left">
-								<p>Consignes HT</p>
+							<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
+								<div class="text-left">
+									<p class="uppercase font-semibold">Total HT</p>
+								</div>
+								<div>
+									<p class="font-bold text-lg">{formatMoney(totalHt)}</p>
+								</div>
 							</div>
-							<p>{formatMoney(totalReturnable)}</p>
-						</div>
-						<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
-							<div class="text-left">
-								<p class="uppercase font-semibold">Total HT</p>
+							<div class="flex justify-between w-full lg:px-3 pt-2">
+								<div class="text-left">
+									<p class="uppercase font-semibold">Total TVA</p>
+								</div>
+								<div>
+									<p class="font-bold text-lg">{formatMoney(totalVat)}</p>
+								</div>
 							</div>
-							<div>
-								<p class="font-bold text-lg">{formatMoney(totalHt)}</p>
+							<div class="flex justify-between w-full lg:px-3 pt-2">
+								<div class="text-left">
+									<p class="uppercase font-semibold">Total TTC</p>
+								</div>
+								<div>
+									<p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
+								</div>
 							</div>
-						</div>
-						<div class="flex justify-between w-full lg:px-3 pt-2">
-							<div class="text-left">
-								<p class="uppercase font-semibold">Total TVA</p>
-							</div>
-							<div>
-								<p class="font-bold text-lg">{formatMoney(totalVat)}</p>
-							</div>
-						</div>
-						<div class="flex justify-between w-full lg:px-3 pt-2">
-							<div class="text-left">
-								<p class="uppercase font-semibold">Total TTC</p>
-							</div>
-							<div>
-								<p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
-							</div>
-						</div>
-						<div class="pt-2 lg:pt-3">
-							<button
-								type="submit"
-								class:disabled={productsCount === 0 || !isValid}
-								disabled={productsCount === 0 || !isValid}
-								class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
+							<div class="pt-2 lg:pt-3">
+								<button
+									type="submit"
+									class:disabled={productsCount === 0 || !isValid}
+									disabled={productsCount === 0 || !isValid}
+									class="btn btn-primary btn-lg uppercase w-full lg:w-8/12
                 justify-center m-auto"
-								style="padding-left: 50px; padding-right: 50px;"
-							>
-								Valider
-							</button>
+									style="padding-left: 50px; padding-right: 50px;"
+								>
+									Valider
+								</button>
+							</div>
 						</div>
 					</div>
-				</div>
+				{/if}
 			</div>
 		</form>
 	</PageBody>
