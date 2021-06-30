@@ -1,21 +1,31 @@
 <script>
     import DeliverySummaryProduct from "./DeliverySummaryProduct.svelte";
     import { GET_RETURNABLES } from "../queries";
+    import { COMPLETE_DELIVERY } from "../mutations";
     import { onMount, getContext } from "svelte";
     import SheaftErrors from "../../../services/SheaftErrors";
-	import Select from "./../../../components/controls/select/Select.js";
-	import ReturnableSelectItem from "../../products/ReturnableSelectItem.svelte";
     import ProductCounter from "./ProductCounter.svelte";
-    
+    import GetRouterInstance from "../../../services/SheaftRouter";
+    import DeliveryBatchesRoutes from "../routes";
+    import Icon from "svelte-awesome";
+    import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+
     export let delivery;
+    export let deliveryBatchId;
     export let numberOfDeliveries;
+    export let close;
     
-    const { query } = getContext("api");
+    const { query, mutate } = getContext("api");
     const errorsHandler = new SheaftErrors();
+    const routerInstance = GetRouterInstance();
 
     let returnables = [];
 
+    let receptionedBy = null;
+    let comment = null;
+
     let isLoadingReturnables = true;
+    let isSubmitting = false;
     let step = 1;
     
     onMount(async () => {
@@ -26,7 +36,43 @@
 			errorNotification: "Un problème est survenu pendant la récupération des consignes.",
 		});
 		isLoadingReturnables = false;
-	});
+    });
+    
+    const handleSubmit = async () => {
+        isSubmitting = true;
+
+        let returnedProducts = [];
+        delivery.products.forEach((p) => {
+            ['EXCESS', 'MISSING', 'BROKEN'].map((status) => {
+                if (p[status.toLowerCase()] > 0) {
+                    returnedProducts = [...returnedProducts, {
+                        id: p.id,
+                        kind: status,
+                        quantity: p[status.toLowerCase()]
+                    }]
+                }
+            })
+        });
+
+        await mutate({
+            mutation: COMPLETE_DELIVERY,
+            variables: {
+                id: delivery.id,
+                receptionedBy,
+                comment,
+                returnedProducts,
+                returnedReturnables: returnables.filter((r) => r.count > 0).map((r) => ({ id: r.id, quantity: r.count }))
+            },
+            errorsHandler,
+            success: async () => {
+                close();
+                await routerInstance.goTo(DeliveryBatchesRoutes.NextDelivery, { id: deliveryBatchId });
+            },
+            successNotification: "Compte-rendu validé avec succès !",
+            errorNotification: "Impossible de compléter la livraison. Veuillez réessayer."
+        })
+        isSubmitting = false;
+    }
 </script>
 
 <div class="relative">
@@ -47,9 +93,19 @@
         {#if !isLoadingReturnables}
             <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
                 {#if returnables.length}
-                    <button type="button" class="block btn btn-lg btn-outline w-full text-center justify-center" on:click={() => ++step}>Suivant</button>
+                    <button type="button" class="block btn btn-lg bg-white btn-outline w-full text-center justify-center" on:click={() => ++step}>Suivant</button>
                 {:else}
-                    <button type="button" class="block btn btn-lg btn-accent w-full text-center justify-center" on:click>Valider le compte-rendu</button>
+                    <button 
+                        on:click={handleSubmit} 
+                        type="button" 
+                        class="block btn btn-lg btn-accent w-full text-center justify-center" 
+                        disabled={isSubmitting} 
+                        class:disabled={isSubmitting}>
+                        {#if isSubmitting}
+                            <Icon data={faCircleNotch} class="mr-2" spin />
+                        {/if}
+                        Valider le compte-rendu
+                    </button>
                 {/if}
             </div>
         {/if}
@@ -64,13 +120,41 @@
                     <p>{returnable.name}</p>
                 </div>
                 <div class="w-1/2">
-                    <ProductCounter bind:value={delivery.returnables} label="Récupérées" showLabel={false} color="gray-800" />
+                    <ProductCounter bind:value={returnable.count} disabled={isSubmitting} label="Récupérées" showLabel={false} color="gray-800" />
                 </div>
             </div>
         {/each}
+        <div class="form-control w-full mt-3">
+            <label for="grid-reference">Livraison réceptionnée par *</label>
+            <input
+                bind:value={receptionedBy}
+                disabled={isSubmitting}
+                type="text"
+                placeholder="ex: Stéphanie A."
+            />
+        </div>
+        <div class="form-control w-full">
+            <label for="grid-reference">Commentaire (optionnel)</label>
+            <input
+                bind:value={comment}
+                disabled={isSubmitting}
+                type="text"
+                placeholder="ex: "
+            />
+        </div>
         <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
-            <button type="button" class="block btn btn-lg btn-outline w-full text-center justify-center" on:click={() => --step}>Retour</button>
-            <button type="button" class="block btn btn-lg btn-accent w-full text-center justify-center" on:click>Valider le compte-rendu</button>
+            <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center" on:click={() => --step}>Retour</button>
+            <button 
+                type="button"
+                class="block btn btn-lg btn-accent w-full text-center justify-center"
+                disabled={isSubmitting} 
+                class:disabled={isSubmitting} 
+                on:click={handleSubmit}>
+                {#if isSubmitting}
+                    <Icon data={faCircleNotch} class="mr-2" spin />
+                {/if}
+                Valider le compte-rendu
+            </button>
         </div>
     {/if}
 </div>
@@ -82,16 +166,4 @@
         margin: 0 auto;
         text-align: center;
     }
-
-    .themed {
-		display: contents;
-		--cursor: text;
-		--padding: 16px 18px;
-		--borderFocusColor: #a0aec0;
-		--borderHoverColor: #a0aec0;
-		--border: 1px solid #cbd5e0;
-		--placeholderColor: #8290a2;
-		--inputPadding: 18px;
-		--inputColor: #205164;
-	}
 </style>

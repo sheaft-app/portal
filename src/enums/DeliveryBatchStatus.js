@@ -4,6 +4,7 @@ let enums = {
 	Waiting: { Value: "WAITING", Label: "En attente" },
 	Ready: { Value: "READY", Label: "Prête" },
 	InProgress: { Value: "IN_PROGRESS", Label: "En cours" },
+	Delivered: { Value: "DELIVERED", Label: "Livrée" },
 	Completed: { Value: "COMPLETED", Label: "Terminée" },
 	Partial: { Value: "PARTIAL", Label: "Partielle" },
 	Cancelled: { Value: "CANCELLED", Label: "Annulée" },

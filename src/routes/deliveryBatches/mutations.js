@@ -31,3 +31,18 @@ mutation StartDeliveryBatch($input: StartDeliveryBatchInput) {
 	}
 }
 `;
+
+export const COMPLETE_DELIVERY = gql`
+mutation CompleteDelivery($input: CompleteDeliveryInput) {
+	completeDelivery(input: $input) {
+		id
+	}
+}
+`
+export const SET_NEXT_DELIVERY = gql`
+mutation SetNextDelivery($input: SetNextDeliveryInput) {
+	setNextDeliveryForBatch(input: $input) {
+		id
+	}
+}
+`

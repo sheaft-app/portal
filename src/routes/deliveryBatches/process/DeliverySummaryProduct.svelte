@@ -14,16 +14,16 @@
         <p class="font-semibold">{product.name}</p>
         <p>{product.quantity} attendus</p>
         {#if !displayQuantifier}
-            {#if product.refused}
-                <p class="text-red-500 font-semibold">{product.refused} refusé(s)</p>
+            {#if product.broken}
+                <p class="text-red-500 font-semibold">{product.broken} cassé(s)</p>
             {/if}
             {#if product.missing}
                 <p class="text-orange-500 font-semibold">{product.missing} manquant(s)</p>
             {/if}
             {#if product.excess}
-                <p class="text-orange-500 font-semibold">{product.excess} en trop</p>
+                <p class="text-blue-500 font-semibold">{product.excess} en trop</p>
             {/if}
-            {#if !product.refused && !product.missing && !product.excess}
+            {#if !product.broken && !product.missing && !product.excess}
                 <p class="text-primary font-semibold">Tout accepté</p>
             {/if}
         {/if}
@@ -33,7 +33,7 @@
     </div>
     <div class="w-full" transition:slide|local>
         {#if displayQuantifier}
-            <ProductCounter bind:value={product.refused} label="Refusés" color="red-500" />
+            <ProductCounter bind:value={product.broken} label="Cassés" color="red-500" />
             <ProductCounter bind:value={product.missing} label="Manquants" color="orange-500" />
             <ProductCounter bind:value={product.excess} label="En trop" color="blue-500" />
         {/if}

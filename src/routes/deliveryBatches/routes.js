@@ -7,6 +7,8 @@ const listing = "/";
 const create = "/create";
 const edit = "/:id";
 const deliver = "/deliver/:id";
+const nextDelivery = `${deliver}/next`;
+const endDelivery = `${deliver}/end`;
 
 const DeliveryBatchesRoutes = {
 	Prefix: `${prefix}`,
@@ -41,6 +43,24 @@ const DeliveryBatchesRoutes = {
 		Icon: faPlay,
 		Path: `${prefix}${deliver}`,
 		SubPart: `${deliver}`,
+		Params: {
+			id: null
+		}
+	},
+	NextDelivery: {
+		Name: "Choisir la livraison suivante",
+		Icon: null,
+		Path: `${prefix}${nextDelivery}`,
+		SubPart: `${nextDelivery}`,
+		Params: {
+			id: null
+		}
+	},
+	EndDelivery: {
+		Name: "Fin de la livraison",
+		Icon: null,
+		Path: `${prefix}${endDelivery}`,
+		SubPart: `${endDelivery}`,
 		Params: {
 			id: null
 		}
