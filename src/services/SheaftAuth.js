@@ -2,10 +2,10 @@ import Oidc from "oidc-client";
 import { config } from "./../configs/config.js";
 import {
 	authAuthenticated,
-	authUserAccount,
+	authAuthorized,
 	authInitialized,
 	authRegistered,
-	authAuthorized,
+	authUserAccount,
 } from "./../stores/auth.js";
 import { clearLocalStorage } from "./../helpers/storage";
 
@@ -86,7 +86,7 @@ class SheaftAuth {
 				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
-			await this.refreshPageAsUnauthorized(true);
+			this.setAuthStatus(user, true, true, !user.profile.role.includes("ANONYMOUS"), true);
 			return;
 		}
 
@@ -99,14 +99,6 @@ class SheaftAuth {
 			user.id = null;
 			user.profile.id = null;
 			this.setAuthStatus(user, true, true, false, true);
-		}
-	}
-
-	async refreshPageAsUnauthorized(hasError) {
-		if (location.hash.indexOf("/callback") > -1 || hasError) {
-			await this.userManager.removeUser();
-			location.hash = "/";
-			location.reload();
 		}
 	}
 
