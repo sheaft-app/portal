@@ -71,6 +71,13 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 					zipcode
 					city
 				}
+				productsToDeliverCount
+				purchaseOrdersCount
+				products {
+					id
+					name
+					quantity
+				}
 				purchaseOrders {
 					id
 					totalWholeSalePrice
@@ -90,6 +97,19 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			id
 			productsToDeliverCount
 			deliveriesCount
+		}
+	}
+`;
+
+export const GET_RETURNABLES = gql`
+	query Returnables {
+		returnables {
+			nodes {
+				id
+				name
+				vat
+				wholeSalePrice
+			}
 		}
 	}
 `;

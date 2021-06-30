@@ -1,0 +1,41 @@
+<script>
+    import { slide } from "svelte/transition";
+    import ProductCounter from "./ProductCounter.svelte";
+
+    export let product;
+    export let index;
+    export let numberOfProducts;
+
+    let displayQuantifier = false;
+</script>
+
+<div class="py-3 flex-wrap border-b border-gray-300 flex justify-between" class:border-b={index !== numberOfProducts}>
+    <div class="w-6/12">
+        <p class="font-semibold">{product.name}</p>
+        <p>{product.quantity} attendus</p>
+        {#if !displayQuantifier}
+            {#if product.refused}
+                <p class="text-red-500 font-semibold">{product.refused} refusé(s)</p>
+            {/if}
+            {#if product.missing}
+                <p class="text-orange-500 font-semibold">{product.missing} manquant(s)</p>
+            {/if}
+            {#if product.excess}
+                <p class="text-orange-500 font-semibold">{product.excess} en trop</p>
+            {/if}
+            {#if !product.refused && !product.missing && !product.excess}
+                <p class="text-primary font-semibold">Tout accepté</p>
+            {/if}
+        {/if}
+    </div>
+    <div>
+        <button type="button" on:click={() => displayQuantifier = !displayQuantifier} class="btn btn-link">{#if !displayQuantifier}Modifier{:else}Valider{/if}</button>
+    </div>
+    <div class="w-full" transition:slide|local>
+        {#if displayQuantifier}
+            <ProductCounter bind:value={product.refused} label="Refusés" color="red-500" />
+            <ProductCounter bind:value={product.missing} label="Manquants" color="orange-500" />
+            <ProductCounter bind:value={product.excess} label="En trop" color="blue-500" />
+        {/if}
+    </div>
+</div>
