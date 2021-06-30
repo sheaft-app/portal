@@ -66,8 +66,8 @@ const store = () => {
 						},
 						error: () => {
 							this.clearStorage();
+							console.error("Impossible de récupérer les informations du panier");
 						},
-						errorNotification: "Impossible de récupérer les informations du panier",
 					});
 			} catch (e) {
 				currentOrderId = null;
@@ -90,7 +90,7 @@ const store = () => {
 							currentOrder = res;
 						}
 					},
-					errorNotification: "Impossible de récupérer les informations du panier le plus récent",
+					error: () => console.error("Impossible de récupérer les informations du panier le plus récent"),
 				});
 			}
 
@@ -137,25 +137,22 @@ const store = () => {
 				},
 				errorNotification: "Impossible de mettre à jour votre panier",
 				error: (response) => {
-					const invalidProductsError = response.errors.find((e) => e.message.includes("produits sont invalides"));
-
-					if (invalidProductsError) {
-						const ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
-						setters.disableProducts(ids);
-					}
-
-					const disabledProductsError = response.errors.find((e) =>
-						e.message.includes("sont actuellement indisponibles")
+					const invalidProductsError = response.errors.find((e) =>
+						e.message.includes("Certains produits ne sont pas disponibles")
 					);
 
-					if (disabledProductsError) {
-						const ids = [...disabledProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
+					let ids = [];
+					if (invalidProductsError) {
+						ids = [...invalidProductsError.message.matchAll(/[0-9a-fA-F]{32}/gm)].map((i) => i[0]);
 						setters.disableProducts(ids);
 					}
 
-					if (invalidProductsError || disabledProductsError) {
+					if (invalidProductsError) {
 						update((state) => {
-							state.warningInfo = "Désolé, ce produit est temporairement indisponible.";
+							state.warningInfo =
+								ids.length === 1
+									? "Désolé, ce produit est temporairement indisponible."
+									: "Désolé, certains produit sont temporairement indisponible.";
 							return state;
 						});
 					}
