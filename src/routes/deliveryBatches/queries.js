@@ -57,6 +57,8 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			day
 			from
 			scheduledOn
+			returnedProductsCount
+			returnedReturnablesCount
 			deliveries {
 				id
 				position

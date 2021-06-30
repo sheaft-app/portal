@@ -30,18 +30,18 @@
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryBatchRoutes.List),
-			success: (res) => {
+			success: async (res) => {
 				deliveries = res.deliveries;
 
 				destination = deliveries.find((d) => d.status == DeliveryBatchStatus.InProgress.Value);
 				
 				if (!destination) {
-					if (deliveries.find((d) => d.status == DeliveryBatchStatus.Waiting.Value)) {
-						return routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id });
+					if (res.status == DeliveryBatchStatus.InProgress.Value) {
+						return await routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id });
 					} else if (res.status == DeliveryBatchStatus.Completed.Value) {
-						return routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id});
+						return await routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id});
 					} else {
-						return routerInstance.goTo(DeliveryBatchRoutes.List);
+						return await routerInstance.goTo(DeliveryBatchRoutes.List);
 					}
 				}
 
