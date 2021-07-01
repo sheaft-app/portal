@@ -75,7 +75,7 @@
             },
             successNotification: "Ok, on repart !",
             errorNotification: "Impossible de valider la nouvelle destination. Veuillez réessayer.",
-            clearCache: [GET_DELIVERY_BATCH_DETAILS]
+            clearCache: [params.id]
         })
         isSubmitting = false;
     }

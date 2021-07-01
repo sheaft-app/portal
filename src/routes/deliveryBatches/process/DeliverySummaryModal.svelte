@@ -1,6 +1,6 @@
 <script>
     import DeliverySummaryProduct from "./DeliverySummaryProduct.svelte";
-    import { GET_RETURNABLES } from "../queries";
+    import { GET_RETURNABLES, GET_DELIVERY_BATCH_DETAILS } from "../queries";
     import { COMPLETE_DELIVERY } from "../mutations";
     import { onMount, getContext } from "svelte";
     import SheaftErrors from "../../../services/SheaftErrors";
@@ -69,7 +69,8 @@
                 await routerInstance.goTo(DeliveryBatchesRoutes.NextDelivery, { id: deliveryBatchId });
             },
             successNotification: "Compte-rendu validé avec succès !",
-            errorNotification: "Impossible de compléter la livraison. Veuillez réessayer."
+            errorNotification: "Impossible de compléter la livraison. Veuillez réessayer.",
+            clearCache: [deliveryBatchId]
         })
         isSubmitting = false;
     }
@@ -93,7 +94,7 @@
         {#if !isLoadingReturnables}
             <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
                 {#if returnables.length}
-                    <button type="button" class="block btn btn-lg bg-white btn-outline w-full text-center justify-center" on:click={() => ++step}>Suivant</button>
+                    <button type="button" class="block btn btn-lg bg-white btn-outline w-full text-center justify-center next" on:click={() => ++step}>Suivant</button>
                 {:else}
                     <button 
                         on:click={handleSubmit} 
@@ -147,8 +148,8 @@
             <button 
                 type="button"
                 class="block btn btn-lg btn-accent w-full text-center justify-center"
-                disabled={isSubmitting} 
-                class:disabled={isSubmitting} 
+                disabled={isSubmitting || !receptionedBy} 
+                class:disabled={isSubmitting || !receptionedBy} 
                 on:click={handleSubmit}>
                 {#if isSubmitting}
                     <Icon data={faCircleNotch} class="mr-2" spin />
@@ -165,5 +166,9 @@
         bottom: 20px;
         margin: 0 auto;
         text-align: center;
+    }
+
+    .next:not(:hover) {
+        @apply bg-white !important;
     }
 </style>

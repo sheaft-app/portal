@@ -26,7 +26,7 @@
 			click: () => handleCreateDeliveryBatch(),
 			text: "Programmer une livraison",
 			icon: faPlus,
-			color: "green",
+			color: "green"
 		},
 	];
 
@@ -50,14 +50,13 @@
 		{#if $items.length > 0}
 			<Actions {actions} />
 		{/if}
-
-		{#each $items as deliveryBatch}
-			<DeliveryBatchItem {deliveryBatch} />
-		{:else}
-			<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
-			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
-				>Programmer une livraison</button
-			>
-		{/each}
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			{#each $items as deliveryBatch}
+				<DeliveryBatchItem {deliveryBatch} />
+			{:else}
+				<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
+				<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4">Programmer une livraison</button>
+			{/each}
+		</div>
 	</PageBody>
 </TransitionWrapper>

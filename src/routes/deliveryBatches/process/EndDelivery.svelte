@@ -26,7 +26,7 @@
 		isLoading = false;
     });
 </script>
-
+    
 {#if isLoading}
     <p>Chargement...</p>
 {:else if deliveryBatch}
@@ -39,7 +39,7 @@
     <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{deliveryBatch.returnedReturnablesCount}</span></p>
 
     <div class="bottom-cta fixed w-full px-4 space-y-3">
-        <button class="block btn btn-lg btn-accent justify-center w-full">Terminer</button>
+        <button on:click={() => routerInstance.goTo(DeliveryBatchRoutes.List)} class="block btn btn-lg btn-accent justify-center w-full">Terminer</button>
     </div>
 {/if}
 
