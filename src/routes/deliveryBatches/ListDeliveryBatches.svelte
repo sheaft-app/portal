@@ -3,7 +3,7 @@
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
 	import { GET_DELIVERY_BATCHES } from "./queries.js";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { faPlus } from "@fortawesome/free-solid-svg-icons";
+	import { faHistory, faPlus } from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
@@ -28,6 +28,12 @@
 			icon: faPlus,
 			color: "green"
 		},
+		{
+			click: () => routerInstance.goTo(DeliveryBatchesRoutes.History),
+			text: "Voir l'historique",
+			icon: faHistory,
+			color: "blue"
+		}
 	];
 
 	onMount(async () => {
@@ -35,7 +41,7 @@
 		await query({
 			query: GET_DELIVERY_BATCHES,
 			errorsHandler,
-			success: (res) => items.set(res),
+			success: (res) => items.set(res.data),
 			errorNotification: "Impossible de récupérer les livraisons programmées",
 		});
 		isLoading = false;

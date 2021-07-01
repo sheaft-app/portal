@@ -9,7 +9,6 @@
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import { getContext } from "svelte";
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
-import DeliveryBatches from "./DeliveryBatches.svelte";
 	
 	export let deliveryBatch;
 
@@ -30,9 +29,9 @@ import DeliveryBatches from "./DeliveryBatches.svelte";
 			<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
 			<p>débute à {from.hours}h{from.minutes == 0 ? "00" : from.minutes}</p>
 		</div>
-		<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status"
-			>{DeliveryBatchStatus.label(deliveryBatch.status)}</span
-		>
+		<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status">
+			{DeliveryBatchStatus.label(deliveryBatch.status)}
+		</span>
 	</div>
 	<div class="flex justify-between py-2 border-b border-gray-300 w-full">
 		<div>

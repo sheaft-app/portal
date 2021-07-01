@@ -2,25 +2,69 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERY_BATCHES = gql`
 	query GetDeliveryBatches {
-		deliveryBatches {
-			nodes {
-				day
-				from
-				scheduledOn
-				deliveries {
-					id
-					position
-					client
-				}
-				assignedTo {
+		deliveryBatches(where: { status: { in: [WAITING, READY, IN_PROGRESS]}}) {
+			edges {
+				cursor
+				node {
+					day
+					from
+					scheduledOn
+					deliveries {
+						id
+						position
+						client
+					}
+					assignedTo {
+						name
+						firstName
+					}
+					status
 					name
-					firstName
+					id
+					purchaseOrdersCount
+					deliveriesCount
 				}
-				status
-				name
-				id
-				purchaseOrdersCount
-				deliveriesCount
+			}
+			pageInfo {
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
+		}
+	}
+`;
+
+export const GET_DELIVERY_BATCHES_HISTORY = gql`
+	query GetDeliveryBatches {
+		deliveryBatches(where: { status: { in: [COMPLETED, CANCELLED, PARTIAL]}}) {
+			edges {
+				cursor
+				node {
+					day
+					from
+					scheduledOn
+					deliveries {
+						id
+						position
+						client
+					}
+					assignedTo {
+						name
+						firstName
+					}
+					status
+					name
+					id
+					purchaseOrdersCount
+					deliveriesCount
+				}
+			}
+			pageInfo {
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
 			}
 		}
 	}

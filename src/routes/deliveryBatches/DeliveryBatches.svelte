@@ -6,6 +6,7 @@
 	import DeliveryProcess from "./process/DeliveryProcess.svelte";
 	import SetNextDelivery from "./process/SetNextDelivery.svelte";
 	import EndDelivery from "./process/EndDelivery.svelte";
+	import DeliveryBatchesHistory from "./DeliveryBatchesHistory.svelte";
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 
@@ -14,6 +15,7 @@
 
 	const routes = {};
 	routes[DeliveryBatchesRoutes.List.SubPart] = ListDeliveryBatches;
+	routes[DeliveryBatchesRoutes.History.SubPart] = DeliveryBatchesHistory;
 	routes[DeliveryBatchesRoutes.Create.SubPart] = CreateDeliveryBatch;
 	routes[DeliveryBatchesRoutes.Edit.SubPart] = EditDeliveryBatch;
 	routes[DeliveryBatchesRoutes.Process.SubPart] = DeliveryProcess;
