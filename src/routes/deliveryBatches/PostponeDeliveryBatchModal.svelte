@@ -12,7 +12,7 @@
     import SheaftErrors from "../../services/SheaftErrors";
 	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
     import TimePicker from "../../components/controls/TimePicker.svelte";
-    import { timeToTimeSpan } from "../../helpers/app";
+    import { timeToTimeSpan, getIsoDate } from "../../helpers/app";
 
     export let id, close;
 
@@ -40,10 +40,11 @@
     // });
     
     const submit = async () => {
-		isLoading = true;
+        isLoading = true;
+
 		await mutate({
 			mutation: POSTPONE_DELIVERY_BATCH,
-			variables: { id, reason, scheduledOn, from: timeToTimeSpan(time) },
+			variables: { id, reason, scheduledOn: getIsoDate(scheduledOn), from: timeToTimeSpan(from) },
 			errorsHandler,
 			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
 			successNotification: "Livraison décalée avec succès !",
@@ -67,7 +68,7 @@
 >
     <div class="form-control" style="display:block;">
         <label>Reporté au *</label>
-        <DatePickerWrapper bind:iso={scheduledOn} dateChosen={true} />
+        <DatePickerWrapper bind:selected={scheduledOn} dateChosen={true} />
     </div>
 	
     <div class="form-control" style="display:block;">
