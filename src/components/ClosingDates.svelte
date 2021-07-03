@@ -49,14 +49,14 @@
 					{:else}
 						<span class="ml-2 mr-2 w-24">Jour : </span>
 					{/if}
-					<DatePickerWrapper bind:dateChosen={closing.dirtyFrom} bind:iso={closing.from} />
+					<DatePickerWrapper bind:dateChosen={closing.dirtyFrom} bind:selected={closing.from} />
 				</div>
 				{#if closing.isInterval}
 					<div class="flex items-center mb-2">
 						<span class="ml-2 mr-2 w-24">Fin : </span>
 						<DatePickerWrapper
 							bind:dateChosen={closing.dirtyTo}
-							bind:iso={closing.to}
+							bind:selected={closing.to}
 							props={{ start: closing.from }}
 						/>
 					</div>

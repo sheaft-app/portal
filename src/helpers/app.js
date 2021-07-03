@@ -2,6 +2,9 @@ import Guid from "./Guid";
 import ConditioningKind from "../enums/ConditioningKind";
 import DayOfWeekKind from "../enums/DayOfWeekKind";
 import orderBy from "lodash/orderBy";
+import format from "date-fns/format";
+
+export const getIsoDate = (_date) => format(_date, "yyyy-MM-dd'T'00:00:00'Z'");
 
 export const timeSpanToFrenchHour = (timeSpan) => {
 	if (!timeSpan) {
@@ -103,13 +106,13 @@ export const normalizeOpeningHours = (openingHours) =>
 			to: timeToTimeSpan(openingHour.end),
 		};
 	});
-export const normalizeClosingDates = (closings) =>
+export const normalizeClosingDates = (closings) => 
 	closings
 		? closings.map((c) => {
 				let data = {
 					id: c.id,
-					from: c.from,
-					to: c.isInterval ? c.to : c.from,
+					from: getIsoDate(c.from),
+					to: c.isInterval ? getIsoDate(c.to) : getIsoDate(c.from),
 					reason: c.reason,
 				};
 

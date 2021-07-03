@@ -104,7 +104,7 @@
 					>
 						Date de livraison *
 					</label>
-					<DatePickerWrapper bind:iso={date} bind:dateChosen />
+					<DatePickerWrapper bind:selected={date} bind:dateChosen />
 				</div>
 				<div class="mt-5 sm:mt-3 mb-2">
 					<label
