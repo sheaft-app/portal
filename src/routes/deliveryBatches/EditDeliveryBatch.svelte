@@ -11,6 +11,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeDeliveryBatch, denormalizeDeliveryBatch } from "./deliveryBatchForm";
+	import PostponeDeliveryBatch from "./PostponeDeliveryBatchModal.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -55,11 +56,7 @@
 		{
 			text: "Décaler",
 			color: "blue",
-			click: () =>
-				open(PostponeDeliveryBatch, {
-					deliveryBatch,
-					onClose: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
-				}),
+			click: () => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })
 		},
 		{
 			text: "Supprimer",

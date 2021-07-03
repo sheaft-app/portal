@@ -39,7 +39,7 @@
 					if (res.status == DeliveryBatchStatus.InProgress.Value) {
 						return await routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id });
 					} else if (res.status == DeliveryBatchStatus.Completed.Value) {
-						return await routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id});
+						return await routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id });
 					} else {
 						return await routerInstance.goTo(DeliveryBatchRoutes.List);
 					}

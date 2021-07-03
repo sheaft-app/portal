@@ -5,8 +5,6 @@
 	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import { validators, initialValues } from "./deliveryBatchForm";
-	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
-	import TimePicker from "../../components/controls/TimePicker.svelte";
 	import SortList from "../../components/SortList.svelte";
 	import DeliveryWithOrdersCard from "./DeliveryWithOrdersCard.svelte";
 	import { getContext } from "svelte";

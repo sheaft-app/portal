@@ -9,6 +9,7 @@
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import { getContext } from "svelte";
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
+	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
 	
 	export let deliveryBatch;
 
@@ -54,6 +55,10 @@
 		</div>
 		<div class="flex space-x-2">
 			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value}
+				<button
+					on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-outline text-lg font-semibold">Décaler
+				</button>
 				<button
 					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
 					class="btn btn-lg btn-accent text-lg font-semibold">Reprendre

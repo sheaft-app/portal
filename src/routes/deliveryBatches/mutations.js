@@ -25,24 +25,33 @@ export const UPDATE_DELIVERY_BATCH = gql`
 `;
 
 export const START_DELIVERY_BATCH = gql`
-mutation StartDeliveryBatch($input: StartDeliveryBatchInput) {
-	startDeliveryBatch(input: $input) {
-		id
+	mutation StartDeliveryBatch($input: StartDeliveryBatchInput) {
+		startDeliveryBatch(input: $input) {
+			id
+		}
 	}
-}
 `;
 
 export const COMPLETE_DELIVERY = gql`
-mutation CompleteDelivery($input: CompleteDeliveryInput) {
-	completeDelivery(input: $input) {
-		id
+	mutation CompleteDelivery($input: CompleteDeliveryInput) {
+		completeDelivery(input: $input) {
+			id
+		}
 	}
-}
-`
+`;
+
 export const SET_NEXT_DELIVERY = gql`
-mutation SetNextDelivery($input: SetNextDeliveryInput) {
-	setNextDeliveryForBatch(input: $input) {
-		id
+	mutation SetNextDelivery($input: SetNextDeliveryInput) {
+		setNextDeliveryForBatch(input: $input) {
+			id
+		}
 	}
-}
-`
+`;
+
+export const POSTPONE_DELIVERY_BATCH = gql`
+	mutation PostponeDeliveryBatch($input: PostponeDeliveryBatchInput) {
+		postponeDeliveryBatch(input: $input) {
+			id
+		}
+	}
+`;
