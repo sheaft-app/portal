@@ -2,11 +2,15 @@
 	import { onDestroy } from "svelte";
 	import { fullScreenMap } from "../../../stores/app"; 
     import L from 'leaflet';
+	import GetRouterInstance from "../../../services/SheaftRouter";
+import DeliveryBatchesRoutes from "../routes";
 
     export let meLocation;
 	export let otherStops;
 	export let destination;
-	
+
+	const routerInstance = GetRouterInstance();
+
 	fullScreenMap.set(true);
 
 	let map;
@@ -50,9 +54,9 @@
     function mapAction(container) {
         map = createMap(container); 
 		
-		const otherStopsLayer = L.layerGroup();
-		const meLayer = L.layerGroup();
-        const destinationLayer = L.layerGroup();
+		const otherStopsLayer = L.featureGroup();
+		const meLayer = L.featureGroup();
+        const destinationLayer = L.featureGroup();
         
  		for(let location of otherStops) {
  			let m = L.marker(location, { icon: stopIcon })
@@ -65,6 +69,12 @@
         otherStopsLayer.addTo(map);
         meLayer.addTo(map);
 		destinationLayer.addTo(map);
+
+		map.fitBounds([
+			meLayer.getBounds(),
+			destinationLayer.getBounds(),
+			otherStopsLayer.getBounds()
+		]);
 		
         return {
             destroy: () => {
@@ -81,9 +91,18 @@
 </script>
 
 <svelte:window on:resize={resizeMap} />
+<button on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.List)} class="absolute btn btn-lg btn-outline bg-white exit-button" style="z-index: 999;">Quitter le module</button>
 <div class="map" style="height:100%;width:100%" use:mapAction />
 
-<style lang="scss">
+<style>
+	.exit-button {
+		top: 1em;
+		right: 1em;
+	}
+    .exit-button:not(:hover) {
+        @apply bg-white !important;
+    }
+
 	.map :global(.marker-text) {
 		@apply bg-white text-gray-800 shadow px-2 py-1 rounded-full shadow;
 		text-align:center;

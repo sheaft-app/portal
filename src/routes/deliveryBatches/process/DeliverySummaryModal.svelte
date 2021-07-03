@@ -93,8 +93,9 @@
         </div>
         {#if !isLoadingReturnables}
             <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
+                <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center cancel" on:click={close}>Annuler</button>
                 {#if returnables.length}
-                    <button type="button" class="block btn btn-lg bg-white btn-outline w-full text-center justify-center next" on:click={() => ++step}>Suivant</button>
+                    <button type="button" class="block btn btn-lg btn-accent w-full text-center justify-center" on:click={() => ++step}>Suivant</button>
                 {:else}
                     <button 
                         on:click={handleSubmit} 
@@ -144,7 +145,7 @@
             />
         </div>
         <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
-            <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center" on:click={() => --step}>Retour</button>
+            <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center cancel" on:click={() => --step}>Retour</button>
             <button 
                 type="button"
                 class="block btn btn-lg btn-accent w-full text-center justify-center"
@@ -168,7 +169,7 @@
         text-align: center;
     }
 
-    .next:not(:hover) {
+    .cancel:not(:hover) {
         @apply bg-white !important;
     }
 </style>

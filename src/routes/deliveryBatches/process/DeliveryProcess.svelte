@@ -7,6 +7,7 @@
 	import DeliveryBatchRoutes from "../routes";
 	import DeliverySummaryModal from "./DeliverySummaryModal.svelte";
     import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
+	import Loader from "../../../components/Loader.svelte";
     
     export let params = {};
 
@@ -69,7 +70,9 @@
 	});
 </script>
 
-{#if !isLoading && destination}
+{#if isLoading}
+	<Loader />
+{:else if destination}
 	<Map 
 		{meLocation} 
 		{otherStops}
@@ -85,7 +88,7 @@
 			<p>{destination.address.zipcode} {destination.address.city}</p>
 		</div>
 		<div class="flex justify-end space-x-2 mt-3">
-			<button class="btn btn-outline btn-lg">Quitter le module</button>
+			<button class="btn btn-outline btn-lg">Sauter cette livraison</button>
 			<button 
 				class="btn btn-accent btn-lg" 
 				on:click={() => open(DeliverySummaryModal, { delivery: destination, numberOfDeliveries: deliveries.length, deliveryBatchId: params.id })}>
