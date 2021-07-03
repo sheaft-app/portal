@@ -6,6 +6,7 @@
 	import { formatDate, internationalize } from "timeUtils";
 	import { keyCodes, keyCodesArray } from "./lib/keyCodes";
 	import { onMount, createEventDispatcher } from "svelte";
+	import formatISO from "date-fns/formatISO";
 
 	const dispatch = createEventDispatcher();
 	const today = new Date();
@@ -20,6 +21,12 @@
 	export let trigger = null;
 	export let selectableCallback = null;
 	export let weekStart = 0;
+	export let iso;
+
+	$: {
+		let dateParts = selected.toLocaleDateString().split('/');
+		iso = formatISO(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]))
+	}
 
 	export let daysOfWeek = [
 		["Dimanche", "Dim"],

@@ -7,15 +7,16 @@
 	export let selected = new Date();
 	export let dateChosen = false;
 	export let props = {};
+	export let iso;
 
 	let formattedSelected;
-
 </script>
 
 <SvelteDatePicker
 	format={(date) => format(new Date(selected), "PPPP", { locale: fr })}
 	{...props}
 	bind:selected
+	bind:iso
 	bind:dateChosen
 	bind:formattedSelected
 	style="width: 100%"
