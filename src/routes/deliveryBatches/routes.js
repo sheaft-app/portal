@@ -5,6 +5,7 @@ const prefix = "/delivery-batches";
 
 const listing = "/";
 const history = "/history";
+const summary = "/summary/:id";
 const create = "/create";
 const edit = "/:id";
 const deliver = "/deliver/:id";
@@ -29,6 +30,15 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${history}`,
 		SubPart: `${history}`,
 		Params: null
+	},
+	Summary: {
+		Name: "Résumé livraison",
+		Icon: faHistory,
+		Path: `${prefix}${summary}`,
+		SubPart: `${summary}`,
+		Params: {
+			id: null
+		}
 	},
 	Create: {
 		Name: "Programmer une livraison",

@@ -44,6 +44,7 @@
 			{errorsHandler}
 			{headers}
 			let:rowItem={deliveryBatch}
+			onRowClick={(item) => routerInstance.goTo(DeliveryBatchesRoutes.Summary, { id: item.id })}
 			graphQuery={GET_DELIVERY_BATCHES_HISTORY}
 			noResultsPage={DeliveryBatchesRoutes.NoResults}
 			loadingMessage="Chargement de vos livraisons passées en cours."
