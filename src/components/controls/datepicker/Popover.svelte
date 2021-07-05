@@ -1,5 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher, tick } from "svelte";
+  import { portal } from "svelte-portal";
 
 	const dispatch = createEventDispatcher();
 
@@ -109,6 +110,7 @@
 	</div>
 	<div
 		class="scal-contents-wrapper"
+		use:portal={"body"}
 		class:scal-visible={open}
 		class:scal-shrink={shrink}
 		style="transform: translate(-50%,-50%) translate({translateX}px, {translateY}px)"
@@ -133,7 +135,7 @@
 		top: 50%;
 		left: 50%;
 		transition: none;
-		z-index: 2;
+		z-index: 11;
 		display: none;
 	}
 
