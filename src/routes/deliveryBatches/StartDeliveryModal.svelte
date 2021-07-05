@@ -59,12 +59,14 @@
 	icon={faCheck}
 	closeText="Fermer"
 >
-    <p class="pt-2 pb-1 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
-    <p class="pt-2 pb-1 leading-5">Si l'ordre de livraison n'est pas bon, vous pouvez le 
-        <button type="button" class="btn-link" on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id })}>
-            modifier en cliquant ici
-        </button>
-    .</p>
+	<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
+	{#if deliveries.length > 1}
+		<p class="pt-2 pb-1 leading-5">Si l'ordre de livraison n'est pas bon, vous pouvez le 
+			<button type="button" class="btn-link" on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id })}>
+				modifier en cliquant ici
+			</button>
+		.</p>
+	{/if}
 	{#if isInitializing}
 		<Loader />
 	{:else}
