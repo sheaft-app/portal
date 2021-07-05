@@ -6,6 +6,7 @@
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import DeliveryBatchRoutes from "../routes";
 	import DeliverySummaryModal from "./DeliverySummaryModal.svelte";
+	import SkipDeliveryModal from "./SkipDeliveryModal.svelte";
     import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
 	import Loader from "../../../components/Loader.svelte";
     
@@ -88,7 +89,7 @@
 			<p>{destination.address.zipcode} {destination.address.city}</p>
 		</div>
 		<div class="flex justify-end space-x-2 mt-3">
-			<button class="btn btn-outline btn-lg">Sauter cette livraison</button>
+			<button class="btn btn-outline btn-lg" on:click={() => open(SkipDeliveryModal, { id: destination.id, deliveryBatchId: params.id })}>Sauter cette livraison</button>
 			<button 
 				class="btn btn-accent btn-lg" 
 				on:click={() => open(DeliverySummaryModal, { delivery: destination, numberOfDeliveries: deliveries.length, deliveryBatchId: params.id })}>

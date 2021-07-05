@@ -32,6 +32,14 @@ export const START_DELIVERY_BATCH = gql`
 	}
 `;
 
+export const SKIP_DELIVERY = gql`
+	mutation SkipDelivery($input: SkipDeliveryInput) {
+		skipDelivery(input: $input) {
+			id
+		}
+	}
+`;
+
 export const COMPLETE_DELIVERY = gql`
 	mutation CompleteDelivery($input: CompleteDeliveryInput) {
 		completeDelivery(input: $input) {

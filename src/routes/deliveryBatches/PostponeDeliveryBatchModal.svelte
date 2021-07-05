@@ -60,7 +60,7 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 			mutation: COMPLETE_DELIVERY_BATCH,
 			variables: { id, scheduledOn: getIsoDate(scheduledOn), from: timeToTimeSpan(from) },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
+			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Summary, { id }),
 			successNotification: "Livraison décalée avec succès !",
 			errorNotification: "Impossible de décaler la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
@@ -82,17 +82,17 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 >
     {#if !isInitializing}
         <p class="mb-3">Toutes les livraisons non complétées seront reportées :</p>
-        <div class="form-control" style="display:block;">
+        <div class="form-control text-left" style="display:block;">
             <label>Reporter au *</label>
             <DatePickerWrapper bind:selected={scheduledOn} dateChosen={true} />
         </div>
-        <div class="form-control" style="display:block;">
+        <div class="form-control text-left" style="display:block;">
             <label>Heure de départ * </label>
             <TimePicker bind:time={from} />
         </div>
         {#if !hasStartedDeliveryBatch}
-            <div class="form-control">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold" for="reason">Raison </label>
+            <div class="form-control text-left">
+                <label for="reason">Raison </label>
                 <input
                     bind:value={reason}
                     id="reason"

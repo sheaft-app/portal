@@ -3,7 +3,7 @@
 </script>
 
 <div 
-    class="py-3 px-4 store-card">
+    class="py-3 px-4 store-card shadow rounded-lg">
     <p class="font-semibold mb-1">{props.name}</p>
     <p class="text-gray-600">{props.address.line1}</p>
     <p class="text-gray-600">{props.address.zipcode} {props.address.city}</p>

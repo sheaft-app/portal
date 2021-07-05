@@ -2,6 +2,7 @@
     import { GET_DELIVERY_BATCH_DETAILS } from "../queries";
     import { SET_NEXT_DELIVERY } from "../mutations";
     import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
+    import DeliveryStatus from "../../../enums/DeliveryStatus";
 	import { onMount, getContext } from "svelte";
 	import SheaftErrors from "../../../services/SheaftErrors";
 	import GetRouterInstance from "../../../services/SheaftRouter";
@@ -33,20 +34,22 @@
 			success: (res) => {
                 delivery = res;
                 waitingDeliveries = res.deliveries.filter((d) => d.status == DeliveryBatchStatus.Waiting.Value);
-
-                if (res.status == DeliveryBatchStatus.Completed.Value) {
-                    return routerInstance.goTo(DeliveryBatchRoutes.End, { id: params.id })
-                }
                 
-                if (waitingDeliveries.length == 0) {
-                   return routerInstance.goTo(DeliveryBatchRoutes.Process, { id: params.id })
-                }
+                if (res.status == DeliveryBatchStatus.InProgress.Value) {
+                    if (res.deliveries.find((d) => d.status == DeliveryStatus.InProgress.Value)) {
+                        return routerInstance.goTo(DeliveryBatchRoutes.Process, { id: params.id })
+                    }
 
-                if (waitingDeliveries.length > 1) {
-                    waitingDeliveries = waitingDeliveries.sort((a, b) => a.position >= b.position ? 1 : -1);
+                    if (waitingDeliveries.length == 0) {
+                        return routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id })
+                    }
+                
+                    if (waitingDeliveries.length > 1) {
+                        waitingDeliveries = waitingDeliveries.sort((a, b) => a.position >= b.position ? 1 : -1);
+                    }
+
+                    nextStop = waitingDeliveries[0];
                 } 
-
-                nextStop = waitingDeliveries[0];
 			},
 			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
 		});
