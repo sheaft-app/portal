@@ -58,7 +58,7 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
         isLoading = true;
 		await mutate({
 			mutation: COMPLETE_DELIVERY_BATCH,
-			variables: { id, reschedulePendingDeliveriesOn: getIsoDate(scheduledOn) },
+			variables: { id, scheduledOn: getIsoDate(scheduledOn), from: timeToTimeSpan(from) },
 			errorsHandler,
 			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
 			successNotification: "Livraison décalée avec succès !",
@@ -81,22 +81,16 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	closeText="Fermer"
 >
     {#if !isInitializing}
-        {#if hasStartedDeliveryBatch}
-            <p class="mb-3">Toutes les livraisons non complétées seront reportées</p>
-            <div class="form-control" style="display:block;">
-                <label>Reporter au *</label>
-                <DatePickerWrapper bind:selected={scheduledOn} dateChosen={true} />
-            </div>
-        {:else}
-            <div class="form-control" style="display:block;">
-                <label>Reporté au *</label>
-                <DatePickerWrapper bind:selected={scheduledOn} dateChosen={true} />
-            </div>
-            
-            <div class="form-control" style="display:block;">
-                <label>Heure de départ * </label>
-                <TimePicker bind:time={from} />
-            </div>
+        <p class="mb-3">Toutes les livraisons non complétées seront reportées :</p>
+        <div class="form-control" style="display:block;">
+            <label>Reporter au *</label>
+            <DatePickerWrapper bind:selected={scheduledOn} dateChosen={true} />
+        </div>
+        <div class="form-control" style="display:block;">
+            <label>Heure de départ * </label>
+            <TimePicker bind:time={from} />
+        </div>
+        {#if !hasStartedDeliveryBatch}
             <div class="form-control">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold" for="reason">Raison </label>
                 <input

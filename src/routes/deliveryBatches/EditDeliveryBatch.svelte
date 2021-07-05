@@ -11,7 +11,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeDeliveryBatch, denormalizeDeliveryBatch } from "./deliveryBatchForm";
-	import PostponeDeliveryBatch from "./PostponeDeliveryBatchModal.svelte";
+	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");

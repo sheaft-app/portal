@@ -65,7 +65,7 @@
                                                 <th
                                                     class="px-4 md:px-8 py-3 border-b border-gray-400
                             bg-gray-100 text-left text-xs font-semibold text-gray-600
-                            uppercase tracking-wider hidden md:table-cell"
+                            uppercase tracking-wider"
                                                 >
                                                     Attendus
                                                 </th>
@@ -105,7 +105,7 @@
                                                     </td>
                                                     <td
                                                         class="px-4 md:px-8 py-5 border-b border-gray-400
-                                bg-white text-sm lg:text-base hidden md:table-cell"
+                                bg-white text-sm lg:text-base"
                                                     >
                                                         <p class="whitespace-no-wrap">
                                                             {product.quantity}
