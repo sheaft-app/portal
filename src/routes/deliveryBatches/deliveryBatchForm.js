@@ -29,39 +29,36 @@ export const denormalizeDeliveryBatch = (delivery) => ({
 	scheduledOn: new Date(delivery.scheduledOn),
 });
 
-export const denormalizeDeliveryBatchProducts = products => {
-	let newProducts = [];
-	products.forEach((p) => {
-		let product;
+export const denormalizeDeliveryBatchProducts = products => products.reduce((acc, curr) => {
+	let product;
 
-		if (newProducts.length > 0) {
-			product = newProducts.find((_product) => _product.productId == p.productId);
-		}
+	if (acc.length > 0) {
+		product = acc.find((_product) => _product.productId == curr.productId);
+	}
 
-		if (!product) {
-			product = p;
-			product.productsToDeliver = 0;
-			product.productsBroken = 0;
-			product.productsMissing = 0;
-			product.productsInExcess = 0;
-			newProducts = [...newProducts, product];
-		}
+	if (!product) {
+		product = curr;
+		product.productsToDeliver = 0;
+		product.productsBroken = 0;
+		product.productsMissing = 0;
+		product.productsInExcess = 0;
+		acc = [...acc, product];
+	}
 
-		switch (p.kind) {
-			case ModificationKind.ToDeliver.Value:
-				product.productsToDeliver = p.quantity;
-				break;
-			case ModificationKind.Broken.Value:
-				product.productsBroken = p.quantity;
-				break;
-			case ModificationKind.Missing.Value:
-				product.productsMissing = p.quantity;
-				break;
-			case ModificationKind.Excess.Value:
-				product.productsInExcess = p.quantity;
-				break;
-		}
-	})
+	switch (curr.kind) {
+		case ModificationKind.ToDeliver.Value:
+			product.productsToDeliver = curr.quantity;
+			break;
+		case ModificationKind.Broken.Value:
+			product.productsBroken = curr.quantity;
+			break;
+		case ModificationKind.Missing.Value:
+			product.productsMissing = curr.quantity;
+			break;
+		case ModificationKind.Excess.Value:
+			product.productsInExcess = curr.quantity;
+			break;
+	}
 
-	return newProducts;
-}
+	return acc;
+}, []);
