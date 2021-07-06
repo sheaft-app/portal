@@ -48,7 +48,7 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 			errorsHandler,
 			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
 			successNotification: "Livraison décalée avec succès !",
-			errorNotification: "Impossible de décaler la livraison",
+			errorNotification: "Impossible de reporter la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
@@ -62,7 +62,7 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 			errorsHandler,
 			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Summary, { id }),
 			successNotification: "Livraison décalée avec succès !",
-			errorNotification: "Impossible de décaler la livraison",
+			errorNotification: "Impossible de reporter la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
@@ -71,7 +71,7 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 
 <ActionConfirm
 	{errorsHandler}
-	title="Décaler la livraison"
+	title="Reporter la livraison"
 	submit={hasStartedDeliveryBatch ? rescheduleSubmit : postponeSubmit}
 	{isLoading}
     {close}

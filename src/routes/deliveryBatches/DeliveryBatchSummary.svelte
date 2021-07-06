@@ -6,7 +6,8 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import GetRouterInstance from "../../services/SheaftRouter";
-	import DeliveryBatchesRoutes from "./routes";
+    import DeliveryBatchesRoutes from "./routes";
+    import { denormalizeDeliveryBatchProducts } from "./deliveryBatchForm";
     
     export let params = {};
 
@@ -19,10 +20,19 @@
 
     onMount(async () => {
 		isLoading = true;
-		deliveryBatch = await query({
+		await query({
 			query: GET_DELIVERY_BATCH_DETAILS,
 			variables: { id: params.id },
-			errorsHandler,
+            errorsHandler,
+            success: (res) => {
+                deliveryBatch = {
+                    ...res,
+                    deliveries: res.deliveries.map((d) => ({
+                        ...d,
+                        products: denormalizeDeliveryBatchProducts(d.products)
+                    }))
+                }
+            },
 			error: () => routerInstance.goTo(DeliveryBatchesRoutes.History),
 			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
 		});
@@ -43,7 +53,7 @@
 
         <p class="mb-2 text-gray-600">Produits retournés : <span class="text-red-500 font-semibold">{deliveryBatch.returnedProductsCount}</span></p>
         <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{deliveryBatch.returnedReturnablesCount}</span></p>
-        {#each deliveryBatch.deliveries as delivery}
+        {#each deliveryBatch.deliveries as delivery (delivery.id)}
             <div class="py-3">
                 <p class="font-semibold text-xl">{delivery.client}</p>
                 <button class="btn btn-link mt-2 mb-5" on:click={downloadDeliveryReceipt}>Télécharger le bon de livraison</button>
@@ -108,27 +118,31 @@
                                 bg-white text-sm lg:text-base"
                                                     >
                                                         <p class="whitespace-no-wrap">
-                                                            {product.quantity}
+                                                            {product.productsToDeliver}
                                                         </p>
                                                     </td>
                                                     <td
                                                         class="px-4 md:px-8 py-5 border-b border-gray-400
                                 bg-white text-sm lg:text-base text-center md:text-left"
                                                     >
-                                                        <p class="whitespace-no-wrap">0</p>
+                                                        <p class="whitespace-no-wrap">
+                                                            {product.productsBroken}
+                                                        </p>
                                                     </td>
                                                     <td
                                                         class="px-4 md:px-8 py-5 border-b border-gray-400
                                 bg-white text-sm lg:text-base text-center md:text-left"
                                                     >
-                                                        <p class="whitespace-no-wrap">0</p>
+                                                        <p class="whitespace-no-wrap">
+                                                            {product.productsMissing}
+                                                        </p>
                                                     </td>
                                                     <td
                                                         class="px-4 md:px-8 py-5 border-b border-r border-gray-400
                                 bg-white text-sm lg:text-base text-right"
                                                     >
                                                         <p class="whitespace-no-wrap">
-                                                            0
+                                                            {product.productsInExcess}
                                                         </p>
                                                     </td>
                                                 </tr>

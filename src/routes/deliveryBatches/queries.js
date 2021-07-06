@@ -121,8 +121,10 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 				purchaseOrdersCount
 				products {
 					id
+					productId
 					name
 					quantity
+					kind
 				}
 				purchaseOrders {
 					id
