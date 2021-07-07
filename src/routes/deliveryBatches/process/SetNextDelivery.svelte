@@ -21,7 +21,7 @@
 
     let nextStop;
     let delivery;
-    let waitingDeliveries = [];
+    let readyDeliveries = [];
     let isLoading = true;
     let isSubmitting = false;
 
@@ -34,23 +34,25 @@
 			error: () => routerInstance.goTo(DeliveryBatchRoutes.List),
 			success: (res) => {
                 delivery = res;
-                waitingDeliveries = res.deliveries.filter((d) => d.status == DeliveryBatchStatus.Waiting.Value);
+                readyDeliveries = res.deliveries.filter((d) => d.status == DeliveryStatus.Ready.Value);
                 
                 if (res.status == DeliveryBatchStatus.InProgress.Value) {
                     if (res.deliveries.find((d) => d.status == DeliveryStatus.InProgress.Value)) {
                         return routerInstance.goTo(DeliveryBatchRoutes.Process, { id: params.id })
                     }
 
-                    if (waitingDeliveries.length == 0) {
+                    if (readyDeliveries.length == 0) {
                         return routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id })
                     }
                 
-                    if (waitingDeliveries.length > 1) {
-                        waitingDeliveries = waitingDeliveries.sort((a, b) => a.position >= b.position ? 1 : -1);
+                    if (readyDeliveries.length > 1) {
+                        readyDeliveries = readyDeliveries.sort((a, b) => a.position >= b.position ? 1 : -1);
                     }
 
-                    nextStop = waitingDeliveries[0];
-                } 
+                    nextStop = readyDeliveries[0];
+                } else if (res.status == DeliveryBatchStatus.Completed.Value) {
+                    return routerInstance.goTo(DeliveryBatchRoutes.EndDelivery, { id: params.id })
+                }
 			},
 			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
 		});
@@ -89,7 +91,7 @@
 {#if isLoading}
     <p>Chargement...</p>
 {:else if nextStop}
-    <div class="relative rounded-3xl py-2 bg-white h-full">
+    <div class="relative rounded-3xl py-2 h-full">
         <div class="flex justify-between">
             <p class="text-2xl font-semibold">{delivery.name}</p>
             <p>{nextStop.position + 1}/{delivery.deliveries.length}</p>
@@ -102,8 +104,8 @@
                 <p class="text-lg">{nextStop.address.zipcode} {nextStop.address.city}</p>
             </div>
         </div>
-        <div class="bottom-cta fixed w-full px-4 space-y-3">
-            {#if waitingDeliveries.length > 1}
+        <div class="bottom-cta absolute w-full px-4 space-y-3">
+            {#if readyDeliveries.length > 1}
                 <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center" on:click={openSetDestinationModal}>Changement de plan</button>
             {/if}
             <button 
