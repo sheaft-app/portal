@@ -1,5 +1,6 @@
 <script>
 	import Icon from "svelte-awesome";
+	import { toggleMoreActions } from "../../stores/app";
 
 	export let click = () => {},
 		hideIfDisabled = false,
@@ -10,11 +11,16 @@
 		selectedItemsNumber = 0,
 		displaySelectedItemsNumber = false;
 
+	const handleClick = () => {
+		$toggleMoreActions = false;
+		click();
+	}
+
 </script>
 
 {#if !disabled || !hideIfDisabled}
 	<button
-		on:click={click}
+		on:click={handleClick}
 		{disabled}
 		aria-label={text}
 		class="{!disabled ? `text-${color}-500 hover:text-${color}-300 cursor-pointer` : `text-gray-500 cursor-not-allowed`}
