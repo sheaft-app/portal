@@ -69,7 +69,7 @@
         {/each}
     {/if}
 
-    <div class="bottom-cta fixed w-full px-4 space-y-3">
+    <div class="bottom-cta absolute w-full px-4 space-y-3">
         {#if skippedDeliveries.length >= 1}
             <button 
                 on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}

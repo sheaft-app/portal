@@ -34,8 +34,8 @@
     <div class="w-full" transition:slide|local>
         {#if displayQuantifier}
             <ProductCounter bind:value={product.broken} label="Cassés" color="red-500" />
-            <ProductCounter bind:value={product.missing} label="Manquants" color="orange-500" />
-            <ProductCounter bind:value={product.excess} label="En trop" color="blue-500" />
+        <ProductCounter bind:value={product.missing} label="Manquants" disabled={product.excess > 0} color="orange-500" />
+            <ProductCounter bind:value={product.excess} label="En trop" disabled={product.missing > 0} color="blue-500" />
         {/if}
     </div>
 </div>
