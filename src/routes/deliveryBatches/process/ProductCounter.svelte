@@ -3,6 +3,7 @@
     export let value = 0;
     export let showLabel = true;
     export let disabled = false;
+    export let max = 999;
     export let color;
 
     const handleLess = () => {
@@ -14,7 +15,7 @@
 	};
 
 	const handleMore = () => {
-		if (value >= 999 || disabled) return;
+		if (value >= max || disabled) return;
 
 		value = (value || 0) + 1;
 	};

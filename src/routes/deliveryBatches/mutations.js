@@ -72,3 +72,11 @@ export const COMPLETE_DELIVERY_BATCH = gql`
 		}
 	}
 `;
+
+export const SET_DELIVERY_BATCH_AS_READY = gql`
+	mutation SetDeliveryBatchAsReady($input: SetDeliveryBatchAsReadyInput) {
+		setDeliveryBatchAsReady(input: $input) {
+			id
+		}
+	}
+`

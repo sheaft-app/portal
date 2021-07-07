@@ -101,7 +101,10 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			day
 			from
 			scheduledOn
-			returnedProductsCount
+			productsToDeliverCount
+			productsDeliveredCount
+			brokenProductsCount
+			missingProductsCount
 			deliveryFormsUrl
 			returnedReturnablesCount
 			deliveries {

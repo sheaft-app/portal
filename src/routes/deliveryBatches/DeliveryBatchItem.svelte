@@ -5,11 +5,12 @@
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import DeliveryBatchesRoutes from "./routes";
 	import Icon from "svelte-awesome";
-	import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+	import { faChevronRight, faCheck } from "@fortawesome/free-solid-svg-icons";
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import { getContext } from "svelte";
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
 	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
+	import SetDeliveryBatchAsReadyModal from "./SetDeliveryBatchAsReadyModal.svelte";
 	
 	export let deliveryBatch;
 
@@ -54,25 +55,34 @@
 			<p class="font-medium text-lg">{deliveryBatch.assignedTo.firstName}</p>
 		</div>
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
-			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value}
+			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value || deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
 				<button
 					on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}
 					class="btn btn-lg btn-outline text-lg font-semibold">Décaler
 				</button>
-				<button
-					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
-					class="btn btn-lg btn-accent text-lg font-semibold">Reprendre
-					<Icon class="ml-2" data={faChevronRight} />
-				</button>
+
+				{#if deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
+					<button
+						on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
+						class="btn btn-lg btn-accent text-lg font-semibold">Lancer
+						<Icon class="ml-2" data={faChevronRight} />
+					</button>
+				{:else}
+					<button
+						on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
+						class="btn btn-lg btn-accent text-lg font-semibold">Reprendre
+						<Icon class="ml-2" data={faChevronRight} />
+					</button>
+				{/if}
 			{:else if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
 				<button
 					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
 					class="btn btn-lg btn-outline text-lg font-semibold">Modifier
 				</button>
 				<button
-					on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
-					class="btn btn-lg btn-accent text-lg font-semibold">Lancer
-					<Icon class="ml-2" data={faChevronRight} />
+					on:click={() => open(SetDeliveryBatchAsReadyModal, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-accent text-lg font-semibold">Confirmer
+					<Icon class="ml-2" data={faCheck} />
 				</button>
 			{/if}
 		</div>

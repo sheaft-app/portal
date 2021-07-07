@@ -53,8 +53,10 @@
             class:text-primary={deliveryBatch.status == DeliveryBatchStatus.Completed.Value}>
             {DeliveryBatchStatus.label(deliveryBatch.status)}
         </p>
-        <p class="mb-2 text-gray-600">Produits retournés : <span class="text-red-500 font-semibold">{deliveryBatch.returnedProductsCount}</span></p>
-        <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{deliveryBatch.returnedReturnablesCount}</span></p>
+        <p class="mb-2 text-gray-600">Produits cassés : <span class="text-red-500 font-semibold">{deliveryBatch.brokenProductsCount}</span></p>
+        <p class="mb-2 text-gray-600">Produits manquants : <span class="text-orange-500 font-semibold">{deliveryBatch.missingProductsCount}</span></p>
+        <p class="mb-2 text-gray-600">Produits livrés : <span class="text-green-500 font-semibold">{deliveryBatch.productsDeliveredCount}</span></p>
+        <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{Math.abs(deliveryBatch.returnedReturnablesCount)}</span></p>
         <a target="_blank" href={deliveryBatch.deliveryFormUrl} class="btn-link mt-1 mb-3">
             <Icon data={faEye} class="mr-2" />
             Voir tous les bons de livraison
