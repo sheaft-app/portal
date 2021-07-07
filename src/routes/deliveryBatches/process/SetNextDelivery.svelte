@@ -10,6 +10,7 @@
     import Icon from "svelte-awesome";
     import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
     import SetDestinationModal from "./SetDestinationModal.svelte";
+    import ErrorCard from "../../../components/ErrorCard.svelte";
     
     const { query, mutate } = getContext("api");
     const { open } = getContext("modal");
@@ -84,6 +85,7 @@
     }
 </script>
 
+<ErrorCard {errorsHandler} />
 {#if isLoading}
     <p>Chargement...</p>
 {:else if nextStop}

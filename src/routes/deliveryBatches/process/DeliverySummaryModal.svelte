@@ -9,6 +9,7 @@
     import DeliveryBatchesRoutes from "../routes";
     import Icon from "svelte-awesome";
     import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+    import ErrorCard from "../../../components/ErrorCard.svelte";
 
     export let delivery;
     export let deliveryBatchId;
@@ -81,6 +82,7 @@
         <p class="uppercase text-gray-600">Compte-rendu</p>
         <p>{delivery.position + 1}/{numberOfDeliveries}</p>
     </div>
+    <ErrorCard {errorsHandler} />
     <p class="text-primary text-xl font-semibold uppercase mt-2">{delivery.client}</p>
     <p>{delivery.address.line1}</p>
     <p>{delivery.address.zipcode} {delivery.address.city}</p>
