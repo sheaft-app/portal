@@ -22,7 +22,7 @@ import DeliveryBatchesRoutes from "../routes";
     const initialView = [destination.address.latitude, destination.address.longitude];
     
 	function createMap(container) {
-	    let m = L.map(container, { preferCanvas: true }).setView(initialView, 11);
+	    let m = L.map(container, { preferCanvas: true }).setView(initialView, 12);
         L.tileLayer(
             'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
             {
@@ -74,7 +74,7 @@ import DeliveryBatchesRoutes from "../routes";
 			meLayer.getBounds(),
 			destinationLayer.getBounds(),
 			otherStopsLayer.getBounds()
-		]);
+		], { maxZoom: 12 });
 		
         return {
             destroy: () => {
