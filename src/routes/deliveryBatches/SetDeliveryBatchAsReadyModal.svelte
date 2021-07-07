@@ -42,7 +42,7 @@
 			errorsHandler,
 			success: () => {
 				close();
-				routerInstance.refresh();
+				routerInstance.reload();
 			},
 			successNotification: "Livraison confirmée !",
 			errorNotification: "Impossible de confirmer la livraison",
