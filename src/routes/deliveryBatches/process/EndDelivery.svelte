@@ -42,7 +42,7 @@
 			mutation: COMPLETE_DELIVERY_BATCH,
 			variables: { id: params.id },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Summary, { id: params.id }),
+			success: (res) => routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id }),
 			successNotification: "Livraison terminée avec succès !",
 			errorNotification: "Impossible de terminer la livraison",
 			clearCache: [GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS],
