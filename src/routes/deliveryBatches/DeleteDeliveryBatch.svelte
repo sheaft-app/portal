@@ -18,7 +18,7 @@
 			success: (res) => handleClose(res),
 			successNotification: `La programmation a bien été supprimé`,
 			errorNotification: `Impossible de supprimer cette programmation`,
-			clearCache: [GET_DELIVERY_BATCH_DETAILS],
+			clearCache: [deliveryBatch.id],
 		});
 
 	const handleClose = async (obj) => {

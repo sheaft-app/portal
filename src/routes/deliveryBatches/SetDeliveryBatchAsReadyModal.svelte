@@ -42,11 +42,11 @@
 			errorsHandler,
 			success: () => {
 				close();
-				routerInstance.reload();
+				routerInstance.refresh();
 			},
 			successNotification: "Livraison confirmée !",
 			errorNotification: "Impossible de confirmer la livraison",
-			clearCache: [GET_DELIVERY_BATCHES],
+			clearCache: [GET_DELIVERY_BATCHES, id],
 		});
 		isLoading = false;
 	};

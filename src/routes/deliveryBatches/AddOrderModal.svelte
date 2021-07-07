@@ -86,7 +86,7 @@
 			},
 			successNotification: "Commande(s) ajoutée(s) avec succès !",
 			errorNotification: "Impossible d'ajouter une commande",
-			clearCache: [GET_DELIVERY_BATCH_DETAILS, GET_DELIVERY_BATCHES],
+			clearCache: [deliveryBatch.id, GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
 	};

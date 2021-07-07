@@ -1,7 +1,7 @@
 <script>
     import { getContext } from "svelte";
     import ActionConfirm from "../../../components/modal/ActionConfirm.svelte";
-	import { GET_DELIVERY_BATCHES } from "../queries";
+	import { GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "../queries";
 	import { SKIP_DELIVERY } from "../mutations";
 	import DeliveryBatchesRoutes from "../routes";
     import { faForward } from "@fortawesome/free-solid-svg-icons";
@@ -25,7 +25,7 @@
 			success: () => routerInstance.goTo(DeliveryBatchesRoutes.NextDelivery, { id: deliveryBatchId }),
 			successNotification: "Livraison passée",
 			errorNotification: "Impossible de passer la livraison",
-			clearCache: [GET_DELIVERY_BATCHES],
+			clearCache: [GET_DELIVERY_BATCHES, deliveryBatchId],
 		});
 		isLoading = false;
 	};

@@ -47,7 +47,7 @@
 			success: (res) => routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id }),
 			successNotification: "Livraison terminée avec succès !",
 			errorNotification: "Impossible de terminer la livraison",
-			clearCache: [GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS],
+			clearCache: [GET_DELIVERY_BATCHES, params.id],
 		});
         isSubmitting = false;
     }
