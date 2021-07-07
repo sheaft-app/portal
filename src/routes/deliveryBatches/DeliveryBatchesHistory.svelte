@@ -21,7 +21,7 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Date et heure" }, { name: "Statut" }];
+	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Date et heure" }];
 
 	const actions = [
 		{
@@ -50,18 +50,19 @@
 			loadingMessage="Chargement de vos livraisons passées en cours."
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="leading-5 font-medium truncate" style="max-width: 180px;">
+					<div class="mb-1">
+						<span class="rounded-full text-green-500 text-sm delivery-status text-left">
+							{DeliveryBatchStatus.label(deliveryBatch.status)}
+						</span>
+					</div>
 					{deliveryBatch.name}
+					<p class="text-gray-600 text-sm lg:text-base ">{deliveryBatch.deliveriesCount} client{deliveryBatch.deliveriesCount > 1 ? 's' : ''}</p>
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
                 <p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
                 <p>débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0 ? "00" : timeSpanToTime(deliveryBatch.from).minutes}</p>
-			</td>
-			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-				<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status">
-                    {DeliveryBatchStatus.label(deliveryBatch.status)}
-                </span>
 			</td>
 		</Table>
 	</PageBody>

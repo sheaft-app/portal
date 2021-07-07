@@ -44,6 +44,7 @@ export const GET_DELIVERY_BATCHES_HISTORY = gql`
 					day
 					from
 					scheduledOn
+					deliveriesCount
 					deliveries {
 						id
 						position
