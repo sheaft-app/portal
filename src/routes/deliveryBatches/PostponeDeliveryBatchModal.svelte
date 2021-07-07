@@ -13,7 +13,7 @@
 	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
     import TimePicker from "../../components/controls/TimePicker.svelte";
     import { timeToTimeSpan, getIsoDate } from "../../helpers/app";
-import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
+    import DeliveryStatus from "../../enums/DeliveryStatus";
 
     export let id, close;
 
@@ -33,7 +33,10 @@ import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 			query: GET_DELIVERY_BATCH_DETAILS,
 			variables: { id },
 			errorsHandler,
-			success: (res) => hasStartedDeliveryBatch = ![DeliveryBatchStatus.Waiting.Value].includes(res.status),
+			success: (res) => {
+                hasStartedDeliveryBatch = res.deliveries.filter((d) => 
+                [DeliveryStatus.Delivered.Value, DeliveryStatus.Rejected.Value].includes(d.status)).length >= 1
+            },
 			error: () => close(),
 			errorNotification: "Impossible de récupérer les informations de la livraison.",
 		});

@@ -89,7 +89,9 @@
 			<p>{destination.address.zipcode} {destination.address.city}</p>
 		</div>
 		<div class="flex justify-end space-x-2 mt-3">
-			<button class="btn btn-outline btn-lg" on:click={() => open(SkipDeliveryModal, { id: destination.id, deliveryBatchId: params.id })}>Sauter cette livraison</button>
+			{#if deliveries.length > 1}
+				<button class="btn btn-outline btn-lg" on:click={() => open(SkipDeliveryModal, { id: destination.id, deliveryBatchId: params.id })}>Sauter cette livraison</button>
+			{/if}
 			<button 
 				class="btn btn-accent btn-lg" 
 				on:click={() => open(DeliverySummaryModal, { delivery: destination, numberOfDeliveries: deliveries.length, deliveryBatchId: params.id })}>
