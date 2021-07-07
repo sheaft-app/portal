@@ -55,7 +55,7 @@
 
 <ActionConfirm
 	{errorsHandler}
-	title="Choisir une livraison"
+	title="Programmer une livraison"
 	{isLoading}
 	{close}
 	valid={selected !== null}
@@ -74,6 +74,7 @@
 			</div>
 		{/each}
 	{:else}
-		<p>Aucune autre commande à ajouter n'est disponible</p>
+		<p>Aucune tournée n'est prête à être programmée.</p>
+		<p>Nous vous proposerons automatiquement des tournées quand des commandes seront marquées comme prêtes.</p>
 	{/if}
 </ActionConfirm>

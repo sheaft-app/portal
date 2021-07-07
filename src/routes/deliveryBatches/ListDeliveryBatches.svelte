@@ -51,12 +51,12 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Livraisons programmées" />
-	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1}>
+	<PageHeader name="Livraisons programmées" previousPage={null} subname={null} />
+	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1} noResultsPage={null} loadingMessage="Chargement des livraisons...">
 		{#if $items.length > 0}
 			<Actions {actions} />
 		{/if}
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
 			{#each $items as deliveryBatch}
 				<DeliveryBatchItem {deliveryBatch} />
 			{:else}
