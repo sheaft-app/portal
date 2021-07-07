@@ -102,11 +102,13 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			from
 			scheduledOn
 			returnedProductsCount
+			deliveryFormsUrl
 			returnedReturnablesCount
 			deliveries {
 				id
 				position
 				client
+				deliveryFormUrl
 				clientId
 				status
 				address {

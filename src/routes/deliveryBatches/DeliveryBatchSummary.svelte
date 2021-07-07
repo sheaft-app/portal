@@ -10,6 +10,7 @@
     import Icon from "svelte-awesome";
     import { faEye } from "@fortawesome/free-solid-svg-icons";
     import { denormalizeDeliveryBatchProducts } from "./deliveryBatchForm";
+    import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
     
     export let params = {};
 
@@ -40,10 +41,6 @@
 		});
 		isLoading = false;
     });
-
-    const downloadDeliveryReceipt = () => {
-        // todo
-    }
 </script>
     
 
@@ -51,18 +48,25 @@
 	<PageHeader name="Résumé de la livraison" previousPage={DeliveryBatchesRoutes.History} />
 	<PageBody {errorsHandler} {isLoading}>
 		<p class="text-2xl font-semibold">{deliveryBatch.name}</p>
-        <p class="text-primary text-2xl font-semibold uppercase mt-5 mb-5">Terminée</p>
-
+        <p 
+            class="text-primary text-2xl font-semibold uppercase mt-5 mb-5" 
+            class:text-primary={deliveryBatch.status == DeliveryBatchStatus.Completed.Value}>
+            {DeliveryBatchStatus.label(deliveryBatch.status)}
+        </p>
         <p class="mb-2 text-gray-600">Produits retournés : <span class="text-red-500 font-semibold">{deliveryBatch.returnedProductsCount}</span></p>
         <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{deliveryBatch.returnedReturnablesCount}</span></p>
+        <a target="_blank" href={deliveryBatch.deliveryFormUrl} class="btn-link mt-1 mb-3">
+            <Icon data={faEye} class="mr-2" />
+            Voir tous les bons de livraison
+        </a>
         {#each deliveryBatch.deliveries as delivery (delivery.id)}
-            <div class="px-4 bg-white mb-3 rounded-lg shadow py-3">
+            <div class="px-4 bg-white mb-3 mt-3 rounded-lg shadow py-3">
                 <p class="font-semibold text-xl">{delivery.client}</p>
-                <button class="btn btn-link mt-1 mb-3" on:click={downloadDeliveryReceipt}>
+                <a target="_blank" href={delivery.deliveryFormUrl} class="btn-link mt-1">
                     <Icon data={faEye} class="mr-2" />
                     Voir le bon de livraison
-                </button>
-                <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5">
+                </a>
+                <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5 mt-2">
                     <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
                         <div class="w-full">
                             <section>
