@@ -46,7 +46,7 @@
             ['EXCESS', 'MISSING', 'BROKEN'].map((status) => {
                 if (p[status.toLowerCase()] > 0) {
                     returnedProducts = [...returnedProducts, {
-                        id: p.id,
+                        id: p.productId,
                         kind: status,
                         quantity: p[status.toLowerCase()]
                     }]

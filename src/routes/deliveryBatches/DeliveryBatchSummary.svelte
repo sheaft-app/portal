@@ -7,6 +7,8 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import GetRouterInstance from "../../services/SheaftRouter";
     import DeliveryBatchesRoutes from "./routes";
+    import Icon from "svelte-awesome";
+    import { faEye } from "@fortawesome/free-solid-svg-icons";
     import { denormalizeDeliveryBatchProducts } from "./deliveryBatchForm";
     
     export let params = {};
@@ -54,9 +56,12 @@
         <p class="mb-2 text-gray-600">Produits retournés : <span class="text-red-500 font-semibold">{deliveryBatch.returnedProductsCount}</span></p>
         <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{deliveryBatch.returnedReturnablesCount}</span></p>
         {#each deliveryBatch.deliveries as delivery (delivery.id)}
-            <div class="py-3">
+            <div class="px-4 bg-white mb-3 rounded-lg shadow py-3">
                 <p class="font-semibold text-xl">{delivery.client}</p>
-                <button class="btn btn-link mt-2 mb-5" on:click={downloadDeliveryReceipt}>Télécharger le bon de livraison</button>
+                <button class="btn btn-link mt-1 mb-3" on:click={downloadDeliveryReceipt}>
+                    <Icon data={faEye} class="mr-2" />
+                    Voir le bon de livraison
+                </button>
                 <div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5">
                     <div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
                         <div class="w-full">

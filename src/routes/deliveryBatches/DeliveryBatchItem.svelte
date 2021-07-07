@@ -24,13 +24,13 @@
 </script>
 
 <div class="delivery-card rounded-3xl px-4 py-2 bg-white">
-	<div class="flex justify-between py-2 border-b border-gray-300">
+	<div class="flex justify-between py-2 border-b border-gray-300 flex-wrap flex-col-reverse xl:flex-nowrap xl:flex-row">
 		<div>
-			<p class="font-semibold text-xl">{deliveryBatch.name}</p>
+			<p class="font-semibold text-xl" style="max-width: 300px;">{deliveryBatch.name}</p>
 			<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
 			<p>débute à {from.hours}h{from.minutes == 0 ? "00" : from.minutes}</p>
 		</div>
-		<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status">
+		<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
 			{DeliveryBatchStatus.label(deliveryBatch.status)}
 		</span>
 	</div>
@@ -48,12 +48,12 @@
 			<p class="m-0 mb-2">{getFirstClientName()}</p>
 		</div>
 	</div>
-	<div class="flex justify-between py-2 items-center flex-wrap space-x-4">
+	<div class="flex justify-between py-2 items-center flex-wrap md:space-x-4">
 		<div>
 			<p class="text-gray-500">Livré par</p>
 			<p class="font-medium text-lg">{deliveryBatch.assignedTo.firstName}</p>
 		</div>
-		<div class="flex space-x-2">
+		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
 			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value}
 				<button
 					on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}
@@ -87,5 +87,6 @@
 
 	.delivery-card .delivery-status {
 		height: fit-content;
+		width: fit-content;
 	}
 </style>
