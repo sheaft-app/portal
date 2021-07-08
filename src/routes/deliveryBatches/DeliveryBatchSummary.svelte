@@ -50,6 +50,7 @@
 		Math.abs(product.productsInExcess) -
 		Math.abs(product.productsBroken) -
 		Math.abs(product.productsMissing)
+    
 </script>
     
 
@@ -126,7 +127,7 @@
                             bg-gray-100 text-center md:text-left text-xs font-semibold
                             text-gray-600 uppercase tracking-wider"
                                                 >
-                                                    Refusé
+                                                    Cassé
                                                 </th>
                                                 <th
                                                     class="px-4 md:px-8 py-3 border-b border-gray-400
