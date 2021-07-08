@@ -55,14 +55,14 @@
 	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1} noResultsPage={null} loadingMessage="Chargement des livraisons...">
 		{#if $items.length > 0}
 			<Actions {actions} />
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
+				{#each $items as deliveryBatch}
+					<DeliveryBatchItem {deliveryBatch} />
+				{/each}
+			</div>
+		{:else}
+			<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
+			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4">Programmer une livraison</button>
 		{/if}
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
-			{#each $items as deliveryBatch}
-				<DeliveryBatchItem {deliveryBatch} />
-			{:else}
-				<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
-				<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4">Programmer une livraison</button>
-			{/each}
-		</div>
 	</PageBody>
 </TransitionWrapper>
