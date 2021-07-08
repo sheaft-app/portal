@@ -63,8 +63,8 @@
 
         <p class="font-semibold mb-2">Coup d'oeil</p>
 
-        <p class="mb-2 text-gray-600">Produits cassés : <span class="text-red-500 font-semibold">{deliveryBatch.brokenProductsCount}</span></p>
-        <p class="mb-2 text-gray-600">Produits manquants : <span class="text-orange-500 font-semibold">{deliveryBatch.missingProductsCount}</span></p>
+        <p class="mb-2 text-gray-600">Produits cassés : <span class="text-red-500 font-semibold">{Math.abs(deliveryBatch.brokenProductsCount)}</span></p>
+        <p class="mb-2 text-gray-600">Produits manquants : <span class="text-orange-500 font-semibold">{Math.abs(deliveryBatch.missingProductsCount)}</span></p>
         <p class="mb-2 text-gray-600">Produits livrés : <span class="text-green-500 font-semibold">{deliveryBatch.productsDeliveredCount}</span></p>
         <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{Math.abs(deliveryBatch.returnedReturnablesCount)}</span></p>
 
