@@ -1,4 +1,6 @@
 import Roles from "../../enums/Roles";
+import OrderByDirection from "../../enums/OrderByDirection";
+import Paginate from "../../enums/Paginate";
 import { faClock, faEdit, faPlus, faPlay, faHistory } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/delivery-batches";
@@ -29,7 +31,17 @@ const DeliveryBatchesRoutes = {
 		Icon: faHistory,
 		Path: `${prefix}${history}`,
 		SubPart: `${history}`,
-		Params: null
+		Params: {
+			Query: {
+				cursor: null,
+				orderBy: "scheduledOn",
+				direction: OrderByDirection.DESC,
+				take: 20,
+				paginate: Paginate.First,
+				where: null,
+				whereValues: null,
+			},
+		},
 	},
 	Summary: {
 		Name: "Résumé livraison",

@@ -41,6 +41,7 @@
 			bind:items
 			bind:isLoading
 			bind:noResults
+			defaultSearchValues={DeliveryBatchesRoutes.History.Params.Query}
 			{errorsHandler}
 			{headers}
 			let:rowItem={deliveryBatch}

@@ -36,8 +36,14 @@ export const GET_DELIVERY_BATCHES = gql`
 `;
 
 export const GET_DELIVERY_BATCHES_HISTORY = gql`
-	query GetDeliveryBatches {
-		deliveryBatches(where: { status: { in: [COMPLETED, PARTIAL]}}) {
+	query GetDeliveryBatches(
+		$first: Int
+		$last: Int
+		$after: String
+		$before: String
+		$orderBy: [DeliveryBatchSortInput!]
+	) {
+		deliveryBatches(first: $first, last: $last, after: $after, before: $before, order: $orderBy, where: { status: { in: [COMPLETED, PARTIAL]}}) {
 			edges {
 				cursor
 				node {
