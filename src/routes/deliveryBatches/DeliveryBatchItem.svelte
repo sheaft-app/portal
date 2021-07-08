@@ -5,7 +5,7 @@
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import DeliveryBatchesRoutes from "./routes";
 	import Icon from "svelte-awesome";
-	import { faChevronRight, faCheck } from "@fortawesome/free-solid-svg-icons";
+	import { faChevronRight, faEye, faCheck } from "@fortawesome/free-solid-svg-icons";
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import { getContext } from "svelte";
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
@@ -31,9 +31,19 @@
 			<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
 			<p>débute à {from.hours}h{from.minutes == 0 ? "00" : from.minutes}</p>
 		</div>
-		<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
-			{DeliveryBatchStatus.label(deliveryBatch.status)}
-		</span>
+		<div class="flex justify-between xl:justify-end items-top xl:flex-wrap xl:text-right">
+			<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
+				{DeliveryBatchStatus.label(deliveryBatch.status)}
+			</span>	
+			{#if deliveryBatch?.deliveryFormsUrl}
+				<div class="xl:w-full">
+					<a target="_blank" href={deliveryBatch.deliveryFormsUrl} class="btn-link" style="display: inline-block;">
+						<Icon data={faEye} class="mr-1" />
+						Voir les bons de livraison
+					</a>
+				</div>
+			{/if}
+		</div>
 	</div>
 	<div class="flex justify-between py-2 border-b border-gray-300 w-full">
 		<div>

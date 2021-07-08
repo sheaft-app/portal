@@ -7,6 +7,7 @@ export const GET_DELIVERY_BATCHES = gql`
 				cursor
 				node {
 					day
+					deliveryFormsUrl
 					from
 					scheduledOn
 					deliveries {
