@@ -9,7 +9,7 @@
 			cb.apply(this, arguments);
 			el.removeEventListener(evt, handler);
 		}
-		el.addEventListener(evt, handler);
+		if (el) el.addEventListener(evt, handler);
 	};
 
 	let popover;

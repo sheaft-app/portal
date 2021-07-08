@@ -78,7 +78,7 @@
 	submit={hasStartedDeliveryBatch ? rescheduleSubmit : postponeSubmit}
 	{isLoading}
     {close}
-    valid={scheduledOn && from.hours >= 0 && from.minutes >= 0}
+    valid={scheduledOn && from.hours !== null && from.minutes !== null}
 	submitText="Confirmer"
 	icon={faCheck}
 	closeText="Fermer"
