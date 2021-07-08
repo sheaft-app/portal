@@ -132,6 +132,7 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 					zipcode
 					city
 				}
+				productsDeliveredCount
 				productsToDeliverCount
 				purchaseOrdersCount
 				products {

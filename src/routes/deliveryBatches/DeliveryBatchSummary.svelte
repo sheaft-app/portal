@@ -44,6 +44,12 @@
 		});
 		isLoading = false;
     });
+
+    const calculateDelivered = product => 
+        Math.abs(product.productsToDeliver) +
+		Math.abs(product.productsInExcess) -
+		Math.abs(product.productsBroken) -
+		Math.abs(product.productsMissing)
 </script>
     
 
@@ -130,11 +136,18 @@
                                                     Manquant
                                                 </th>
                                                 <th
+                                                    class="px-4 md:px-8 py-3 border-b border-gray-400
+                            bg-gray-100 text-center md:text-left text-xs font-semibold
+                            text-gray-600 uppercase tracking-wider"
+                                                >
+                                                    Excès
+                                                </th>
+                                                <th
                                                     class="px-4 md:px-8 py-3 border-b border-r border-gray-400
                             bg-gray-100 text-right text-xs font-semibold text-gray-600
                             uppercase tracking-wider"
                                                 >
-                                                    Excès
+                                                    Livré
                                                 </th>
                                             </tr>
                                         </thead>
@@ -174,11 +187,19 @@
                                                         </p>
                                                     </td>
                                                     <td
-                                                        class="px-4 md:px-8 py-5 border-b border-r border-gray-400
-                                bg-white text-sm lg:text-base text-right"
+                                                        class="px-4 md:px-8 py-5 border-b border-gray-400
+                                bg-white text-sm lg:text-base text-center md:text-left"
                                                     >
                                                         <p class="whitespace-no-wrap">
                                                             {product.productsInExcess}
+                                                        </p>
+                                                    </td>
+                                                    <td
+                                                        class="px-4 md:px-8 py-5 border-b border-r border-gray-400
+                                                        bg-white text-sm lg:text-base text-right"
+                                                    >
+                                                        <p class="whitespace-no-wrap">
+                                                            {calculateDelivered(product)}
                                                         </p>
                                                     </td>
                                                 </tr>
