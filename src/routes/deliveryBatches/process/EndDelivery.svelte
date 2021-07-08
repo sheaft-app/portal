@@ -41,11 +41,13 @@
                     if (res.deliveries.find((d) => d.status == DeliveryStatus.Ready.Value)) {
                         return routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id })
                     }
-
-                    routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
+                    
+                    if (!res.deliveries.find((d) => d.status == DeliveryStatus.Skipped.Value)) {
+                        routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
+                    }
                 } else if (res.status == DeliveryBatchStatus.Waiting.Value || res.status == DeliveryBatchStatus.Ready.Value) {
                     routerInstance.goTo(DeliveryBatchRoutes.List);
-                }  else {
+                } else {
                     routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
                 }
             },
