@@ -6,6 +6,7 @@
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import DeliveryBatchRoutes from "../routes";
     import DeliveryStatus from "../../../enums/DeliveryStatus";
+    import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
     import SimpleStoreCard from "../../deliveries/SimpleStoreCard.svelte";
     import PostponeDeliveryBatchModal from "../PostponeDeliveryBatchModal.svelte";
     import Icon from "svelte-awesome";
@@ -30,7 +31,24 @@
 		deliveryBatch = await query({
 			query: GET_DELIVERY_BATCH_DETAILS,
 			variables: { id: params.id },
-			errorsHandler,
+            errorsHandler,
+            success: (res) => {
+                if (res.status == DeliveryBatchStatus.InProgress.Value || res.status == DeliveryBatchStatus.Completed.Value) {
+                    if (res.deliveries.find((d) => d.status == DeliveryStatus.InProgress.Value)) {
+                        return routerInstance.goTo(DeliveryBatchRoutes.Process, { id: params.id })
+                    }
+
+                    if (res.deliveries.find((d) => d.status == DeliveryStatus.Ready.Value)) {
+                        return routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id })
+                    }
+
+                    routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
+                } else if (res.status == DeliveryBatchStatus.Waiting.Value || res.status == DeliveryBatchStatus.Ready.Value) {
+                    routerInstance.goTo(DeliveryBatchRoutes.List);
+                }  else {
+                    routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
+                }
+            },
 			error: () => routerInstance.goTo(DeliveryBatchRoutes.List),
 			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
         });
