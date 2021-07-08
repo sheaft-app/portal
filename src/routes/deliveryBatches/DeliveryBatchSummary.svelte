@@ -11,6 +11,9 @@
     import { faEye } from "@fortawesome/free-solid-svg-icons";
     import { denormalizeDeliveryBatchProducts } from "./deliveryBatchForm";
     import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
+	import format from "date-fns/format";
+	import fr from "date-fns/locale/fr";
+	import { timeSpanToTime } from "../../helpers/app";
     
     export let params = {};
 
@@ -45,22 +48,44 @@
     
 
 <TransitionWrapper>
-	<PageHeader name="Résumé de la livraison" previousPage={DeliveryBatchesRoutes.History} />
+    <PageHeader name="Résumé de la livraison" previousPage={DeliveryBatchesRoutes.History}>
+        {#if deliveryBatch?.deliveryFormsUrl}
+            <div class="mt-2">
+                <a target="_blank" href={deliveryBatch.deliveryFormsUrl} class="btn btn-outline btn-lg" style="display: inline-block;">
+                    <Icon data={faEye} class="mr-2" />
+                    Voir les bons de livraison
+                </a>
+            </div>
+        {/if}
+    </PageHeader>
 	<PageBody {errorsHandler} {isLoading}>
-		<p class="text-2xl font-semibold">{deliveryBatch.name}</p>
-        <p 
-            class="text-primary text-2xl font-semibold uppercase mt-5 mb-5" 
-            class:text-primary={deliveryBatch.status == DeliveryBatchStatus.Completed.Value}>
-            {DeliveryBatchStatus.label(deliveryBatch.status)}
+        <p class="text-2xl font-semibold">
+            {deliveryBatch.name} : 
+            <span class="uppercase" class:text-primary={deliveryBatch.status == DeliveryBatchStatus.Completed.Value}>
+                {DeliveryBatchStatus.label(deliveryBatch.status)}
+            </span>
         </p>
-        <p class="mb-2 text-gray-600">Produits cassés : <span class="text-red-500 font-semibold">{Math.abs(deliveryBatch.brokenProductsCount)}</span></p>
-        <p class="mb-2 text-gray-600">Produits manquants : <span class="text-orange-500 font-semibold">{Math.abs(deliveryBatch.missingProductsCount)}</span></p>
-        <p class="mb-2 text-gray-600">Produits livrés : <span class="text-green-500 font-semibold">{deliveryBatch.productsDeliveredCount}</span></p>
-        <p class="mb-2 text-gray-600">Consignes récupérées : <span class="text-green-500 font-semibold">{Math.abs(deliveryBatch.returnedReturnablesCount)}</span></p>
-        <a target="_blank" href={deliveryBatch.deliveryFormUrl} class="btn-link mt-1 mb-3">
-            <Icon data={faEye} class="mr-2" />
-            Voir tous les bons de livraison
-        </a>
+        <p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
+        <p>débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0 ? "00" : timeSpanToTime(deliveryBatch.from).minutes}</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mt-3 shadow py-2"> 
+            <div class="text-center">
+                <p class="text-green-500 font-semibold text-2xl">{Math.abs(deliveryBatch.productsDeliveredCount)}</p>
+                <p>Produits livrés</p>
+            </div>
+            <div class="text-center">
+                <p class="text-red-500 font-semibold text-2xl">{Math.abs(deliveryBatch.brokenProductsCount)}</p>
+                <p>Produits cassés</p>
+            </div>
+            <div class="text-center">
+                <p class="text-orange-500 font-semibold text-2xl">{Math.abs(deliveryBatch.missingProductsCount)}</p>
+                <p>Produits manquants</p>
+            </div>
+            <div class="text-center">
+                <p class="text-green-500 font-semibold text-2xl">{Math.abs(deliveryBatch.returnedReturnablesCount)}</p>
+                <p>Consignes récupérées</p>
+            </div>           
+        </div>
         {#each deliveryBatch.deliveries as delivery (delivery.id)}
             <div class="px-4 bg-white mb-3 mt-3 rounded-lg shadow py-3">
                 <p class="font-semibold text-xl">{delivery.client}</p>
@@ -165,6 +190,9 @@
                         </div>
                     </div>
                 </div>
+                {#if delivery.comment}
+                    <p>Commentaire : <span class="font-semibold">{delivery.comment}</span></p>
+                {/if}
             </div>
         {/each}
 	</PageBody>

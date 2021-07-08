@@ -114,6 +114,7 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 				client
 				deliveryFormUrl
 				clientId
+				comment
 				status
 				address {
 					latitude
