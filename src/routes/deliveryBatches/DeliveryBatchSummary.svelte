@@ -65,9 +65,9 @@
                 {DeliveryBatchStatus.label(deliveryBatch.status)}
             </span>
         </p>
-        <p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
-        <p>débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0 ? "00" : timeSpanToTime(deliveryBatch.from).minutes}</p>
-        
+        <p>planifiée pour le {format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })} 
+            à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0 ? "00" : timeSpanToTime(deliveryBatch.from).minutes}</p>
+        <p>complétée le {format(new Date(deliveryBatch.completedOn), "PPPP", { locale: fr })}</p>
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mt-3 shadow py-2"> 
             <div class="text-center">
                 <p class="text-green-500 font-semibold text-2xl">{Math.abs(deliveryBatch.productsDeliveredCount)}</p>

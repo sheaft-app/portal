@@ -111,6 +111,7 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			scheduledOn
 			productsToDeliverCount
 			productsDeliveredCount
+			completedOn
 			brokenProductsCount
 			missingProductsCount
 			deliveryFormsUrl
