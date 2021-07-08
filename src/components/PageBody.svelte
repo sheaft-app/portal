@@ -17,7 +17,7 @@
 	<ErrorCard {errorsHandler} />
 {/if}
 
-{#if !isLoading && noResults}
+{#if !isLoading && noResults && noResultsPage}
 	<PageEmpty {noResultsPage} />
 {/if}
 

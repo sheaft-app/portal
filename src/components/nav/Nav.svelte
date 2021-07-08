@@ -8,7 +8,7 @@
 	import { faQuestionCircle, faBars, faChevronLeft, faBell, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 	import NavLink from "./NavLink.svelte";
 	import { slide } from "svelte/transition";
-	import { selectedItem } from "./../../stores/app.js";
+	import { selectedItem, fullScreenMap } from "./../../stores/app.js";
 	import cart from "./../../stores/cart";
 	import { navExpended, userMenuExpended } from "./store.js";
 	import { authAuthenticated, authUserAccount, authRegistered } from "./../../stores/auth.js";
@@ -34,6 +34,7 @@
 	import { config } from "../../configs/config";
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
+import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -299,7 +300,7 @@
 	</div>
 </div>
 
-{#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value, Roles.Producer.Value])}
+{#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value, Roles.Producer.Value]) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
 	<nav
 		class="nav fixed content-between overflow-hidden"
 		class:hidden={!(
@@ -323,6 +324,7 @@
 					<NavLink route={ReturnableRoutes.List} />
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
+					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={SearchStoreRoutes.Search} />
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />

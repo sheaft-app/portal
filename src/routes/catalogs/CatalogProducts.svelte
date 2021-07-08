@@ -21,10 +21,7 @@
 	const headers = [
 		{ label: "Nom", mobile: true },
 		{ label: "Prix HT", mobile: true },
-		{
-			label: "Ajouté le",
-			mobile: false,
-		},
+		{ label: "Ajouté le", mobile: false },
 		{ label: "Actions", mobile: false },
 	];
 

@@ -19,7 +19,7 @@
 	bind:formattedSelected
 	style="width: 100%"
 >
-	<button type="button" class="btn btn-white btn-lg" aria-label="Sélectionner une date">
+	<button type="button" class="bg-white py-3 px-4 rounded border border-gray-400" aria-label="Sélectionner une date">
 		{#if dateChosen}
 			{formattedSelected}
 		{:else}

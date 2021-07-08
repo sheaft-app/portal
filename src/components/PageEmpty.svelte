@@ -8,7 +8,7 @@
 </script>
 
 <div class="flex justify-center">
-	<div class="text-xl text-gray-600">
+	<div class="text-xl text-gray-600 text-center">
 		<p class="my-3">{noResultsPage.Text}</p>
 		{#if noResultsPage.Name}
 			<button on:click={() => routerInstance.goTo(noResultsPage)} class="btn btn-lg btn-accent m-auto">

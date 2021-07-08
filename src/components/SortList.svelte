@@ -10,6 +10,7 @@
     export let data = [],
      component = null, 
      activeItemRule = null, 
+     disableGrab = false,
      isPristine = true,
      displayButtons = true, 
      classes = "",
@@ -41,6 +42,7 @@
     }
 
     function grab(clientY, element) {
+        if (disableGrab) return;
         // modify grabbed element
         const elementToCopy = element.closest(".item-dragdrop");
         grabbed = elementToCopy;
@@ -107,7 +109,8 @@
 
         {#if component} 
             {#each data as datum, i (datum.id ? datum.id : JSON.stringify(datum))}
-                <div class="item-dragdrop cursor-move {classes}"
+                <div class="item-dragdrop {classes}"
+                    class:cursor-move={!disableGrab}
                     class:active={activeItemRule !== null ? activeItemRule(datum) : ''}
                     data-grabY="0"
                     id={(grabbed && (datum.id ? datum.id : JSON.stringify(datum)) == grabbed.dataset.id) ? "grabbed" : ""}

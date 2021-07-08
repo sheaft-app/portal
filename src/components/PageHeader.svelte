@@ -45,4 +45,5 @@
 			{/each}
 		</div>
 	{/if}
+	<slot></slot>
 </section>

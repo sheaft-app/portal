@@ -9,3 +9,4 @@ export const selectedItem = writable(null);
 export const regions = writable([]);
 export const departments = writable([]);
 export const allDepartmentsProgress = writable([]);
+export const fullScreenMap = writable(false);
