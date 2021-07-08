@@ -32,7 +32,8 @@ export const validators = (delivery) => ({
 		"deliveryHours",
 		"lockOrderHoursBeforeDelivery",
 		"closings",
-		"denormalizedClosings"
+		"denormalizedClosings",
+		"agreements"
 	]),
 	openings: {
 		value: delivery.denormalizedDeliveryHours,
