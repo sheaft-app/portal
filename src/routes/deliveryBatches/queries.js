@@ -134,6 +134,7 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 				}
 				productsDeliveredCount
 				productsToDeliverCount
+				returnedReturnablesCount
 				purchaseOrdersCount
 				products {
 					id
