@@ -137,7 +137,7 @@
                                 bg-white text-sm lg:text-base text-center md:text-left"
                                                     >
                                                         <p class="whitespace-no-wrap">
-                                                            {product.productsBroken}
+                                                            {Math.abs(product.productsBroken)}
                                                         </p>
                                                     </td>
                                                     <td
@@ -145,7 +145,7 @@
                                 bg-white text-sm lg:text-base text-center md:text-left"
                                                     >
                                                         <p class="whitespace-no-wrap">
-                                                            {product.productsMissing}
+                                                            {Math.abs(product.productsMissing)}
                                                         </p>
                                                     </td>
                                                     <td
