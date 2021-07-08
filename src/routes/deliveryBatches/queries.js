@@ -37,7 +37,7 @@ export const GET_DELIVERY_BATCHES = gql`
 
 export const GET_DELIVERY_BATCHES_HISTORY = gql`
 	query GetDeliveryBatches {
-		deliveryBatches(where: { status: { in: [COMPLETED, CANCELLED, PARTIAL]}}) {
+		deliveryBatches(where: { status: { in: [COMPLETED, PARTIAL]}}) {
 			edges {
 				cursor
 				node {

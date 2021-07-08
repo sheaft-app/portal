@@ -53,15 +53,15 @@
 <TransitionWrapper>
 	<PageHeader name="Livraisons programmées" previousPage={null} subname={null} />
 	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1} noResultsPage={null} loadingMessage="Chargement des livraisons...">
+		<Actions {actions} />
 		{#if $items.length > 0}
-			<Actions {actions} />
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
 				{#each $items as deliveryBatch}
 					<DeliveryBatchItem {deliveryBatch} />
 				{/each}
 			</div>
 		{:else}
-			<p class="text-center">Vous n'avez pas encore programmé de livraison</p>
+			<p class="text-center">Aucune livraison programmée</p>
 			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4">Programmer une livraison</button>
 		{/if}
 	</PageBody>
