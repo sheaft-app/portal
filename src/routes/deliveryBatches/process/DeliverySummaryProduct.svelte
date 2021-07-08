@@ -38,7 +38,9 @@
             <ProductCounter bind:value={product.broken} max={product.quantity} label="Cassés" color="red-500" />
             <ProductCounter bind:value={product.missing} max={product.quantity} label="Manquants" disabled={product.excess > 0} color="orange-500" />
             <ProductCounter bind:value={product.excess} label="En trop" disabled={product.missing > 0} color="blue-500" />
-            <small class="font-semibold"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Ajoutez des produits en trop seulement si le magasin garde le(s) produit(s) concerné(s).</small>
+            {#if product.missing <= 0}
+                <small class="font-semibold text-blue-500"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />S'il y a + de produits que commandé, précisez seulement la quantité conservée par le magasin</small>
+            {/if}
         {/if}
     </div>
 </div>
