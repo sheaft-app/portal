@@ -1,5 +1,7 @@
 <script>
     import { slide } from "svelte/transition";
+    import Icon from "svelte-awesome";
+    import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
     import ProductCounter from "./ProductCounter.svelte";
 
     export let product;
@@ -36,6 +38,7 @@
             <ProductCounter bind:value={product.broken} max={product.quantity} label="Cassés" color="red-500" />
             <ProductCounter bind:value={product.missing} max={product.quantity} label="Manquants" disabled={product.excess > 0} color="orange-500" />
             <ProductCounter bind:value={product.excess} label="En trop" disabled={product.missing > 0} color="blue-500" />
+            <small class="font-semibold"><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Ajoutez des produits en trop seulement si le magasin garde le(s) produit(s) concerné(s).</small>
         {/if}
     </div>
 </div>
