@@ -139,11 +139,9 @@
         </div>
         <div class="form-control w-full">
             <label for="grid-reference">Commentaire (optionnel)</label>
-            <input
+            <textarea
                 bind:value={comment}
-                disabled={isSubmitting}
-                type="text"
-                placeholder="ex: "
+                class="block"
             />
         </div>
         <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
