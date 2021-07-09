@@ -25,7 +25,7 @@ export const initialValues = {
 };
 
 export const validators = (producer) => ({
-	...getDefaultFields(producer, initialValues, ["facebook", "instagram", "website", "phone", "pictures"]),
+	...getDefaultFields(producer, initialValues, ["facebook", "instagram", "website", "phone", "pictures", "tags"]),
 	email: { value: producer.email, validators: ["required", "email"], enabled: true },
 	summary: {
 		value: producer.summary,
@@ -43,7 +43,7 @@ export const normalizeProducer = (producer) =>
 	omit(
 		{
 			...producer,
-			address: omit({...producer.address, country: 'FR'}, ['insee']),
+			address: omit({ ...producer.address, country: "FR" }, ["insee"]),
 			pictures: producer.pictures.map((p) => ({
 				id: p.new ? null : p.id,
 				data: p.new ? p.data : null,
