@@ -38,7 +38,7 @@
 				query: GET_PRODUCER_DELIVERIES,
 				variables: { input: [agreement.producer.id] },
 				errorsHandler,
-				success: (res) => (deliveries = res[0].deliveries),
+				success: (res) => (deliveries = res.data[0].deliveries),
 				error: () => routerInstance.goTo(AgreementRoutes.List),
 				errorNotification: "Impossible de récupérer les informations de livraison.",
 			});
@@ -47,7 +47,6 @@
 		producer = agreement.producer;
 		isLoading = false;
 	});
-
 </script>
 
 {#if isLoading}
