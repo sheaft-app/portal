@@ -23,7 +23,8 @@
 				deliveryId: selectedDelivery?.id,
 			},
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
+			successNotification: "Le créneau de livraison a bien été assigné",
 			errorNotification: "Impossible de modifier le créneau de livraison",
 			clearCache: [GET_AGREEMENTS],
 		});

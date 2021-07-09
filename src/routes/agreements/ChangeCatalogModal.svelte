@@ -22,7 +22,8 @@
 				catalogId: selectedCatalog?.id,
 			},
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
+			successNotification: "Le catalogue a bien été assigné",
 			errorNotification: "Impossible de modifier le catalogue",
 			clearCache: [GET_AGREEMENTS],
 		});
