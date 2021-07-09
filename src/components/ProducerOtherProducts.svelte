@@ -131,7 +131,7 @@
 								class:opacity-50={suggestedProductIsInCart(product)}
 								class="transition duration-200 ease-in-out w-full rounded-t-md"
 							>
-								{#if product.picture.includes("pictures/tags/") && !suggestedProductIsInCart(product)}
+								{#if !product.picture || (product.picture.includes("pictures/tags/") && !suggestedProductIsInCart(product))}
 									<div class="absolute" style="z-index: 1; top: 30%; margin:auto;">
 										<div class="text-white text-sm p-2 bg-gray-800 text-center">Aucune image disponible</div>
 									</div>
