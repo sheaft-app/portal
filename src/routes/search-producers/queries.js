@@ -138,26 +138,16 @@ export const GET_AGREEMENTS = gql`
 
 export const GET_PRODUCER_DELIVERIES = gql`
 	query GetProducerDeliveries($input: [ID!]) {
-		nextProducersDeliveries(ids: $input, kinds: [PRODUCER_TO_STORE]) {
+		producersDeliveries(ids: $input, kinds: [PRODUCER_TO_STORE]) {
 			id
 			name
 			deliveries {
 				id
 				name
-				kind
-				address {
-					city
-					line1
-					line2
-					zipcode
-					latitude
-					longitude
-				}
 				deliveryHours {
 					day
 					from
 					to
-					expectedDeliveryDate
 				}
 			}
 		}

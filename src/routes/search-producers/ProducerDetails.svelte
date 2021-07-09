@@ -19,6 +19,7 @@
 	import AgreementRoutes from "../agreements/routes";
 	import { config } from "../../configs/config";
 	import SheaftErrors from "../../services/SheaftErrors";
+	import SearchProducerRoutes from "./routes";
 
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
@@ -56,11 +57,11 @@
 			query: GET_PRODUCER_DELIVERIES,
 			variables: { input: [id] },
 			errorsHandler,
-			error: () => routerInstance.goTo(ReturnableRoutes.List),
+			error: () => routerInstance.goTo(SearchProducerRoutes.List),
 			errorNotification: "Impossible de récupérer les informations de livraison.",
 		});
 
-		return res[0] ? res[0].deliveries : [];
+		return res.data && res.data.length > 0 ? res.data[0].deliveries : [];
 	};
 
 	const openAgreement = () => {
