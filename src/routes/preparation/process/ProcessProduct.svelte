@@ -1,7 +1,7 @@
 <!-- détails d'un produit -->
 <script>
     import { onMount, getContext } from "svelte";
-    import { GET_BATCHES, GET_PICKING_DETAILS } from "../queries";
+    import { GET_BATCHES, GET_PICKING_DETAILS, GET_PICKINGS } from "../queries";
     import { SET_PICKING_PRODUCT_PREPARED_QUANTITY } from "../mutations";
     import GetRouterInstance from "../../../services/SheaftRouter";
     import SheaftErrors from "../../../services/SheaftErrors";
@@ -82,7 +82,8 @@
             errorsHandler,
             success: () => routerInstance.goTo(PreparationRoutes.Process, {id: params.id }),
             successNotification: "Préparation sauvegardée",
-            errorNotification: "Impossible de sauvegarder la préparation"
+            errorNotification: "Impossible de sauvegarder la préparation",
+            clearCache: [params.id, GET_PICKINGS]
         })
         isSubmitting = true;
     }
@@ -123,27 +124,27 @@
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement du produit...">
         {#if !isLoading}
             {#if stepper == 1}
-            <div class="m-auto">
-                {#each product.clients as client, index}
-                    <div class="flex flex-wrap justify-between border-gray-300 pb-2 items-center" class:border-b={index !== product.clients.length - 1}>
-                        <div>
-                            <p class="font-semibold">{client.name}</p>
-                            <p>{client.expected} commandés</p>
+                <div class="m-auto">
+                    {#each product.clients as client, index}
+                        <div class="flex flex-wrap justify-between border-gray-300 pb-2 items-center" class:border-b={index !== product.clients.length - 1}>
+                            <div>
+                                <p class="font-semibold">{client.name}</p>
+                                <p>{client.expected} commandés</p>
+                            </div>
+                            <div class="w-1/2">
+                                <ProductCounter label="préparé(s)" bind:value={client.prepared} /> 
+                            </div>
                         </div>
-                        <div class="w-1/2">
-                            <ProductCounter label="préparé(s)" bind:value={client.prepared} /> 
-                        </div>
-                    </div>
-                {/each}
-            </div>
-            <div class="mt-5 pb-5 w-full px-4">
-                <button 
-                    type="button"
-                    class="block btn btn-lg btn-accent w-full text-center justify-center"
-                    on:click={() => stepper = 2}>
-                    Suivant
-                </button>
-            </div>
+                    {/each}
+                </div>
+                <div class="mt-5 pb-5 w-full px-4">
+                    <button 
+                        type="button"
+                        class="block btn btn-lg btn-accent w-full text-center justify-center"
+                        on:click={() => stepper = 2}>
+                        Suivant
+                    </button>
+                </div>
             {:else if stepper == 2}
                 <p class="mb-3">Vous allez valider la préparation de {product.name} : </p>
                 {#each product.clients as client}

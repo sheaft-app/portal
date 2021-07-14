@@ -31,7 +31,7 @@
 				<div class="xl:w-full">
 					<a target="_blank" href={preparation.preparationUrl} class="btn-link" style="display: inline-block;">
 						<Icon data={faEye} class="mr-1" />
-						Voir le bon de prépa
+						Voir le bon de prépa.
 					</a>
 				</div>
 			{/if}
@@ -52,13 +52,13 @@
         </div>
 	</div>
 	<div class="flex justify-between py-2 items-center flex-wrap md:space-x-4">
-		<p class="mb-2">Complétée à : <span class="font-semibold">{preparation.productsPreparedCount / preparation.productsToPrepareCount * 100}%</span></p>
+		<p class="mb-2">Complétée à : <span class="font-semibold">{(preparation.productsPreparedCount / preparation.productsToPrepareCount * 100).toFixed(2)}%</span></p>
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
 			<button
 				on:click={() => routerInstance.goTo(PreparationRoutes.Edit, { id: preparation.id })}
 				class="btn btn-lg btn-outline text-lg font-semibold">Modifier
 			</button>
-			{#if preparation.status == PickingStatus.Waiting}
+			{#if preparation.status == PickingStatus.Waiting.Value}
 				<button
 					on:click={() => open(StartPreparationModal, { id: preparation.id })}
 					class="btn btn-lg btn-accent text-lg font-semibold">Lancer

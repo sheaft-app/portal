@@ -30,9 +30,11 @@
             success: (res) => products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts),
 			error: () => routerInstance.goTo(PreparationRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
-		});
+        });
         isLoading = false;
-	});
+    });
+    
+    $: console.log(products);
 </script>
 
 <TransitionWrapper>

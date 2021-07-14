@@ -7,6 +7,7 @@
     import { getIsoDate } from "../../../helpers/app";
     import DatePickerWrapper from "./../../../components/controls/DatePickerWrapper.svelte";
     import Toggle from "../../../components/controls/Toggle.svelte";
+    import { GET_BATCHES } from "../queries";
     
     export let close, onClose;
 
@@ -32,7 +33,8 @@
                 await onClose(res);
                 close();
             },
-            errorNotification: "Impossible de créer le lot"
+            errorNotification: "Impossible de créer le lot",
+            clearCache: [GET_BATCHES]
         })
     }
 </script>

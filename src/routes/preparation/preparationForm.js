@@ -26,9 +26,9 @@ export const denormalizeProduct = (products, productsPrepared) => {
 		prepared: 0
 	}));
 
-	if (productsPrepared) {
+	if (productsPrepared && productsPrepared.length) {
 		productsPrepared.forEach((p) => {
-			let p2 = product.clients.find(c => c.purchaseOrder.id == p.purchaseOrder.id);
+			let p2 = product.clients.find(c => c.purchaseOrderId == p.purchaseOrder.id);
 	
 			if (p2) {
 				p2.prepared = p.quantity; 
@@ -37,14 +37,16 @@ export const denormalizeProduct = (products, productsPrepared) => {
 			if (!p.prepared)
 				product['completed'] = false;
 		});
+	} else {
+		product['completed'] = false;
 	}
 
 	return product;
 }
 
-export const denormalizePreparationProducts = (products) => products.reduce((acc, curr) => {
+export const denormalizePreparationProducts = (products, productsPrepared) => products.reduce((acc, curr) => {
 	if (!acc.find(p => p.id == curr.productId)) {
-		acc = [...acc, denormalizeProduct(products.filter(p => p.productId == curr.productId))]
+		acc = [...acc, denormalizeProduct(products.filter(p => p.productId == curr.productId), productsPrepared.filter(p => p.productId == curr.productId))]
 	}
 
 	return acc;
