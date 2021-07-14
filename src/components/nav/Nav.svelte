@@ -34,7 +34,8 @@
 	import { config } from "../../configs/config";
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
-import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
+	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
+	import PreparationRoutes from "../../routes/preparation/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -325,6 +326,7 @@ import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
+					<NavLink route={PreparationRoutes.List} />
 					<NavLink route={SearchStoreRoutes.Search} />
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />

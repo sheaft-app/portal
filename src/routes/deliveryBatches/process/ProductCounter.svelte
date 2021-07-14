@@ -40,7 +40,7 @@
         <button {disabled} class:disabled on:click={handleLess} type="button" data-action="decrement" class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none">
             <span class="m-auto text-2xl font-thin">−</span>
         </button>
-        <input {disabled} class:disabled on:input={(e) => handleInput(e)} bind:value type="number" class="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-{color} outline-none" name="custom-input-number"/>
+        <input {disabled} class:disabled maxLength="3" on:input={(e) => handleInput(e)} bind:value type="number" class="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-{color} outline-none" name="custom-input-number"/>
         <button class:disabled {disabled} on:click={handleMore} type="button" data-action="increment" class="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">
             <span class="m-auto text-2xl font-thin">+</span>
         </button>

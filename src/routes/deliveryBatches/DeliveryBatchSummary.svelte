@@ -222,12 +222,3 @@
         {/each}
 	</PageBody>
 </TransitionWrapper>
-
-<style>
-    .bottom-cta {
-        left: 0;
-        bottom: 20px;
-        margin: 0 auto;
-        text-align: center;
-    }
-</style>

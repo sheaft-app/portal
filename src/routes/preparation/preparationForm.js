@@ -1,0 +1,47 @@
+import { getDefaultFields } from "../../stores/form";
+
+export const initialValues = {
+	name: "",
+	scheduledOn: new Date(),
+};
+
+export const validators = (delivery) => ({
+	...getDefaultFields(delivery, initialValues, []),
+});
+
+export const denormalizeProduct = (products, productsPrepared) => {
+	let product = {};
+
+	product['id'] = products[0].productId;
+	product['name'] = products[0].name;
+	product['total'] = products.reduce((acc, curr) => {
+		acc += curr.quantity;
+		return acc;
+	}, 0);
+	product['clients'] = products.map((p) => ({
+		name: p.purchaseOrder.sender.name,
+		purchaseOrderId: p.purchaseOrder.id,
+		expected: p.quantity,
+		prepared: 0
+	}));
+
+	if (productsPrepared) {
+		productsPrepared.forEach((p) => {
+			let p2 = product.clients.find(c => c.purchaseOrder.id == p.purchaseOrder.id);
+	
+			if (p2) {
+				p2.prepared = p.quantity; 
+			}
+		});
+	}
+
+	return product;
+}
+
+export const denormalizePreparationProducts = (products) => products.reduce((acc, curr) => {
+	if (!acc.find(p => p.id == curr.productId)) {
+		acc = [...acc, denormalizeProduct(products.filter(p => p.productId == curr.productId))]
+	}
+
+	return acc;
+}, []);

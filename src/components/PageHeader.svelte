@@ -4,6 +4,7 @@
 	import GetRouterInstance from "../services/SheaftRouter";
 
 	export let previousPage;
+	export let previousPageParams = {};
 	export let buttons = [],
 		name = "",
 		subname;
@@ -19,7 +20,7 @@
 <section class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
 	{#if previousPage}
 		<div class="mb-3">
-			<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goTo(previousPage)}>
+			<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goTo(previousPage, previousPageParams)}>
 				<Icon data={faChevronLeft} class="mr-2 inline" />
 				{previousPage.Name}
 			</button>
@@ -28,7 +29,7 @@
 
 	<h1 class="font-semibold uppercase mb-1">{name}</h1>
 	{#if subname}
-		<small>{subname}</small>
+		<p>{subname}</p>
 	{/if}
 	{#if buttons && buttons.length > 0}
 		<div class="flex mt-2">
