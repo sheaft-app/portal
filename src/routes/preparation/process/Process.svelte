@@ -9,7 +9,7 @@
     import PageHeader from "../../../components/PageHeader.svelte";
     import { denormalizePreparationProducts } from "../preparationForm";
 	import PageBody from "../../../components/PageBody.svelte";
-import PickingStatus from "../../../enums/PickingStatus.js";
+    import PickingStatus from "../../../enums/PickingStatus.js";
 
     export let params;
 
