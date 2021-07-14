@@ -14,6 +14,7 @@ export const denormalizeProduct = (products, productsPrepared) => {
 
 	product['id'] = products[0].productId;
 	product['name'] = products[0].name;
+	product['completed'] = true;
 	product['total'] = products.reduce((acc, curr) => {
 		acc += curr.quantity;
 		return acc;
@@ -32,6 +33,9 @@ export const denormalizeProduct = (products, productsPrepared) => {
 			if (p2) {
 				p2.prepared = p.quantity; 
 			}
+
+			if (!p.prepared)
+				product['completed'] = false;
 		});
 	}
 

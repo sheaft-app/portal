@@ -81,6 +81,7 @@ export const GET_PICKING_DETAILS = gql`
 			preparedProducts {
 				productId
 				quantity
+				prepared
 				name
 				preparedOn
 			}
@@ -88,5 +89,15 @@ export const GET_PICKING_DETAILS = gql`
 	}
 `;
 
-
-// todo : query récupération des lots existants
+export const GET_BATCHES = gql`
+	query GetBatches {
+		batches {
+			nodes {
+				id
+				number
+				dlc
+				dluo
+			}
+		}
+	}
+`;

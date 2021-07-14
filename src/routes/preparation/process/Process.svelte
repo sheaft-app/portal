@@ -27,7 +27,7 @@
 			query: GET_PICKING_DETAILS,
 			variables: { id: params.id },
             errorsHandler,
-            success: (res) => products = denormalizePreparationProducts(res.productsToPrepare),
+            success: (res) => products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts),
 			error: () => routerInstance.goTo(PreparationRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
 		});
@@ -48,7 +48,7 @@
                             <p>{product.total} à préparer</p>
                         </div>
                         <div class="w-full md:w-auto mt-2 md:mt-0">
-                            {#if preparation.preparedProducts.find(p => p.id == product.id)?.prepared}
+                            {#if product.completed}
                                 <p class="text-green-500">Terminée</p>
                             {:else}
                                 <button 

@@ -44,6 +44,9 @@ export const CREATE_BATCH = gql`
 	mutation CreateBatch($input: CreateBatchInput) {
 		createBatch(input: $input) {
 			id
+			number
+			dlc
+			dluo
 		}
 	}
 `;

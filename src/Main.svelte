@@ -867,8 +867,16 @@
 	}
     .bottom-cta {
         left: 0;
-        bottom: 20px;
+        bottom: 0;
+		padding-bottom: 20px;
+		padding-top: 20px;
+    	background-color: #fbfbfb;
         margin: 0 auto;
         text-align: center;
+		@apply fixed;
+		@media (min-width: 1024px) {
+			@apply absolute;
+		}
+
     }
 </style>
