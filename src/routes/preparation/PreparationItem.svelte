@@ -52,7 +52,7 @@
         </div>
 	</div>
 	<div class="flex justify-between py-2 items-center flex-wrap md:space-x-4">
-		<p>Complétée à : <span class="font-semibold">{preparation.productsPreparedCount / preparation.productsToPrepareCount * 100}%</span></p>
+		<p class="mb-2">Complétée à : <span class="font-semibold">{preparation.productsPreparedCount / preparation.productsToPrepareCount * 100}%</span></p>
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
 			<button
 				on:click={() => routerInstance.goTo(PreparationRoutes.Edit, { id: preparation.id })}
