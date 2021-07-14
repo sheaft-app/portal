@@ -49,7 +49,7 @@
 	<PageHeader name="Préparation en cours" previousPage={PreparationRoutes.List} subname={preparation?.name || "Chargement..."} />
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement de la préparation...">
         {#if !isLoading}
-            {#if preparation.status !== PickingStatus.Waiting.Value} 
+            {#if ![PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)} 
                 <p class="text-green-500 mb-2">Cette préparation est maintenant terminée.</p>
             {/if}
             <div>

@@ -127,6 +127,7 @@
             {#if stepper == 1}
                 <div class="m-auto">
                     <div class="form-control"> 
+                        <label>Préparé par</label>
                         <input bind:value={preparedBy} />
                     </div>
                     {#each product.clients as client, index}
