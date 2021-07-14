@@ -9,6 +9,7 @@
     import PageHeader from "../../../components/PageHeader.svelte";
     import { denormalizePreparationProducts } from "../preparationForm";
 	import PageBody from "../../../components/PageBody.svelte";
+import PickingStatus from "../../../enums/PickingStatus.js";
 
     export let params;
 
@@ -27,7 +28,14 @@
 			query: GET_PICKING_DETAILS,
 			variables: { id: params.id },
             errorsHandler,
-            success: (res) => products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts),
+            success: (res) => {
+                products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts);
+
+                // la préparation est terminée
+                if (res.status !== PickingStatus.Waiting.Value) {
+
+                }
+            },
 			error: () => routerInstance.goTo(PreparationRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
         });
@@ -41,6 +49,9 @@
 	<PageHeader name="Préparation en cours" previousPage={PreparationRoutes.List} subname={preparation?.name || "Chargement..."} />
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement de la préparation...">
         {#if !isLoading}
+            {#if preparation.status !== PickingStatus.Waiting.Value} 
+                <p class="text-green-500 mb-2">Cette préparation est maintenant terminée.</p>
+            {/if}
             <div>
                 {#each products as product}
                     <div 

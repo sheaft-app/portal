@@ -81,7 +81,7 @@ export const GET_PICKING_DETAILS = gql`
 			preparedProducts {
 				productId
 				quantity
-				prepared
+				completed
 				name
 				purchaseOrder {
 					id

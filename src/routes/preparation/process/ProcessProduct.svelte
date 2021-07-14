@@ -25,6 +25,7 @@
     const routerInstance = GetRouterInstance();
     
     let product = null;
+    let preparedBy = null;
     let batches = [];
     let isLoading = true;
     let isSubmitting = false;
@@ -73,7 +74,7 @@
                 productId: params.productId,
                 completed,
                 batches: selectedBatches,
-                preparedBy: "someone",
+                preparedBy,
                 preparedQuantities: product.clients.map((c) => ({
                     purchaseOrderId: c.purchaseOrderId,
                     preparedQuantity: c.prepared
@@ -125,6 +126,9 @@
         {#if !isLoading}
             {#if stepper == 1}
                 <div class="m-auto">
+                    <div class="form-control"> 
+                        <input bind:value={preparedBy} />
+                    </div>
                     {#each product.clients as client, index}
                         <div class="flex flex-wrap justify-between border-gray-300 pb-2 items-center" class:border-b={index !== product.clients.length - 1}>
                             <div>

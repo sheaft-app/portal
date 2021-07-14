@@ -34,7 +34,7 @@ export const denormalizeProduct = (products, productsPrepared) => {
 				p2.prepared = p.quantity; 
 			}
 
-			if (!p.prepared)
+			if (!p.completed)
 				product['completed'] = false;
 		});
 	} else {
