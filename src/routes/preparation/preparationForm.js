@@ -25,6 +25,7 @@ export const denormalizeProduct = (products, productsPrepared) => {
 		expected: p.quantity,
 		prepared: 0
 	}));
+	product['prepared'] = 0;
 
 	if (productsPrepared && productsPrepared.length) {
 		productsPrepared.forEach((p) => {
@@ -32,6 +33,7 @@ export const denormalizeProduct = (products, productsPrepared) => {
 	
 			if (p2) {
 				p2.prepared = p.quantity; 
+				product['prepared'] += p.quantity;
 			}
 
 			if (!p.completed)

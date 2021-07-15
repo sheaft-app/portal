@@ -130,7 +130,7 @@
                         <div class="flex flex-wrap justify-between border-gray-300 pb-2 items-center" class:border-b={index !== product.clients.length - 1}>
                             <div>
                                 <p class="font-semibold">{client.name}</p>
-                                <p>{client.expected} commandés</p>
+                                <p>{client.expected} à préparer</p>
                             </div>
                             <div class="w-1/2">
                                 <ProductCounter label="préparé(s)" bind:value={client.prepared} /> 

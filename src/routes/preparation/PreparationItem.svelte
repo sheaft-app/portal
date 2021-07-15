@@ -38,21 +38,20 @@
 		</div>
 	</div>
 	<div class="flex justify-between py-2 w-full"> 
-        <div>
-            <p class="text-gray-500">Produits préparés</p>
-            <p class="text-primary text-2xl font-medium">{preparation.productsPreparedCount}</p>
-		</div>
 		<div>
             <p class="text-gray-500">Produits à préparer</p>
             <p class="text-primary text-2xl font-medium">{preparation.productsToPrepareCount}</p>
         </div>
+        <div>
+            <p class="text-gray-500">Produits préparés</p>
+            <p class="text-primary text-2xl font-medium">{preparation.productsPreparedCount}</p>
+		</div>
         <div>
             <p class="text-gray-500">Commandes</p>
             <p class="text-primary text-2xl font-medium">{preparation.purchaseOrdersCount}</p>
         </div>
 	</div>
 	<div class="flex justify-between py-2 items-center flex-wrap md:space-x-4">
-		<p class="mb-2">Complétée à : <span class="font-semibold">{(preparation.productsPreparedCount / preparation.productsToPrepareCount * 100).toFixed(2)}%</span></p>
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
 			<button
 				on:click={() => routerInstance.goTo(PreparationRoutes.Edit, { id: preparation.id })}

@@ -31,6 +31,8 @@
             success: (res) => {
                 products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts);
 
+                console.log(products);
+
                 // la préparation est terminée
                 if (res.status !== PickingStatus.Waiting.Value) {
 
@@ -58,19 +60,29 @@
                     class="bg-white shadow px-4 py-2 rounded mb-2 flex justify-between flex-wrap" >
                         <div>
                             <p class="text-lg font-semibold">{product.name}</p>
-                            <p>{product.total} à préparer</p>
+                            {#if product.prepared == 0}
+                                <p>{product.total} à préparer</p>
+                            {:else if product.prepared > 0 && !product.completed}
+                                <p>{product.prepared} préparé(s) sur {product.total}</p>
+                            {:else if product.completed}
+                                <p>{product.prepared} préparé(s)</p>
+                            {/if}
                         </div>
                         <div class="w-full md:w-auto mt-2 md:mt-0">
-                            {#if product.completed}
-                                <p class="text-green-500">Terminée</p>
-                            {:else}
-                                <button 
-                                    type="button"
-                                    on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, { id: preparation.id, productId: product.id })}
-                                    class="btn btn-accent btn-lg">
+                            <button 
+                                type="button"
+                                class:btn-outline={product.completed}
+                                class:btn-accent={!product.completed}
+                                on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, { id: preparation.id, productId: product.id })}
+                                class="btn btn-lg">
+                                {#if product.completed}
+                                    Modifier
+                                {:else if !product.completed && product.prepared > 0}
+                                    Continuer
+                                {:else}
                                     Préparer
-                                </button>
-                            {/if}
+                                {/if}
+                            </button>
                         </div>
                     </div>
                 {/each}
