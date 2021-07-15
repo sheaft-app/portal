@@ -1,7 +1,7 @@
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
-import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { faFileInvoice } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/my-orders";
 
@@ -13,7 +13,7 @@ const MyOrderRoutes = {
 	Roles: [Roles.Consumer.Value, Roles.Store.Value],
 	List: {
 		Name: "Mes commandes",
-		Icon: faCreditCard,
+		Icon: faFileInvoice,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
 		Params: {
@@ -30,7 +30,7 @@ const MyOrderRoutes = {
 	},
 	Details: {
 		Name: "Détail de la commande",
-		Icon: faCreditCard,
+		Icon: faFileInvoice,
 		Path: `${prefix}${details}`,
 		SubPart: `${details}`,
 		Params: {

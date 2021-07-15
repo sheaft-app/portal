@@ -1,5 +1,5 @@
 import Roles from "../../enums/Roles";
-import { faBox } from "@fortawesome/free-solid-svg-icons";
+import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/preparation";
 
@@ -10,41 +10,41 @@ const processProduct = `${details}/product/:productId`;
 
 const PreparationRoutes = {
 	Prefix: `${prefix}`,
-	Roles: [
-		Roles.Producer.Value,
-		Roles.Support.Value
-	],
+	Roles: [Roles.Producer.Value, Roles.Support.Value],
 	List: {
 		Name: "Préparations",
-		Icon: faBox,
+		Icon: faClipboardList,
 		Path: `${prefix}${listing}`,
-		SubPart: `${listing}`
+		SubPart: `${listing}`,
 	},
 	Edit: {
 		Name: "Modifier la préparation",
+		Icon: faClipboardList,
 		Path: `${prefix}${details}`,
 		SubPart: `${details}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	Process: {
 		Name: "Préparation en cours",
+		Icon: faClipboardList,
 		Path: `${prefix}${process}`,
 		SubPart: `${process}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	ProcessProduct: {
 		Name: "Préparation en cours - Produit",
+		Icon: faClipboardList,
 		Path: `${prefix}${processProduct}`,
 		SubPart: `${processProduct}`,
 		Params: {
 			id: null,
-			productId: null
-		}
-	}
+			productId: null,
+		},
+	},
 };
 
 export default PreparationRoutes;

@@ -65,7 +65,6 @@
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);
 	});
-
 </script>
 
 <div
@@ -301,7 +300,7 @@
 	</div>
 </div>
 
-{#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value, Roles.Producer.Value]) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
+{#if $authRegistered && isInRole( $authUserAccount, [Roles.Store.Value, Roles.Producer.Value] ) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
 	<nav
 		class="nav fixed content-between overflow-hidden"
 		class:hidden={!(
@@ -314,20 +313,21 @@
 				{#if isInRole($authUserAccount, [Roles.Store.Value])}
 					<NavLink route={QuickOrderRoutes.Purchase} />
 					<NavLink route={MyOrderRoutes.List} />
-					<NavLink route={SearchProducerRoutes.Search} />
+					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />
 				{/if}
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
+					<NavLink route={PurchaseOrderRoutes.List} />
+					<NavLink route={PreparationRoutes.List} />
+					<NavLink route={DeliveryBatchesRoutes.List} />
+					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />
-					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={ReturnableRoutes.List} />
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
-					<NavLink route={DeliveryBatchesRoutes.List} />
-					<NavLink route={PreparationRoutes.List} />
-					<NavLink route={SearchStoreRoutes.Search} />
+					<!--					<NavLink route={SearchStoreRoutes.Search} />-->
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />
 				{/if}
@@ -408,5 +408,4 @@
 			}
 		}
 	}
-
 </style>

@@ -38,9 +38,9 @@
 				name: selectedPreparation.name,
 				autostart: false,
 				purchaseOrderIds: selectedPreparation.clients.reduce((acc, curr) => {
-					acc = [...acc, ...curr.purchaseOrders.map(p => p.id)]
+					acc = [...acc, ...curr.purchaseOrders.map((p) => p.id)];
 					return acc;
-				}, [])
+				}, []),
 			},
 			success: async (res) => await routerInstance.goTo(PreparationRoutes.Edit, { id: res.id }),
 			errorsHandler,
@@ -63,9 +63,7 @@
 >
 	{#if preparations && preparations.length > 0}
 		<p>Sélectionnez la préparation à créer.</p>
-		<p class="mb-5">
-			Vous pourrez par la suite joindre d'autres commandes à cette préparation si nécessaire.
-		</p>
+		<p class="mb-5">Vous pourrez par la suite joindre d'autres commandes à cette préparation si nécessaire.</p>
 		{#each preparations as preparation}
 			<div class="mb-2">
 				<AvailablePreparationItem {preparation} bind:selected />

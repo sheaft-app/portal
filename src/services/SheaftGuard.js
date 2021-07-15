@@ -238,7 +238,7 @@ class SheaftGuard {
 
 		if (this.authInstance.isInRole([Roles.Producer.Value])) {
 			return {
-				Path: ProductRoutes.List.Path,
+				Path: PurchaseOrderRoutes.List.Path,
 				Params: null,
 			};
 		}
