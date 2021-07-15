@@ -14,6 +14,7 @@
     import Icon from "svelte-awesome";
     import CreateBatchModal from "./CreateBatchModal.svelte";
     import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+    import ValidateProductModal from "./ValidateProductModal.svelte";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 
@@ -64,17 +65,16 @@
 		isLoading = false;
     });
     
-    const handleSubmit = async (completed) => {
-        console.log(product);
+    const handleSaveAndContinue = async () => {
         isSubmitting = true;
         await mutate({
             mutation: SET_PICKING_PRODUCT_PREPARED_QUANTITY,
             variables: { 
                 id: params.id,
                 productId: params.productId,
-                completed,
+                completed: false,
                 batches: selectedBatches,
-                preparedBy,
+                preparedBy: null,
                 preparedQuantities: product.clients.map((c) => ({
                     purchaseOrderId: c.purchaseOrderId,
                     preparedQuantity: c.prepared
@@ -88,6 +88,20 @@
         })
         isSubmitting = true;
     }
+
+    const openValidateModal = () => open(ValidateProductModal, {
+        variables: { 
+            id: params.id,
+            productId: params.productId,
+            completed: true,
+            batches: selectedBatches,
+            preparedBy,
+            preparedQuantities: product.clients.map((c) => ({
+                purchaseOrderId: c.purchaseOrderId,
+                preparedQuantity: c.prepared
+            }))
+        }
+    })
 
     const openCreateBatchModal = () => open(CreateBatchModal, {
         onClose: (res) => {
@@ -176,47 +190,26 @@
                         on:click={() => stepper = 1}
                         type="button" 
                         class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button>
-                    <button 
-                        type="button"
-                        class="block btn btn-lg btn-accent w-full text-center justify-center"
-                        on:click={() => stepper = 3}>
-                        {#if selectedBatches.length == 1}
-                            Continuer avec ce lot
-                        {:else if selectedBatches.length > 1}
-                            Continuer avec ces lots
-                        {:else}
-                            Continuer sans assigner de lot
-                        {/if}
-                    </button>
-                </div>
-            {:else if stepper == 3}
-                <div class="form-control"> 
-                    <label>Préparé par</label>
-                    <input bind:value={preparedBy} />
-                </div>
-                
-                <div class="mt-5 pb-5 w-full px-4 space-y-3">
-                    <button 
-                        disabled={isSubmitting} 
-                        on:click={() => stepper = 2}
-                        type="button" 
-                        class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button>
+                    {#if !product.completed}
+                        <button 
+                            type="button"
+                            class="block btn btn-lg btn-accent w-full text-center justify-center"
+                            disabled={disabledStep3} 
+                            class:disabled={disabledStep3} 
+                            on:click={() => handleSaveAndContinue()}>
+                            {#if isSubmitting}
+                                <Icon data={faCircleNotch} class="mr-2" spin />
+                            {/if}
+                            Sauvegarder et continuer plus tard
+                        </button>
+                    {/if}
                     <button 
                         type="button"
                         class="block btn btn-lg btn-accent w-full text-center justify-center"
                         disabled={disabledStep3} 
                         class:disabled={disabledStep3} 
-                        on:click={() => handleSubmit(false)}>Sauvegarder et continuer plus tard</button>
-                    <button 
-                        type="button"
-                        class="block btn btn-lg btn-accent w-full text-center justify-center"
-                        disabled={disabledStep3} 
-                        class:disabled={disabledStep3} 
-                        on:click={() => handleSubmit(true)}>
-                        {#if isSubmitting}
-                            <Icon data={faCircleNotch} class="mr-2" spin />
-                        {/if}
-                        Terminer la préparation
+                        on:click={openValidateModal}>
+                        Valider et terminer
                     </button>
                 </div>
             {/if}

@@ -36,6 +36,7 @@
 			mutation: CREATE_PREPARATION,
 			variables: {
 				name: selectedPreparation.name,
+				autostart: false,
 				purchaseOrderIds: selectedPreparation.clients.reduce((acc, curr) => {
 					acc = [...acc, ...curr.purchaseOrders.map(p => p.id)]
 					return acc;
