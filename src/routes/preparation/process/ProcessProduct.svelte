@@ -126,10 +126,6 @@
         {#if !isLoading}
             {#if stepper == 1}
                 <div class="m-auto">
-                    <div class="form-control"> 
-                        <label>Préparé par</label>
-                        <input bind:value={preparedBy} />
-                    </div>
                     {#each product.clients as client, index}
                         <div class="flex flex-wrap justify-between border-gray-300 pb-2 items-center" class:border-b={index !== product.clients.length - 1}>
                             <div>
@@ -151,23 +147,6 @@
                     </button>
                 </div>
             {:else if stepper == 2}
-                <p class="mb-3">Vous allez valider la préparation de {product.name} : </p>
-                {#each product.clients as client}
-                    <p class="text-lg"><span class="font-semibold">x{client.prepared}</span> pour {client.name}</p>
-                {/each}
-                <div class="mt-5 pb-5 w-full px-4 space-y-3">
-                    <button 
-                        on:click={() => stepper = 1}
-                        type="button" 
-                        class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button>
-                    <button 
-                        type="button"
-                        class="block btn btn-lg btn-accent w-full text-center justify-center"
-                        on:click={() => stepper = 3}>
-                        Suivant
-                    </button>
-                </div>
-            {:else if stepper == 3}
                 {#if batches.length}
                     <div class="form-control">
                         <label>Chercher par numéro de lot</label>
@@ -191,6 +170,31 @@
                     <p>Si nécessaire, vous pouvez lier la préparation du produit à un lot. Commencez par créer un lot : </p>
                     <button class="btn btn-accent btn-lg mt-2" on:click={openCreateBatchModal}>Créer un lot</button>
                 {/if}
+                <div class="mt-5 pb-5 w-full px-4 space-y-3">
+                    <button 
+                        disabled={isSubmitting} 
+                        on:click={() => stepper = 1}
+                        type="button" 
+                        class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button>
+                    <button 
+                        type="button"
+                        class="block btn btn-lg btn-accent w-full text-center justify-center"
+                        on:click={() => stepper = 3}>
+                        {#if selectedBatches.length == 1}
+                            Continuer avec ce lot
+                        {:else if selectedBatches.length > 1}
+                            Continuer avec ces lots
+                        {:else}
+                            Continuer sans assigner de lot
+                        {/if}
+                    </button>
+                </div>
+            {:else if stepper == 3}
+                <div class="form-control"> 
+                    <label>Préparé par</label>
+                    <input bind:value={preparedBy} />
+                </div>
+                
                 <div class="mt-5 pb-5 w-full px-4 space-y-3">
                     <button 
                         disabled={isSubmitting} 

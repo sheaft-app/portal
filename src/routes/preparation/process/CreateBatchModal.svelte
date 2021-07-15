@@ -14,18 +14,15 @@
     const errorsHandler = new SheaftErrors();
 	const { mutate } = getContext("api");
 
-    let number, dlc, dluo, comment = null, provideDlc = true, provideDluo = true, isLoading = false;
+    let number, expirationDate, dlcOrDluo = "dlc", comment = null, isLoading = false;
 
     const handleSubmit = async () => {
-        // todo
-        console.log(dlc, dluo);
-
         await mutate({
             mutation: CREATE_BATCH,
             variables: { 
                 number,
-                dlc : provideDlc ? getIsoDate(dlc) : null,
-                dluo: provideDluo ? getIsoDate(dluo) : null,
+                dlc : dlcOrDluo == "dlc" ? getIsoDate(expirationDate) : null,
+                dluo: dlcOrDluo == "dluo" ? getIsoDate(expirationDate) : null,
                 comment
             },
             errorsHandler,
@@ -45,7 +42,7 @@
 	submit={handleSubmit}
 	{isLoading}
     {close}
-    valid={number && (provideDlc || provideDluo)}
+    valid={number && expirationDate}
 	submitText="Confirmer"
 	icon={faCheck}
 	closeText="Fermer"
@@ -58,28 +55,37 @@
         type="text"
     />
 </div>
-<div class="form-control text-left" style="display:block;">
-    <label>DLC *</label>
-    <Toggle bind:isChecked={provideDlc}>
-        Le lot possède une DLC
-    </Toggle>
-    {#if provideDlc}
-        <DatePickerWrapper bind:selected={dlc} dateChosen={true} />
-    {/if}
-</div>
-<div class="form-control text-left" style="display:block;">
-    <label>DLUO *</label>
-    <Toggle bind:isChecked={provideDluo}>
-        Le lot possède une DLUO
-    </Toggle>
-    {#if provideDluo}
-        <DatePickerWrapper bind:selected={dluo} dateChosen={true} />
-    {/if}
-</div>
 <div class="form-control">
-    {#if !provideDluo && !provideDlc}
-        <p class="text-red-500">Le lot doit avoir au moins une DLC ou une DLUO</p>
-    {/if}
+    <div class="flex w-full">
+        <div class="w-full">
+            <div
+                class="w-full text-lg justify-center button-group"
+            >
+                <button
+                    on:click={() => dlcOrDluo = "dlc"}
+                    type="button"
+                    class="text-sm md:text-base"
+                    class:selected={dlcOrDluo == "dlc"}
+                    class:skeleton-box={isLoading}
+                >
+                    DLC
+                </button>
+                <button
+                    on:click={() => dlcOrDluo = "dluo"}
+                    type="button"
+                    class="text-sm md:text-base"
+                    class:selected={dlcOrDluo == "dluo"}
+                    class:skeleton-box={isLoading}
+                >
+                    DLUO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-control text-left" style="display:block;">
+    <label>{dlcOrDluo == "dlc" ? "DLC *" : "DLUO *"}</label>
+    <DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
 </div>
 <div class="form-control text-left">
     <label for="reason">Commentaire</label>
