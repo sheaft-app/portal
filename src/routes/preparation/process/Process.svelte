@@ -65,22 +65,22 @@
                             {/if}
                         </div>
                         <div class="w-full md:w-auto mt-2 md:mt-0">
-                            <button 
-                                type="button"
-                                class:btn-outline={product.completed}
-                                class:btn-accent={!product.completed}
-                                on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, { id: preparation.id, productId: product.id })}
-                                class="btn btn-lg">
-                                {#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}
-                                    {#if product.completed}
-                                        Modifier
-                                    {:else if !product.completed && product.prepared > 0}
-                                        Continuer
-                                    {:else}
-                                        Préparer
-                                    {/if}
-                                {/if}
-                            </button>
+                            {#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}
+                                <button 
+                                    type="button"
+                                    class:btn-outline={product.completed}
+                                    class:btn-accent={!product.completed}
+                                    on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, { id: preparation.id, productId: product.id })}
+                                    class="btn btn-lg">
+                                        {#if product.completed}
+                                            Modifier
+                                        {:else if !product.completed && product.prepared > 0}
+                                            Continuer
+                                        {:else}
+                                            Préparer
+                                        {/if}
+                                </button>
+                            {/if}
                         </div>
                     </div>
                 {/each}
