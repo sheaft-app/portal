@@ -56,6 +56,10 @@
 
                 displayedBatches = batches;
 
+                if (preparedProducts[0] && preparedProducts[0].batches) {
+                    selectedBatches = preparedProducts[0].batches.map(b => b.id);
+                }
+
                 product = denormalizeProduct(products, preparedProducts);
             },
 			error: () => routerInstance.goTo(PreparationRoutes.List),

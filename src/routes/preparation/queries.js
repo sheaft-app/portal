@@ -83,6 +83,9 @@ export const GET_PICKING_DETAILS = gql`
 				quantity
 				completed
 				name
+				batches {
+					id
+				}
 				purchaseOrder {
 					id
 				}
