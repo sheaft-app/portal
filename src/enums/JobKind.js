@@ -4,7 +4,9 @@ let enums = {
 	ExportPickingOrders: { Value: "EXPORT_PICKING_ORDERS", Label: "Bon de préparation" },
 	ImportProducts: { Value: "IMPORT_PRODUCTS", Label: "Import de produits" },
 	ExportUserData: { Value: "EXPORT_USER_DATA", Label: "Export RGPD" },
-	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export Virements" },
+	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export des virements" },
+	ExportPurchaseOrders: { Value: "EXPORT_USER_PURCHASE_ORDERS", Label: "Export des commandes" },
+	ExportDeliveries: { Value: "EXPORT_USER_DELIVERIES", Label: "Export des ventes" },
 };
 
 let JobKind = {
