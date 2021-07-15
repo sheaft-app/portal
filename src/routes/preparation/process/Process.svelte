@@ -31,8 +31,6 @@
             success: (res) => {
                 products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts);
 
-                console.log(products);
-
                 // la préparation est terminée
                 if (res.status !== PickingStatus.Waiting.Value) {
 
@@ -43,8 +41,6 @@
         });
         isLoading = false;
     });
-    
-    $: console.log(products);
 </script>
 
 <TransitionWrapper>
@@ -75,12 +71,14 @@
                                 class:btn-accent={!product.completed}
                                 on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, { id: preparation.id, productId: product.id })}
                                 class="btn btn-lg">
-                                {#if product.completed}
-                                    Modifier
-                                {:else if !product.completed && product.prepared > 0}
-                                    Continuer
-                                {:else}
-                                    Préparer
+                                {#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}
+                                    {#if product.completed}
+                                        Modifier
+                                    {:else if !product.completed && product.prepared > 0}
+                                        Continuer
+                                    {:else}
+                                        Préparer
+                                    {/if}
                                 {/if}
                             </button>
                         </div>
