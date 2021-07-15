@@ -77,7 +77,7 @@
     }
 </script>
 
-<div class="relative">
+<div class="relative pb-40">
     <div class="flex justify-between">
         <p class="uppercase text-gray-600">Compte-rendu</p>
         <p>{delivery.position + 1}/{numberOfDeliveries}</p>
@@ -88,7 +88,7 @@
     <p>{delivery.address.zipcode} {delivery.address.city}</p>
     {#if step == 1}
         <p class="mt-2 text-gray-600">{delivery.productsToDeliverCount} produits attendus</p>
-        <div class="pb-16">
+        <div>
             {#each delivery.products as product, index}
                 <DeliverySummaryProduct {product} {index} numberOfProducts={delivery.products.length - 1} />
             {/each}

@@ -1,5 +1,5 @@
 import Roles from "../../enums/Roles";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faBox } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/preparation";
 
@@ -16,13 +16,12 @@ const PreparationRoutes = {
 	],
 	List: {
 		Name: "Préparations",
-		Icon: faClock,
+		Icon: faBox,
 		Path: `${prefix}${listing}`,
 		SubPart: `${listing}`
 	},
 	Edit: {
 		Name: "Modifier la préparation",
-		Icon: faClock,
 		Path: `${prefix}${details}`,
 		SubPart: `${details}`,
 		Params: {
@@ -31,7 +30,6 @@ const PreparationRoutes = {
 	},
 	Process: {
 		Name: "Préparation en cours",
-		Icon: faClock,
 		Path: `${prefix}${process}`,
 		SubPart: `${process}`,
 		Params: {
@@ -40,7 +38,6 @@ const PreparationRoutes = {
 	},
 	ProcessProduct: {
 		Name: "Préparation en cours - Produit",
-		Icon: faClock,
 		Path: `${prefix}${processProduct}`,
 		SubPart: `${processProduct}`,
 		Params: {
