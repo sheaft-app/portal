@@ -15,7 +15,6 @@
 	routes[PreparationRoutes.Edit.SubPart] = EditPreparation;
 	routes[PreparationRoutes.Process.SubPart] = Process;
 	routes[PreparationRoutes.ProcessProduct.SubPart] = ProcessProduct;
-
 </script>
 
 <Meta />

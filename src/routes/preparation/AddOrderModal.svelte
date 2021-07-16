@@ -29,14 +29,14 @@
 			query: GET_AVAILABLE_PICKINGS,
 			variables: { includePendingPurchaseOrders: true },
 			success: (res) => {
-				res.data.map(availablePicking => {
+				res.data.map((availablePicking) => {
 					availableOrders = [
 						...availableOrders,
 						...availablePicking.clients
 							.map((c) => c.purchaseOrders.map((p) => ({ ...p, name: c.name, clientId: c.id })))
 							.flat(),
-					]
-				})
+					];
+				});
 				console.log(availableOrders);
 			},
 			errorsHandler,
@@ -53,8 +53,8 @@
 				id: preparation.id,
 				name: preparation.name,
 				purchaseOrderIds: [
-					...preparation.purchaseOrders.map(p => p.id),
-					...availableOrders.filter(o => o.checked).map(p => p.id)
+					...preparation.purchaseOrders.map((p) => p.id),
+					...availableOrders.filter((o) => o.checked).map((p) => p.id),
 				],
 			},
 			errorsHandler,
@@ -98,8 +98,8 @@
 			<button
 				class="btn btn-accent btn-lg my-3 m-auto"
 				type="button"
-				class:disabled={isLoading || !availableOrders.find(o => o.checked)}
-				disabled={isLoading || !availableOrders.find(o => o.checked)}
+				class:disabled={isLoading || !availableOrders.find((o) => o.checked)}
+				disabled={isLoading || !availableOrders.find((o) => o.checked)}
 				on:click={handleSubmit}
 			>
 				{#if isLoading}

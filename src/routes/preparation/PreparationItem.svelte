@@ -8,7 +8,7 @@
 	import PickingStatus from "../../enums/PickingStatus";
 	import { getContext } from "svelte";
 	import StartPreparationModal from "./StartPreparationModal.svelte";
-	
+
 	export let preparation;
 
 	const routerInstance = GetRouterInstance();
@@ -26,7 +26,7 @@
 		<div class="flex justify-between xl:justify-end items-top xl:flex-wrap xl:text-right">
 			<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
 				{PickingStatus.label(preparation.status)}
-			</span>	
+			</span>
 			{#if preparation?.preparationUrl}
 				<div class="xl:w-full">
 					<a target="_blank" href={preparation.preparationUrl} class="btn-link" style="display: inline-block;">
@@ -37,36 +37,39 @@
 			{/if}
 		</div>
 	</div>
-	<div class="flex justify-between py-2 w-full"> 
+	<div class="flex justify-between py-2 w-full">
 		<div>
-            <p class="text-gray-500">Produits à préparer</p>
-            <p class="text-primary text-2xl font-medium">{preparation.productsToPrepareCount}</p>
-        </div>
-        <div>
-            <p class="text-gray-500">Produits préparés</p>
-            <p class="text-primary text-2xl font-medium">{preparation.productsPreparedCount}</p>
+			<p class="text-gray-500">Produits à préparer</p>
+			<p class="text-primary text-2xl font-medium">{preparation.productsToPrepareCount}</p>
 		</div>
-        <div>
-            <p class="text-gray-500">Commandes</p>
-            <p class="text-primary text-2xl font-medium">{preparation.purchaseOrdersCount}</p>
-        </div>
+		<div>
+			<p class="text-gray-500">Produits préparés</p>
+			<p class="text-primary text-2xl font-medium">{preparation.productsPreparedCount}</p>
+		</div>
+		<div>
+			<p class="text-gray-500">Commandes</p>
+			<p class="text-primary text-2xl font-medium">{preparation.purchaseOrdersCount}</p>
+		</div>
 	</div>
 	<div class="flex justify-between py-2 items-center flex-wrap md:space-x-4">
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
 			<button
 				on:click={() => routerInstance.goTo(PreparationRoutes.Edit, { id: preparation.id })}
-				class="btn btn-lg btn-outline text-lg font-semibold">Modifier
+				class="btn btn-lg btn-outline text-lg font-semibold"
+				>Modifier
 			</button>
 			{#if preparation.status == PickingStatus.Waiting.Value}
 				<button
 					on:click={() => open(StartPreparationModal, { id: preparation.id })}
-					class="btn btn-lg btn-accent text-lg font-semibold">Lancer
+					class="btn btn-lg btn-accent text-lg font-semibold"
+					>Lancer
 					<Icon class="ml-2" data={faChevronRight} />
 				</button>
 			{:else}
 				<button
 					on:click={() => routerInstance.goTo(PreparationRoutes.Process, { id: preparation.id })}
-					class="btn btn-lg btn-accent text-lg font-semibold">Reprendre
+					class="btn btn-lg btn-accent text-lg font-semibold"
+					>Reprendre
 					<Icon class="ml-2" data={faChevronRight} />
 				</button>
 			{/if}

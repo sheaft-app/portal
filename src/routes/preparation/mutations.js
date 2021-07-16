@@ -46,7 +46,7 @@ export const CREATE_BATCH = gql`
 			id
 			number
 			dlc
-			dluo
+			ddm
 		}
 	}
 `;

@@ -10,7 +10,7 @@
 	import Icon from "svelte-awesome";
 	import AddOrderModal from "./AddOrderModal.svelte";
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-    import PreparationRoutes from "./routes";
+	import PreparationRoutes from "./routes";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -42,7 +42,7 @@
 			variables: {
 				id: preparation.id,
 				name: preparation.name,
-				purchaseOrderIds: preparation.purchaseOrders.map(p => p.id)
+				purchaseOrderIds: preparation.purchaseOrders.map((p) => p.id),
 			},
 			errorsHandler,
 			success: () => routerInstance.goTo(PreparationRoutes.List),
@@ -57,8 +57,8 @@
 	const buttons = [
 		{
 			text: "Supprimer",
-            color: "red",
-            click: () => {}
+			color: "red",
+			click: () => {},
 		},
 	];
 </script>
@@ -68,11 +68,7 @@
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<div class="form-control">
 			<label for="reason">Nom *</label>
-			<input
-				bind:value={preparation.name}
-				id="batch"
-				type="text"
-			/>
+			<input bind:value={preparation.name} id="batch" type="text" />
 		</div>
 		<div class="form-control">
 			<div class="w-full">
@@ -80,29 +76,30 @@
 				<button
 					type="button"
 					on:click|preventDefault={() => open(AddOrderModal, { preparation })}
-                    class="btn btn-outline btn-lg mb-2">
-                    Ajouter une commande
-                </button>
-                {#each preparation.purchaseOrders as purchaseOrder}
-                    <div class="bg-white px-4 py-2 shadow rounded">
-                        <p class="font-semibold mb-2">{purchaseOrder.sender.name}</p>
-                        {#each purchaseOrder.products as product}
-                            <p>{product.name} x{product.quantity}</p>
-                        {/each}
-                    </div>
-                {/each}
+					class="btn btn-outline btn-lg mb-2"
+				>
+					Ajouter une commande
+				</button>
+				{#each preparation.purchaseOrders as purchaseOrder}
+					<div class="bg-white px-4 py-2 shadow rounded">
+						<p class="font-semibold mb-2">{purchaseOrder.sender.name}</p>
+						{#each purchaseOrder.products as product}
+							<p>{product.name} x{product.quantity}</p>
+						{/each}
+					</div>
+				{/each}
 			</div>
-        </div>
-        <div class="form-control mt-5">
-            <button
-                type="button"
-                on:click={handleSubmit}
-                class:disabled={isLoading}
-                class="btn btn-primary btn-xl justify-center w-full md:w-auto"
-            >
-                <Icon data={isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isLoading} />
-                Valider
-            </button>
-        </div>
+		</div>
+		<div class="form-control mt-5">
+			<button
+				type="button"
+				on:click={handleSubmit}
+				class:disabled={isLoading}
+				class="btn btn-primary btn-xl justify-center w-full md:w-auto"
+			>
+				<Icon data={isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isLoading} />
+				Valider
+			</button>
+		</div>
 	</PageBody>
 </TransitionWrapper>

@@ -1,6 +1,5 @@
 import gql from "graphql-tag";
 
-
 export const GET_AVAILABLE_PICKINGS = gql`
 	query GetAvailablePickings($includePendingPurchaseOrders: Boolean!) {
 		availablePickings(includePendingPurchaseOrders: $includePendingPurchaseOrders) {
@@ -26,7 +25,7 @@ export const GET_AVAILABLE_PICKINGS = gql`
 
 export const GET_PICKINGS = gql`
 	query GetPickings {
-		pickings(where: { status: { in: [WAITING, PAUSED, IN_PROGRESS]}}) {
+		pickings(where: { status: { in: [WAITING, PAUSED, IN_PROGRESS] } }) {
 			edges {
 				cursor
 				node {
@@ -102,7 +101,7 @@ export const GET_BATCHES = gql`
 				id
 				number
 				dlc
-				dluo
+				ddm
 			}
 		}
 	}
