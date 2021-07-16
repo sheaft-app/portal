@@ -9,7 +9,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import PageBody from "../../components/PageBody.svelte";
-    import DeliveryBatchesRoutes from "./routes";
+	import DeliveryBatchesRoutes from "./routes";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 	import { timeSpanToTime } from "../../helpers/app";
@@ -58,12 +58,18 @@
 						</span>
 					</div>
 					{deliveryBatch.name}
-					<p class="text-gray-600 text-sm lg:text-base ">{deliveryBatch.deliveriesCount} client{deliveryBatch.deliveriesCount > 1 ? 's' : ''}</p>
+					<p class="text-gray-600 text-sm lg:text-base ">
+						{deliveryBatch.deliveriesCount} client{deliveryBatch.deliveriesCount > 1 ? "s" : ""}
+					</p>
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-                <p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
-                <p>débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0 ? "00" : timeSpanToTime(deliveryBatch.from).minutes}</p>
+				<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
+				<p>
+					débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0
+						? "00"
+						: timeSpanToTime(deliveryBatch.from).minutes}
+				</p>
 			</td>
 		</Table>
 	</PageBody>

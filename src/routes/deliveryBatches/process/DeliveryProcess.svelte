@@ -7,10 +7,10 @@
 	import DeliveryBatchRoutes from "../routes";
 	import DeliverySummaryModal from "./DeliverySummaryModal.svelte";
 	import SkipDeliveryModal from "./SkipDeliveryModal.svelte";
-    import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
+	import DeliveryBatchStatus from "../../../enums/DeliveryBatchStatus";
 	import Loader from "../../../components/Loader.svelte";
-    
-    export let params = {};
+
+	export let params = {};
 
 	const { query } = getContext("api");
 	const { open } = getContext("modal");
@@ -24,7 +24,7 @@
 	let deliveries = [];
 
 	let isLoading = true;
-	
+
 	onMount(async () => {
 		isLoading = true;
 		await query({
@@ -36,7 +36,7 @@
 				deliveries = res.deliveries;
 
 				destination = deliveries.find((d) => d.status == DeliveryBatchStatus.InProgress.Value);
-				
+
 				if (!destination) {
 					if (res.status == DeliveryBatchStatus.InProgress.Value) {
 						return await routerInstance.goTo(DeliveryBatchRoutes.NextDelivery, { id: params.id });
@@ -47,7 +47,9 @@
 					}
 				}
 
-				otherStops = deliveries.filter((d) => d.status == DeliveryBatchStatus.Waiting.Value).map((d) => [d.address.latitude, d.address.longitude]);
+				otherStops = deliveries
+					.filter((d) => d.status == DeliveryBatchStatus.Waiting.Value)
+					.map((d) => [d.address.latitude, d.address.longitude]);
 
 				const completedDeliveries = deliveries.filter((d) => d.status == DeliveryBatchStatus.Delivered.Value);
 
@@ -57,7 +59,7 @@
 					let lastCompletedDelivery = [];
 
 					if (completedDeliveries.length > 1) {
-						lastCompletedDelivery = completedDeliveries.sort((a, b) => a.position >= b.position ? -1 : 1)[0];
+						lastCompletedDelivery = completedDeliveries.sort((a, b) => (a.position >= b.position ? -1 : 1))[0];
 					} else {
 						lastCompletedDelivery = completedDeliveries[0];
 					}
@@ -65,7 +67,7 @@
 					meLocation = [lastCompletedDelivery.address.latitude, lastCompletedDelivery.address.longitude];
 				}
 			},
-			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil."
+			errorNotification: "Impossible de récupérer l'état de la livraison, retour à l'accueil.",
 		});
 		isLoading = false;
 	});
@@ -74,14 +76,11 @@
 {#if isLoading}
 	<Loader />
 {:else if destination}
-	<Map 
-		{meLocation} 
-		{otherStops}
-		{destination} />
+	<Map {meLocation} {otherStops} {destination} />
 	<div class="fixed left-0 bg-white w-full bottom-0 shadow-xl rounded-t-3xl py-2 px-4" style="z-index: 99999;">
 		<div class="flex justify-between">
 			<p class="text-gray-600 text-lg">On se dirige vers...</p>
-			<p>{destination.position+1}/{deliveries.length}</p>
+			<p>{destination.position + 1}/{deliveries.length}</p>
 		</div>
 		<p class="text-primary text-2xl uppercase font-semibold">{destination.client}</p>
 		<div class="text-lg">
@@ -90,11 +89,21 @@
 		</div>
 		<div class="flex justify-end space-x-2 mt-3">
 			{#if deliveries.length > 1}
-				<button class="btn btn-outline btn-lg" on:click={() => open(SkipDeliveryModal, { id: destination.id, deliveryBatchId: params.id })}>Sauter cette livraison</button>
+				<button
+					class="btn btn-outline btn-lg"
+					on:click={() => open(SkipDeliveryModal, { id: destination.id, deliveryBatchId: params.id })}
+					>Sauter cette livraison</button
+				>
 			{/if}
-			<button 
-				class="btn btn-accent btn-lg" 
-				on:click={() => open(DeliverySummaryModal, { delivery: destination, numberOfDeliveries: deliveries.length, deliveryBatchId: params.id })}>
+			<button
+				class="btn btn-accent btn-lg"
+				on:click={() =>
+					open(DeliverySummaryModal, {
+						delivery: destination,
+						numberOfDeliveries: deliveries.length,
+						deliveryBatchId: params.id,
+					})}
+			>
 				Je suis arrivé
 			</button>
 		</div>

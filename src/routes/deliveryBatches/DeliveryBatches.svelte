@@ -23,7 +23,6 @@
 	routes[DeliveryBatchesRoutes.Process.SubPart] = DeliveryProcess;
 	routes[DeliveryBatchesRoutes.NextDelivery.SubPart] = SetNextDelivery;
 	routes[DeliveryBatchesRoutes.EndDelivery.SubPart] = EndDelivery;
-
 </script>
 
 <Meta />

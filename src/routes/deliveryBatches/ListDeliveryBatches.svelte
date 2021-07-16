@@ -26,14 +26,14 @@
 			click: () => handleCreateDeliveryBatch(),
 			text: "Programmer une livraison",
 			icon: faPlus,
-			color: "green"
+			color: "green",
 		},
 		{
 			click: () => routerInstance.goTo(DeliveryBatchesRoutes.History),
 			text: "Voir l'historique",
 			icon: faHistory,
-			color: "blue"
-		}
+			color: "blue",
+		},
 	];
 
 	onMount(async () => {
@@ -52,7 +52,13 @@
 
 <TransitionWrapper>
 	<PageHeader name="Livraisons programmées" previousPage={null} subname={null} />
-	<PageBody {errorsHandler} {isLoading} noResults={$items.length < 1} noResultsPage={null} loadingMessage="Chargement des livraisons...">
+	<PageBody
+		{errorsHandler}
+		{isLoading}
+		noResults={$items.length < 1}
+		noResultsPage={null}
+		loadingMessage="Chargement des livraisons..."
+	>
 		<Actions {actions} />
 		{#if $items.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
@@ -62,7 +68,9 @@
 			</div>
 		{:else}
 			<p class="text-center">Aucune livraison programmée</p>
-			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4">Programmer une livraison</button>
+			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
+				>Programmer une livraison</button
+			>
 		{/if}
 	</PageBody>
 </TransitionWrapper>

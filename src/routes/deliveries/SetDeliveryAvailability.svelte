@@ -23,7 +23,6 @@
 		close();
 		await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm

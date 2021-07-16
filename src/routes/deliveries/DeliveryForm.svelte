@@ -60,17 +60,15 @@
 		<ClosingDates bind:closings={delivery.denormalizedClosings} />
 	</div>
 	{#if delivery.agreements.length > 1}
-		<hr class="my-5">
+		<hr class="my-5" />
 		<div class="form-control">
 			<label>Ordre de livraison des magasins</label>
 			<p class="text-gray-600 mb-2">
-				C'est l'ordre par défaut dans lequel nous classons les magasins dans vos tournées. Vous pourrez toujours modifier l'ordre avant chaque tournée si cas exceptionnel.
-				Attrapez le bloc d'un magasin pour le faire glisser dans la liste.
+				C'est l'ordre par défaut dans lequel nous classons les magasins dans vos tournées. Vous pourrez toujours
+				modifier l'ordre avant chaque tournée si cas exceptionnel. Attrapez le bloc d'un magasin pour le faire glisser
+				dans la liste.
 			</p>
-			<SortList 
-				bind:data={delivery.agreements}
-				component={SimpleStoreCard}
-			/>
+			<SortList bind:data={delivery.agreements} component={SimpleStoreCard} />
 		</div>
 	{/if}
 	<hr class="my-5" />

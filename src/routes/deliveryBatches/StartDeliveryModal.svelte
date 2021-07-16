@@ -1,22 +1,22 @@
 <script>
-    import { getContext } from "svelte";
-    import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
+	import { getContext } from "svelte";
+	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
 	import { GET_DELIVERY_BATCHES } from "./queries";
 	import { START_DELIVERY_BATCH } from "./mutations";
 	import DeliveryBatchesRoutes from "./routes";
-    import { faCheck } from "@fortawesome/free-solid-svg-icons";
-    import GetRouterInstance from "../../services/SheaftRouter";
-    import SheaftErrors from "../../services/SheaftErrors";
+	import { faCheck } from "@fortawesome/free-solid-svg-icons";
+	import GetRouterInstance from "../../services/SheaftRouter";
+	import SheaftErrors from "../../services/SheaftErrors";
 
-    export let id, close;
+	export let id, close;
 
-    const errorsHandler = new SheaftErrors();
-    const routerInstance = GetRouterInstance();
+	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
 	const { mutate } = getContext("api");
 
-    let isLoading = false;
-    
-    const submit = async () => {
+	let isLoading = false;
+
+	const submit = async () => {
 		isLoading = true;
 		await mutate({
 			mutation: START_DELIVERY_BATCH,

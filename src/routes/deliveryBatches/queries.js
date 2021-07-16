@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_DELIVERY_BATCHES = gql`
 	query GetDeliveryBatches {
-		deliveryBatches(where: { status: { in: [WAITING, READY, IN_PROGRESS]}}) {
+		deliveryBatches(where: { status: { in: [WAITING, READY, IN_PROGRESS] } }) {
 			edges {
 				cursor
 				node {
@@ -44,7 +44,14 @@ export const GET_DELIVERY_BATCHES_HISTORY = gql`
 		$before: String
 		$orderBy: [DeliveryBatchSortInput!]
 	) {
-		deliveryBatches(first: $first, last: $last, after: $after, before: $before, order: $orderBy, where: { status: { in: [COMPLETED, PARTIAL]}}) {
+		deliveryBatches(
+			first: $first
+			last: $last
+			after: $after
+			before: $before
+			order: $orderBy
+			where: { status: { in: [COMPLETED, PARTIAL] } }
+		) {
 			edges {
 				cursor
 				node {
