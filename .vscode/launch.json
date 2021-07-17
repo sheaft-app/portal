@@ -2,26 +2,27 @@
    "version": "0.2.0",
    "configurations": [
     {
-        "name": "Chrome Portal",
+        "name": "Chrome",
         "request": "launch",
-        "type": "pwa-chrome",
-        "url": "http://localhost:4200",
-        "webRoot": "${workspaceFolder}/public",
-        "sourceMaps": true,
-        "skipFiles": [
-            "<node_internals>/**"
-        ]
-    },
-    {
-        "name": "Launch Microsoft Edge and open the Edge DevTools",
-        "request": "launch",
-        "type": "vscode-edge-devtools.debug",
+        "type": "chrome",
         "url": "http://localhost:4200",
         "webRoot": "${workspaceFolder}/public",
         "sourceMaps": true,
         "skipFiles": [
             "<node_internals>/**"
         ],
+        "runtimeArgs": [
+          "--new-window",
+          "-user-data-dir=\"/${workspaceFolder}/DevProfile\"",
+          "--remote-debugging-port=9222",
+          "--disable-background-networking"
+        ]
+    },
+    {
+        "type": "chrome",
+        "request": "attach",
+        "name": "Attach",
+        "port": 9222
     }
 ]
 }
