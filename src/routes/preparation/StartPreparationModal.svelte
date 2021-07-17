@@ -24,7 +24,7 @@
 			errorsHandler,
 			success: (res) => routerInstance.goTo(PreparationRoutes.Process, { id: res.id }),
 			successNotification: "Préparation commencée !",
-			errorNotification: "Impossible de commencer la livraison",
+			errorNotification: "Impossible de commencer la préparation",
 			clearCache: [GET_PICKINGS, id],
 		});
 		isLoading = false;
