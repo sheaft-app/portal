@@ -1,9 +1,9 @@
 <script>
 	import { getContext } from "svelte";
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
-	import { GET_DELIVERY_BATCHES } from "./queries";
-	import { START_DELIVERY_BATCH } from "./mutations";
-	import DeliveryBatchesRoutes from "./routes";
+	import { GET_PICKINGS, GET_PICKING_DETAILS } from "./queries";
+	import { START_PICKING } from "./mutations";
+	import PreparationRoutes from "./routes";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -19,13 +19,13 @@
 	const submit = async () => {
 		isLoading = true;
 		await mutate({
-			mutation: START_DELIVERY_BATCH,
-			variables: { id, startFirstDelivery: true },
+			mutation: START_PICKING,
+			variables: { id },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: res.id }),
-			successNotification: "Livraison démarrée !",
-			errorNotification: "Impossible de démarrer la livraison",
-			clearCache: [GET_DELIVERY_BATCHES],
+			success: (res) => routerInstance.goTo(PreparationRoutes.Process, { id: res.id }),
+			successNotification: "Préparation commencée !",
+			errorNotification: "Impossible de commencer la préparation",
+			clearCache: [GET_PICKINGS, id],
 		});
 		isLoading = false;
 	};
@@ -33,7 +33,7 @@
 
 <ActionConfirm
 	{errorsHandler}
-	title="Lancer la livraison"
+	title="Lancer la préparation"
 	{submit}
 	{isLoading}
 	{close}
@@ -41,5 +41,5 @@
 	icon={faCheck}
 	closeText="Fermer"
 >
-	<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
+	<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à lancer la préparation.</p>
 </ActionConfirm>

@@ -56,7 +56,7 @@
 		{
 			text: "Décaler",
 			color: "blue",
-			click: () => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })
+			click: () => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id }),
 		},
 		{
 			text: "Supprimer",

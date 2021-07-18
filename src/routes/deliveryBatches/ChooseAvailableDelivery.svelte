@@ -64,7 +64,7 @@
 	closeText="Annuler"
 >
 	{#if deliveries && deliveries.length > 0}
-		<p>Sélectionnez la tournée à programmer.</p>
+		<p>Sélectionnez la livraison à programmer.</p>
 		<p class="mb-3">
 			Vous pourrez ensuite configurer l'horaire de départ ainsi que les commandes à ajouter (s'il y en a).
 		</p>
@@ -74,7 +74,7 @@
 			</div>
 		{/each}
 	{:else}
-		<p>Aucune tournée n'est prête à être programmée.</p>
-		<p>Nous vous proposerons automatiquement des tournées quand des commandes seront marquées comme prêtes.</p>
+		<p>Aucune livraison n'est prête à être programmée.</p>
+		<p>Nous vous proposerons automatiquement des livraisons quand des commandes seront prêtes.</p>
 	{/if}
 </ActionConfirm>

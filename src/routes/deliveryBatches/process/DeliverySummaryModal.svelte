@@ -1,35 +1,35 @@
 <script>
-    import DeliverySummaryProduct from "./DeliverySummaryProduct.svelte";
-    import { GET_RETURNABLES, GET_DELIVERY_BATCH_DETAILS } from "../queries";
-    import { COMPLETE_DELIVERY } from "../mutations";
-    import { onMount, getContext } from "svelte";
-    import SheaftErrors from "../../../services/SheaftErrors";
-    import ProductCounter from "./ProductCounter.svelte";
-    import GetRouterInstance from "../../../services/SheaftRouter";
-    import DeliveryBatchesRoutes from "../routes";
-    import Icon from "svelte-awesome";
-    import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-    import ErrorCard from "../../../components/ErrorCard.svelte";
+	import DeliverySummaryProduct from "./DeliverySummaryProduct.svelte";
+	import { GET_RETURNABLES, GET_DELIVERY_BATCH_DETAILS } from "../queries";
+	import { COMPLETE_DELIVERY } from "../mutations";
+	import { onMount, getContext } from "svelte";
+	import SheaftErrors from "../../../services/SheaftErrors";
+	import ProductCounter from "./ProductCounter.svelte";
+	import GetRouterInstance from "../../../services/SheaftRouter";
+	import DeliveryBatchesRoutes from "../routes";
+	import Icon from "svelte-awesome";
+	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+	import ErrorCard from "../../../components/ErrorCard.svelte";
 
-    export let delivery;
-    export let deliveryBatchId;
-    export let numberOfDeliveries;
-    export let close;
-    
-    const { query, mutate } = getContext("api");
-    const errorsHandler = new SheaftErrors();
-    const routerInstance = GetRouterInstance();
+	export let delivery;
+	export let deliveryBatchId;
+	export let numberOfDeliveries;
+	export let close;
 
-    let returnables = [];
+	const { query, mutate } = getContext("api");
+	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
 
-    let receptionedBy = null;
-    let comment = null;
+	let returnables = [];
 
-    let isLoadingReturnables = true;
-    let isSubmitting = false;
-    let step = 1;
-    
-    onMount(async () => {
+	let receptionedBy = null;
+	let comment = null;
+
+	let isLoadingReturnables = true;
+	let isSubmitting = false;
+	let step = 1;
+
+	onMount(async () => {
 		isLoadingReturnables = true;
 		returnables = await query({
 			query: GET_RETURNABLES,
@@ -37,139 +37,149 @@
 			errorNotification: "Un problème est survenu pendant la récupération des consignes.",
 		});
 		isLoadingReturnables = false;
-    });
-    
-    const handleSubmit = async () => {
-        isSubmitting = true;
+	});
 
-        let returnedProducts = [];
-        delivery.products.forEach((p) => {
-            ['EXCESS', 'MISSING', 'BROKEN'].map((status) => {
-                if (p[status.toLowerCase()] > 0) {
-                    returnedProducts = [...returnedProducts, {
-                        id: p.productId,
-                        kind: status,
-                        quantity: p[status.toLowerCase()]
-                    }]
-                }
-            })
-        });
+	const handleSubmit = async () => {
+		isSubmitting = true;
 
-        await mutate({
-            mutation: COMPLETE_DELIVERY,
-            variables: {
-                id: delivery.id,
-                receptionedBy,
-                comment,
-                returnedProducts,
-                returnedReturnables: returnables.filter((r) => r.count > 0).map((r) => ({ id: r.id, quantity: r.count }))
-            },
-            errorsHandler,
-            success: async () => {
-                close();
-                await routerInstance.goTo(DeliveryBatchesRoutes.NextDelivery, { id: deliveryBatchId });
-            },
-            successNotification: "Compte-rendu validé avec succès !",
-            errorNotification: "Impossible de compléter la livraison. Veuillez réessayer.",
-            clearCache: [deliveryBatchId]
-        })
-        isSubmitting = false;
-    }
+		let returnedProducts = [];
+		delivery.products.forEach((p) => {
+			["EXCESS", "MISSING", "BROKEN"].map((status) => {
+				if (p[status.toLowerCase()] > 0) {
+					returnedProducts = [
+						...returnedProducts,
+						{
+							id: p.productId,
+							kind: status,
+							quantity: p[status.toLowerCase()],
+						},
+					];
+				}
+			});
+		});
+
+		await mutate({
+			mutation: COMPLETE_DELIVERY,
+			variables: {
+				id: delivery.id,
+				receptionedBy,
+				comment,
+				returnedProducts,
+				returnedReturnables: returnables.filter((r) => r.count > 0).map((r) => ({ id: r.id, quantity: r.count })),
+			},
+			errorsHandler,
+			success: async () => {
+				close();
+				await routerInstance.goTo(DeliveryBatchesRoutes.NextDelivery, { id: deliveryBatchId });
+			},
+			successNotification: "Compte-rendu validé avec succès !",
+			errorNotification: "Impossible de compléter la livraison. Veuillez réessayer.",
+			clearCache: [deliveryBatchId],
+		});
+		isSubmitting = false;
+	};
 </script>
 
-<div class="relative">
-    <div class="flex justify-between">
-        <p class="uppercase text-gray-600">Compte-rendu</p>
-        <p>{delivery.position + 1}/{numberOfDeliveries}</p>
-    </div>
-    <ErrorCard {errorsHandler} />
-    <p class="text-primary text-xl font-semibold uppercase mt-2">{delivery.client}</p>
-    <p>{delivery.address.line1}</p>
-    <p>{delivery.address.zipcode} {delivery.address.city}</p>
-    {#if step == 1}
-        <p class="mt-2 text-gray-600">{delivery.productsToDeliverCount} produits attendus</p>
-        <div class="pb-16">
-            {#each delivery.products as product, index}
-                <DeliverySummaryProduct {product} {index} numberOfProducts={delivery.products.length - 1} />
-            {/each}
-        </div>
-        {#if !isLoadingReturnables}
-            <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
-                <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center cancel" on:click={close}>Annuler</button>
-                {#if returnables.length}
-                    <button type="button" class="block btn btn-lg btn-accent w-full text-center justify-center" on:click={() => ++step}>Suivant</button>
-                {:else}
-                    <button 
-                        on:click={handleSubmit} 
-                        type="button" 
-                        class="block btn btn-lg btn-accent w-full text-center justify-center" 
-                        disabled={isSubmitting} 
-                        class:disabled={isSubmitting}>
-                        {#if isSubmitting}
-                            <Icon data={faCircleNotch} class="mr-2" spin />
-                        {/if}
-                        Valider le compte-rendu
-                    </button>
-                {/if}
-            </div>
-        {/if}
-    {:else}
-        <div class="py-2">
-            <p class="text-lg font-medium">Avez-vous récupéré des consignes ?</p>
-            <p class="text-gray-600">Si oui, vous pouvez les comptabiliser ici avant de valider le compte-rendu.</p>
-        </div>
-        {#each returnables as returnable}
-            <div class="flex justify-between items-center space-x-2">
-                <div>
-                    <p>{returnable.name}</p>
-                </div>
-                <div class="w-1/2">
-                    <ProductCounter bind:value={returnable.count} disabled={isSubmitting} label="Récupérées" showLabel={false} color="gray-800" />
-                </div>
-            </div>
-        {/each}
-        <div class="form-control w-full mt-3">
-            <label for="grid-reference">Livraison réceptionnée par *</label>
-            <input
-                bind:value={receptionedBy}
-                disabled={isSubmitting}
-                type="text"
-                placeholder="ex: Stéphanie A."
-            />
-        </div>
-        <div class="form-control w-full">
-            <label for="grid-reference">Commentaire (optionnel)</label>
-            <textarea
-                bind:value={comment}
-                class="block"
-            />
-        </div>
-        <div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
-            <button disabled={isSubmitting} type="button" class="block btn btn-lg btn-outline w-full text-center justify-center cancel" on:click={() => --step}>Retour</button>
-            <button 
-                type="button"
-                class="block btn btn-lg btn-accent w-full text-center justify-center"
-                disabled={isSubmitting || !receptionedBy} 
-                class:disabled={isSubmitting || !receptionedBy} 
-                on:click={handleSubmit}>
-                {#if isSubmitting}
-                    <Icon data={faCircleNotch} class="mr-2" spin />
-                {/if}
-                Valider le compte-rendu
-            </button>
-        </div>
-    {/if}
+<div class="relative pb-40">
+	<div class="flex justify-between">
+		<p class="uppercase text-gray-600">Compte-rendu</p>
+		<p>{delivery.position + 1}/{numberOfDeliveries}</p>
+	</div>
+	<ErrorCard {errorsHandler} />
+	<p class="text-primary text-xl font-semibold uppercase mt-2">{delivery.client}</p>
+	<p>{delivery.address.line1}</p>
+	<p>{delivery.address.zipcode} {delivery.address.city}</p>
+	{#if step == 1}
+		<p class="mt-2 text-gray-600">{delivery.productsToDeliverCount} produits attendus</p>
+		<div>
+			{#each delivery.products as product, index}
+				<DeliverySummaryProduct {product} {index} numberOfProducts={delivery.products.length - 1} />
+			{/each}
+		</div>
+		{#if !isLoadingReturnables}
+			<div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
+				<button
+					disabled={isSubmitting}
+					type="button"
+					class="block btn btn-lg btn-outline w-full text-center justify-center cancel"
+					on:click={close}>Annuler</button
+				>
+				{#if returnables.length}
+					<button
+						type="button"
+						class="block btn btn-lg btn-accent w-full text-center justify-center"
+						on:click={() => ++step}>Suivant</button
+					>
+				{:else}
+					<button
+						on:click={handleSubmit}
+						type="button"
+						class="block btn btn-lg btn-accent w-full text-center justify-center"
+						disabled={isSubmitting}
+						class:disabled={isSubmitting}
+					>
+						{#if isSubmitting}
+							<Icon data={faCircleNotch} class="mr-2" spin />
+						{/if}
+						Valider le compte-rendu
+					</button>
+				{/if}
+			</div>
+		{/if}
+	{:else}
+		<div class="py-2">
+			<p class="text-lg font-medium">Avez-vous récupéré des consignes ?</p>
+			<p class="text-gray-600">Si oui, vous pouvez les comptabiliser ici avant de valider le compte-rendu.</p>
+		</div>
+		{#each returnables as returnable}
+			<div class="flex justify-between items-center space-x-2">
+				<div>
+					<p>{returnable.name}</p>
+				</div>
+				<div class="w-1/2">
+					<ProductCounter
+						bind:value={returnable.count}
+						disabled={isSubmitting}
+						label="Récupérées"
+						showLabel={false}
+						color="gray-800"
+					/>
+				</div>
+			</div>
+		{/each}
+		<div class="form-control w-full mt-3">
+			<label for="grid-reference">Livraison réceptionnée par *</label>
+			<input bind:value={receptionedBy} disabled={isSubmitting} type="text" placeholder="ex: Stéphanie A." />
+		</div>
+		<div class="form-control w-full">
+			<label for="grid-reference">Commentaire (optionnel)</label>
+			<textarea bind:value={comment} class="block" />
+		</div>
+		<div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
+			<button
+				disabled={isSubmitting}
+				type="button"
+				class="block btn btn-lg btn-outline w-full text-center justify-center cancel"
+				on:click={() => --step}>Retour</button
+			>
+			<button
+				type="button"
+				class="block btn btn-lg btn-accent w-full text-center justify-center"
+				disabled={isSubmitting || !receptionedBy}
+				class:disabled={isSubmitting || !receptionedBy}
+				on:click={handleSubmit}
+			>
+				{#if isSubmitting}
+					<Icon data={faCircleNotch} class="mr-2" spin />
+				{/if}
+				Valider le compte-rendu
+			</button>
+		</div>
+	{/if}
 </div>
 
 <style>
-    .bottom-cta {
-        left: 0;
-        bottom: 20px;
-        margin: 0 auto;
-        text-align: center;
-    }
-
-    .cancel:not(:hover) {
-        @apply bg-white !important;
-    }
+	.cancel:not(:hover) {
+		@apply bg-white !important;
+	}
 </style>

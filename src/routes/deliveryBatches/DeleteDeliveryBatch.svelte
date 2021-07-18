@@ -25,7 +25,6 @@
 		close();
 		if (onClose) await onClose(obj);
 	};
-
 </script>
 
 <ActionConfirm title="Suppression" level="danger" submit={handleSubmit} isLoading={$isLoading} {close} {errorsHandler}>

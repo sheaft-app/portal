@@ -15,7 +15,6 @@
 	routes[DeliveryRoutes.List.SubPart] = ListDeliveries;
 	routes[DeliveryRoutes.Create.SubPart] = CreateDelivery;
 	routes[DeliveryRoutes.Details.SubPart] = EditDelivery;
-
 </script>
 
 <Meta />

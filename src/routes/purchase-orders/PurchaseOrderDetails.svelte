@@ -4,9 +4,6 @@
 	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
 	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
 	import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
-	import ProcessPurchaseOrders from "./ProcessPurchaseOrders.svelte";
-	import CompletePurchaseOrders from "./CompletePurchaseOrders.svelte";
-	import CreatePickingOrders from "./CreatePickingOrders.svelte";
 	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
@@ -22,6 +19,7 @@
 		canProcessOrder,
 		canCompleteOrder,
 		canDeliverOrder,
+		canShipOrder,
 	} from "./validators";
 	import {
 		faTimes,
@@ -41,6 +39,8 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import DeliveryStatus from "../../enums/DeliveryStatus";
 	import ProfileKind from "../../enums/ProfileKind";
+	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
+	import CreatePreparationForPurchaseOrders from "./CreatePreparationForPurchaseOrders.svelte";
 
 	export let params = {};
 
@@ -69,17 +69,15 @@
 		await getPurchaseOrder(params.id);
 	});
 
-	const createPickingOrder = () => handleOrdersModal(CreatePickingOrders, order);
-
 	const cancelOrder = () => handleOrdersModal(CancelPurchaseOrders, order);
 
 	const refuseOrder = () => handleOrdersModal(RefusePurchaseOrders, order);
 
 	const acceptOrder = () => handleOrdersModal(AcceptPurchaseOrders, order);
 
-	const processOrder = () => handleOrdersModal(ProcessPurchaseOrders, order);
+	const processOrder = () => handleOrdersModal(CreatePreparationForPurchaseOrders, order);
 
-	const completeOrder = () => handleOrdersModal(CompletePurchaseOrders, order);
+	const shipOrder = () => handleOrdersModal(CreateDeliveryBatchForPurchaseOrders, order);
 
 	const deliverOrder = () => handleOrdersModal(DeliverPurchaseOrders, order);
 
@@ -250,19 +248,6 @@
 			>
 				<div class="flex flex-wrap">
 					<button
-						on:click={createPickingOrder}
-						class:hidden={!canCreatePickingOrder(order)}
-						class="py-1 px-3 rounded items-center flex transition duration-300
-            ease-in-out text-indigo-500 w-full lg:w-auto"
-					>
-						<Icon data={faFileExport} class="mr-2 hidden lg:inline w-4 h-4" />
-						{#if order.status === PurchaseOrderStatusKind.Waiting.Value}
-							<span>Accepter et faire un bon de préparation</span>
-						{:else}
-							<span>Faire un bon de préparation</span>
-						{/if}
-					</button>
-					<button
 						on:click={acceptOrder}
 						class:hidden={!canAcceptOrder(order)}
 						class="py-1 px-3 rounded items-center flex transition duration-300
@@ -296,16 +281,16 @@
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
 						<Icon data={faPlay} class="mr-2 hidden lg:inline w-4 h-4" />
-						<span>Préparer</span>
+						<span>Démarrer la préparation</span>
 					</button>
 					<button
-						class:hidden={!canCompleteOrder(order)}
-						on:click={completeOrder}
+						class:hidden={!canShipOrder(order)}
+						on:click={shipOrder}
 						class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
-						<Icon data={faClipboardCheck} class="mr-2 hidden lg:inline w-4 h-4" />
-						<span>Marquer comme prête</span>
+						<Icon data={faTruckLoading} class="mr-2 hidden lg:inline w-4 h-4" />
+						<span>Programmer la livraison</span>
 					</button>
 					<button
 						class:hidden={!canDeliverOrder(order)}
@@ -313,7 +298,7 @@
 						class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
-						<Icon data={faTruckLoading} class="mr-2 hidden lg:inline w-4 h-4" />
+						<Icon data={faClipboardCheck} class="mr-2 hidden lg:inline w-4 h-4" />
 						<span>Marquer comme récupérée</span>
 					</button>
 				</div>

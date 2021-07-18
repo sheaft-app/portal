@@ -24,6 +24,7 @@ import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
+import Preparation from "./../routes/preparation/Preparation.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -48,6 +49,7 @@ import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
+import PreparationRoutes from "../routes/preparation/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -166,6 +168,17 @@ class SheaftGuard {
 					),
 			],
 		});
+		this.routes[`${PreparationRoutes.Prefix}/*`] = wrap({
+			component: Preparation,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(PreparationRoutes.Roles),
+						true
+					),
+			],
+		});
 		this.routes[`${ExternalRoutes.Prefix}/*`] = wrap({
 			component: External,
 			customData: null,
@@ -225,7 +238,7 @@ class SheaftGuard {
 
 		if (this.authInstance.isInRole([Roles.Producer.Value])) {
 			return {
-				Path: ProductRoutes.List.Path,
+				Path: PurchaseOrderRoutes.List.Path,
 				Params: null,
 			};
 		}

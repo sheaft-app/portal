@@ -1,7 +1,12 @@
 import DeliveryKind from "../../enums/DeliveryKind.js";
 import { getDefaultFields } from "../../stores/form";
 import omit from "lodash/omit";
-import { normalizeOpeningHours, normalizeClosingDates, denormalizeClosingDates, denormalizeOpeningHours } from "./../../helpers/app";
+import {
+	normalizeOpeningHours,
+	normalizeClosingDates,
+	denormalizeClosingDates,
+	denormalizeOpeningHours,
+} from "./../../helpers/app";
 
 export const initialValues = {
 	name: "",
@@ -33,7 +38,7 @@ export const validators = (delivery) => ({
 		"lockOrderHoursBeforeDelivery",
 		"closings",
 		"denormalizedClosings",
-		"agreements"
+		"agreements",
 	]),
 	openings: {
 		value: delivery.denormalizedDeliveryHours,
@@ -55,15 +60,16 @@ export const validators = (delivery) => ({
 
 export const denormalizeDelivery = (delivery) => ({
 	...delivery,
-	agreements: delivery.agreements && delivery.agreements.length 
-		? delivery.agreements
-			.sort((a, b) => a.position >= b.position ? 1 : -1)
-			.map((a) => ({ ...a.store, agreementId: a.id}))
-		: [],
+	agreements:
+		delivery.agreements && delivery.agreements.length
+			? delivery.agreements
+					.sort((a, b) => (a.position >= b.position ? 1 : -1))
+					.map((a) => ({ ...a.store, agreementId: a.id }))
+			: [],
 	denormalizedDeliveryHours: denormalizeOpeningHours(delivery.deliveryHours),
 	denormalizedClosings: denormalizeClosingDates(delivery.closings),
-	limitOrders: delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null
-})
+	limitOrders: delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null,
+});
 
 export const normalizeDelivery = (delivery) =>
 	omit(

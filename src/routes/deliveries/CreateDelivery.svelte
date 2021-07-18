@@ -26,16 +26,11 @@
 			errorNotification: "Impossible de créer ce créneau de livraison",
 			clearCache: [GET_DELIVERIES],
 		});
-
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Créer un créneau de livraison" previousPage={DeliveryRoutes.List} />
-	<PageBody
-		{errorsHandler}
-		isLoading={$isLoading}
-		loadingMessage="Création de votre créneau de livraison en cours."
-	>
+	<PageBody {errorsHandler} isLoading={$isLoading} loadingMessage="Création de votre créneau de livraison en cours.">
 		<DeliveryForm submit={handleSubmit} />
 	</PageBody>
 </TransitionWrapper>

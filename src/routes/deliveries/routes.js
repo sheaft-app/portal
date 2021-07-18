@@ -1,7 +1,7 @@
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
-import { faTruck } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/deliveries";
 
@@ -13,8 +13,8 @@ const DeliveryRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
-		Name: "Livraisons",
-		Icon: faTruck,
+		Name: "Créneaux livraison",
+		Icon: faClock,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
 		Params: {
@@ -28,15 +28,15 @@ const DeliveryRoutes = {
 		},
 	},
 	Create: {
-		Name: "Créer une nouvelle livraison",
-		Icon: faTruck,
+		Name: "Créer un nouveau créneau",
+		Icon: faClock,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
 	},
 	Details: {
-		Name: "Editer une livraison",
-		Icon: faTruck,
+		Name: "Editer un créneau",
+		Icon: faClock,
 		Path: `${prefix}${details}`,
 		SubPart: `${details}`,
 		Params: {
@@ -45,11 +45,11 @@ const DeliveryRoutes = {
 	},
 	NoResults: {
 		Name: "Ajouter un nouveau créneau",
-		Icon: faTruck,
+		Icon: faClock,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
 		Params: null,
-		Text: "Aucun créneau de livraison disponible",
+		Text: "Aucun créneau disponible",
 	},
 };
 

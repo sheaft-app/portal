@@ -2,6 +2,7 @@
 node_modules
 yarn.lock
 dist/
+DevProfile*
 public/sw.*
 public/workbox-*
 src/configs/config.js

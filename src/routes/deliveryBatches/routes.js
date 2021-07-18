@@ -1,7 +1,7 @@
 import Roles from "../../enums/Roles";
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
-import { faClock, faEdit, faPlus, faPlay, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faTruck, faEdit, faPlus, faPlay, faHistory } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/delivery-batches";
 
@@ -16,15 +16,12 @@ const endDelivery = `${deliver}/end`;
 
 const DeliveryBatchesRoutes = {
 	Prefix: `${prefix}`,
-	Roles: [
-		Roles.Producer.Value,
-		Roles.Support.Value
-	],
+	Roles: [Roles.Producer.Value, Roles.Support.Value],
 	List: {
-		Name: "Livraisons programmées",
-		Icon: faClock,
+		Name: "Livraisons",
+		Icon: faTruck,
 		Path: `${prefix}${listing}`,
-		SubPart: `${listing}`
+		SubPart: `${listing}`,
 	},
 	History: {
 		Name: "Historique livraisons",
@@ -49,15 +46,15 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${summary}`,
 		SubPart: `${summary}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	Create: {
 		Name: "Programmer une livraison",
 		Icon: faPlus,
 		Path: `${prefix}${create}`,
 		SubPart: `${create}`,
-		Params: null
+		Params: null,
 	},
 	Edit: {
 		Name: "Modifier une livraison programmée",
@@ -65,8 +62,8 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${edit}`,
 		SubPart: `${edit}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	Process: {
 		Name: "Livraison",
@@ -74,8 +71,8 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${deliver}`,
 		SubPart: `${deliver}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	NextDelivery: {
 		Name: "Choisir la livraison suivante",
@@ -83,8 +80,8 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${nextDelivery}`,
 		SubPart: `${nextDelivery}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	EndDelivery: {
 		Name: "Fin de la livraison",
@@ -92,8 +89,8 @@ const DeliveryBatchesRoutes = {
 		Path: `${prefix}${endDelivery}`,
 		SubPart: `${endDelivery}`,
 		Params: {
-			id: null
-		}
+			id: null,
+		},
 	},
 	NoResults: {
 		Name: "Programmer une livraison",

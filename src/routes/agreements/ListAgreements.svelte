@@ -8,7 +8,7 @@
 	import { GET_AGREEMENTS } from "./queries.js";
 	import Roles from "./../../enums/Roles";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { faThumbsDown, faThumbsUp, faTimes } from "@fortawesome/free-solid-svg-icons";
+	import { faPlus, faThumbsDown, faThumbsUp, faTimes } from "@fortawesome/free-solid-svg-icons";
 	import Actions from "../../components/table/Actions.svelte";
 	import Table from "../../components/table/Table.svelte";
 	import AgreementRoutes from "./routes";
@@ -59,6 +59,12 @@
 		routerInstance.goTo(AgreementRoutes.Details, { id: item.id });
 	};
 
+	const createAgreement = async () => {
+		if (authInstance.isInRole(Roles.Store.Value)) return await routerInstance.goTo(SearchProducerRoutes.Search);
+
+		return await routerInstance.goTo(SearchStoreRoutes.Search);
+	};
+
 	const acceptAgreements = () => {
 		openModal(AcceptAgreementModal, selectedItems);
 	};
@@ -92,6 +98,13 @@
 		selectedItems.filter((o) => o.status == AgreementStatusKind.Accepted.Value).length == selectedItems.length;
 
 	$: actions = [
+		{
+			click: () => createAgreement(),
+			disabled: false,
+			text: authInstance.isInRole(Roles.Store.Value) ? "Nouveau producteur" : "Nouveau magasin",
+			icon: faPlus,
+			color: "blue",
+		},
 		{
 			click: () => acceptAgreements(),
 			disabled: !canAcceptAgreements,
@@ -163,11 +176,10 @@
 			selectedStatus = values["whereValues"].split(",").map((v) => filterStatus.find((o) => o.value == v));
 		}
 	});
-
 </script>
 
 <TransitionWrapper>
-	<PageHeader name={authInstance.isInRole(Roles.Store.Value) ? "Producteurs partenaires" : "Magasins partenaires"} />
+	<PageHeader name="Partenariats" />
 	<PageBody {errorsHandler}>
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 		<Table
@@ -197,7 +209,7 @@
 						bind:selectedValue={selectedStatus}
 						optionIdentifier="value"
 						isDisabled={isLoading}
-						placeholder="N'afficher que les accords avec le statut..."
+						placeholder="N'afficher que les partenariats avec le statut..."
 						items={filterStatus}
 					/>
 				</div>

@@ -64,7 +64,6 @@ export const POSTPONE_DELIVERY_BATCH = gql`
 	}
 `;
 
-
 export const COMPLETE_DELIVERY_BATCH = gql`
 	mutation CompleteDeliveryBatch($input: CompleteDeliveryBatchInput) {
 		completeDeliveryBatch(input: $input) {
@@ -79,4 +78,4 @@ export const SET_DELIVERY_BATCH_AS_READY = gql`
 			id
 		}
 	}
-`
+`;

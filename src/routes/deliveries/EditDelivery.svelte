@@ -30,8 +30,8 @@
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
-			success: (res) => delivery = denormalizeDelivery(res),
-			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus."
+			success: (res) => (delivery = denormalizeDelivery(res)),
+			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
 	});
@@ -64,7 +64,6 @@
 			click: () => showDeleteModal(),
 		},
 	];
-
 </script>
 
 <TransitionWrapper>

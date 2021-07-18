@@ -11,7 +11,7 @@
 	import StartDeliveryModal from "./StartDeliveryModal.svelte";
 	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
 	import SetDeliveryBatchAsReadyModal from "./SetDeliveryBatchAsReadyModal.svelte";
-	
+
 	export let deliveryBatch;
 
 	const routerInstance = GetRouterInstance();
@@ -34,7 +34,7 @@
 		<div class="flex justify-between xl:justify-end items-top xl:flex-wrap xl:text-right">
 			<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
 				{DeliveryBatchStatus.label(deliveryBatch.status)}
-			</span>	
+			</span>
 			{#if deliveryBatch?.deliveryFormsUrl}
 				<div class="xl:w-full">
 					<a target="_blank" href={deliveryBatch.deliveryFormsUrl} class="btn-link" style="display: inline-block;">
@@ -68,30 +68,35 @@
 			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value || deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
 				<button
 					on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}
-					class="btn btn-lg btn-outline text-lg font-semibold">Décaler
+					class="btn btn-lg btn-outline text-lg font-semibold"
+					>Décaler
 				</button>
 
 				{#if deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
 					<button
 						on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
-						class="btn btn-lg btn-accent text-lg font-semibold">Lancer
+						class="btn btn-lg btn-accent text-lg font-semibold"
+						>Lancer
 						<Icon class="ml-2" data={faChevronRight} />
 					</button>
 				{:else}
 					<button
 						on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
-						class="btn btn-lg btn-accent text-lg font-semibold">Reprendre
+						class="btn btn-lg btn-accent text-lg font-semibold"
+						>Reprendre
 						<Icon class="ml-2" data={faChevronRight} />
 					</button>
 				{/if}
 			{:else if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
 				<button
 					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
-					class="btn btn-lg btn-outline text-lg font-semibold">Modifier
+					class="btn btn-lg btn-outline text-lg font-semibold"
+					>Modifier
 				</button>
 				<button
 					on:click={() => open(SetDeliveryBatchAsReadyModal, { id: deliveryBatch.id })}
-					class="btn btn-lg btn-accent text-lg font-semibold">Confirmer
+					class="btn btn-lg btn-accent text-lg font-semibold"
+					>Confirmer
 					<Icon class="ml-2" data={faCheck} />
 				</button>
 			{/if}

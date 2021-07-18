@@ -34,7 +34,8 @@
 	import { config } from "../../configs/config";
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
-import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
+	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
+	import PreparationRoutes from "../../routes/preparation/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -64,7 +65,6 @@ import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);
 	});
-
 </script>
 
 <div
@@ -300,7 +300,7 @@ import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 	</div>
 </div>
 
-{#if $authRegistered && isInRole($authUserAccount, [Roles.Store.Value, Roles.Producer.Value]) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
+{#if $authRegistered && isInRole( $authUserAccount, [Roles.Store.Value, Roles.Producer.Value] ) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
 	<nav
 		class="nav fixed content-between overflow-hidden"
 		class:hidden={!(
@@ -313,19 +313,21 @@ import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 				{#if isInRole($authUserAccount, [Roles.Store.Value])}
 					<NavLink route={QuickOrderRoutes.Purchase} />
 					<NavLink route={MyOrderRoutes.List} />
-					<NavLink route={SearchProducerRoutes.Search} />
+					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />
 				{/if}
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
+					<NavLink route={PurchaseOrderRoutes.List} />
+					<NavLink route={PreparationRoutes.List} />
+					<NavLink route={DeliveryBatchesRoutes.List} />
+					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />
-					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={ReturnableRoutes.List} />
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
-					<NavLink route={DeliveryBatchesRoutes.List} />
-					<NavLink route={SearchStoreRoutes.Search} />
+					<!--					<NavLink route={SearchStoreRoutes.Search} />-->
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />
 				{/if}
@@ -406,5 +408,4 @@ import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 			}
 		}
 	}
-
 </style>
