@@ -32,12 +32,17 @@ export const GET_ORDERS = gql`
 					createdOn
 					status
 					vendor {
+						id
 						name
 					}
 					sender {
+						id
 						name
 						email
 						phone
+					}
+					delivery {
+						id
 					}
 				}
 			}
@@ -104,11 +109,5 @@ export const GET_ORDER_DETAILS = gql`
 				totalReturnableWholeSalePrice
 			}
 		}
-	}
-`;
-
-export const HAS_PICKING_ORDERS_EXPORT_INPROGRESS = gql`
-	query hasPendingJobs($kinds: [JobKind!]) {
-		hasPendingJobs(kinds: $kinds)
 	}
 `;

@@ -1,12 +1,12 @@
 import Roles from "../../enums/Roles";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/preparation";
+const prefix = "/preparations";
 
 const listing = "/";
 const details = "/:id";
-const process = `/process/:id`;
-const processProduct = `${details}/product/:productId`;
+const process = `${details}/process`;
+const processProduct = `${process}/:productId`;
 
 const PreparationRoutes = {
 	Prefix: `${prefix}`,

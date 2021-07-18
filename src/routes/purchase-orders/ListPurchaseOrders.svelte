@@ -10,37 +10,33 @@
 	import PurchaseOrderRoutes from "./routes";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";
-	import CreatePickingOrders from "./CreatePickingOrders.svelte";
 	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
 	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
 	import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
-	import ProcessPurchaseOrders from "./ProcessPurchaseOrders.svelte";
-	import CompletePurchaseOrders from "./CompletePurchaseOrders.svelte";
 	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
+	import CreatePreparationForPurchaseOrders from "./CreatePreparationForPurchaseOrders.svelte";
+	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
 	import Select from "./../../components/controls/select/Select.js";
 	import {
-		canCreatePickingOrders,
 		canCancelOrders,
 		canAcceptOrders,
 		canRefuseOrders,
 		canProcessOrders,
-		canCompleteOrders,
 		canDeliverOrders,
+		canShipOrder,
 		canShipOrders,
 	} from "./validators";
 	import { formatMoney } from "./../../helpers/app";
-	import { GET_ORDERS, HAS_PICKING_ORDERS_EXPORT_INPROGRESS } from "./queries.js";
+	import { GET_ORDERS } from "./queries.js";
 	import {
 		faTimes,
 		faBackspace,
 		faCheck,
-		faClipboardCheck,
+		faClipboardList,
 		faTruckLoading,
-		faPlay,
 		faCircleNotch,
 		faClock,
 		faCalendarAlt,
-		faFileExport,
 		faMapMarkerAlt,
 	} from "@fortawesome/free-solid-svg-icons";
 	import JobRoutes from "../jobs/routes";
@@ -86,30 +82,12 @@
 		})
 		.filter((p) => p);
 
-	const checkHasExportInProgress = async () => {
-		hasPendingJobs = await query({
-			query: HAS_PICKING_ORDERS_EXPORT_INPROGRESS,
-			variables: { kinds: [JobKind.ExportPickingOrders.Value] },
-			errorsHandler,
-			error: () => (hasPendingJobs = false),
-			errorNotification: "Impossible de terminer la commande.",
-			clearCache: [GET_ORDERS],
-		});
-	};
-
 	onMount(async () => {
 		const values = routerInstance.getQueryParams();
 		if (values["where"] && values["whereValues"] && filterStatus.length >= 1) {
 			selectedStatus = values["whereValues"].split(",").map((v) => filterStatus.find((o) => o.value == v));
 		}
-
-		await checkHasExportInProgress();
 	});
-
-	const createPickingOrder = async () => {
-		handleOrdersModal(CreatePickingOrders);
-		await checkHasExportInProgress();
-	};
 
 	const cancelOrders = () => handleOrdersModal(CancelPurchaseOrders);
 
@@ -117,11 +95,11 @@
 
 	const acceptOrders = () => handleOrdersModal(AcceptPurchaseOrders);
 
-	const processOrders = () => handleOrdersModal(ProcessPurchaseOrders);
-
-	const completeOrders = () => handleOrdersModal(CompletePurchaseOrders);
+	const processOrders = () => handleOrdersModal(CreatePreparationForPurchaseOrders);
 
 	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
+
+	const shipOrders = () => handleOrdersModal(CreateDeliveryBatchForPurchaseOrders);
 
 	const handleOrdersModal = (modal) =>
 		open(modal, {
@@ -167,30 +145,9 @@
 		{
 			click: () => processOrders(),
 			disabled: !canProcessOrders(selectedItems),
-			icon: faPlay,
+			icon: faClipboardList,
 			text: "Démarrer la préparation",
 			color: "green",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => completeOrders(),
-			disabled: !canCompleteOrders(selectedItems),
-			icon: faClipboardCheck,
-			text: "Marquer comme prêtes",
-			color: "green",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => createPickingOrder(),
-			disabled: !canCreatePickingOrders(selectedItems),
-			icon: faFileExport,
-			text:
-				selectedItems.filter((o) => o.status === PurchaseOrderStatusKind.Waiting.Value).length >= 1
-					? "Accepter et générer un bon de préparation"
-					: "Générer un bon de préparation",
-			color: "indigo",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
@@ -198,7 +155,16 @@
 			click: () => deliverOrders(),
 			disabled: !canDeliverOrders(selectedItems),
 			icon: faTruckLoading,
-			text: "Marquer comme récupérées",
+			text: "Marquer comme récupérée(s)",
+			color: "teal",
+			hideIfDisabled: true,
+			displaySelectedItemsNumber: true,
+		},
+		{
+			click: () => shipOrders(),
+			disabled: !canShipOrders(selectedItems),
+			icon: faTruckLoading,
+			text: "Planifier la livraison",
 			color: "teal",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
@@ -210,33 +176,6 @@
 	<PageHeader name="Mes commandes" />
 	<PageBody {errorsHandler}>
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
-		{#if !isLoading && hasPendingJobs}
-			<div
-				class="py-5 px-8 md:px-5 overflow-x-auto -mx-5 md:mx-0 bg-white
-			text-gray-600 shadow rounded mb-5"
-			>
-				<div class="flex">
-					<Icon data={faCircleNotch} spin scale="1.3" class="mr-5" />
-					<div>
-						<p class="uppercase font-bold leading-none mb-2">Génération de bons de préparations</p>
-						<p>
-							Plusieurs bons de préparations sont en train d'être générés. Nous vous informerons quand ce sera terminé.
-						</p>
-						<div class="mt-2">
-							<a
-								href="javascript:void(0)"
-								on:click={() => routerInstance.goTo(JobRoutes.List)}
-								class="btn btn-large bg-white shadow font-semibold text-normal
-							hover:bg-gray-100"
-								style="width: fit-content;"
-							>
-								Voir les tâches en cours
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		{/if}
 		<Table
 			let:rowItem={order}
 			bind:items

@@ -11,6 +11,7 @@
 	import AddOrderModal from "./AddOrderModal.svelte";
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 	import PreparationRoutes from "./routes";
+	import PickingStatus from "../../enums/PickingStatus";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -54,32 +55,37 @@
 
 	onDestroy(() => (preparation = null));
 
-	const buttons = [
-		{
-			text: "Supprimer",
-			color: "red",
-			click: () => {},
-		},
-	];
+	const buttons =
+		preparation && preparation.status != PickingStatus.Completed.Value
+			? [
+					{
+						text: "Supprimer",
+						color: "red",
+						click: () => {},
+					},
+			  ]
+			: [];
 </script>
 
 <TransitionWrapper>
 	<PageHeader name="Modifier une préparation" previousPage={PreparationRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<div class="form-control">
-			<label for="reason">Nom *</label>
+			<label for="batch">Nom *</label>
 			<input bind:value={preparation.name} id="batch" type="text" />
 		</div>
 		<div class="form-control">
 			<div class="w-full">
 				<label>Commandes à préparer</label>
-				<button
-					type="button"
-					on:click|preventDefault={() => open(AddOrderModal, { preparation })}
-					class="btn btn-outline btn-lg mb-2"
-				>
-					Ajouter une commande
-				</button>
+				{#if preparation.status != PickingStatus.Completed.Value}
+					<button
+						type="button"
+						on:click|preventDefault={() => open(AddOrderModal, { preparation })}
+						class="btn btn-outline btn-lg mb-2"
+					>
+						Ajouter une commande
+					</button>
+				{/if}
 				{#each preparation.purchaseOrders as purchaseOrder}
 					<div class="bg-white px-4 py-2 shadow rounded">
 						<p class="font-semibold mb-2">{purchaseOrder.sender.name}</p>

@@ -10,6 +10,7 @@
 	import { denormalizePreparationProducts } from "../preparationForm";
 	import PageBody from "../../../components/PageBody.svelte";
 	import PickingStatus from "../../../enums/PickingStatus.js";
+	import ExternalRoutes from "../../external/routes";
 
 	export let params;
 
@@ -40,14 +41,24 @@
 		});
 		isLoading = false;
 	});
+
+	$: buttons =
+		preparation && preparation.status != PickingStatus.Completed.Value
+			? [
+					{
+						text: "Modifier",
+						color: "blue",
+						click: () =>
+							routerInstance.goTo(PreparationRoutes.Edit, {
+								id: params.id,
+							}),
+					},
+			  ]
+			: [];
 </script>
 
 <TransitionWrapper>
-	<PageHeader
-		name="Préparation en cours"
-		previousPage={PreparationRoutes.List}
-		subname={preparation?.name || "Chargement..."}
-	/>
+	<PageHeader name={preparation?.name ?? "Préparation en cours"} previousPage={PreparationRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement de la préparation...">
 		{#if !isLoading}
 			{#if ![PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}

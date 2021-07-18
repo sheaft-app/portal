@@ -58,6 +58,7 @@ export const GET_PICKING_DETAILS = gql`
 			purchaseOrders {
 				id
 				sender {
+					id
 					name
 				}
 				products {
@@ -73,6 +74,7 @@ export const GET_PICKING_DETAILS = gql`
 				purchaseOrder {
 					id
 					sender {
+						id
 						name
 					}
 				}
