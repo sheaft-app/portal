@@ -4,7 +4,7 @@
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
 	import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import { formatMoney } from "./../../helpers/app.js";
+	import { formatMoney, formatConditioningDisplay } from "./../../helpers/app.js";
 	import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_ALL_PRODUCTS } from "./queries.js";
 	import ConfirmOrder from "./ConfirmOrder.svelte";
 	import Select from "./../../components/controls/select/Select";
@@ -250,6 +250,9 @@
 											<p>{product.name}</p>
 										</div>
 										<div class="text-sm leading-5">{formatMoney(product.wholeSalePricePerUnit)} / unité</div>
+										<div class="text-sm leading-5">
+											{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+										</div>
 									</div>
 									<div class="md:w-2/12 px-3 block md:hidden">
 										<p>
