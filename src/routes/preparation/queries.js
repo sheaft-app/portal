@@ -49,12 +49,57 @@ export const GET_PICKINGS = gql`
 	}
 `;
 
+export const GET_PICKINGS_HISTORY = gql`
+	query GetPickingsHistory(
+		$first: Int
+		$last: Int
+		$after: String
+		$before: String
+		$orderBy: [PickingSortInput!]
+	) {
+		pickings(
+			first: $first
+			last: $last
+			after: $after
+			before: $before
+			order: $orderBy
+			where: { status: { in: [COMPLETED] } }
+		) {
+			edges {
+				cursor
+				node {
+					id
+					status
+					name
+					startedOn
+					productsPreparedCount
+					productsToPrepareCount
+					purchaseOrdersCount
+					preparationUrl
+				}
+			}
+			pageInfo {
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
+		}
+	}
+`;
+
 export const GET_PICKING_DETAILS = gql`
 	query GetPickingDetails($id: ID!) {
 		picking(id: $id) {
 			id
 			status
 			name
+			preparationUrl
+			completedOn
+			startedOn
+			productsPreparedCount
+			productsToPrepareCount
+			purchaseOrdersCount
 			purchaseOrders {
 				id
 				sender {

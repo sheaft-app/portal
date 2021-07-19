@@ -1,6 +1,8 @@
 <script>
 	import PreparationRoutes from "./routes.js";
 	import ListPreparations from "./ListPreparations.svelte";
+	import PreparationHistory from "./PreparationHistory.svelte";
+	import PreparationSummary from "./PreparationSummary.svelte";
 	import EditPreparation from "./EditPreparation.svelte";
 	import Process from "./process/Process.svelte";
 	import ProcessProduct from "./process/ProcessProduct.svelte";
@@ -12,6 +14,8 @@
 
 	const routes = {};
 	routes[PreparationRoutes.List.SubPart] = ListPreparations;
+	routes[PreparationRoutes.Summary.SubPart] = PreparationSummary;
+	routes[PreparationRoutes.History.SubPart] = PreparationHistory;
 	routes[PreparationRoutes.Edit.SubPart] = EditPreparation;
 	routes[PreparationRoutes.Process.SubPart] = Process;
 	routes[PreparationRoutes.ProcessProduct.SubPart] = ProcessProduct;
