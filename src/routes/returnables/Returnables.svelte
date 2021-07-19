@@ -4,15 +4,15 @@
 	import ListReturnables from "./ListReturnables.svelte";
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
+	import ReturnableRoutes from "./routes";
 
 	export let params;
-	export const prefix = "/returnables";
-	const routes = {
-		"/": ListReturnables,
-		"/create": CreateReturnable,
-		"/:id": EditReturnable,
-	};
+	export const prefix = ReturnableRoutes.Prefix;
 
+	const routes = {};
+	routes[ReturnableRoutes.List.SubPart] = ListReturnables;
+	routes[ReturnableRoutes.Create.SubPart] = CreateReturnable;
+	routes[ReturnableRoutes.Details.SubPart] = EditReturnable;
 </script>
 
 <Meta />

@@ -16,6 +16,14 @@ export const CREATE_DELIVERY_BATCH = gql`
 	}
 `;
 
+export const CREATE_PURCHASE_ORDER = gql`
+	mutation CreatePurchaseOrder($input: CreatePurchaseOrderInput) {
+		createPurchaseOrder(input: $input) {
+			id
+		}
+	}
+`;
+
 export const ACCEPT_PURCHASE_ORDERS = gql`
 	mutation AcceptPurchaseOrders($input: AcceptPurchaseOrdersInput!) {
 		acceptPurchaseOrders(input: $input) {

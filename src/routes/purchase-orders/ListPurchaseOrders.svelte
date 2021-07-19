@@ -38,6 +38,7 @@
 		faClock,
 		faCalendarAlt,
 		faMapMarkerAlt,
+		faPlus,
 	} from "@fortawesome/free-solid-svg-icons";
 	import JobRoutes from "../jobs/routes";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -89,6 +90,8 @@
 		}
 	});
 
+	const newOrders = () => routerInstance.goTo(PurchaseOrderRoutes.Create);
+
 	const cancelOrders = () => handleOrdersModal(CancelPurchaseOrders);
 
 	const refuseOrders = () => handleOrdersModal(RefusePurchaseOrders);
@@ -118,6 +121,12 @@
 	};
 
 	$: actions = [
+		{
+			click: () => newOrders(),
+			icon: faPlus,
+			text: "Créer une commande",
+			color: "green",
+		},
 		{
 			click: () => acceptOrders(),
 			disabled: !canAcceptOrders(selectedItems),
