@@ -112,11 +112,13 @@ export const GET_ORDER_DETAILS = gql`
 				}
 			}
 			vendor {
+				id
 				name
 				phone
 				email
 			}
 			sender {
+				id
 				name
 				email
 				phone

@@ -10,6 +10,7 @@
 	import { GET_ACCEPTED_AGREEMENTS } from "./queries";
 	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import form from "../../stores/form";
+	import DatePickerWrapper from "../../components/controls/DatePickerWrapper.svelte";
 
 	export let submit,
 		purchaseOrder = { ...initialValues },
@@ -71,15 +72,8 @@
 		</div>
 		<div class="form-control">
 			<div class="w-full">
-				<label for="grid-date">Date de livraison *</label>
-				<input
-					bind:value={purchaseOrder.expectedDeliveryDate}
-					class:disabled={isLoading}
-					use:bindClass={{ form: form, name: "expectedDeliveryDate" }}
-					disabled={isLoading}
-					id="grid-date"
-					type="date"
-				/>
+				<label>Date de livraison *</label>
+				<DatePickerWrapper bind:selected={purchaseOrder.expectedDeliveryDate} dateChosen={true} />
 			</div>
 			<ErrorContainer field={$form.fields.expectedDeliveryDate} />
 		</div>

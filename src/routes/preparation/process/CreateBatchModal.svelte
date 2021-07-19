@@ -74,7 +74,7 @@
 						class:selected={dlcOrDluo == "ddm"}
 						class:skeleton-box={isLoading}
 					>
-						DLUO
+						DDM
 					</button>
 				</div>
 			</div>

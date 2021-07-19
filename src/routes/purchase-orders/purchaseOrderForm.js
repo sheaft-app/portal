@@ -3,7 +3,7 @@ import omit from "lodash/omit";
 
 export const initialValues = {
 	client: null,
-	expectedDeliveryDate: null,
+	expectedDeliveryDate: new Date(),
 	from: null,
 	to: null,
 	products: [],
