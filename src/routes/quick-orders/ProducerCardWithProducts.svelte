@@ -8,17 +8,31 @@
 
 	export let producer;
 
-	const calculateTotal = () =>
+	$: totalHT =
 		producer.products.reduce((sum, product) => {
 			return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
 		}, 0);
+
+	$: returnablesHT =
+		producer.products.reduce((sum, product) => {
+			return parseFloat(sum) + product.returnable.wholeSalePrice * (product.quantity || 0);
+		}, 0);
+
+	$: returnablesVAT =
+		producer.products.reduce((sum, product) => {
+			return parseFloat(sum) + product.returnable.vatPrice * (product.quantity || 0);
+		}, 0);
+
+	$: totalTTC = totalHT + returnablesHT + returnablesVAT;
 
 	let productsExpanded = false;
 </script>
 
 <div class="px-4 py-2 shadow rounded">
 	<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{producer.name}</p>
-	<p class="mb-1">Montant HT : {formatMoney(calculateTotal())}</p>
+	<p class="mb-1">Montant HT : {formatMoney(totalHT)}</p>
+	<p class="mb-1">Consignes HT : {formatMoney(returnablesHT)} (+ {formatMoney(returnablesVAT)} TVA)</p>
+	<p class="mb-1">Montant TTC : {formatMoney(totalTTC)}</p>
 	<p class="mb-2">Livraison le {format(new Date(producer.deliveryHour.expectedDeliveryDate), "PP", { locale: fr })}</p>
 	<div on:click={() => (productsExpanded = !productsExpanded)} class="font-semibold text-accent cursor-pointer mt-1">
 		{#if !productsExpanded}
