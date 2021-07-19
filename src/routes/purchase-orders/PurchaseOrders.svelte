@@ -2,6 +2,7 @@
 	import PurchaseOrderRoutes from "./routes.js";
 	import ListPurchaseOrders from "./ListPurchaseOrders.svelte";
 	import PurchaseOrderDetails from "./PurchaseOrderDetails.svelte";
+	import CreatePurchaseOrder from "./CreatePurchaseOrder.svelte";
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 
@@ -10,8 +11,8 @@
 
 	const routes = {};
 	routes[PurchaseOrderRoutes.List.SubPart] = ListPurchaseOrders;
+	routes[PurchaseOrderRoutes.Create.SubPart] = CreatePurchaseOrder;
 	routes[PurchaseOrderRoutes.Details.SubPart] = PurchaseOrderDetails;
-
 </script>
 
 <Meta />

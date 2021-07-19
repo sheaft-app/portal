@@ -9,19 +9,19 @@
 		returnable = { ...initialValues },
 		isInModal = false,
 		close = null;
-	
+
 	let isLoading = false;
 
 	const returnableForm = form(() => validators(returnable), { initCheck: false });
-	
+
 	const handleSubmit = async () => {
-		returnableForm.validate();
+		await returnableForm.validate();
 		if ($returnableForm.valid) {
 			isLoading = true;
 			await submit();
 			isLoading = false;
 		}
-	}
+	};
 
 	const selectVat = (vat) => (returnable.vat = vat);
 </script>

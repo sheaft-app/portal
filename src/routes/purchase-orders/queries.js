@@ -50,6 +50,33 @@ export const GET_ORDERS = gql`
 	}
 `;
 
+export const GET_ACCEPTED_AGREEMENTS = gql`
+	query GetAcceptedDetails {
+		agreements(where: { status: { eq: ACCEPTED } }) {
+			nodes {
+				id
+				store {
+					id
+					name
+				}
+				catalog {
+					id
+					products {
+						id
+						name
+						reference
+						wholeSalePrice
+					}
+				}
+				delivery {
+					id
+					name
+				}
+			}
+		}
+	}
+`;
+
 export const GET_ORDER_DETAILS = gql`
 	query GetOrderDetails($id: ID!) {
 		purchaseOrder(id: $id) {

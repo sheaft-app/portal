@@ -1,12 +1,13 @@
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
-import { faFileInvoice } from "@fortawesome/free-solid-svg-icons";
+import { faFileInvoice, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/purchase-orders";
 
 const list = "/";
 const details = "/:id";
+const create = "/create";
 
 const PurchaseOrderRoutes = {
 	Prefix: `${prefix}`,
@@ -36,6 +37,13 @@ const PurchaseOrderRoutes = {
 		Params: {
 			id: null,
 		},
+	},
+	Create: {
+		Name: "Nouvelle commande",
+		Icon: faPlus,
+		Path: `${prefix}${create}`,
+		SubPart: `${create}`,
+		Params: null,
 	},
 };
 

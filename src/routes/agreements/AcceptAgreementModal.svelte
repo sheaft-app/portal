@@ -42,7 +42,7 @@
 			errorsHandler,
 			success: async (res) => {
 				await onClose(res);
-				showSuccess = true
+				showSuccess = true;
 			},
 			successNotification: "L'accord a bien été accepté",
 			errorNotification: "Impossible de traiter l'accord",
@@ -58,10 +58,14 @@
 		</div>
 		<p class="font-semibold mb-2 mt-2">Partenariat accepté !</p>
 		<p>Pour modifier la position du magasin dans la tournée de livraison, rendez-vous sur la page du créneau.</p>
-		<p>Si vous ne trouvez pas le module, c'est parce que vous n'avez qu'un seul magasin associé au créneau.</p>
 		<div class="flex justify-center mt-3">
 			<button type="button" class="px-4 py-2 mr-2" on:click={close}>Fermer</button>
-			<button type="button" class="mr-2 btn btn-primary btn-lg" on:click={() => routerInstance.goTo(DeliveryRoutes.Details, { id: selectedDelivery.id })}>Modifier la position du magasin</button>
+			<button
+				type="button"
+				class="mr-2 btn btn-primary btn-lg"
+				on:click={() => routerInstance.goTo(DeliveryRoutes.Details, { id: selectedDelivery?.id })}
+				>Modifier la position du magasin</button
+			>
 		</div>
 	</div>
 {:else if agreements.length > 1}
