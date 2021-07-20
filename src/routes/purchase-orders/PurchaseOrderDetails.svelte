@@ -481,7 +481,7 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(line.totalOnSalePrice)}
+													{formatMoney(line.totalProductOnSalePrice)}
 												</p>
 												{#if line.totalReturnableOnSalePrice > 0}
 													<p class="text-blue-500 whitespace-no-wrap">

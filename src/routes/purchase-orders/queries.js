@@ -130,6 +130,7 @@ export const GET_ORDER_DETAILS = gql`
 				reference
 				quantity
 				totalOnSalePrice
+				totalProductOnSalePrice
 				totalWholeSalePrice
 				vat
 				unitOnSalePrice

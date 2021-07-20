@@ -17,7 +17,10 @@ export const GET_DELIVERIES = gql`
 				reference
 				billedOn
 				deliveredOn
-				client
+				client {
+					id
+					name
+				}
 				purchaseOrdersCount
 			}
 		}
@@ -31,7 +34,18 @@ export const GET_DELIVERY_DETAILS = gql`
 			reference
 			billedOn
 			deliveredOn
-			client
+			client {
+				id
+				name
+				email
+				phone
+				address {
+					line1
+					line2
+					zipcode
+					city
+				}
+			}
 			productsToDeliverCount
 			productsDeliveredCount
 			purchaseOrdersCount

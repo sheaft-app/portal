@@ -68,7 +68,7 @@
 				if (!returnablesGroupedToBill[delivery.products[i].returnableId])
 					returnablesGroupedToBill[delivery.products[i].returnableId] = {
 						id: delivery.products[i].returnableId,
-						name: `Consigne - ${delivery.products[i].returnableName} (déposée(s))`,
+						name: `${delivery.products[i].returnableName} (Consignes déposées)`,
 						quantity: delivery.products[i].quantity,
 						vat: delivery.products[i].returnableVat,
 						unitWholeSalePrice: delivery.products[i].returnableWholeSalePrice,
@@ -93,7 +93,7 @@
 				if (!returnablesGroupedToBill[delivery.returnedReturnables[i].id])
 					returnablesGroupedToBill[delivery.returnedReturnables[i].id] = {
 						id: delivery.returnedReturnables[i].id,
-						name: `Consigne - ${delivery.returnedReturnables[i].name} (récupérée(s))`,
+						name: `${delivery.returnedReturnables[i].name} (Consignes récupérées)`,
 						quantity: delivery.returnedReturnables[i].quantity,
 						vat: delivery.returnedReturnables[i].vat,
 						unitWholeSalePrice: delivery.returnedReturnables[i].unitWholeSalePrice,
@@ -221,9 +221,9 @@
 						<div>
 							<p class="mb-2">
 								<span class="text-gray-600">Nom :</span>
-								{delivery.client}
+								{delivery.client.name}
 							</p>
-							<!--<p class="text-base mb-2">
+							<p class="text-base mb-2">
 								<span class="text-gray-600">Mail :</span>
 								<a href="mailto:{delivery.client.email}">{delivery.client.email}</a>
 							</p>
@@ -232,7 +232,16 @@
 									<span class="text-gray-600">Tél :</span>
 									<a href="tel:{delivery.client.phone}">{delivery.client.phone}</a>
 								{/if}
-							</p>-->
+							</p>
+							<p class="text-base mb-2">
+								{#if delivery.client.address}
+									<span class="text-gray-600">Adresse :</span>
+									<p>{delivery.client.address.line1}</p>
+									<p>{delivery.client.address.line2}</p>
+									<p>{delivery.client.address.zipcode}</p>
+									<p>{delivery.client.address.city}</p>
+								{/if}
+							</p>
 						</div>
 					</div>
 				</div>

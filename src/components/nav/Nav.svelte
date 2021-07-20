@@ -21,8 +21,6 @@
 
 	import ProductRoutes from "./../../routes/products/routes.js";
 	import JobRoutes from "./../../routes/jobs/routes.js";
-	import SearchStoreRoutes from "./../../routes/search-stores/routes.js";
-	import SearchProducerRoutes from "./../../routes/search-producers/routes.js";
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
 	import CatalogRoutes from "./../../routes/catalogs/routes.js";
@@ -36,6 +34,7 @@
 	import ExternalRoutes from "../../routes/external/routes";
 	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 	import PreparationRoutes from "../../routes/preparation/routes";
+	import AccountingRoutes from "../../routes/accounting/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -321,6 +320,7 @@
 					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={PreparationRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
+					<NavLink route={AccountingRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />

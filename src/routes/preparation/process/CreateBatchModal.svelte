@@ -16,7 +16,6 @@
 	let number,
 		expirationDate,
 		dlcOrDluo = "dlc",
-		comment = null,
 		isLoading = false;
 
 	const handleSubmit = async () => {
@@ -26,7 +25,6 @@
 				number,
 				dlc: dlcOrDluo == "dlc" ? getIsoDate(expirationDate) : null,
 				ddm: dlcOrDluo == "ddm" ? getIsoDate(expirationDate) : null,
-				comment,
 			},
 			errorsHandler,
 			success: async (res) => {
@@ -83,10 +81,6 @@
 	<div class="form-control text-left" style="display:block;">
 		<label>{dlcOrDluo == "dlc" ? "DLC *" : "DDM *"}</label>
 		<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
-	</div>
-	<div class="form-control text-left">
-		<label for="comment">Commentaire</label>
-		<textarea bind:value={comment} id="comment" type="text" />
 	</div>
 
 	<small>* champs requis</small>
