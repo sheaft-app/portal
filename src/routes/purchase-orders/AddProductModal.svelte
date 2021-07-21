@@ -69,7 +69,7 @@
 		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}>Ajouter ces produits</button
 		>
 	{:else}
-		<p class="my-3">Vous ne possédez pas de produits.</p>
+		<p class="my-3">Ce client ne posséde pas d'autre produit.</p>
 		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={close}>Fermer</button>
 	{/if}
 </div>

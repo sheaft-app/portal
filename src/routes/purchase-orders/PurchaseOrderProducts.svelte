@@ -17,7 +17,7 @@
 	const headers = [
 		{ label: "Nom", mobile: true },
 		{ label: "Prix HT", mobile: true },
-		{ label: "Quantity", mobile: true },
+		{ label: "Quantité", mobile: true },
 		{ label: "Actions", mobile: false },
 	];
 

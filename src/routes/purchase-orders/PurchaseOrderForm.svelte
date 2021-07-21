@@ -25,7 +25,9 @@
 	(() => (purchaseOrder = form.initialize(purchaseOrder, validators, initialValues)))();
 
 	const handleSubmit = async () => {
-		return form.validateAndSubmit(submit);
+		isLoading = true;
+		await form.validateAndSubmit(submit);
+		isLoading = false;
 	};
 
 	onMount(async () => {
@@ -70,17 +72,17 @@
 			</div>
 			<ErrorContainer field={$form.fields.client} />
 		</div>
-		<div class="form-control">
-			<div class="w-full">
-				<label>Date de livraison *</label>
-				<DatePickerWrapper bind:selected={purchaseOrder.expectedDeliveryDate} dateChosen={true} />
-			</div>
-			<ErrorContainer field={$form.fields.expectedDeliveryDate} />
+		<div class="form-control mb-0">
+			<label>Date de livraison *</label>
 		</div>
 		<div class="flex">
+			<div class="form-control flex items-center  pr-4">
+				<DatePickerWrapper bind:selected={purchaseOrder.expectedDeliveryDate} />
+				<ErrorContainer field={$form.fields.expectedDeliveryDate} />
+			</div>
 			<div class="form-control flex items-center">
 				<div class="w-1/3">
-					<label for="grid-from">Entre</label>
+					<label for="grid-from" class="p-0">Entre</label>
 				</div>
 				<div class="w-2/3 pr-4">
 					<select
@@ -103,7 +105,7 @@
 			</div>
 			<div class="form-control flex items-center">
 				<div class="w-1/3 pl-4">
-					<label for="grid-to">et</label>
+					<label for="grid-to" class="p-0">et</label>
 				</div>
 				<div class="w-2/3">
 					<select
