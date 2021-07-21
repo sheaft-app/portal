@@ -9,6 +9,7 @@ import Sponsorship from "./../routes/sponsorship/Sponsorship.svelte";
 import SellingPoints from "./../routes/selling-points/SellingPoints.svelte";
 import Deliveries from "./../routes/deliveries/Deliveries.svelte";
 import Returnables from "./../routes/returnables/Returnables.svelte";
+import Billings from "./../routes/billings/Billings.svelte";
 import Catalogs from "../routes/catalogs/Catalogs.svelte";
 import Callback from "./../routes/oidc/Callback.svelte";
 import CallbackSilent from "./../routes/oidc/CallbackSilent.svelte";
@@ -50,6 +51,7 @@ import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
 import PreparationRoutes from "../routes/preparation/routes";
+import BillingRoutes from "../routes/billings/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -93,6 +95,13 @@ class SheaftGuard {
 		});
 		this.routes[`${ReturnableRoutes.Prefix}/*`] = wrap({
 			component: Returnables,
+			customData: null,
+			conditions: [
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ReturnableRoutes.Roles), true),
+			],
+		});
+		this.routes[`${BillingRoutes.Prefix}/*`] = wrap({
+			component: Billings,
 			customData: null,
 			conditions: [
 				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ReturnableRoutes.Roles), true),

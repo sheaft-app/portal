@@ -188,7 +188,7 @@
 							{#if batch.dlc}
 								<p>DLC : {format(new Date(batch.dlc), "PPPP", { locale: fr })}</p>
 							{/if}
-							{#if batch.dluo}
+							{#if batch.ddm}
 								<p>DDM : {format(new Date(batch.ddm), "PPPP", { locale: fr })}</p>
 							{/if}
 						</div>
