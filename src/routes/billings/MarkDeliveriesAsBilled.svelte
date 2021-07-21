@@ -48,17 +48,16 @@
 	{isLoading}
 	{close}
 >
-	<p class="leading-5">
+	<p class="leading-5 pt-2 pb-4">
 		Vous vous apprêtez à marquer {deliveries.length > 1
 			? "ces livraisons comme facturées à vos clients"
 			: "cette livraison comme facturée à votre client"}.
-
-		{#if deliveries.length > 1}
-			<ul>
-				{#each deliveries as delivery}
-					<li>{delivery.reference} ({delivery.purchaseOrdersCount} commande(s))</li>
-				{/each}
-			</ul>
-		{/if}
 	</p>
+	{#if deliveries.length > 1}
+		<ul>
+			{#each deliveries as delivery}
+				<li>{delivery.reference} ({delivery.purchaseOrdersCount} commande(s))</li>
+			{/each}
+		</ul>
+	{/if}
 </ActionConfirm>

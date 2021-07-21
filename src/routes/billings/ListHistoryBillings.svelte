@@ -1,21 +1,17 @@
 <script>
-	import { faCheck, faFileExport, faCalendarCheck, faPlus, faHistory } from "@fortawesome/free-solid-svg-icons";
+	import { faCheck, faFileExport, faCalendarCheck, faPlus, faEye } from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import GetRouterInstance from "./../../services/SheaftRouter";
-	import { GET_DELIVERIES } from "./queries";
+	import { GET_BILLED_DELIVERIES } from "./queries";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import AccountingRoutes from "./routes";
-	import MarkDeliveriesAsBilled from "./MarkDeliveriesAsBilled.svelte";
-	import ExportTimeRangeAccounting from "./ExportTimeRangeAccounting.svelte";
-	import ExportSelectedAccountings from "./ExportSelectedAccountings.svelte";
 	import { getContext } from "svelte";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
-	import DeliveryBatchesRoutes from "../deliveryBatches/routes";
 	import BillingRoutes from "./routes";
 
 	const errorsHandler = new SheaftErrors();
@@ -30,6 +26,7 @@
 	const headers = [
 		{ name: "Reference" },
 		{ name: "Client" },
+		{ name: "Facturée le", sortLabel: "billedOn" },
 		{ name: "Livrée le", sortLabel: "deliveredOn" },
 		{ name: "Commandes" },
 	];
@@ -38,74 +35,18 @@
 		routerInstance.goTo(AccountingRoutes.Details, { id: item.id });
 	};
 
-	const markAsBilled = () => {
-		open(MarkDeliveriesAsBilled, {
-			deliveries: selectedItems,
-			onClose: (res) => {
-				if (res.success) routerInstance.reload();
-			},
-		});
-	};
-
-	const exportTimeRange = () => {
-		open(ExportTimeRangeAccounting);
-	};
-
-	const exportToBill = () => {
-		open(ExportSelectedAccountings, {
-			deliveries: selectedItems,
-		});
-	};
-
-	const canMarkAsBilled = (items) => {
-		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
-	};
-
-	const canExportToBill = (items) => {
-		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
-	};
-
-	const canExportTimeRange = (items) => {
-		return !items || items.length < 1;
-	};
-
 	$: actions = [
 		{
-			click: () => markAsBilled(),
-			disabled: !canMarkAsBilled(selectedItems),
-			text: "Marquer comme facturée(s)",
-			icon: faCheck,
-			color: "green",
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => exportToBill(),
-			disabled: !canExportToBill(selectedItems),
-			text: "Exporter ces livraison(s)",
-			icon: faFileExport,
-			color: "orange",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => exportTimeRange(),
-			disabled: !canExportTimeRange(selectedItems),
-			text: "Exporter",
-			icon: faFileExport,
-			color: "orange",
-			hideIfDisabled: true,
-		},
-		{
-			click: () => routerInstance.goTo(BillingRoutes.History),
-			text: "Voir l'historique",
-			icon: faHistory,
+			click: () => routerInstance.goTo(BillingRoutes.List),
+			text: "Voir les livraisons à facturer",
+			icon: faEye,
 			color: "blue",
 		},
 	];
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Livraisons à facturer" />
+	<PageHeader name="Livraisons facturées" />
 	<PageBody {errorsHandler}>
 		<Actions {actions} />
 		<Table
@@ -115,12 +56,10 @@
 			{errorsHandler}
 			{headers}
 			let:rowItem={delivery}
-			graphQuery={GET_DELIVERIES}
+			graphQuery={GET_BILLED_DELIVERIES}
 			noResultsPage={AccountingRoutes.NoResults}
-			loadingMessage="Chargement de vos livraisons à facturer en cours."
+			loadingMessage="Chargement des livraisons facturées en cours."
 			defaultSearchValues={AccountingRoutes.List.Params.Query}
-			disableRowSelection={(delivery) => delivery && delivery.billedOn}
-			bind:selectedItems
 			{onRowClick}
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -131,6 +70,11 @@
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
 					{delivery.client.name}
+				</div>
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+					{format(new Date(delivery.billedOn), "P", { locale: fr })}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">

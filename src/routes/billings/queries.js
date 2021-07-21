@@ -27,6 +27,33 @@ export const GET_DELIVERIES = gql`
 	}
 `;
 
+export const GET_BILLED_DELIVERIES = gql`
+	query GetDeliveries {
+		deliveries(
+			first: 50
+			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { neq: null } }] }
+		) {
+			pageInfo {
+				hasPreviousPage
+				hasNextPage
+				startCursor
+				endCursor
+			}
+			nodes {
+				id
+				reference
+				billedOn
+				deliveredOn
+				client {
+					id
+					name
+				}
+				purchaseOrdersCount
+			}
+		}
+	}
+`;
+
 export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
 		delivery(id: $id) {
