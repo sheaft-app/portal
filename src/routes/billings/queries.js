@@ -31,6 +31,12 @@ export const GET_DELIVERY_DETAILS = gql`
 	query Delivery($id: ID!) {
 		delivery(id: $id) {
 			id
+			address {
+				line1
+				line2
+				zipcode
+				city
+			}
 			reference
 			billedOn
 			deliveredOn

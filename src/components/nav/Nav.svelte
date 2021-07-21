@@ -34,7 +34,7 @@
 	import ExternalRoutes from "../../routes/external/routes";
 	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 	import PreparationRoutes from "../../routes/preparation/routes";
-	import AccountingRoutes from "../../routes/accounting/routes";
+	import BillingRoutes from "../../routes/billings/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -320,7 +320,7 @@
 					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={PreparationRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
-					<NavLink route={AccountingRoutes.List} />
+					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />

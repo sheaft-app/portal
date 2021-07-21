@@ -1,5 +1,5 @@
 <script>
-	import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
+	import { faCheck, faFileExport, faCalendarCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -10,6 +10,8 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import AccountingRoutes from "./routes";
 	import MarkDeliveriesAsBilled from "./MarkDeliveriesAsBilled.svelte";
+	import ExportTimeRangeAccounting from "./ExportTimeRangeAccounting.svelte";
+	import ExportSelectedAccountings from "./ExportSelectedAccountings.svelte";
 	import { getContext } from "svelte";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
@@ -43,8 +45,33 @@
 		});
 	};
 
+	const exportTimeRange = () => {
+		open(ExportTimeRangeAccounting, {
+			onClose: (res) => {
+				if (!res.success) routerInstance.reload();
+			},
+		});
+	};
+
+	const exportToBill = () => {
+		open(ExportSelectedAccountings, {
+			deliveries: selectedItems,
+			onClose: (res) => {
+				if (!res.success) routerInstance.reload();
+			},
+		});
+	};
+
 	const canMarkAsBilled = (items) => {
 		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
+	};
+
+	const canExportToBill = (items) => {
+		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
+	};
+
+	const canExportTimeRange = (items) => {
+		return !items || items.length < 1;
 	};
 
 	$: actions = [
@@ -55,6 +82,23 @@
 			icon: faCheck,
 			color: "green",
 			displaySelectedItemsNumber: true,
+		},
+		{
+			click: () => exportToBill(),
+			disabled: !canExportToBill(selectedItems),
+			text: "Exporter ces livraison(s)",
+			icon: faFileExport,
+			color: "blue",
+			hideIfDisabled: true,
+			displaySelectedItemsNumber: true,
+		},
+		{
+			click: () => exportTimeRange(),
+			disabled: !canExportTimeRange(selectedItems),
+			text: "Exporter",
+			icon: faFileExport,
+			color: "blue",
+			hideIfDisabled: true,
 		},
 	];
 </script>

@@ -151,9 +151,9 @@
 
 <TransitionWrapper>
 	<PageHeader
-		name="Produits à facturer {delivery && delivery.billedOn
-			? ` - (Facturée le ${format(new Date(delivery.billedOn), 'P', { locale: fr })})`
-			: ''}"
+		name="Livraison {delivery && delivery.billedOn
+			? ` facturée le ${format(new Date(delivery.billedOn), 'P', { locale: fr })}`
+			: 'à facturer'}"
 		previousPage={AccountingRoutes.List}
 		{buttons}
 	/>
@@ -181,9 +181,16 @@
 								{format(new Date(delivery.deliveredOn), "P", { locale: fr })}
 							</p>
 						</div>
-						<div class="flex items-center mb-2">
-							<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
-						</div>
+						<p class="text-base mb-2">
+							{#if delivery.address}
+								<span class="text-gray-600">Adresse :</span>
+								<p>{delivery.address.line1}</p>
+								{#if delivery.address.line2}
+									<p>{delivery.address.line2}</p>
+								{/if}
+								<p>{delivery.address.zipcode} {delivery.address.city}</p>
+							{/if}
+						</p>
 					</div>
 				</div>
 				<div
@@ -209,6 +216,9 @@
 								<span class="text-gray-600">Produits livrés:</span>
 								{delivery.productsDeliveredCount}
 							</p>
+						</div>
+						<div class="flex items-center mb-2">
+							<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
 						</div>
 					</div>
 				</div>
@@ -237,9 +247,10 @@
 								{#if delivery.client.address}
 									<span class="text-gray-600">Adresse :</span>
 									<p>{delivery.client.address.line1}</p>
-									<p>{delivery.client.address.line2}</p>
-									<p>{delivery.client.address.zipcode}</p>
-									<p>{delivery.client.address.city}</p>
+									{#if delivery.client.address.line2}
+										<p>{delivery.client.address.line2}</p>
+									{/if}
+									<p>{delivery.client.address.zipcode} {delivery.client.address.city}</p>
 								{/if}
 							</p>
 						</div>

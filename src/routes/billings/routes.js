@@ -3,16 +3,16 @@ import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
 import { faClock, faFileInvoiceDollar } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/accounting";
+const prefix = "/billings";
 
 const list = "/";
 const details = "/:id";
 
-const AccountingRoutes = {
+const BillingRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
-		Name: "A Facturer",
+		Name: "A facturer",
 		Icon: faFileInvoiceDollar,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
@@ -29,7 +29,7 @@ const AccountingRoutes = {
 		},
 	},
 	Details: {
-		Name: "Détails de la livraison",
+		Name: "Livraison",
 		Icon: faClock,
 		Path: `${prefix}${details}`,
 		SubPart: `${details}`,
@@ -39,4 +39,4 @@ const AccountingRoutes = {
 	},
 };
 
-export default AccountingRoutes;
+export default BillingRoutes;
