@@ -63,23 +63,23 @@
 	>
 		{#each allReplies as reply}
 			<div class="chat-message">
-				<div class="flex items-end" class:justify-end={reply.user.id !== $authUserAccount.id}>
+				<div class="flex items-end" class:justify-end={reply.user.id == $authUserAccount.id}>
 					<div 
 						class="flex flex-col space-y-2 text-xs max-w-xs mx-2"
-						class:order-2={reply.user.id == $authUserAccount.id}
-						class:items-start={reply.user.id == $authUserAccount.id}
-						class:order-1={reply.user.id !== $authUserAccount.id}
-						class:items-end={reply.user.id !== $authUserAccount.id}
+						class:order-2={reply.user.id !== $authUserAccount.id}
+						class:items-start={reply.user.id !== $authUserAccount.id}
+						class:order-1={reply.user.id == $authUserAccount.id}
+						class:items-end={reply.user.id == $authUserAccount.id}
 						>
 						<div>
 							<span 
 								class="px-4 py-2 rounded-lg inline-block"
-								class:rounded-bl-none={reply.user.id == $authUserAccount.id}
-								class:bg-gray-300={reply.user.id == $authUserAccount.id}
-								class:text-gray-600={reply.user.id == $authUserAccount.id}
-								class:rounded-br-none={reply.user.id !== $authUserAccount.id}
-								class:bg-primary={reply.user.id !== $authUserAccount.id}
-								class:text-white={reply.user.id !== $authUserAccount.id}
+								class:rounded-bl-none={reply.user.id !== $authUserAccount.id}
+								class:bg-gray-300={reply.user.id !== $authUserAccount.id}
+								class:text-gray-600={reply.user.id !== $authUserAccount.id}
+								class:rounded-br-none={reply.user.id == $authUserAccount.id}
+								class:bg-primary={reply.user.id == $authUserAccount.id}
+								class:text-white={reply.user.id == $authUserAccount.id}
 							>
 								{reply.comment}</span>
 						</div>
@@ -87,8 +87,8 @@
 					<img
 						src={reply.user.picture ?? "img/icons/store.svg"}
 						alt={reply.user.name}
-						class:order-1={reply.user.id == $authUserAccount.id}
-						class:order-2={reply.user.id !== $authUserAccount.id}
+						class:order-1={reply.user.id !== $authUserAccount.id}
+						class:order-2={reply.user.id == $authUserAccount.id}
 						class="w-6 h-6 rounded-full"
 					/>
 				</div>

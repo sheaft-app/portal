@@ -58,7 +58,7 @@
 </script>
 
 <div
-	transition:fly={{ x: -600, duration: 300 }}
+	transition:fly|local={{ x: -600, duration: 300 }}
 	class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
 		h-screen observations-panel bg-white px-4"
 	style="z-index: 10; padding-bottom: 70px;"
