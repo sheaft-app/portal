@@ -61,7 +61,7 @@
 		id="messages"
 		class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
 	>
-		{#each allReplies as reply}
+		{#each allReplies as reply, index}
 			<div class="chat-message">
 				<div class="flex items-end" class:justify-end={reply.user.id == $authUserAccount.id}>
 					<div 
@@ -84,13 +84,21 @@
 								{reply.comment}</span>
 						</div>
 					</div>
-					<img
-						src={reply.user.picture ?? "img/icons/store.svg"}
-						alt={reply.user.name}
-						class:order-1={reply.user.id !== $authUserAccount.id}
-						class:order-2={reply.user.id == $authUserAccount.id}
-						class="w-6 h-6 rounded-full"
-					/>
+					{#if !allReplies[index + 1] || (allReplies[index + 1].user.id !== reply.user.id)}					
+						<img
+							src={reply.user.picture ?? "img/icons/store.svg"}
+							alt={reply.user.name}
+							class:order-1={reply.user.id !== $authUserAccount.id}
+							class:order-2={reply.user.id == $authUserAccount.id}
+							class="w-6 h-6 rounded-full"
+						/>
+					{:else}
+						<div 
+							class="w-6 h-6"
+							class:order-1={reply.user.id !== $authUserAccount.id}
+							class:order-2={reply.user.id == $authUserAccount.id}>
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/each}
