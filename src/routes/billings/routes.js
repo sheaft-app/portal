@@ -1,7 +1,7 @@
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
-import { faClock, faFileInvoiceDollar } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faFileInvoiceDollar, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/billings";
 
@@ -54,6 +54,9 @@ const BillingRoutes = {
 				whereValues: null,
 			},
 		},
+	},
+	NoResults: {
+		Text: "Vous n'avez pas de livraisons à facturer.",
 	},
 };
 

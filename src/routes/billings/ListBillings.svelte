@@ -8,14 +8,12 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import AccountingRoutes from "./routes";
 	import MarkDeliveriesAsBilled from "./MarkDeliveriesAsBilled.svelte";
 	import ExportTimeRangeAccounting from "./ExportTimeRangeAccounting.svelte";
 	import ExportSelectedAccountings from "./ExportSelectedAccountings.svelte";
 	import { getContext } from "svelte";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
-	import DeliveryBatchesRoutes from "../deliveryBatches/routes";
 	import BillingRoutes from "./routes";
 
 	const errorsHandler = new SheaftErrors();
@@ -35,7 +33,7 @@
 	];
 
 	const onRowClick = (item) => {
-		routerInstance.goTo(AccountingRoutes.Details, { id: item.id });
+		routerInstance.goTo(BillingRoutes.Details, { id: item.id });
 	};
 
 	const markAsBilled = () => {
@@ -107,7 +105,7 @@
 <TransitionWrapper>
 	<PageHeader name="Livraisons à facturer" />
 	<PageBody {errorsHandler}>
-		<Actions {actions} />
+		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 		<Table
 			bind:items
 			bind:isLoading
@@ -116,9 +114,9 @@
 			{headers}
 			let:rowItem={delivery}
 			graphQuery={GET_DELIVERIES}
-			noResultsPage={AccountingRoutes.NoResults}
+			noResultsPage={BillingRoutes.NoResults}
 			loadingMessage="Chargement de vos livraisons à facturer en cours."
-			defaultSearchValues={AccountingRoutes.List.Params.Query}
+			defaultSearchValues={BillingRoutes.List.Params.Query}
 			disableRowSelection={(delivery) => delivery && delivery.billedOn}
 			bind:selectedItems
 			{onRowClick}

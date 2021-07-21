@@ -24,9 +24,11 @@
 	const actions = [
 		{
 			click: () => handleCreateDeliveryBatch(),
+			disabled: $items.length < 1,
 			text: "Programmer une livraison",
 			icon: faPlus,
 			color: "green",
+			hideIfDisabled: true,
 		},
 		{
 			click: () => routerInstance.goTo(DeliveryBatchesRoutes.History),
