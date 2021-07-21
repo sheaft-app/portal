@@ -65,3 +65,32 @@ export const GET_BUSINESS_CLOSINGS = gql`
 		}
 	}
 `;
+
+export const GET_OBSERVATIONS = gql`
+	query GetObservations {
+		observations {
+			nodes {
+				id
+				comment
+				user {
+					id
+					picture
+					name
+				}
+				createdOn
+				updatedOn
+				replies {
+					id
+					comment
+					user {
+						id
+						picture
+						name
+					}
+					createdOn
+					updatedOn
+				}
+			}
+		}
+	}
+`

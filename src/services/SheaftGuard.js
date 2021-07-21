@@ -26,6 +26,7 @@ import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/delivery-batches/DeliveryBatches.svelte";
+import Batches from "./../routes/batches/Batches.svelte";
 import Pickings from "./../routes/pickings/Pickings.svelte";
 import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
 import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
@@ -56,6 +57,7 @@ import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/delivery-batches/routes";
+import BatchesRoutes from "../routes/batches/routes";
 import PickingRoutes from "../routes/pickings/routes";
 import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
@@ -233,6 +235,17 @@ class SheaftGuard {
 				() =>
 					this.handleRouteNavigation(
 						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(PickingRoutes.Roles),
+						true
+					),
+			],
+		});
+		this.routes[`${BatchesRoutes.Prefix}/*`] = wrap({
+			component: Batches,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(BatchesRoutes.Roles),
 						true
 					),
 			],

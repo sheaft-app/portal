@@ -23,6 +23,7 @@
 	import JobRoutes from "./../../routes/jobs/routes.js";
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
+	import BatchesRoutes from "./../../routes/batches/routes.js";
 	import CatalogRoutes from "./../../routes/catalogs/routes.js";
 	import PurchaseOrderRoutes from "./../../routes/purchase-orders/routes.js";
 	import MyOrderRoutes from "./../../routes/my-orders/routes.js";
@@ -352,6 +353,7 @@
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />
 					<NavLink route={ReturnableRoutes.List} />
+					<NavLink route={BatchesRoutes.List} />
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
 					<!--					<NavLink route={SearchStoreRoutes.Search} />-->

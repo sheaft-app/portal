@@ -10,3 +10,30 @@ export const UPDATE_BUSINESS_CLOSINGS = gql`
 		}
 	}
 `;
+
+export const REPLY_TO_OBSERVATION = gql`
+	mutation ReplyToObservation($input: ReplyToObservationInput!) {
+		replyToObservation(input: $input) {
+			id
+			comment
+			user {
+				id
+				picture
+				name
+			}
+			createdOn
+			updatedOn
+			replies {
+				id
+				comment
+				user {
+					id
+					picture
+					name
+				}
+				createdOn
+				updatedOn
+			}
+		}
+	}
+`
