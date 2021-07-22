@@ -14,6 +14,7 @@ export const SEARCH_COMPANY_SIRET = gql`
 			owner {
 				firstName
 				lastName
+				vatNumber
 			}
 			name
 			kind

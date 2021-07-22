@@ -3,6 +3,7 @@ import formatISO from "date-fns/formatISO";
 import { normalizeOpeningHours, getDefaultDenormalizedOpeningHours } from "../../helpers/app";
 import { writable, get } from "svelte/store";
 import omit from "lodash/omit";
+import RegistrationKind from "../../enums/RegistrationKind";
 
 export const siret = writable(null);
 
@@ -21,6 +22,9 @@ export const companyInitialValues = {
 		zipcode: null,
 		country: "FR",
 	},
+	registrationKind: null,
+	registrationCode: null,
+	registrationCity: null,
 };
 export const company = writable({ ...companyInitialValues });
 
@@ -58,6 +62,16 @@ export const companyValidators = (values) => ({
 	...getDefaultFields(values, companyInitialValues, []),
 	vatIdentifier: { value: values.vatIdentifier, validators: ["required"], enabled: !values.notSubjectToVat },
 	email: { value: values.email, validators: ["required", "email"], enabled: true },
+	registrationCode: {
+		value: values.registrationCode,
+		validators: ["required"],
+		enabled: values.registrationKind === RegistrationKind.RM.Value,
+	},
+	registrationCity: {
+		value: values.registrationCity,
+		validators: ["required"],
+		enabled: values.registrationKind === RegistrationKind.RCS.Value,
+	},
 });
 
 export const normalizeCompany = (profile) => {

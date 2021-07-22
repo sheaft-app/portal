@@ -32,6 +32,7 @@
 				$company.name = res.name;
 				$company.firstName = $company.firstName ?? res.firstName;
 				$company.lastName = $company.lastName ?? res.lastName;
+				$company.vatIdentifier = res.owner.vatNumber ? res.owner.vatNumber.substr(2, 2) : null;
 			},
 			error: () => (siretWasNotFound = true),
 			errorNotification: "Impossible de trouver des informations pour ce SIRET",
