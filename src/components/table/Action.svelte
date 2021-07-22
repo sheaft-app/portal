@@ -14,8 +14,7 @@
 	const handleClick = () => {
 		$toggleMoreActions = false;
 		click();
-	}
-
+	};
 </script>
 
 {#if !disabled || !hideIfDisabled}
@@ -30,7 +29,7 @@
 			<Icon data={icon} class="mr-2 inline w-4 h-3" />
 		{/if}
 		<span>{text}</span>
-		{#if selectedItemsNumber > 0 && displaySelectedItemsNumber && !disabled}
+		{#if selectedItemsNumber > 1 && displaySelectedItemsNumber && !disabled}
 			<span>&nbsp;({selectedItemsNumber})</span>
 		{/if}
 	</button>

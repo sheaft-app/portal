@@ -313,6 +313,8 @@
 					<NavLink route={QuickOrderRoutes.Purchase} />
 					<NavLink route={MyOrderRoutes.List} />
 					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
+					<hr class="my-2 mx-4" />
+					<NavLink route={QuickOrderRoutes.List} />
 					<NavLink route={AgreementRoutes.List} />
 					<NavLink route={JobRoutes.List} />
 				{/if}

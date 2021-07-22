@@ -26,6 +26,7 @@ import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
 import Preparation from "./../routes/preparation/Preparation.svelte";
+import QuickOrderPurchase from "./../routes/quick-orders/QuickOrderPurchase.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -150,6 +151,13 @@ class SheaftGuard {
 		});
 		this.routes[`${QuickOrderRoutes.Prefix}/*`] = wrap({
 			component: QuickOrders,
+			customData: null,
+			conditions: [
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),
+			],
+		});
+		this.routes[`${QuickOrderRoutes.Purchase.Path}`] = wrap({
+			component: QuickOrderPurchase,
 			customData: null,
 			conditions: [
 				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),

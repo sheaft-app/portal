@@ -25,7 +25,7 @@
 	const actions = [
 		{
 			click: () => routerInstance.goTo(PreparationRoutes.List),
-			text: "Voir préparations en cours",
+			text: "Voir les préparations en cours",
 			icon: faClock,
 			color: "green",
 		},

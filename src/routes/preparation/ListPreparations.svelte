@@ -24,9 +24,11 @@
 	const actions = [
 		{
 			click: () => handleCreatePreparation(),
+			disabled: $items.length < 1,
 			text: "Lancer une préparation",
 			icon: faPlay,
 			color: "green",
+			hideIfDisabled: true,
 		},
 		{
 			click: () => routerInstance.goTo(PreparationRoutes.History),
