@@ -10,6 +10,7 @@ import SellingPoints from "./../routes/selling-points/SellingPoints.svelte";
 import Deliveries from "./../routes/deliveries/Deliveries.svelte";
 import Returnables from "./../routes/returnables/Returnables.svelte";
 import Billings from "./../routes/billings/Billings.svelte";
+import ExpectedDeliveries from "./../routes/expected-deliveries/ExpectedDeliveries.svelte";
 import Catalogs from "../routes/catalogs/Catalogs.svelte";
 import Callback from "./../routes/oidc/Callback.svelte";
 import CallbackSilent from "./../routes/oidc/CallbackSilent.svelte";
@@ -55,6 +56,7 @@ import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
 import PreparationRoutes from "../routes/preparation/routes";
 import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
+import ExpectedDeliveriesRoutes from "../routes/expected-deliveries/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -108,6 +110,13 @@ class SheaftGuard {
 			customData: null,
 			conditions: [
 				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ReturnableRoutes.Roles), true),
+			],
+		});
+		this.routes[`${ExpectedDeliveriesRoutes.Prefix}/*`] = wrap({
+			component: ExpectedDeliveries,
+			customData: null,
+			conditions: [
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(ExpectedDeliveriesRoutes.Roles), true),
 			],
 		});
 		this.routes[`${CatalogRoutes.Prefix}/*`] = wrap({

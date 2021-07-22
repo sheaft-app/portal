@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const GET_DELIVERIES = gql`
+export const GET_PENDING_DELIVERIES = gql`
 	query GetDeliveries($first: Int, $last: Int, $after: String, $before: String, $orderBy: [DeliverySortInput!]) {
 		deliveries(
 			first: $first
@@ -8,7 +8,10 @@ export const GET_DELIVERIES = gql`
 			after: $after
 			before: $before
 			order: $orderBy
-			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { eq: null } }] }
+			where: {
+				kind: { in: [PRODUCER_TO_STORE] }
+				and: [{ or: [{ status: { eq: READY } }, { status: { eq: IN_PROGRESS } }] }]
+			}
 		) {
 			pageInfo {
 				hasPreviousPage
@@ -19,9 +22,9 @@ export const GET_DELIVERIES = gql`
 			nodes {
 				id
 				reference
-				billedOn
+				scheduledOn
 				deliveredOn
-				client {
+				producer {
 					id
 					name
 				}
@@ -31,7 +34,7 @@ export const GET_DELIVERIES = gql`
 	}
 `;
 
-export const GET_BILLED_DELIVERIES = gql`
+export const GET_COMPLETED_DELIVERIES = gql`
 	query GetDeliveries($first: Int, $last: Int, $after: String, $before: String, $orderBy: [DeliverySortInput!]) {
 		deliveries(
 			first: $first
@@ -39,7 +42,7 @@ export const GET_BILLED_DELIVERIES = gql`
 			after: $after
 			before: $before
 			order: $orderBy
-			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { neq: null } }] }
+			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }] }
 		) {
 			pageInfo {
 				hasPreviousPage
@@ -50,9 +53,9 @@ export const GET_BILLED_DELIVERIES = gql`
 			nodes {
 				id
 				reference
-				billedOn
+				scheduledOn
 				deliveredOn
-				client {
+				producer {
 					id
 					name
 				}
@@ -73,9 +76,9 @@ export const GET_DELIVERY_DETAILS = gql`
 				city
 			}
 			reference
-			billedOn
+			scheduledOn
 			deliveredOn
-			client {
+			producer {
 				id
 				name
 				email
@@ -91,6 +94,7 @@ export const GET_DELIVERY_DETAILS = gql`
 			productsDeliveredCount
 			purchaseOrdersCount
 			deliveryFormUrl
+			deliveryReceiptUrl
 			purchaseOrders {
 				id
 				reference
