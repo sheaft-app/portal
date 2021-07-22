@@ -15,10 +15,9 @@
 	const handleChange = () => {
 		if (onChange) onChange();
 	};
-
 </script>
 
-<div class="flex items-center mt-3 {classNames}">
+<div class="flex items-center {classNames}">
 	<label for={id} class="toggle">
 		{#if labelPosition == "left"}
 			<div class="mr-3 uppercase text-xs">
@@ -63,5 +62,4 @@
 	input:checked ~ .toggle__line {
 		background-color: rgb(255, 211, 226);
 	}
-
 </style>

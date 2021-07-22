@@ -53,6 +53,46 @@ export const GET_QUICKORDERS = gql`
 	}
 `;
 
+export const GET_PURCHASE_QUICKORDERS = gql`
+	query GetPurchaseQuickOrders {
+		quickOrders(first: 50) {
+			nodes {
+				id
+				name
+				createdOn
+				isDefault
+				productsCount
+				products {
+					id
+					name
+					reference
+					unit
+					quantity
+					conditioning
+					weight
+					available
+					quantityPerUnit
+					wholeSalePricePerUnit
+					onSalePricePerUnit
+					onSalePrice
+					wholeSalePrice
+					vat
+					vatPricePerUnit
+					returnable {
+						wholeSalePrice
+						onSalePrice
+						vatPrice
+					}
+					producer {
+						id
+						name
+					}
+				}
+			}
+		}
+	}
+`;
+
 export const GET_QUICKORDER = gql`
 	query GetQuickOrder($id: ID!) {
 		quickOrder(id: $id) {

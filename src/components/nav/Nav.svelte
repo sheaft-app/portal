@@ -311,7 +311,11 @@
 			<ul class="nav__menu">
 				{#if isInRole($authUserAccount, [Roles.Store.Value])}
 					<NavLink route={QuickOrderRoutes.Purchase} />
+					<NavLink route={QuickOrderRoutes.Quick} />
+					<hr class="my-2 mx-4" />
 					<NavLink route={MyOrderRoutes.List} />
+					<!--					Réception-->
+					<!--					Tracabilité-->
 					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
@@ -323,6 +327,8 @@
 					<NavLink route={PreparationRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
+					<!--					Tracabilité-->
+					<!--					Rappels-->
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />

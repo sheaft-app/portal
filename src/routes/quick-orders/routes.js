@@ -1,12 +1,20 @@
 import Roles from "../../enums/Roles";
-import { faClipboardCheck, faClipboardList, faPen, faPlus, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCartPlus,
+	faClipboardCheck,
+	faClipboardList,
+	faPen,
+	faPlus,
+	faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 
 const prefix = "/quick-orders";
 
 const list = "/";
-const purchase = "/quick-purchase";
+const purchase = "/purchase";
+const quickPurchase = "/quick-purchase";
 const create = "/create";
 const edit = "/:id";
 
@@ -50,6 +58,12 @@ const QuickOrderRoutes = {
 		Icon: faShoppingCart,
 		Path: `${purchase}`,
 		SubPart: `${purchase}`,
+	},
+	Quick: {
+		Name: "Commande rapide",
+		Icon: faCartPlus,
+		Path: `${quickPurchase}`,
+		SubPart: `${quickPurchase}`,
 	},
 	NoResults: {
 		Name: "Créer un modèle de commande",
