@@ -4,6 +4,7 @@
 	import ErrorContainer from "./../../../components/ErrorContainer.svelte";
 	import CountrySelect from "./../../../components/controls/CountrySelect.svelte";
 	import LegalKind from "./../../../enums/LegalKind";
+	import RegistrationKind from "./../../../enums/RegistrationKind";
 	import Icon from "svelte-awesome";
 	import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 	import Cleave from "cleave.js";
@@ -21,6 +22,14 @@
 	$company = form.initialize($company, companyValidators, companyInitialValues);
 
 	const selectKind = (kind) => ($company.kind = kind);
+	const selectRegistrationKind = (kind) => {
+		if (kind !== $company.registrationKind) {
+			$company.registrationCity = null;
+			$company.registrationCode = null;
+		}
+
+		$company.registrationKind = kind;
+	};
 
 	const next = () => ++$stepper;
 
@@ -68,7 +77,7 @@
 					<p>Infos générales</p>
 				</div>
 				<div class="w-full form-control">
-					<label for="grid-kind">Forme juridique *</label>
+					<label>Forme juridique *</label>
 					<div class="w-full text-xs justify-center button-group" use:bindClass={{ form, name: "kind" }}>
 						<button
 							on:click={() => selectKind(LegalKind.Organization.Value)}
@@ -95,9 +104,9 @@
 				</div>
 				<ErrorContainer field={$form.fields.kind} />
 				<div class="w-full form-control">
-					<label for="$company_legalName">Raison sociale *</label>
+					<label for="company_legalName">Raison sociale *</label>
 					<input
-						id="$company_legalName"
+						id="company_legalName"
 						type="text"
 						placeholder="ex : G.A.E.C des balmettes"
 						use:bindClass={{ form, name: "legalName" }}
@@ -133,7 +142,7 @@
 					<div class="w-full form-control">
 						<label for="vat">N° de TVA *</label>
 						<div class="flex flex-wrap" use:bindClass={{ form, name: "vatIdentifier" }}>
-							<input id="vat" type="text" disabled={true} value="FR" class="w-3/12 disabled" />
+							<input id="vat-ctry" type="text" disabled={true} value="FR" class="w-3/12 disabled" />
 							<input
 								id="vat"
 								type="text"
@@ -180,10 +189,52 @@
 				>
 					<p>Siège social</p>
 				</div>
+
+				<div class="w-full form-control">
+					<label>Immatriculation *</label>
+					<div class="w-full text-xs justify-center button-group" use:bindClass={{ form, name: "registrationKind" }}>
+						<button
+							on:click={() => selectRegistrationKind(RegistrationKind.RCS.Value)}
+							type="button"
+							class:selected={$company.registrationKind === RegistrationKind.RCS.Value}
+						>
+							{RegistrationKind.RCS.Label}
+						</button>
+						<button
+							on:click={() => selectRegistrationKind(RegistrationKind.RM.Value)}
+							type="button"
+							class:selected={$company.registrationKind === RegistrationKind.RM.Value}
+						>
+							{RegistrationKind.RM.Label}
+						</button>
+						<button
+							on:click={() => selectRegistrationKind(RegistrationKind.NotSpecified.Value)}
+							type="button"
+							class:selected={$company.registrationKind === RegistrationKind.NotSpecified.Value}
+						>
+							{RegistrationKind.NotSpecified.Label}
+						</button>
+					</div>
+					<ErrorContainer field={$form.fields.registrationKind} />
+				</div>
+				{#if $company.registrationKind === RegistrationKind.RCS.Value}
+					<div class="w-full form-control">
+						<label for="company_rcs">Ville d'immatriculation *</label>
+						<input id="company_rcs" type="text" bind:value={$company.registrationCity} />
+					</div>
+					<ErrorContainer field={$form.fields.registrationCity} />
+				{/if}
+				{#if $company.registrationKind === RegistrationKind.RM.Value}
+					<div class="w-full form-control">
+						<label for="company_code">Code de la Chambre de Métiers et de l'Artisanat *</label>
+						<input id="company_code" type="text" bind:value={$company.registrationCode} />
+					</div>
+					<ErrorContainer field={$form.fields.registrationCode} />
+				{/if}
 				<div class="w-full form-control">
 					<label for="line1">Adresse *</label>
 					<input
-						name="line1"
+						id="line1"
 						placeholder="ex : 210 Avenue de la Liberté"
 						use:bindClass={{ form, name: "line1" }}
 						bind:value={$company.address.line1}
@@ -194,7 +245,7 @@
 				<div class="w-full form-control">
 					<label for="line2">Complément d'adresse</label>
 					<input
-						name="line2"
+						id="line2"
 						placeholder="ex : Appartement 15"
 						bind:value={$company.address.line2}
 						autocomplete="address-line2"
@@ -205,7 +256,7 @@
 						<div class="w-full pr-0 lg:pr-2">
 							<label for="postcode">Code postal *</label>
 							<input
-								name="postcode"
+								id="postcode"
 								placeholder="ex : 74000"
 								bind:value={$company.address.zipcode}
 								use:bindClass={{ form, name: "zipcode" }}
@@ -216,7 +267,7 @@
 						<div class="w-full">
 							<label for="city">Ville *</label>
 							<input
-								name="city"
+								id="city"
 								placeholder="ex : Annecy"
 								bind:value={$company.address.city}
 								use:bindClass={{ form, name: "city" }}
