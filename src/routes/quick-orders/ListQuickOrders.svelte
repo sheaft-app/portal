@@ -1,5 +1,12 @@
 <script>
-	import { faCheck, faFileExport, faCalendarCheck, faPlus, faHistory } from "@fortawesome/free-solid-svg-icons";
+	import {
+		faCheck,
+		faFileExport,
+		faCalendarCheck,
+		faPlus,
+		faHistory,
+		faTrash,
+	} from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -12,7 +19,7 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import QuickOrderRoutes from "./routes";
-	import ExportSelectedAccountings from "../billings/ExportSelectedAccountings.svelte";
+	import DeleteQuickOrdersModal from "./DeleteQuickOrdersModal.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -35,8 +42,11 @@
 	};
 
 	const deleteQuickOrders = () => {
-		open(ExportSelectedAccountings, {
-			deliveries: selectedItems,
+		open(DeleteQuickOrdersModal, {
+			selectedItems: selectedItems,
+			onClose: (res) => {
+				routerInstance.reload();
+			},
 		});
 	};
 
@@ -57,7 +67,7 @@
 			click: () => deleteQuickOrders(),
 			disabled: !canDeleteQuickOrders(selectedItems),
 			text: "Supprimer",
-			icon: faFileExport,
+			icon: faTrash,
 			color: "red",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,

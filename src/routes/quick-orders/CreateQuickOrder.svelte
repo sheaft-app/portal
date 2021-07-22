@@ -33,8 +33,8 @@
 			variables: normalizeCreateQuickOrder(form.values()),
 			errorsHandler,
 			success: () => routerInstance.goTo(QuickOrderRoutes.List),
-			successNotification: "Votre commande rapide a bien été créée",
-			errorNotification: "Impossible de créer votre commande rapide",
+			successNotification: "Votre modèle de commande a bien été créé",
+			errorNotification: "Impossible de créer votre modèle de commande",
 			clearCache: [GET_QUICKORDERS],
 		});
 	};

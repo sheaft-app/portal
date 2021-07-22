@@ -75,6 +75,10 @@ export const GET_QUICKORDER = gql`
 					id
 					name
 				}
+				returnable {
+					id
+					name
+				}
 			}
 		}
 	}

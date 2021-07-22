@@ -4,7 +4,6 @@
 	import AddProductModal from "./AddProductModal.svelte";
 	import Icon from "svelte-awesome";
 	import { faPlus } from "@fortawesome/free-solid-svg-icons";
-	import { products } from "./stores";
 
 	export let quickOrder,
 		producersProducts = [],
@@ -17,35 +16,35 @@
 
 	const headers = [
 		{ label: "Nom", mobile: true },
-		{ label: "Prix HT", mobile: true },
+		{ label: "Producteur", mobile: true },
 		{ label: "Quantité", mobile: true },
 		{ label: "Actions", mobile: false },
 	];
 
 	const removeProduct = (product) => {
-		if (product.checked) $products = $products.filter((p) => p.id != product.id);
-		else product.markForDeletion = true;
-
-		$products = $products;
+		if (product.checked) quickOrder.products = quickOrder.products.filter((p) => p.id !== product.id);
+		else {
+			product.markForDeletion = true;
+			quickOrder.products = quickOrder.products;
+		}
 	};
 
 	const cancelRemoveProduct = (product) => {
 		product.markForDeletion = false;
-		$products = $products;
+		quickOrder.products = quickOrder.products;
 	};
 
-	const addProduct = () =>
+	const addProduct = () => {
 		open(AddProductModal, {
 			errorsHandler,
 			producersProducts,
-			alreadyPresentProducts: $products.map((p) => p.id),
+			alreadyPresentProducts: quickOrder.products.map((p) => p.id),
+			onSuccess: (res) => {
+				quickOrder.products = [...quickOrder.products, ...res];
+				quickOrder = quickOrder;
+			},
 		});
-
-	onMount(async () => {
-		$products = quickOrder.products;
-	});
-
-	$: quickOrder.products = $products;
+	};
 </script>
 
 <table class="shadow">
@@ -64,10 +63,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each $products as product}
+		{#each quickOrder.products as product}
 			<tr class:bg-green-200={product.checked} class:bg-red-200={product.markForDeletion}>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-					<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+					<div class="text-sm leading-5 font-medium truncate" style="max-width: 200px;">
 						{product.name}
 						<p class="text-gray-600">#{product.reference}</p>
 						{#if !product.markForDeletion}
@@ -91,8 +90,8 @@
 					</div>
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-					<div class="text-sm leading-5 font-medium truncate" style="max-width: 100px;">
-						{product.wholeSalePricePerUnit}€
+					<div class="text-sm leading-5 font-medium truncate">
+						{product.producer.name}
 					</div>
 				</td>
 				<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -100,7 +99,6 @@
 						<input
 							bind:value={product.quantity}
 							id="grid-price"
-							required
 							type="number"
 							step="1"
 							name="quantity"

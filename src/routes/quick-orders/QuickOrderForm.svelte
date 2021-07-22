@@ -11,7 +11,7 @@
 	import groupBy from "lodash/groupBy";
 	import orderBy from "lodash/orderBy";
 	import QuickOrderProducts from "./QuickOrderProducts.svelte";
-	import { products } from "./stores";
+	import Toggle from "../../components/controls/Toggle.svelte";
 
 	export let submit,
 		quickOrder = { ...initialValues },
@@ -33,7 +33,6 @@
 
 	onMount(async () => {
 		isLoading = true;
-		products.set([]);
 
 		let res = await query({
 			query: GET_ALL_PRODUCTS,
@@ -89,6 +88,12 @@
 				<ErrorContainer field={$form.fields.name} />
 			</div>
 		</div>
+		{#if quickOrder.id}
+			<div class="form-control">
+				<label>Modèle par défaut</label>
+				<Toggle labelPosition="left" disabled={isLoading} classNames="ml-1" isChecked={quickOrder.isDefault} />
+			</div>
+		{/if}
 		<div class="form-control">
 			<div class="w-full">
 				<label>Produits *</label>
