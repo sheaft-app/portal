@@ -36,6 +36,7 @@
 	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
 	import PreparationRoutes from "../../routes/preparation/routes";
 	import BillingRoutes from "../../routes/billings/routes";
+	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -315,7 +316,7 @@
 					<NavLink route={QuickPurchaseRoutes.Quick} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={MyOrderRoutes.List} />
-					<!--					Réception-->
+					<NavLink route={ExpectedDeliveriesRoutes.List} />
 					<!--					Tracabilité-->
 					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
 					<hr class="my-2 mx-4" />
