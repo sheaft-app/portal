@@ -37,6 +37,7 @@
 	import PreparationRoutes from "../../routes/preparation/routes";
 	import BillingRoutes from "../../routes/billings/routes";
 	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
+	import RecallRoutes from "../../routes/recalls/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -329,8 +330,9 @@
 					<NavLink route={PreparationRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
+					<hr class="my-2 mx-4" />
 					<!--					Tracabilité-->
-					<!--					Rappels-->
+					<NavLink route={RecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />
