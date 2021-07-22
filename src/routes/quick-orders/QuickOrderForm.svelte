@@ -89,9 +89,15 @@
 			</div>
 		</div>
 		{#if quickOrder.id}
-			<div class="form-control">
+			<div class="form-control pt-2 items-center">
 				<label>Modèle par défaut</label>
-				<Toggle labelPosition="left" disabled={isLoading} classNames="ml-1" isChecked={quickOrder.isDefault} />
+				<Toggle
+					labelPosition="left"
+					disabled={isLoading}
+					classNames="ml-1"
+					isChecked={quickOrder.isDefault}
+					onChange={() => (quickOrder.isDefault = !quickOrder.isDefault)}
+				/>
 			</div>
 		{/if}
 		<div class="form-control">

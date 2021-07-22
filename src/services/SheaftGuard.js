@@ -26,7 +26,8 @@ import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
 import Preparation from "./../routes/preparation/Preparation.svelte";
-import QuickOrderPurchase from "./../routes/quick-orders/QuickOrderPurchase.svelte";
+import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
+import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -53,6 +54,7 @@ import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
 import PreparationRoutes from "../routes/preparation/routes";
 import BillingRoutes from "../routes/billings/routes";
+import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -156,8 +158,15 @@ class SheaftGuard {
 				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),
 			],
 		});
-		this.routes[`${QuickOrderRoutes.Purchase.Path}`] = wrap({
-			component: QuickOrderPurchase,
+		this.routes[`${QuickPurchaseRoutes.Purchase.Path}`] = wrap({
+			component: QuickFreePurchase,
+			customData: null,
+			conditions: [
+				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),
+			],
+		});
+		this.routes[`${QuickPurchaseRoutes.Quick.Path}`] = wrap({
+			component: QuickTemplatePurchase,
 			customData: null,
 			conditions: [
 				() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(QuickOrderRoutes.Roles), true),
@@ -262,7 +271,7 @@ class SheaftGuard {
 
 		if (this.authInstance.isInRole([Roles.Store.Value])) {
 			return {
-				Path: QuickOrderRoutes.Purchase.Path,
+				Path: QuickPurchaseRoutes.Purchase.Path,
 				Params: null,
 			};
 		}
