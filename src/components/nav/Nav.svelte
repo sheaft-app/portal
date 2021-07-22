@@ -29,6 +29,7 @@
 	import SellingPointRoutes from "./../../routes/selling-points/routes.js";
 	import DeliveryRoutes from "./../../routes/deliveries/routes.js";
 	import QuickOrderRoutes from "./../../routes/quick-orders/routes.js";
+	import QuickPurchaseRoutes from "./../../routes/quick-purchases/routes.js";
 	import { config } from "../../configs/config";
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
@@ -310,8 +311,8 @@
 		<div class="w-full">
 			<ul class="nav__menu">
 				{#if isInRole($authUserAccount, [Roles.Store.Value])}
-					<NavLink route={QuickOrderRoutes.Purchase} />
-					<NavLink route={QuickOrderRoutes.Quick} />
+					<NavLink route={QuickPurchaseRoutes.Purchase} />
+					<NavLink route={QuickPurchaseRoutes.Quick} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={MyOrderRoutes.List} />
 					<!--					Réception-->

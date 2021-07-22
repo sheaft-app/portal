@@ -11,7 +11,6 @@
 	import QuickOrderRoutes from "./routes";
 	import { normalizeCreateQuickOrder } from "./quickOrderForm";
 	import QuickOrderForm from "./QuickOrderForm.svelte";
-	import { products } from "./stores";
 
 	export let params = {};
 

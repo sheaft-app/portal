@@ -2,9 +2,9 @@
 	import { getContext, onMount } from "svelte";
 	import SheaftErrors from "./../../services/SheaftErrors.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
-	import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
+	import QuickDeliveryModePicker from "./QuickDeliveryModePicker.svelte";
 	import { formatMoney, formatConditioningDisplay } from "./../../helpers/app.js";
-	import ConfirmOrder from "./ConfirmOrder.svelte";
+	import ConfirmPurchaseModal from "./ConfirmPurchaseModal.svelte";
 	import MyOrdersRoutes from "../my-orders/routes";
 
 	const { open } = getContext("modal");
@@ -40,7 +40,7 @@
 	};
 
 	const handleSubmit = async () => {
-		open(ConfirmOrder, {
+		open(ConfirmPurchaseModal, {
 			producers: producerWithProducts,
 			onClose: () => routerInstance.goTo(MyOrdersRoutes.List),
 		});
@@ -132,7 +132,7 @@
 					>
 						{producer.name}
 					</p>
-					<DeliveryModePicker
+					<QuickDeliveryModePicker
 						bind:selected={producer.delivery}
 						bind:selectedDeliveryHour={producer.deliveryHour}
 						data={producer}

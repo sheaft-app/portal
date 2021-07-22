@@ -13,8 +13,6 @@ import Paginate from "../../enums/Paginate";
 const prefix = "/quick-orders";
 
 const list = "/";
-const purchase = "/purchase";
-const quickPurchase = "/quick-purchase";
 const create = "/create";
 const edit = "/:id";
 
@@ -52,18 +50,6 @@ const QuickOrderRoutes = {
 		Params: {
 			id: null,
 		},
-	},
-	Purchase: {
-		Name: "Passer commande",
-		Icon: faShoppingCart,
-		Path: `${purchase}`,
-		SubPart: `${purchase}`,
-	},
-	Quick: {
-		Name: "Commande rapide",
-		Icon: faCartPlus,
-		Path: `${quickPurchase}`,
-		SubPart: `${quickPurchase}`,
 	},
 	NoResults: {
 		Name: "Créer un modèle de commande",

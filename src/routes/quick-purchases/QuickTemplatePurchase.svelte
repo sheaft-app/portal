@@ -2,19 +2,15 @@
 	import { getContext, onMount } from "svelte";
 	import SheaftErrors from "./../../services/SheaftErrors.js";
 	import GetRouterInstance from "./../../services/SheaftRouter.js";
-	import DeliveryModePicker from "./DeliveryModePickerQuickOrder.svelte";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
-	import { formatMoney, formatConditioningDisplay } from "./../../helpers/app.js";
 	import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_PURCHASE_QUICKORDERS } from "./queries.js";
-	import ConfirmOrder from "./ConfirmOrder.svelte";
 	import Select from "./../../components/controls/select/Select";
-	import MyOrdersRoutes from "../my-orders/routes";
 	import QuickOrderRoutes from "./routes";
 	import orderBy from "lodash/orderBy";
 	import groupBy from "lodash/groupBy";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import QuickOrderPurchase from "./QuickOrderPurchase.svelte";
+	import QuickPurchaseDetails from "./QuickPurchaseDetails.svelte";
 
 	const { open } = getContext("modal");
 	const { query } = getContext("api");
@@ -126,7 +122,7 @@
 				</div>
 			</div>
 		{/if}
-		<QuickOrderPurchase {producers} {isLoadingDeliveries} />
+		<QuickPurchaseDetails {producers} {isLoadingDeliveries} />
 	</PageBody>
 </TransitionWrapper>
 
