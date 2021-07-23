@@ -275,6 +275,7 @@ export const GET_RECALL = gql`
 			saleEndedOn
 			productsCount
 			batchesCount
+			userAffected
 			products {
 				id
 				name
@@ -286,6 +287,12 @@ export const GET_RECALL = gql`
 				number
 				dlc
 				ddm
+			}
+			producer {
+				id
+				name
+				email
+				phone
 			}
 		}
 	}
