@@ -38,6 +38,7 @@
 	import BillingRoutes from "../../routes/billings/routes";
 	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
 	import RecallRoutes from "../../routes/recalls/routes";
+	import MyRecallRoutes from "../../routes/my-recalls/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -107,6 +108,17 @@
 				>
 					<Icon data={MyOrderRoutes.List.Icon} class="inline mr-4 md:mr-1 w-4" scale="0.9" />
 					{MyOrderRoutes.List.Name}
+				</a>
+				<a
+					class="px-4 block hover:bg-gray-100 py-3 text-normal"
+					href="javascript:void(0)"
+					on:click={() => {
+						userMenuExpended.set(false);
+						routerInstance.goTo(MyRecallRoutes.List);
+					}}
+				>
+					<Icon data={MyRecallRoutes.List.Icon} class="inline mr-4 md:mr-1 w-4" scale="0.9" />
+					{MyRecallRoutes.List.Name}
 				</a>
 			{/if}
 
@@ -318,8 +330,9 @@
 					<hr class="my-2 mx-4" />
 					<NavLink route={MyOrderRoutes.List} />
 					<NavLink route={ExpectedDeliveriesRoutes.List} />
+					<hr class="my-2 mx-4" />
 					<!--					Tracabilité-->
-					<!--					<NavLink route={SearchProducerRoutes.Search} />-->
+					<NavLink route={MyRecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
 					<NavLink route={AgreementRoutes.List} />

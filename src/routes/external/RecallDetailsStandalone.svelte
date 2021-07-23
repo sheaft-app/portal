@@ -6,13 +6,14 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { GET_RECALL_CLIENTS, GET_RECALL } from "./queries";
-	import RecallRoutes from "./routes";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import RecallStatus from "./../../enums/RecallStatus";
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import Roles from "../../enums/Roles";
 	import ExternalRoutes from "../external/routes";
+	import Icon from "svelte-awesome";
+	import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 	export let params = {};
 
@@ -41,6 +42,18 @@
 <TransitionWrapper>
 	<PageHeader name="Campagne de rappel" previous={true} />
 	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations en cours.">
+		<div
+			class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-200 shadow
+          md:rounded md:mb-2 flex items-center"
+		>
+			<Icon data={faExclamationTriangle} style="width: 50px; height:50px;" />
+			<p class="ml-3">
+				<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en question et
+				n'hésitez pas à contacter le producteur par
+				<a href="mailto:{recall.producer.email}">email</a>{#if recall.producer.phone}
+					ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
+			</p>
+		</div>
 		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5">
 			<div
 				class="flex flex-wrap bg-white w-full items-top border
@@ -52,6 +65,21 @@
 				>
 					<p class="uppercase font-bold pb-2">Campagne</p>
 					<div class="mt-3">
+						{#if authInstance.isInRole(Roles.Producer.Value)}
+							<div class="flex items-center mb-2">
+								<p>
+									<span class="text-gray-600">Statut :</span>
+									{RecallStatus.label(recall.status)}
+								</p>
+							</div>
+						{:else}
+							<div class="flex items-center mb-2">
+								<p>
+									<span class="text-gray-600">Producteur :</span>
+									{recall.producer.name}
+								</p>
+							</div>
+						{/if}
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Nom :</span>
@@ -61,17 +89,9 @@
 						<div class="flex items-center mb-2">
 							<p>
 								<span class="text-gray-600">Créée le :</span>
-								{format(new Date(recall.createdOn), "PPPPp", { locale: fr })}
+								{format(new Date(recall.createdOn), "PPPP", { locale: fr })}
 							</p>
 						</div>
-						{#if authInstance.isInRole(Roles.Producer.Value)}
-							<div class="flex items-center mb-2">
-								<p>
-									<span class="text-gray-600">Statut :</span>
-									{RecallStatus.label(recall.status)}
-								</p>
-							</div>
-						{/if}
 					</div>
 				</div>
 				<div

@@ -30,6 +30,7 @@ import Preparation from "./../routes/preparation/Preparation.svelte";
 import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
 import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
 import Recalls from "./../routes/recalls/Recalls.svelte";
+import MyRecalls from "./../routes/my-recalls/MyRecalls.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -59,6 +60,7 @@ import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
 import ExpectedDeliveriesRoutes from "../routes/expected-deliveries/routes";
 import RecallRoutes from "../routes/recalls/routes";
+import MyRecallRoutes from "../routes/my-recalls/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -166,6 +168,11 @@ class SheaftGuard {
 			component: Recalls,
 			customData: null,
 			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(RecallRoutes.Roles), true)],
+		});
+		this.routes[`${MyRecallRoutes.Prefix}/*`] = wrap({
+			component: MyRecalls,
+			customData: null,
+			conditions: [() => this.handleRouteNavigation(() => this.authInstance.userHasAccess(MyRecallRoutes.Roles), true)],
 		});
 		this.routes[`${QuickOrderRoutes.Prefix}/*`] = wrap({
 			component: QuickOrders,
