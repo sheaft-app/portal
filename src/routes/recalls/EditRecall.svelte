@@ -17,6 +17,7 @@
 	import SendRecallsModal from "./SendRecallsModal.svelte";
 	import RecallStatus from "../../enums/RecallStatus";
 	import Roles from "../../enums/Roles";
+	import ExternalRoutes from "../external/routes";
 
 	export let params = {};
 
@@ -39,7 +40,7 @@
 		});
 
 		if (recall.status !== RecallStatus.Waiting.Value || !GetAuthInstance().isInRole(Roles.Producer.Value))
-			return await routerInstance.goTo(RecallRoutes.Details, { id: params.id });
+			return await routerInstance.goTo(ExternalRoutes.RecallDetails, { id: params.id });
 
 		recall.saleStartedOn = new Date(recall.saleStartedOn);
 		recall.saleEndedOn = new Date(recall.saleEndedOn);

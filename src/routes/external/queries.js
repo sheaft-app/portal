@@ -228,3 +228,65 @@ export const GET_PRODUCER_PRODUCTS = gql`
 		}
 	}
 `;
+
+export const GET_RECALL_CLIENTS = gql`
+	query GetRecall($id: ID!) {
+		recall(id: $id) {
+			id
+			name
+			status
+			comment
+			createdOn
+			saleStartedOn
+			saleEndedOn
+			productsCount
+			batchesCount
+			clientsCount
+			products {
+				id
+				name
+				reference
+				picture
+			}
+			batches {
+				id
+				number
+				dlc
+				ddm
+			}
+			clients {
+				id
+				name
+				email
+			}
+		}
+	}
+`;
+
+export const GET_RECALL = gql`
+	query GetRecall($id: ID!) {
+		recall(id: $id) {
+			id
+			name
+			status
+			comment
+			createdOn
+			saleStartedOn
+			saleEndedOn
+			productsCount
+			batchesCount
+			products {
+				id
+				name
+				reference
+				picture
+			}
+			batches {
+				id
+				number
+				dlc
+				ddm
+			}
+		}
+	}
+`;

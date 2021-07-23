@@ -1,8 +1,8 @@
 import GetEnumObjectFor from "./helpers.js";
 
 let enums = {
-	Waiting: { Value: "WAITING", Label: "En attente" },
-	Ready: { Value: "READY", Label: "Prête pour envoi" },
+	Waiting: { Value: "WAITING", Label: "En attente de confirmation" },
+	Ready: { Value: "READY", Label: "En attente d'envoi" },
 	Sending: { Value: "SENDING", Label: "En cours d'envoi" },
 	Sent: { Value: "SENT", Label: "Envoyée" },
 	Failed: { Value: "FAILED", Label: "Echec" },

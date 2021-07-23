@@ -8,7 +8,6 @@ const prefix = "/recalls";
 const list = "/";
 const create = "/create";
 const edit = "/:id";
-const details = "/summary/:id";
 
 const RecallRoutes = {
 	Prefix: `${prefix}`,
@@ -41,15 +40,6 @@ const RecallRoutes = {
 		Icon: faPen,
 		Path: `${prefix}${edit}`,
 		SubPart: `${edit}`,
-		Params: {
-			id: null,
-		},
-	},
-	Details: {
-		Name: "Campagne de rappel",
-		Icon: faEye,
-		Path: `${prefix}${details}`,
-		SubPart: `${details}`,
 		Params: {
 			id: null,
 		},

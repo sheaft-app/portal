@@ -3,7 +3,6 @@
 	import ListRecalls from "./ListRecalls.svelte";
 	import CreateRecall from "./CreateRecall.svelte";
 	import EditRecall from "./EditRecall.svelte";
-	import RecallDetails from "./RecallDetails.svelte";
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 
@@ -14,7 +13,6 @@
 	routes[RecallsRoutes.List.SubPart] = ListRecalls;
 	routes[RecallsRoutes.Create.SubPart] = CreateRecall;
 	routes[RecallsRoutes.Edit.SubPart] = EditRecall;
-	routes[RecallsRoutes.Details.SubPart] = RecallDetails;
 </script>
 
 <Meta />

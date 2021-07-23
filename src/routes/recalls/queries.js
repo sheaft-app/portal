@@ -51,6 +51,9 @@ export const GET_RECALL = gql`
 				id
 				name
 				reference
+				conditioning
+				unit
+				quantityPerUnit
 			}
 			batches {
 				id
@@ -61,6 +64,7 @@ export const GET_RECALL = gql`
 			clients {
 				id
 				name
+				email
 			}
 		}
 	}

@@ -1,11 +1,12 @@
 import Roles from "../../enums/Roles";
-import { faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faSearch, faStore } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/details";
+const prefix = "/public";
 
 const productDetails = "/products/:id";
 const producerDetails = "/producers/:id";
 const storeDetails = "/stores/:id";
+const recallDetails = "/recalls/:id";
 
 const ExternalRoutes = {
 	Prefix: `${prefix}`,
@@ -40,6 +41,15 @@ const ExternalRoutes = {
 		Icon: faStore,
 		Path: `${prefix}${storeDetails}`,
 		SubPart: `${storeDetails}`,
+		Params: {
+			id: null,
+		},
+	},
+	RecallDetails: {
+		Name: "Campagne de rappel",
+		Icon: faEye,
+		Path: `${prefix}${recallDetails}`,
+		SubPart: `${recallDetails}`,
 		Params: {
 			id: null,
 		},

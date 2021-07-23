@@ -23,9 +23,13 @@
 	import DeleteRecallsModal from "./DeleteRecallsModal.svelte";
 	import SendRecallsModal from "./SendRecallsModal.svelte";
 	import RecallStatus from "./../../enums/RecallStatus";
+	import GetAuthInstance from "../../services/SheaftAuth";
+	import Roles from "../../enums/Roles";
+	import ExternalRoutes from "../external/routes";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
+	const authInstance = GetAuthInstance();
 	const { open } = getContext("modal");
 
 	let isLoading = true;
@@ -35,16 +39,17 @@
 
 	const headers = [
 		{ name: "Nom" },
-		{ name: "Créée le", sortLabel: "createdOn" },
 		{ name: "Statut" },
+		{ name: "Créée le", sortLabel: "createdOn" },
 		{ name: "Lots" },
 		{ name: "Produits" },
 		{ name: "Clients" },
 	];
 
 	const onRowClick = (item) => {
-		if (item.status === RecallStatus.Waiting.Value) routerInstance.goTo(RecallRoutes.Edit, { id: item.id });
-		else routerInstance.goTo(RecallRoutes.Details, { id: item.id });
+		if (item.status === RecallStatus.Waiting.Value || !authInstance.isInRole(Roles.Producer.Value))
+			routerInstance.goTo(RecallRoutes.Edit, { id: item.id });
+		else routerInstance.goTo(ExternalRoutes.RecallDetails, { id: item.id });
 	};
 
 	const deleteRecalls = () => {
@@ -129,12 +134,12 @@
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
-					{format(new Date(recall.createdOn), "P", { locale: fr })}
+					{RecallStatus.label(recall.status)}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
-					{RecallStatus.label(recall.status)}
+					{format(new Date(recall.createdOn), "P", { locale: fr })}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
