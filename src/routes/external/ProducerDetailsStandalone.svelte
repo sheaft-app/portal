@@ -47,6 +47,7 @@
 		{ id: "data", icon: "fas fa-barcode", label: "Produits" },
 		{ id: "layout", icon: "fas fa-arrows-alt", label: "Points de retrait" },
 		{ id: "stores", icon: "fas fa-store", label: "Magasins" },
+		{ id: "recalls", icon: "fas fa-exclamation-triangle", label: "Rappels" },
 	];
 
 	onMount(async () => {
@@ -369,6 +370,27 @@
 						{:else}
 							<p>Ce producteur ne vend pas ses produits dans des magasins proches de vous</p>
 						{/if}
+					</TabPanel>
+
+					<TabPanel>
+						<div class="lg:w-2/3 w-full">
+							{#if producer.recalls && producer.recalls.length > 0}
+								{#each producer.recalls as recall}
+									<div class="bg-white rounded-lg shadow p-4 w-full hover:pointer-cursor">
+										<a
+											href="javascript:void(0)"
+											on:click={() => routerInstance.goTo(ExternalRoutes.RecallDetails, { id: recall.id })}
+											class="font-semibold">{recall.name}</a
+										>
+									</div>
+								{/each}
+							{:else}
+								<p>Ce producteur n'a pas de campagne de rappel en cours.</p>
+							{/if}
+						</div>
+						<div class="lg:w-1/3 w-full">
+							<!-- <div id="map" class="rounded-r shadow lg:h-full" style="z-index: 0;" /> -->
+						</div>
 					</TabPanel>
 				</Tabs>
 			{/if}

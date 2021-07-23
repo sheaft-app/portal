@@ -391,6 +391,22 @@
 					<div id="map" class="rounded-r shadow lg:h-full" style="z-index: 0;" />
 				</div>
 			</div>
+			{#if product.recalls && product.recalls.length > 0}
+				<p class="text-2xl font-semibold my-3">Rappels</p>
+				<div class=" w-full">
+					<div class="flex items-center">
+						{#each product.recalls as recall}
+							<div
+								style="max-width:250px;"
+								class="py-8 px-4 bg-white shadow rounded hover:cursor-pointer"
+								on:click={() => routerInstance.goTo(ExternalRoutes.RecallDetails, { id: recall.id })}
+							>
+								<a href="javascript:void(0)">{recall.name}</a>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
 			<div class="mt-5">
 				<p class="mb-2">
 					{#if product.rating}

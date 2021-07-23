@@ -55,6 +55,11 @@ export const GET_PRODUCT_DETAILS = gql`
 					longitude
 				}
 			}
+			recalls {
+				id
+				name
+				createdOn
+			}
 		}
 	}
 `;
@@ -149,6 +154,11 @@ export const GET_PRODUCER_PROFILE = gql`
 					zipcode
 				}
 			}
+			recalls {
+				id
+				name
+				createdOn
+			}
 		}
 	}
 `;
@@ -242,6 +252,12 @@ export const GET_RECALL_CLIENTS = gql`
 			productsCount
 			batchesCount
 			clientsCount
+			producer {
+				id
+				name
+				phone
+				email
+			}
 			products {
 				id
 				name
@@ -293,6 +309,39 @@ export const GET_RECALL = gql`
 				name
 				email
 				phone
+			}
+		}
+	}
+`;
+
+export const GET_RECALL_ANONYMOUS = gql`
+	query GetRecall($id: ID!) {
+		recall(id: $id) {
+			id
+			name
+			status
+			comment
+			createdOn
+			saleStartedOn
+			saleEndedOn
+			productsCount
+			batchesCount
+			userAffected
+			products {
+				id
+				name
+				reference
+				picture
+			}
+			batches {
+				id
+				number
+				dlc
+				ddm
+			}
+			producer {
+				id
+				name
 			}
 		}
 	}

@@ -5,7 +5,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import { GET_RECALL_CLIENTS, GET_RECALL } from "./queries";
+	import { GET_RECALL_CLIENTS, GET_RECALL, GET_RECALL_ANONYMOUS } from "./queries";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import RecallStatus from "./../../enums/RecallStatus";
@@ -29,7 +29,11 @@
 	onMount(async () => {
 		isLoading = true;
 		recall = await query({
-			query: authInstance.isInRole(Roles.Producer.Value) ? GET_RECALL_CLIENTS : GET_RECALL,
+			query: authInstance.isInRole(Roles.Producer.Value)
+				? GET_RECALL_CLIENTS
+				: authInstance.isInRole(Roles.Store.Value)
+				? GET_RECALL
+				: GET_RECALL_ANONYMOUS,
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goBack(),
@@ -42,18 +46,21 @@
 <TransitionWrapper>
 	<PageHeader name="Campagne de rappel" previous={true} />
 	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations en cours.">
-		<div
-			class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-200 shadow
+		{#if recall.userAffected}
+			<div
+				class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-red-200 shadow
           md:rounded md:mb-2 flex items-center"
-		>
-			<Icon data={faExclamationTriangle} style="width: 50px; height:50px;" />
-			<p class="ml-3">
-				<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en question et
-				n'hésitez pas à contacter le producteur par
-				<a href="mailto:{recall.producer.email}">email</a>{#if recall.producer.phone}
-					ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
-			</p>
-		</div>
+			>
+				<Icon data={faExclamationTriangle} style="width: 50px; height:50px;" />
+				<p class="ml-3">
+					<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en question
+					et n'hésitez pas à contacter le producteur{#if recall.producer.email}
+						par
+						<a href="mailto:{recall.producer.email}">email</a>{/if}{#if recall.producer.phone}
+						ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
+				</p>
+			</div>
+		{/if}
 		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5">
 			<div
 				class="flex flex-wrap bg-white w-full items-top border
