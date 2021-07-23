@@ -4,13 +4,13 @@
 	import GetRouterInstance from "../services/SheaftRouter";
 
 	export let previousPage;
+	export let previous = false;
 	export let previousPageParams = {};
 	export let buttons = [],
 		name = "",
 		subname;
 
 	const routerInstance = GetRouterInstance();
-
 </script>
 
 <svelte:head>
@@ -20,9 +20,19 @@
 <section class="mb-4 pb-4 border-b border-gray-400 border-solid lg:pt-2">
 	{#if previousPage}
 		<div class="mb-3">
-			<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goTo(previousPage, previousPageParams)}>
+			<button
+				class="text-gray-600 items-center flex uppercase"
+				on:click={() => routerInstance.goTo(previousPage, previousPageParams)}
+			>
 				<Icon data={faChevronLeft} class="mr-2 inline" />
 				{previousPage.Name}
+			</button>
+		</div>
+	{:else if previous}
+		<div class="mb-3">
+			<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goBack()}>
+				<Icon data={faChevronLeft} class="mr-2 inline" />
+				Retour
 			</button>
 		</div>
 	{/if}
@@ -46,5 +56,5 @@
 			{/each}
 		</div>
 	{/if}
-	<slot></slot>
+	<slot />
 </section>

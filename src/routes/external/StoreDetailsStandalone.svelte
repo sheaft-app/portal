@@ -100,15 +100,13 @@
 		</div>
 	{:else}
 		<div class="container m-auto">
-			{#if !authInstance.isInRole([Roles.Store.Value])}
-				<button
-					class="text-gray-600 items-center flex uppercase mb-2"
-					on:click={() => routerInstance.goTo(SearchProductsRoutes.Search)}
-				>
-					<Icon data={faChevronLeft} scale=".8" class="mr-2 inline" />
-					Retourner à la recherche
+			<div class="mb-3">
+				<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goBack()}>
+					<Icon data={faChevronLeft} class="mr-2 inline" />
+					Retour
 				</button>
-			{:else if authInstance.isInRole([Roles.Store.Value])}
+			</div>
+			{#if authInstance.isInRole([Roles.Store.Value])}
 				<div class="mb-3 p-4 text-white bg-blue-500 rounded">
 					<p>
 						Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
