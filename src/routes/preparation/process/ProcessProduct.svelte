@@ -194,8 +194,12 @@
 						</div>
 					{/each}
 				{:else}
-					<p>Si nécessaire, vous pouvez lier la préparation du produit à un lot. Commencez par créer un lot :</p>
-					<button class="btn btn-accent btn-lg mt-2" on:click={openCreateBatchModal}>Créer un lot</button>
+					<p>
+						Si nécessaire, vous pouvez lier la préparation du produit à un lot. Dans ce cas, <a
+							href="javascript:void(0)"
+							on:click={openCreateBatchModal}>cliquez ici</a
+						> pour créer un lot.
+					</p>
 				{/if}
 				<div class="mt-5 pb-5 w-full px-4 space-y-3">
 					<button

@@ -50,13 +50,7 @@ export const GET_PICKINGS = gql`
 `;
 
 export const GET_PICKINGS_HISTORY = gql`
-	query GetPickingsHistory(
-		$first: Int
-		$last: Int
-		$after: String
-		$before: String
-		$orderBy: [PickingSortInput!]
-	) {
+	query GetPickingsHistory($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PickingSortInput!]) {
 		pickings(
 			first: $first
 			last: $last
@@ -143,7 +137,7 @@ export const GET_PICKING_DETAILS = gql`
 
 export const GET_BATCHES = gql`
 	query GetBatches {
-		batches {
+		batches(validOnly: true) {
 			nodes {
 				id
 				number
