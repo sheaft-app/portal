@@ -67,39 +67,41 @@ class SheaftAuth {
 	}
 
 	async retrieveUser(user, onInit) {
-		var localUser = JSON.parse(localStorage.getItem("user"));
+		let localUser = JSON.parse(localStorage.getItem("user"));
 		if (localUser && localUser.id && localUser.id.length > 0) {
 			user.id = localUser.id;
 			user.profile.id = localUser.profileId;
 		}
 
 		try {
-			var result = await fetch(config.api + "/graphql", getUserInfoSettings(user));
-
+			let result = await fetch(config.api + "/graphql", getUserInfoSettings(user));
 			if (result.status === 401) {
 				await this.userManager.removeUser();
 				await this.login();
 				return;
 			}
 
-			if (localUser)
-				this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
+			let content = await result.json();
+			if (content.data.me && content.data.me.id) {
+				user.id = content.data.me.id;
+				user.profile.id = content.data.me.profileId;
+				this.setAuthStatus(user, true, true, true, true);
+				return;
+			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
 			this.setAuthStatus(user, true, true, !user.profile.role.includes("ANONYMOUS"), true);
 			return;
 		}
 
-		var content = await result.json();
-		if (content.data.me && content.data.me.id) {
-			user.id = content.data.me.id;
-			user.profile.id = content.data.me.profileId;
-			this.setAuthStatus(user, true, true, true, true);
-		} else {
-			user.id = null;
-			user.profile.id = null;
-			this.setAuthStatus(user, true, true, false, true);
+		if (localUser) {
+			this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
+			return;
 		}
+
+		user.id = null;
+		user.profile.id = null;
+		this.setAuthStatus(user, true, true, false, true);
 	}
 
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
@@ -126,9 +128,9 @@ class SheaftAuth {
 		return this.initialized && !this.authenticated;
 	}
 
-	userIsLoggedIn() {
-		var result = !this.userIsAnonymous() && this.initialized && this.authenticated;
-		if (!result) this.login(window.location.hash);
+	async userIsLoggedIn() {
+		let result = !this.userIsAnonymous() && this.initialized && this.authenticated;
+		if (!result) return await this.login(window.location.hash);
 
 		return result;
 	}
@@ -144,7 +146,7 @@ class SheaftAuth {
 	isInRole(roles) {
 		if (!roles) return false;
 
-		var rolesToTest = [];
+		let rolesToTest = [];
 		if (!Array.isArray(roles)) rolesToTest = [roles];
 		else rolesToTest = roles;
 
@@ -154,21 +156,16 @@ class SheaftAuth {
 	async login(redirectUrl) {
 		try {
 			if (redirectUrl && redirectUrl.length > 0) {
-				if (redirectUrl.indexOf("/") == 0) {
-					redirectUrl = `#${redirectUrl}`;
-				}
+				if (redirectUrl.indexOf("/") === 0) redirectUrl = `#${redirectUrl}`;
 
-				if (redirectUrl[0] != "#") {
-					redirectUrl = `#/${redirectUrl}`;
-				}
+				if (redirectUrl[0] !== "#") redirectUrl = `#/${redirectUrl}`;
+			} else redirectUrl = "#/";
 
-				return await this.userManager.signinRedirect({
-					state: { redirectTo: redirectUrl },
-				});
-			}
-
-			return await this.userManager.signinRedirect();
+			return await this.userManager.signinRedirect({
+				state: { redirectTo: redirectUrl },
+			});
 		} catch (ex) {
+			await this.userManager.clearStaleState();
 			console.log(ex);
 		}
 	}
@@ -177,6 +174,7 @@ class SheaftAuth {
 		try {
 			return await this.userManager.signinCallback();
 		} catch (ex) {
+			await this.userManager.clearStaleState();
 			console.log(ex);
 		}
 	}
@@ -185,6 +183,7 @@ class SheaftAuth {
 		try {
 			return await this.userManager.signinSilentCallback();
 		} catch (ex) {
+			await this.userManager.clearStaleState();
 			console.log(ex);
 		}
 	}
@@ -194,6 +193,7 @@ class SheaftAuth {
 			clearLocalStorage();
 			await this.userManager.signoutRedirect();
 		} catch (exc) {
+			await this.userManager.clearStaleState();
 			await this.userManager.removeUser();
 			location.hash = "";
 			location.reload();
@@ -204,6 +204,7 @@ class SheaftAuth {
 		try {
 			return await this.userManager.signinSilent();
 		} catch (ex) {
+			await this.userManager.clearStaleState();
 			console.log(ex);
 		}
 	}
@@ -213,6 +214,7 @@ class SheaftAuth {
 			await this.userManager.removeUser();
 			return await this.login(url ? url : window.location.hash);
 		} catch (ex) {
+			await this.userManager.clearStaleState();
 			console.log(ex);
 		}
 	}
