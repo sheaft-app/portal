@@ -99,31 +99,32 @@
 			query: GET_PRODUCT_DETAILS,
 			variables: { id },
 			errorsHandler,
-			success: async (res) => {
-				await query({
-					query: GET_PRODUCER_DELIVERIES,
-					variables: { input: [res.producer.id] },
-					errorsHandler,
-					success: (res) => {
-						if (res[0] && res[0].deliveries)
-							deliveries = res[0].deliveries.map((d) => ({
-								...d,
-								deliveryHours: groupBy(d.deliveryHours, (item) => [item.day]).map((g) =>
-									g.filter(
-										(delivery, index, self) =>
-											index ===
-											self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
-									)
-								),
-							}));
-					},
-					error: () => (deliveries = []),
-					errorNotification: "Impossible de récupérer les informations de livraison du producteur.",
-				});
-				ratings = res.ratings.nodes.map((r) => r);
-			},
 			errorNotification: "Impossible de récupérer les informations du produit.",
 		});
+
+		await query({
+			query: GET_PRODUCER_DELIVERIES,
+			variables: { input: [product.producer.id] },
+			errorsHandler,
+			success: (res) => {
+				if (res.data[0] && res.data[0].deliveries)
+					deliveries = res.data[0].deliveries.map((d) => ({
+						...d,
+						deliveryHours: groupBy(d.deliveryHours, (item) => [item.day]).map((g) =>
+							g.filter(
+								(delivery, index, self) =>
+									index ===
+									self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
+							)
+						),
+					}));
+			},
+			error: () => (deliveries = []),
+			errorNotification: "Impossible de récupérer les informations de livraison du producteur.",
+		});
+
+		ratings = product.ratings.nodes.map((r) => r);
+
 		isLoading = false;
 	};
 
