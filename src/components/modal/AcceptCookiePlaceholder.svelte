@@ -1,23 +1,24 @@
 <script>
 	import { onMount, onDestroy } from "svelte";
 	import { fly } from "svelte/transition";
+	import { getCookie, setCookie } from "../../helpers/storage";
 
 	let displayCookiePop = false;
 
 	const handleSubmit = async (res) => {
-		localStorage.setItem("user_cookies_consent", JSON.stringify(true));
+		setCookie("user_cookies_consent", res, 365);
+		if (!res) sessionStorage.setItem("user_cookies_consent", JSON.stringify(res));
+
 		displayCookiePop = false;
 	};
 
 	onMount(() => {
-		var cookieConsent = JSON.parse(localStorage.getItem("user_cookies_consent"));
-
-		if (cookieConsent == null) {
-			displayCookiePop = true;
-			return;
+		let cookieConsent = getCookie("user_cookies_consent");
+		if (!cookieConsent || cookieConsent === "false") {
+			let cookieSession = JSON.parse(localStorage.getItem("user_cookies_consent"));
+			if (!cookieSession) displayCookiePop = true;
 		}
 	});
-
 </script>
 
 {#if displayCookiePop}
@@ -39,12 +40,11 @@
 				</p>
 			</div>
 			<div class="flex flex-wrap lg:block mt-2 lg:w-3/12 w-full mx-auto">
-				<button on:click={handleSubmit} class="btn btn-primary btn-lg m-auto mb-2 w-full justify-center"
+				<button on:click={() => handleSubmit(true)} class="btn btn-primary btn-lg m-auto mb-2 w-full justify-center"
 					>Accepter les cookies</button
 				>
-				<button
-					on:click={() => (displayCookiePop = false)}
-					class="btn bg-white btn-lg shadow m-auto w-full justify-center">Refuser les cookies</button
+				<button on:click={() => handleSubmit(false)} class="btn bg-white btn-lg shadow m-auto w-full justify-center"
+					>Refuser les cookies</button
 				>
 			</div>
 		</div>
