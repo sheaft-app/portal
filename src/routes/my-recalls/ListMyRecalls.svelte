@@ -62,7 +62,7 @@
 			noResultsPage={MyRecallRoutes.NoResults}
 			loadingMessage="Chargement de vos campagnes de rappel en cours."
 			defaultSearchValues={MyRecallRoutes.List.Params.Query}
-			getRowBackgroundColor={(recall) => (recall.userAffected ? "#dddddd" : "")}
+			getRowBackgroundColor={(recall) => (recall.userAffected ? "bg-red-100" : "")}
 			{onRowClick}
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -72,7 +72,7 @@
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
-					{RecallStatus.label(recall.producer.name)}
+					{recall.producer.name}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
