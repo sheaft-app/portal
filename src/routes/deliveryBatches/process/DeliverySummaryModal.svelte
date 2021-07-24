@@ -86,7 +86,7 @@
 		<p>{delivery.position + 1}/{numberOfDeliveries}</p>
 	</div>
 	<ErrorCard {errorsHandler} />
-	<p class="text-primary text-xl font-semibold uppercase mt-2">{delivery.client}</p>
+	<p class="text-primary text-xl font-semibold uppercase mt-2">{delivery.client.name}</p>
 	<p>{delivery.address.line1}</p>
 	<p>{delivery.address.zipcode} {delivery.address.city}</p>
 	{#if step == 1}

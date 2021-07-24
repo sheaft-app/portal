@@ -10,10 +10,15 @@ export const GET_DELIVERY_BATCHES = gql`
 					deliveryFormsUrl
 					from
 					scheduledOn
+					startedOn
+					completedOn
 					deliveries {
 						id
 						position
-						client
+						client {
+							id
+							name
+						}
 					}
 					assignedTo {
 						name
@@ -58,11 +63,16 @@ export const GET_DELIVERY_BATCHES_HISTORY = gql`
 					day
 					from
 					scheduledOn
+					startedOn
+					completedOn
 					deliveriesCount
 					deliveries {
 						id
 						position
-						client
+						client {
+							id
+							name
+						}
 					}
 					assignedTo {
 						name
@@ -126,9 +136,11 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 			deliveries {
 				id
 				position
-				client
+				client {
+					id
+					name
+				}
 				deliveryFormUrl
-				clientId
 				comment
 				status
 				address {

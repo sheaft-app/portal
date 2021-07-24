@@ -7,7 +7,7 @@
 </script>
 
 <div class="py-3 px-4 store-card">
-	<p class="font-semibold mb-1">{props.client}</p>
+	<p class="font-semibold mb-1">{props.client.name}</p>
 	<p class="text-gray-600">{props.address.line1}</p>
 	<p class="text-gray-600">{props.address.zipcode} {props.address.city}</p>
 	{#each props.purchaseOrders as purchaseOrder}

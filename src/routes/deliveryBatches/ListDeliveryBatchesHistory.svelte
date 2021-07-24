@@ -21,7 +21,7 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Date et heure" }];
+	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Démarée le" }, { name: "Complétée le" }];
 
 	const actions = [
 		{
@@ -64,12 +64,10 @@
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-				<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
-				<p>
-					débuté à {timeSpanToTime(deliveryBatch.from).hours}h{timeSpanToTime(deliveryBatch.from).minutes == 0
-						? "00"
-						: timeSpanToTime(deliveryBatch.from).minutes}
-				</p>
+				<p>{format(new Date(deliveryBatch.startedOn), "PPPPp", { locale: fr })}</p>
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
+				<p>{format(new Date(deliveryBatch.completedOn), "PPPPp", { locale: fr })}</p>
 			</td>
 		</Table>
 	</PageBody>

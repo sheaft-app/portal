@@ -82,7 +82,7 @@
 			<p class="text-gray-600 text-lg">On se dirige vers...</p>
 			<p>{destination.position + 1}/{deliveries.length}</p>
 		</div>
-		<p class="text-primary text-2xl uppercase font-semibold">{destination.client}</p>
+		<p class="text-primary text-2xl uppercase font-semibold">{destination.client.name}</p>
 		<div class="text-lg">
 			<p>{destination.address.line1}</p>
 			<p>{destination.address.zipcode} {destination.address.city}</p>

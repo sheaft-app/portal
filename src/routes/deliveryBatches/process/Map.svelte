@@ -41,7 +41,7 @@
 	const destinationIcon = L.divIcon({
 		html: `<div class="marker"><div class="destination-icon flex"><span class="text-white m-auto">${
 			destination.position + 1
-		}</span></div><div class="marker-text">${destination.client}</div></div>`,
+		}</span></div><div class="marker-text">${destination.client.name}</div></div>`,
 		className: "destination-marker",
 	});
 
