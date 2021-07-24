@@ -41,6 +41,9 @@ export const GET_ORDERS = gql`
 						email
 						phone
 					}
+					picking {
+						id
+					}
 					delivery {
 						id
 					}
@@ -92,6 +95,9 @@ export const GET_ORDER_DETAILS = gql`
 			comment
 			reason
 			productsCount
+			picking {
+				id
+			}
 			delivery {
 				id
 				scheduledOn

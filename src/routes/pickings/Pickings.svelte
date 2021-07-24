@@ -1,7 +1,7 @@
 <script>
 	import PickingRoutes from "./routes.js";
 	import ListPickings from "./ListPickings.svelte";
-	import PickingHistory from "./PickingHistory.svelte";
+	import ListPickingHistory from "./ListPickingHistory.svelte";
 	import PickingSummary from "./PickingSummary.svelte";
 	import EditPicking from "./EditPicking.svelte";
 	import Process from "./process/Process.svelte";
@@ -15,7 +15,7 @@
 	const routes = {};
 	routes[PickingRoutes.List.SubPart] = ListPickings;
 	routes[PickingRoutes.Summary.SubPart] = PickingSummary;
-	routes[PickingRoutes.History.SubPart] = PickingHistory;
+	routes[PickingRoutes.History.SubPart] = ListPickingHistory;
 	routes[PickingRoutes.Edit.SubPart] = EditPicking;
 	routes[PickingRoutes.Process.SubPart] = Process;
 	routes[PickingRoutes.ProcessProduct.SubPart] = ProcessProduct;

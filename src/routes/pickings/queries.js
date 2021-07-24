@@ -33,6 +33,7 @@ export const GET_PICKINGS = gql`
 					status
 					name
 					startedOn
+					completedOn
 					productsPreparedCount
 					productsToPrepareCount
 					purchaseOrdersCount
@@ -66,6 +67,7 @@ export const GET_PICKINGS_HISTORY = gql`
 					status
 					name
 					startedOn
+					completedOn
 					productsPreparedCount
 					productsToPrepareCount
 					purchaseOrdersCount

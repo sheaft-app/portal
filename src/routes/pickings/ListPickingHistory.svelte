@@ -20,7 +20,7 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Préparation", sortLabel: "name" }, { name: "Débutée à" }];
+	const headers = [{ name: "Préparation", sortLabel: "name" }, { name: "Débutée le" }, { name: "Terminée le" }];
 
 	const actions = [
 		{
@@ -50,7 +50,7 @@
 			loadingMessage="Chargement de vos préparations terminées en cours."
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="leading-5 font-medium truncate">
 					<div class="mb-1">
 						<span class="rounded-full text-green-500 text-sm text-left">
 							{PickingStatus.label(picking.status)}
@@ -64,6 +64,9 @@
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
 				<p>{format(new Date(picking.startedOn), "PPPP", { locale: fr })}</p>
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
+				<p>{format(new Date(picking.completedOn), "PPPP", { locale: fr })}</p>
 			</td>
 		</Table>
 	</PageBody>

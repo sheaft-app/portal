@@ -149,6 +149,7 @@
 			icon: faBackspace,
 			text: "Annuler",
 			color: "orange",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
 		{
