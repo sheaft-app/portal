@@ -25,7 +25,7 @@ import SearchProducers from "./../routes/search-producers/SearchProducers.svelte
 import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
-import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
+import DeliveryBatches from "./../routes/delivery-batches/DeliveryBatches.svelte";
 import Pickings from "./../routes/pickings/Pickings.svelte";
 import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
 import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
@@ -55,7 +55,7 @@ import HomeRoutes from "./../routes/home/routes.js";
 import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
-import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
+import DeliveryBatchesRoutes from "../routes/delivery-batches/routes";
 import PickingRoutes from "../routes/pickings/routes";
 import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
