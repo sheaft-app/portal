@@ -20,7 +20,7 @@
 
 	const getFirstClientName = () => {
 		const sortedClients = deliveryBatch.deliveries.sort((a, b) => (a.position >= b.position ? 1 : -1));
-		return sortedClients[0].client;
+		return sortedClients[0].client.name;
 	};
 </script>
 

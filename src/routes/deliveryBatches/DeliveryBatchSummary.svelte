@@ -102,7 +102,7 @@
 		</div>
 		{#each deliveryBatch.deliveries as delivery (delivery.id)}
 			<div class="px-4 bg-white mb-3 mt-3 rounded-lg shadow py-3">
-				<p class="font-semibold text-xl">{delivery.client}</p>
+				<p class="font-semibold text-xl">{delivery.client.name}</p>
 				<a target="_blank" href={delivery.deliveryFormUrl} class="btn-link mt-1">
 					<Icon data={faEye} class="mr-2" />
 					Voir le bon de livraison

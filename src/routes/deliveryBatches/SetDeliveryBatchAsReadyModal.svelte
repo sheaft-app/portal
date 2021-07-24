@@ -79,7 +79,7 @@
 		<Loader />
 	{:else}
 		{#each deliveries as delivery}
-			<SimpleStoreCard props={{ ...delivery, name: delivery.client }} />
+			<SimpleStoreCard props={{ ...delivery, name: delivery.client.name }} />
 		{/each}
 	{/if}
 </ActionConfirm>
