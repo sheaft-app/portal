@@ -10,7 +10,7 @@
 >
 	<div class="shadow-md h-full bg-white">
 		<div
-			class="relative pb-5/6 overflow-hidden bg-black rounded-t-md lg:block
+			class="relative pb-5/6 overflow-hidden rounded-t-md lg:block
       hidden"
 		>
 			<div
