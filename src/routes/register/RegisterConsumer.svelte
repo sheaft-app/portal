@@ -39,6 +39,7 @@
 			success: async () => {
 				localStorage.removeItem("user_choosen_role");
 				localStorage.removeItem("user_sponsoring");
+				localStorage.removeItem("user");
 				await authInstance.refreshLogin("/");
 			},
 			error: () => {

@@ -87,6 +87,9 @@ class SheaftAuth {
 				user.profile.id = content.data.me.profileId;
 				this.setAuthStatus(user, true, true, true, true);
 				return;
+			} else {
+				this.setAuthStatus(user, true, true, false, true);
+				return;
 			}
 		} catch (err) {
 			console.error(err ? err.toString() : "An authorization exception occurred.");

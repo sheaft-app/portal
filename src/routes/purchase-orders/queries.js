@@ -93,6 +93,7 @@ export const GET_ORDER_DETAILS = gql`
 			reason
 			productsCount
 			delivery {
+				id
 				scheduledOn
 				deliveredOn
 				status
