@@ -6,8 +6,8 @@
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import SheaftErrors from "../../../services/SheaftErrors";
 	import ProductCounter from "../../deliveryBatches/process/ProductCounter.svelte";
-	import { denormalizeProduct } from "../preparationForm";
-	import PreparationRoutes from "../routes";
+	import { denormalizeProduct } from "../pickingForm";
+	import PickingRoutes from "../routes";
 	import TransitionWrapper from "../../../components/TransitionWrapper.svelte";
 	import PageHeader from "../../../components/PageHeader.svelte";
 	import PageBody from "../../../components/PageBody.svelte";
@@ -45,7 +45,7 @@
 				let preparedProducts = res.preparedProducts.filter((p) => p.productId == params.productId);
 
 				if (products.length == 0) {
-					routerInstance.goTo(PreparationRoutes.Process, { id: params.id });
+					routerInstance.goTo(PickingRoutes.Process, { id: params.id });
 				}
 
 				batches = await query({
@@ -62,7 +62,7 @@
 
 				product = denormalizeProduct(products, preparedProducts);
 			},
-			error: () => routerInstance.goTo(PreparationRoutes.List),
+			error: () => routerInstance.goTo(PickingRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
 		});
 
@@ -85,7 +85,7 @@
 				})),
 			},
 			errorsHandler,
-			success: () => routerInstance.goTo(PreparationRoutes.Process, { id: params.id }),
+			success: () => routerInstance.goTo(PickingRoutes.Process, { id: params.id }),
 			successNotification: "Préparation sauvegardée",
 			errorNotification: "Impossible de sauvegarder la préparation",
 			clearCache: [params.id, GET_PICKINGS],
@@ -139,7 +139,7 @@
 <TransitionWrapper>
 	<PageHeader
 		name={product?.name ? `Préparation ${product.name}` : "Préparation"}
-		previousPage={PreparationRoutes.Process}
+		previousPage={PickingRoutes.Process}
 		previousPageParams={{ id: params.id }}
 		subname={`${product?.total} à préparer` || "Chargement..."}
 	/>

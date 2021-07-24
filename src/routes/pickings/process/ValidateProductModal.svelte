@@ -6,7 +6,7 @@
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import SheaftErrors from "../../../services/SheaftErrors";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
-	import PreparationRoutes from "../routes";
+	import PickingRoutes from "../routes";
 	import { authUserAccount } from "./../../../stores/auth.js";
 
 	const errorsHandler = new SheaftErrors();
@@ -24,7 +24,7 @@
 			mutation: SET_PICKING_PRODUCT_PREPARED_QUANTITY,
 			variables,
 			errorsHandler,
-			success: () => routerInstance.goTo(PreparationRoutes.Process, { id: variables.id }),
+			success: () => routerInstance.goTo(PickingRoutes.Process, { id: variables.id }),
 			successNotification: "Préparation du produit terminée",
 			errorNotification: "Impossible de terminer la préparation du produit",
 			clearCache: [variables.id, GET_PICKINGS],

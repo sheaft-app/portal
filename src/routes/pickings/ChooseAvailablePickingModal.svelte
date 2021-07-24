@@ -1,13 +1,13 @@
 <script>
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
 	import { GET_AVAILABLE_PICKINGS, GET_PICKINGS } from "./queries.js";
-	import { CREATE_PREPARATION } from "./mutations.js";
+	import { CREATE_PICKING } from "./mutations.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { getContext, onMount } from "svelte";
-	import AvailablePreparationItem from "./AvailablePreparationItem.svelte";
+	import AvailablePickingItem from "./AvailablePickingItem.svelte";
 	import Guid from "../../helpers/Guid";
 	import GetRouterInstance from "../../services/SheaftRouter";
-	import PreparationRoutes from "./routes";
+	import PickingRoutes from "./routes";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -17,32 +17,32 @@
 
 	let isLoading = false;
 	let selected = null;
-	let preparations = [];
+	let pickings = [];
 
 	onMount(async () => {
 		await query({
 			query: GET_AVAILABLE_PICKINGS,
 			variables: { includePendingPurchaseOrders: true },
-			success: (res) => (preparations = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
+			success: (res) => (pickings = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
 			errorsHandler,
 			errorNotification: "Impossible de charger les préparations disponibles",
 		});
 	});
 
 	const handleSubmit = async () => {
-		const selectedPreparation = preparations.find((d) => d.id == selected);
+		const selectedPicking = pickings.find((d) => d.id == selected);
 		isLoading = true;
 		await mutate({
-			mutation: CREATE_PREPARATION,
+			mutation: CREATE_PICKING,
 			variables: {
-				name: selectedPreparation.name,
+				name: selectedPicking.name,
 				autostart: false,
-				purchaseOrderIds: selectedPreparation.clients.reduce((acc, curr) => {
+				purchaseOrderIds: selectedPicking.clients.reduce((acc, curr) => {
 					acc = [...acc, ...curr.purchaseOrders.map((p) => p.id)];
 					return acc;
 				}, []),
 			},
-			success: async (res) => await routerInstance.goTo(PreparationRoutes.Edit, { id: res.id }),
+			success: async (res) => await routerInstance.goTo(PickingRoutes.Edit, { id: res.id }),
 			errorsHandler,
 			errorNotification: "Impossible de créer la préparation",
 			clearCache: [GET_AVAILABLE_PICKINGS, GET_PICKINGS],
@@ -61,12 +61,12 @@
 	submitText="Confirmer"
 	closeText="Annuler"
 >
-	{#if preparations && preparations.length > 0}
+	{#if pickings && pickings.length > 0}
 		<p>Sélectionnez la préparation à créer.</p>
 		<p class="mb-5">Vous pourrez par la suite joindre d'autres commandes à cette préparation si nécessaire.</p>
-		{#each preparations as preparation}
+		{#each pickings as picking}
 			<div class="mb-2">
-				<AvailablePreparationItem {preparation} bind:selected />
+				<AvailablePickingItem {picking} bind:selected />
 			</div>
 		{/each}
 	{:else}

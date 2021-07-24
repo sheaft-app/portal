@@ -34,7 +34,7 @@
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
 	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
-	import PreparationRoutes from "../../routes/preparation/routes";
+	import PickingRoutes from "../../routes/pickings/routes";
 	import BillingRoutes from "../../routes/billings/routes";
 	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
 	import RecallRoutes from "../../routes/recalls/routes";
@@ -340,7 +340,7 @@
 				{/if}
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
 					<NavLink route={PurchaseOrderRoutes.List} />
-					<NavLink route={PreparationRoutes.List} />
+					<NavLink route={PickingRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />

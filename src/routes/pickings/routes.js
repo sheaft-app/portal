@@ -3,7 +3,7 @@ import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/preparations";
+const prefix = "/pickings";
 
 const listing = "/";
 const history = "/history";
@@ -12,7 +12,7 @@ const details = "/:id";
 const process = `${details}/process`;
 const processProduct = `${process}/:productId`;
 
-const PreparationRoutes = {
+const PickingRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value, Roles.Support.Value],
 	List: {
@@ -77,4 +77,4 @@ const PreparationRoutes = {
 	},
 };
 
-export default PreparationRoutes;
+export default PickingRoutes;

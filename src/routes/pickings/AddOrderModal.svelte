@@ -1,7 +1,7 @@
 <script>
 	import { getContext, onMount } from "svelte";
 	import { GET_AVAILABLE_PICKINGS, GET_PICKINGS } from "./queries";
-	import { UPDATE_PREPARATION } from "./mutations";
+	import { UPDATE_PICKING } from "./mutations";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { formatMoney } from "../../helpers/app";
@@ -13,7 +13,7 @@
 	import GetRouterInstance from "../../services/SheaftRouter";
 
 	export let close;
-	export let preparation;
+	export let picking;
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -48,12 +48,12 @@
 	const handleSubmit = async () => {
 		isLoading = true;
 		await mutate({
-			mutation: UPDATE_PREPARATION,
+			mutation: UPDATE_PICKING,
 			variables: {
-				id: preparation.id,
-				name: preparation.name,
+				id: picking.id,
+				name: picking.name,
 				purchaseOrderIds: [
-					...preparation.purchaseOrders.map((p) => p.id),
+					...picking.purchaseOrders.map((p) => p.id),
 					...availableOrders.filter((o) => o.checked).map((p) => p.id),
 				],
 			},
@@ -64,7 +64,7 @@
 			},
 			successNotification: "Commande(s) ajoutée(s) avec succès !",
 			errorNotification: "Impossible d'ajouter une commande",
-			clearCache: [preparation.id, GET_AVAILABLE_PICKINGS, GET_PICKINGS],
+			clearCache: [picking.id, GET_AVAILABLE_PICKINGS, GET_PICKINGS],
 		});
 		isLoading = false;
 	};

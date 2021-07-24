@@ -40,7 +40,7 @@
 	import DeliveryStatus from "../../enums/DeliveryStatus";
 	import ProfileKind from "../../enums/ProfileKind";
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
-	import CreatePreparationForPurchaseOrders from "./CreatePreparationForPurchaseOrders.svelte";
+	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
 
 	export let params = {};
 
@@ -75,7 +75,7 @@
 
 	const acceptOrder = () => handleOrdersModal(AcceptPurchaseOrders, order);
 
-	const processOrder = () => handleOrdersModal(CreatePreparationForPurchaseOrders, order);
+	const processOrder = () => handleOrdersModal(CreatePickingForPurchaseOrders, order);
 
 	const shipOrder = () => handleOrdersModal(CreateDeliveryBatchForPurchaseOrders, order);
 

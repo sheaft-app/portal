@@ -9,7 +9,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PickingStatus from "../../enums/PickingStatus";
 	import PageBody from "../../components/PageBody.svelte";
-	import PreparationRoutes from "./routes";
+	import PickingRoutes from "./routes";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 
@@ -24,7 +24,7 @@
 
 	const actions = [
 		{
-			click: () => routerInstance.goTo(PreparationRoutes.List),
+			click: () => routerInstance.goTo(PickingRoutes.List),
 			text: "Voir les préparations en cours",
 			icon: faClock,
 			color: "green",
@@ -40,30 +40,30 @@
 			bind:items
 			bind:isLoading
 			bind:noResults
-			defaultSearchValues={PreparationRoutes.History.Params.Query}
+			defaultSearchValues={PickingRoutes.History.Params.Query}
 			{errorsHandler}
 			{headers}
-			let:rowItem={preparation}
-			onRowClick={(item) => routerInstance.goTo(PreparationRoutes.Summary, { id: item.id })}
+			let:rowItem={picking}
+			onRowClick={(item) => routerInstance.goTo(PickingRoutes.Summary, { id: item.id })}
 			graphQuery={GET_PICKINGS_HISTORY}
-			noResultsPage={PreparationRoutes.NoResults}
+			noResultsPage={PickingRoutes.NoResults}
 			loadingMessage="Chargement de vos préparations terminées en cours."
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="leading-5 font-medium truncate" style="max-width: 180px;">
 					<div class="mb-1">
 						<span class="rounded-full text-green-500 text-sm text-left">
-							{PickingStatus.label(preparation.status)}
+							{PickingStatus.label(picking.status)}
 						</span>
 					</div>
-					{preparation.name}
+					{picking.name}
 					<p class="text-gray-600 text-sm lg:text-base ">
-						Préparé : {preparation.productsPreparedCount} / {preparation.productsToPrepareCount}
+						Préparé : {picking.productsPreparedCount} / {picking.productsToPrepareCount}
 					</p>
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
-				<p>{format(new Date(preparation.startedOn), "PPPP", { locale: fr })}</p>
+				<p>{format(new Date(picking.startedOn), "PPPP", { locale: fr })}</p>
 			</td>
 		</Table>
 	</PageBody>

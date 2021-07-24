@@ -4,13 +4,12 @@
 	import GetRouterInstance from "./../../../services/SheaftRouter.js";
 	import { GET_PICKING_DETAILS } from "../queries";
 	import SheaftErrors from "../../../services/SheaftErrors";
-	import PreparationRoutes from "../routes";
+	import PickingRoutes from "../routes";
 	import TransitionWrapper from "../../../components/TransitionWrapper.svelte";
 	import PageHeader from "../../../components/PageHeader.svelte";
-	import { denormalizePreparationProducts } from "../preparationForm";
+	import { denormalizePickingProducts } from "../pickingForm";
 	import PageBody from "../../../components/PageBody.svelte";
 	import PickingStatus from "../../../enums/PickingStatus.js";
-	import ExternalRoutes from "../../external/routes";
 
 	export let params;
 
@@ -18,38 +17,38 @@
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
 
-	let preparation = null;
+	let picking = null;
 	let products = [];
 	let isLoading = true;
 	let loadingMessage = "Chargement des informations de la préparation en cours...";
 
 	onMount(async () => {
 		isLoading = true;
-		preparation = await query({
+		picking = await query({
 			query: GET_PICKING_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
 			success: (res) => {
-				products = denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts);
+				products = denormalizePickingProducts(res.productsToPrepare, res.preparedProducts);
 
 				// la préparation est terminée
 				if (res.status !== PickingStatus.Waiting.Value) {
 				}
 			},
-			error: () => routerInstance.goTo(PreparationRoutes.List),
+			error: () => routerInstance.goTo(PickingRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
 	});
 
 	$: buttons =
-		preparation && preparation.status != PickingStatus.Completed.Value
+		picking && picking.status != PickingStatus.Completed.Value
 			? [
 					{
 						text: "Modifier",
 						color: "blue",
 						click: () =>
-							routerInstance.goTo(PreparationRoutes.Edit, {
+							routerInstance.goTo(PickingRoutes.Edit, {
 								id: params.id,
 							}),
 					},
@@ -58,10 +57,10 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name={preparation?.name ?? "Préparation en cours"} previousPage={PreparationRoutes.List} {buttons} />
+	<PageHeader name={picking?.name ?? "Préparation en cours"} previousPage={PickingRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement de la préparation...">
 		{#if !isLoading}
-			{#if ![PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}
+			{#if ![PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(picking.status)}
 				<p class="text-green-500 mb-2">Cette préparation est maintenant terminée.</p>
 			{/if}
 			<div>
@@ -78,13 +77,13 @@
 							{/if}
 						</div>
 						<div class="w-full md:w-auto mt-2 md:mt-0">
-							{#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(preparation.status)}
+							{#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(picking.status)}
 								<button
 									type="button"
 									class:btn-outline={product.completed}
 									class:btn-accent={!product.completed}
-									on:click={routerInstance.goTo(PreparationRoutes.ProcessProduct, {
-										id: preparation.id,
+									on:click={routerInstance.goTo(PickingRoutes.ProcessProduct, {
+										id: picking.id,
 										productId: product.id,
 									})}
 									class="btn btn-lg"
