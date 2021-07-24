@@ -53,8 +53,17 @@ export const GET_BATCH_DETAILS = gql`
 					id
 					picture
 					name
+					kind
 				}
 				createdOn
+				batches {
+					id
+					number
+				}
+				products {
+					id
+					name
+				}
 				updatedOn
 				replies {
 					id
