@@ -16,7 +16,7 @@ export const normalizeDeliveryBatch = (delivery) => ({
 	id: delivery.id,
 	name: delivery.name,
 	deliveries: delivery.deliveries.map((o, index) => ({
-		clientId: o.client.Id,
+		clientId: o.client.id,
 		position: index,
 		purchaseOrderIds: o.purchaseOrders.map((p) => p.id),
 	})),
