@@ -1,6 +1,7 @@
 <script>
 	import { fly } from "svelte/transition";
 	import { onMount, getContext, createEventDispatcher, onDestroy } from "svelte";
+	import { authUserAccount } from "./../../stores/auth.js";
 	import { GET_OBSERVATIONS } from "../queries";
 	import Chat from "./Chat.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -11,6 +12,7 @@
 	import { portal } from "svelte-portal";
 	import CreateObservation from "./CreateObservation.svelte";
 	
+	export let producerId = null;
 	export let observations = [];
 	export let title = "Observations";
 
@@ -35,16 +37,27 @@
 
 		if (observations.length > 0) {
 			return;
+		} else if (producerId !== null) {
+			isLoading = true;
+			observations = await query({
+				query: GET_OBSERVATIONS,
+				variables: { producerId },
+				errorsHandler,
+				error: () => close(),
+				errorNotification: "Impossible de récupérer les observations."
+			});
+			isLoading = false;
+			return;
+		} else {
+			isLoading = true;
+			observations = await query({
+				query: GET_OBSERVATIONS,
+				errorsHandler,
+				error: () => close(),
+				errorNotification: "Impossible de récupérer les observations."
+			});
+			isLoading = false;	
 		}
-
-		isLoading = true;
-		observations = await query({
-			query: GET_OBSERVATIONS,
-			errorsHandler,
-			error: () => close(),
-			errorNotification: "Impossible de récupérer les observations."
-		});
-		isLoading = false;
 	})
 
 	onDestroy(() => {
@@ -96,12 +109,12 @@
 						/>
 					</div>
 					<div class="w-9/12 ml-3">
-						<p class="font-semibold">{observation.user.name}</p>
+						<p class="font-semibold">{observation.user.id == $authUserAccount.id ? 'Vous' : observation.user.name}</p>
 						<p class="text-gray-600 truncate" style="max-width: 200px;">{observation.comment}</p>
 						{#if observation.replies.length > 0}
 							<p class="text-green-500 text-sm">
 								<Icon data={faCheck} class="mr-2" /> 
-								Vous avez répondu à cette observation
+								Une réponse a été apportée à cette observation
 							</p>
 						{/if}
 					</div>
@@ -112,7 +125,7 @@
 			{/each}
 		</div>
 	{:else if createObservation}
-		<CreateObservation {close} />
+		<CreateObservation {close} {producerId} />
 	{:else}
 		<div transition:fly|local={{ x: 200, duration: 300 }}>
 			<Chat 

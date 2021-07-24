@@ -33,6 +33,7 @@ import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurc
 import Recalls from "./../routes/recalls/Recalls.svelte";
 import MyRecalls from "./../routes/my-recalls/MyRecalls.svelte";
 import Retrievals from "./../routes/retrievals/Retrievals.svelte";
+import StoreTraceability from "./../routes/storeTraceability/StoreTraceability.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -65,6 +66,7 @@ import ExpectedDeliveriesRoutes from "../routes/expected-deliveries/routes";
 import RecallRoutes from "../routes/recalls/routes";
 import MyRecallRoutes from "../routes/my-recalls/routes";
 import RetrievalRoutes from "../routes/retrievals/routes";
+import StoreTraceabilityRoutes from "../routes/storeTraceability/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -246,6 +248,17 @@ class SheaftGuard {
 				() =>
 					this.handleRouteNavigation(
 						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(BatchesRoutes.Roles),
+						true
+					),
+			],
+		});
+		this.routes[`${StoreTraceabilityRoutes.Prefix}/*`] = wrap({
+			component: StoreTraceability,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(StoreTraceabilityRoutes.Roles),
 						true
 					),
 			],

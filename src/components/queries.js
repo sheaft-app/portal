@@ -14,12 +14,10 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_STORE_PRODUCERS = gql`
-	query GetStoreProducers {
-		tags(where: { kind: { in: [CATEGORY] } }) {
-			nodes {
+	query GetStoreProducers($id: ID!) {
+		store(id: $id) {
+			producers {
 				id
-				kind
-				icon
 				name
 			}
 		}
@@ -103,24 +101,34 @@ export const GET_BUSINESS_CLOSINGS = gql`
 `;
 
 export const GET_OBSERVATIONS = gql`
-	query GetObservations {
-		observations {
+	query GetObservations($producerId: ID) {
+		observations(producerId: $producerId, order: { updatedOn: ASC }) {
 			nodes {
 				id
 				comment
 				user {
 					id
+					kind
 					picture
 					name
 				}
 				createdOn
 				updatedOn
+				batches {
+					id
+					number
+				}
+				products {
+					id
+					name
+				}
 				replies {
 					id
 					comment
 					user {
 						id
 						picture
+						kind
 						name
 					}
 					createdOn

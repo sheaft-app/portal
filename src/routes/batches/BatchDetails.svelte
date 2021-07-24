@@ -56,7 +56,7 @@
 			>
 				<p class="uppercase font-bold leading-none">Des observations ont été remontées !</p>
 				<div class="mt-2">
-					<p>Des observations ont été remontées par un ou plusieurs magasins concernant ce lot.</p>
+					<p>Des observations ont été remontées par vous ou par un ou plusieurs magasins concernant ce lot.</p>
 					<p>Vous pouvez les consulter en cliquant sur le bouton ci-dessous.</p>
 					<button class="btn btn-outline btn-lg mt-2" on:click={() => displayObservationsPanel = true}>Voir les observations</button>
 				</div>

@@ -19,15 +19,25 @@ export const REPLY_TO_OBSERVATION = gql`
 			user {
 				id
 				picture
+				kind
 				name
 			}
 			createdOn
 			updatedOn
+			batches {
+				id
+				number
+				products {
+					id
+					name
+				}
+			}
 			replies {
 				id
 				comment
 				user {
 					id
+					kind
 					picture
 					name
 				}
@@ -50,6 +60,14 @@ export const CREATE_OBSERVATION = gql`
 			}
 			createdOn
 			updatedOn
+			batches {
+				id
+				number
+				products {
+					id
+					name
+				}
+			}
 			replies {
 				id
 				comment

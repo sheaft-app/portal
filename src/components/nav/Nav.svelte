@@ -41,6 +41,7 @@
 	import RecallRoutes from "../../routes/recalls/routes";
 	import MyRecallRoutes from "../../routes/my-recalls/routes";
 	import RetrievalRoutes from "../../routes/retrievals/routes";
+	import StoreTraceabilityRoutes from "../../routes/storeTraceability/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -335,6 +336,7 @@
 					<hr class="my-2 mx-4" />
 					<!--					Tracabilité-->
 					<NavLink route={MyRecallRoutes.List} />
+					<NavLink route={StoreTraceabilityRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
 					<NavLink route={AgreementRoutes.List} />

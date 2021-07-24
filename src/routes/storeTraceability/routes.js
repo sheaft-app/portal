@@ -3,20 +3,18 @@ import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import { faFileSignature } from "@fortawesome/free-solid-svg-icons";
 
-const prefix = "/traceability";
+const prefix = "/store-traceability";
 
-const batches = "/";
+const traceability = "/";
 
-const batchDetails = "/batch/:id";
-
-const BatchesRoutes = {
+const StoreTraceabilityRoutes = {
 	Prefix: `${prefix}`,
-	Roles: [Roles.Producer.Value, Roles.Store.Value, Roles.Support.Value],
+	Roles: [Roles.Store.Value, Roles.Support.Value],
 	List: {
 		Name: "Traçabilité",
 		Icon: faFileSignature,
-		Path: `${prefix}${batches}`,
-		SubPart: `${batches}`,
+		Path: `${prefix}${traceability}`,
+		SubPart: `${traceability}`,
 		Params: {
 			Query: {
 				cursor: null,
@@ -28,16 +26,7 @@ const BatchesRoutes = {
 				whereValues: null,
 			},
 		},
-	},
-	BatchDetails: {
-		Name: "Détails lot",
-		Icon: null,
-		Path: `${prefix}${batchDetails}`,
-		SubPart: `${batchDetails}`,
-		Params: {
-			id: null,
-		},
 	}
 };
 
-export default BatchesRoutes;
+export default StoreTraceabilityRoutes;
