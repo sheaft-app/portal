@@ -21,7 +21,7 @@
 
 	let isLoading = true;
 
-	const actions = [
+	$: actions = [
 		{
 			click: () => handleCreateDeliveryBatch(),
 			disabled: $items.length < 1,

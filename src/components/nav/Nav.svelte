@@ -39,6 +39,7 @@
 	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
 	import RecallRoutes from "../../routes/recalls/routes";
 	import MyRecallRoutes from "../../routes/my-recalls/routes";
+	import RetrievalRoutes from "../../routes/retrievals/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -341,6 +342,7 @@
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
 					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={PickingRoutes.List} />
+					<NavLink route={RetrievalRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
