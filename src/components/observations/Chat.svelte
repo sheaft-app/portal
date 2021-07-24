@@ -72,21 +72,23 @@
 		<p><span class="font-semibold">Produits concernés :</span>
 			{observation.products.map(b => b.name).join(', ')}
 		</p>
-		<p class="mt-2"><span class="font-semibold">Lots concernés :</span>
-			{#if authInstance.isInRole([Roles.Producer.Value])}
-				{#each observation.batches as batch, index}
-					{#if index == observation.batches.length - 1 && observation.batches.length > 1}
-						<span>et </span>
-					{/if}
-					<span class="btn-link" on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}>{batch.number}</span>
-					{#if index !== observation.batches.length - 1 && index !== observation.batches.length - 2}
-						<span>&#44; </span>
-					{/if}
-				{/each}
-			{:else}
-				{observation.batches.map(b => b.number).join(', ')}
-			{/if}
-		</p>
+		{#if observation.batches.length > 0}
+			<p class="mt-2"><span class="font-semibold">Lots concernés :</span>
+				{#if authInstance.isInRole([Roles.Producer.Value])}
+					{#each observation.batches as batch, index}
+						{#if index == observation.batches.length - 1 && observation.batches.length > 1}
+							<span>et </span>
+						{/if}
+						<span class="btn-link" on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}>{batch.number}</span>
+						{#if index !== observation.batches.length - 1 && index !== observation.batches.length - 2}
+							<span>&#44; </span>
+						{/if}
+					{/each}
+				{:else}
+					{observation.batches.map(b => b.number).join(', ')}
+				{/if}
+			</p>
+		{/if}
 		{#each allReplies as reply, index}
 			<div class="chat-message">
 				<div class="flex items-end" class:justify-end={reply.user.id == authInstance.user.id}>

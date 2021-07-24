@@ -51,7 +51,7 @@
 		await mutate({
 			mutation: CREATE_OBSERVATION,
 			variables: { 
-				batchIds: newObservation.batches.map(b => b.id),
+				batchIds: newObservation.batches ? newObservation.batches.map(b => b.id) : [],
                 productIds: newObservation.products.map(p => p.id),
                 visibleToAll: authInstance.isInRole([Roles.Producer.Value]),
 				comment: newObservation.comment
@@ -82,7 +82,7 @@
         }, []).filter((value, index, array) => array.findIndex(batch => batch.id === value.id) === index);
     }
 
-    $: isValid = newObservation.batches.length > 0 && newObservation.products.length > 0 && newObservation.comment !== null;
+    $: isValid = newObservation.products.length > 0 && newObservation.comment;
 </script>
 
 <div class="form-control">
@@ -109,7 +109,15 @@
     </div>
 </div>
 <div class="form-control">
-    <label>Lots *</label>
+    <label>Commentaire *</label>
+    <textarea
+        bind:value={newObservation.comment}
+        disabled={isSubmitting}
+        class:skeleton-box={isSubmitting}
+    />
+</div>
+<div class="form-control">
+    <label>Lots</label>
     <div class="themed w-full">
         <Select
             items={batches}
@@ -129,14 +137,6 @@
             containerStyles="font-weight: 600; color: #4a5568;"
         />
     </div>
-</div>
-<div class="form-control">
-    <label>Commentaire *</label>
-    <textarea
-        bind:value={newObservation.comment}
-        disabled={isSubmitting}
-        class:skeleton-box={isSubmitting}
-    />
 </div>
 <p class="text-small">* champs requis</p>
 <button on:click={handleCreateObservation} class="btn btn-primary btn-lg mt-2" class:disabled={isSubmitting || !isValid} disabled={isSubmitting || !isValid}>
