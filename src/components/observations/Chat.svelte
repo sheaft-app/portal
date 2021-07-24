@@ -1,6 +1,7 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import { REPLY_TO_OBSERVATION } from "../mutations";
+	import { GET_OBSERVATIONS } from "../queries";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import omit from "lodash/omit";
 	import { format } from "date-fns";
@@ -41,12 +42,13 @@
 			},
 			errorsHandler,
 			errorNotification: "Impossible de répondre à l'observation",
+			clearCache: [GET_OBSERVATIONS, observation.id]
 		});
 		isSubmitting = false;
 	};
 </script>
 
-<div class="h-screen">
+<div>
 	<div class="flex justify-between py-3 border-b-2 border-gray-200">
 		<div class="flex items-center space-x-4">
 			<img

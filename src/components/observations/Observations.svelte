@@ -11,6 +11,9 @@
 	import fr from "date-fns/locale/fr";
 	import { portal } from "svelte-portal";
 	import CreateObservation from "./CreateObservation.svelte";
+	import { flip } from 'svelte/animate';
+	import { quintOut } from 'svelte/easing';
+	import { crossfade } from 'svelte/transition';
 	
 	export let producerId = null;
 	export let observations = [];
@@ -23,6 +26,24 @@
 	let isLoading = false;
 	let selectedObservation = null;
 	let createObservation = false;
+
+	const [send, receive] = crossfade({
+		duration: d => Math.sqrt(d * 200),
+
+		fallback(node, params) {
+			const style = getComputedStyle(node);
+			const transform = style.transform === 'none' ? '' : style.transform;
+
+			return {
+				duration: 300,
+				easing: quintOut,
+				css: t => `
+					transform: ${transform} scale(${t});
+					opacity: ${t}
+				`
+			};
+		}
+	});
 
 	var popStateListener = (event) => {
 		if (selectedObservation) {
@@ -74,7 +95,7 @@
 
 <div
 	transition:fly|local={{ x: -600, duration: 300 }}
-	class="fixed active overflow-y-scroll overflow-x-hidden shadow left-0 top-0
+	class="fixed active overflow-x-hidden shadow left-0 top-0
 		h-screen observations-panel bg-white px-4"
 	style="z-index: 10; padding-bottom: 70px;"
 >
@@ -96,10 +117,13 @@
 	{#if isLoading}
 		<p>Chargement...</p>
 	{:else if !selectedObservation && !createObservation}
-		<div in:fly|local={{ x: 200, duration: 300 }}>
+		<div>
 			<button class="btn btn-accent btn-lg mb-2" on:click={() => createObservation = true}>Créer une observation</button>
-			{#each observations as observation}
-				<div class="flex bg-white shadow px-4 py-2 rounded hover:bg-gray-100 cursor-pointer mb-2 items-center" 
+			{#each observations as observation (observation.id)}
+				<div
+					animate:flip 
+					in:receive="{{key: observation.id}}"
+					class="flex bg-white shadow px-4 py-2 rounded hover:bg-gray-100 cursor-pointer mb-2 items-center" 
 					on:click={() => selectObservation(observation)}>
 					<div class="w-1/12">
 						<img
@@ -127,7 +151,7 @@
 	{:else if createObservation}
 		<CreateObservation {close} {producerId} />
 	{:else}
-		<div transition:fly|local={{ x: 200, duration: 300 }}>
+		<div in:receive="{{key: selectedObservation}}">
 			<Chat 
 				on:previous={() => selectedObservation = null} 
 				observation={selectedObservation} 
