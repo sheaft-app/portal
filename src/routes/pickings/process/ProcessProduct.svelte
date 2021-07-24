@@ -5,7 +5,7 @@
 	import { SET_PICKING_PRODUCT_PREPARED_QUANTITY } from "../mutations";
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import SheaftErrors from "../../../services/SheaftErrors";
-	import ProductCounter from "../../deliveryBatches/process/ProductCounter.svelte";
+	import ProductCounter from "../../delivery-batches/process/ProductCounter.svelte";
 	import { denormalizeProduct } from "../pickingForm";
 	import PickingRoutes from "../routes";
 	import TransitionWrapper from "../../../components/TransitionWrapper.svelte";

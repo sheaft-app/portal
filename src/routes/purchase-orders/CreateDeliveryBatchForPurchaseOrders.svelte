@@ -6,7 +6,7 @@
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import { GET_ORDERS } from "./queries";
 	import { getContext, onMount } from "svelte";
-	import DeliveryBatchesRoutes from "../deliveryBatches/routes";
+	import DeliveryBatchesRoutes from "../delivery-batches/routes";
 
 	export let onClose, close, purchaseOrders;
 

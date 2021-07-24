@@ -33,7 +33,7 @@
 	import { config } from "../../configs/config";
 	import SheaftSvg from "./SheaftSvg.svelte";
 	import ExternalRoutes from "../../routes/external/routes";
-	import DeliveryBatchesRoutes from "../../routes/deliveryBatches/routes";
+	import DeliveryBatchesRoutes from "../../routes/delivery-batches/routes";
 	import PickingRoutes from "../../routes/pickings/routes";
 	import BillingRoutes from "../../routes/billings/routes";
 	import ExpectedDeliveriesRoutes from "../../routes/expected-deliveries/routes";
