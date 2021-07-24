@@ -334,9 +334,8 @@
 					<NavLink route={MyOrderRoutes.List} />
 					<NavLink route={ExpectedDeliveriesRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
-					<NavLink route={MyRecallRoutes.List} />
 					<NavLink route={StoreTraceabilityRoutes.List} />
+					<NavLink route={MyRecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
 					<NavLink route={AgreementRoutes.List} />
@@ -349,13 +348,12 @@
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
+					<NavLink route={BatchesRoutes.List} />
 					<NavLink route={RecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
 					<NavLink route={CatalogRoutes.List} />
 					<NavLink route={ReturnableRoutes.List} />
-					<NavLink route={BatchesRoutes.List} />
 					<NavLink route={SellingPointRoutes.List} />
 					<NavLink route={DeliveryRoutes.List} />
 					<!--					<NavLink route={SearchStoreRoutes.Search} />-->

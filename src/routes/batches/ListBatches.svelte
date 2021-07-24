@@ -20,20 +20,19 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Lot", sortLabel: "name" }, { name: "DLC/DDM" }];
+	const headers = [{ name: "Lot", sortLabel: "number" }, { name: "DLC/DDM" }];
 
 	let displayObservationsPanel = false;
 
 	const actions = [
 		{
-			click: () => displayObservationsPanel = true,
+			click: () => (displayObservationsPanel = true),
 			text: "Voir la liste des observations",
 			icon: faEye,
 			color: "blue",
 		},
 	];
 </script>
-
 
 <TransitionWrapper>
 	<PageHeader name="Traçabilité - Lots" />
@@ -71,7 +70,5 @@
 </TransitionWrapper>
 
 {#if displayObservationsPanel}
-	<Observations 
-		on:close={() => displayObservationsPanel = false}
-	/>
+	<Observations on:close={() => (displayObservationsPanel = false)} />
 {/if}
