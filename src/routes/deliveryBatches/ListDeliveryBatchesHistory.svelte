@@ -21,7 +21,7 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Démarée le" }, { name: "Complétée le" }];
+	const headers = [{ name: "Tournée", sortLabel: "name" }, { name: "Démarée le" }, { name: "Terminée le" }];
 
 	const actions = [
 		{

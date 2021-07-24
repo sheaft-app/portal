@@ -44,7 +44,9 @@ export const canAcceptOrder = (o) => o && o.status === PurchaseOrderStatusKind.W
 export const canRefuseOrder = (o) => o && o.status === PurchaseOrderStatusKind.Waiting.Value;
 
 export const canProcessOrder = (o) =>
-	o && (o.status === PurchaseOrderStatusKind.Accepted.Value || o.status === PurchaseOrderStatusKind.Waiting.Value);
+	o &&
+	(o.status === PurchaseOrderStatusKind.Accepted.Value || o.status === PurchaseOrderStatusKind.Waiting.Value) &&
+	!o.preparation;
 
 export const canCompleteOrder = (o) => o && o.status === PurchaseOrderStatusKind.Processing.Value;
 

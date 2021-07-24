@@ -15,7 +15,6 @@ export const PurchaseOrderStatus = {
 	ACCEPTED: "ACCEPTED",
 	PROCESSING: "PROCESSING",
 	COMPLETED: "COMPLETED",
-	SHIPPING: "SHIPPING",
 	DELIVERED: "DELIVERED",
 	REFUSED: "REFUSED",
 	CANCELLED: "CANCELLED",
@@ -37,7 +36,7 @@ let enums = {
 		Label: "Acceptée",
 		Icon: faThumbsUp,
 		Color: "green-500",
-		List: false,
+		List: true,
 	},
 	Processing: {
 		Value: "PROCESSING",
@@ -52,13 +51,6 @@ let enums = {
 		Icon: faCheck,
 		Color: "green-500",
 		List: true,
-	},
-	Shipping: {
-		Value: "SHIPPING",
-		Label: "En livraison",
-		Icon: faTruck,
-		Color: "green-500",
-		List: false,
 	},
 	Delivered: {
 		Value: "DELIVERED",
@@ -93,7 +85,7 @@ let enums = {
 		Label: "Expirée",
 		Icon: faTimes,
 		Color: "gray-600",
-		List: false,
+		List: true,
 	},
 	None: {
 		Value: "NONE",

@@ -42,7 +42,7 @@
 					return acc;
 				}, []),
 			},
-			success: async (res) => await routerInstance.goTo(PickingRoutes.Edit, { id: res.id }),
+			success: async (res) => await routerInstance.goTo(PickingRoutes.List),
 			errorsHandler,
 			errorNotification: "Impossible de créer la préparation",
 			clearCache: [GET_AVAILABLE_PICKINGS, GET_PICKINGS],
