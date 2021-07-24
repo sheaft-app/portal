@@ -6,10 +6,10 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import GetRouterInstance from "../../services/SheaftRouter";
-	import PreparationRoutes from "./routes";
+	import PickingRoutes from "./routes";
 	import Icon from "svelte-awesome";
 	import { faEye } from "@fortawesome/free-solid-svg-icons";
-	import { denormalizePreparationProducts } from "./preparationForm";
+	import { denormalizePickingProducts } from "./pickingForm";
 	import PickingStatus from "../../enums/PickingStatus";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
@@ -20,7 +20,7 @@
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
-	let preparation;
+	let picking;
 	let isLoading = true;
 
 	onMount(async () => {
@@ -30,12 +30,12 @@
 			variables: { id: params.id },
 			errorsHandler,
 			success: (res) => {
-				preparation = {
+				picking = {
 					...res,
-					products: denormalizePreparationProducts(res.productsToPrepare, res.preparedProducts)
+					products: denormalizePickingProducts(res.productsToPrepare, res.preparedProducts),
 				};
 			},
-			error: () => routerInstance.goTo(PreparationRoutes.History),
+			error: () => routerInstance.goTo(PickingRoutes.History),
 			errorNotification: "Impossible de récupérer l'état de la préparation, retour à l'accueil.",
 		});
 		isLoading = false;
@@ -43,15 +43,10 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Résumé de la préparation" previousPage={PreparationRoutes.History}>
-		{#if preparation?.preparationUrl}
+	<PageHeader name="Résumé de la préparation" previousPage={PickingRoutes.History}>
+		{#if picking?.pickingUrl}
 			<div class="mt-2">
-				<a
-					target="_blank"
-					href={preparation.preparationUrl}
-					class="btn btn-outline btn-lg"
-					style="display: inline-block;"
-				>
+				<a target="_blank" href={picking.pickingUrl} class="btn btn-outline btn-lg" style="display: inline-block;">
 					<Icon data={faEye} class="mr-2" />
 					Voir le bon de préparation
 				</a>
@@ -60,30 +55,30 @@
 	</PageHeader>
 	<PageBody {errorsHandler} {isLoading}>
 		<p class="text-2xl font-semibold">
-			{preparation.name} :
-			<span class="uppercase" class:text-primary={preparation.status == PickingStatus.Completed.Value}>
-				{PickingStatus.label(preparation.status)}
+			{picking.name} :
+			<span class="uppercase" class:text-primary={picking.status == PickingStatus.Completed.Value}>
+				{PickingStatus.label(picking.status)}
 			</span>
 		</p>
 		<p>
-			débutée le {format(new Date(preparation.startedOn), "PPPP", { locale: fr })}
+			débutée le {format(new Date(picking.startedOn), "PPPP", { locale: fr })}
 		</p>
-		<p>complétée le {format(new Date(preparation.completedOn), "PPPP", { locale: fr })}</p>
+		<p>complétée le {format(new Date(picking.completedOn), "PPPP", { locale: fr })}</p>
 		<div class="grid grid-cols-2 md:grid-cols-3 mt-3 shadow py-2 m-auto">
 			<div class="text-center">
-				<p class="text-green-500 font-semibold text-2xl">{preparation.productsToPrepareCount}</p>
+				<p class="text-green-500 font-semibold text-2xl">{picking.productsToPrepareCount}</p>
 				<p>Produits à préparer</p>
 			</div>
 			<div class="text-center">
-				<p class="text-green-500 font-semibold text-2xl">{preparation.productsPreparedCount}</p>
+				<p class="text-green-500 font-semibold text-2xl">{picking.productsPreparedCount}</p>
 				<p>Produits préparés</p>
 			</div>
 			<div class="text-center">
-				<p class="text-green-500 font-semibold text-2xl">{preparation.purchaseOrdersCount}</p>
+				<p class="text-green-500 font-semibold text-2xl">{picking.purchaseOrdersCount}</p>
 				<p>Commandes</p>
 			</div>
 		</div>
-		{#each preparation.products as product (product.id)}
+		{#each picking.products as product (product.id)}
 			<div class="px-4 bg-white mb-3 mt-3 rounded-lg shadow py-3">
 				<p class="font-semibold text-xl">{product.name}</p>
 				<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5 mt-2">

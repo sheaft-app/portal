@@ -3,7 +3,7 @@
 	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
 	import { GET_PICKINGS, GET_PICKING_DETAILS } from "./queries";
 	import { START_PICKING } from "./mutations";
-	import PreparationRoutes from "./routes";
+	import PickingRoutes from "./routes";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -22,7 +22,7 @@
 			mutation: START_PICKING,
 			variables: { id },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(PreparationRoutes.Process, { id: res.id }),
+			success: (res) => routerInstance.goTo(PickingRoutes.Process, { id: res.id }),
 			successNotification: "Préparation commencée !",
 			errorNotification: "Impossible de commencer la préparation",
 			clearCache: [GET_PICKINGS, id],

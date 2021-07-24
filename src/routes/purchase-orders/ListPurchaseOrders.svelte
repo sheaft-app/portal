@@ -14,7 +14,7 @@
 	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
 	import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
 	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
-	import CreatePreparationForPurchaseOrders from "./CreatePreparationForPurchaseOrders.svelte";
+	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
 	import Select from "./../../components/controls/select/Select.js";
 	import {
@@ -98,7 +98,7 @@
 
 	const acceptOrders = () => handleOrdersModal(AcceptPurchaseOrders);
 
-	const processOrders = () => handleOrdersModal(CreatePreparationForPurchaseOrders);
+	const processOrders = () => handleOrdersModal(CreatePickingForPurchaseOrders);
 
 	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
 

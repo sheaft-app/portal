@@ -26,7 +26,7 @@ import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/deliveryBatches/DeliveryBatches.svelte";
-import Preparation from "./../routes/preparation/Preparation.svelte";
+import Pickings from "./../routes/pickings/Pickings.svelte";
 import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
 import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
 import Recalls from "./../routes/recalls/Recalls.svelte";
@@ -55,7 +55,7 @@ import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/deliveryBatches/routes";
-import PreparationRoutes from "../routes/preparation/routes";
+import PickingRoutes from "../routes/pickings/routes";
 import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
 import ExpectedDeliveriesRoutes from "../routes/expected-deliveries/routes";
@@ -217,13 +217,13 @@ class SheaftGuard {
 					),
 			],
 		});
-		this.routes[`${PreparationRoutes.Prefix}/*`] = wrap({
-			component: Preparation,
+		this.routes[`${PickingRoutes.Prefix}/*`] = wrap({
+			component: Pickings,
 			customData: null,
 			conditions: [
 				() =>
 					this.handleRouteNavigation(
-						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(PreparationRoutes.Roles),
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(PickingRoutes.Roles),
 						true
 					),
 			],

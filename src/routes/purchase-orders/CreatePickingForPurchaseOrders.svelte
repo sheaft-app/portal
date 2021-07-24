@@ -1,12 +1,12 @@
 <script>
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import { CREATE_PREPARATION } from "./mutations.js";
+	import { CREATE_PICKING } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import GetRouterInstance from "./../../services/SheaftRouter";
 	import { GET_ORDERS } from "./queries";
 	import { getContext } from "svelte";
-	import PreparationRoutes from "../preparation/routes";
+	import PickingRoutes from "../pickings/routes";
 
 	export let onClose, close, purchaseOrders;
 
@@ -19,12 +19,12 @@
 	const handleSubmit = async () => {
 		isLoading = true;
 		await mutate({
-			mutation: CREATE_PREPARATION,
+			mutation: CREATE_PICKING,
 			variables: {
 				autostart: true,
 				purchaseOrderIds: purchaseOrders.map((po) => po.id),
 			},
-			success: async (res) => await routerInstance.goTo(PreparationRoutes.Edit, { id: res.id }),
+			success: async (res) => await routerInstance.goTo(PickingRoutes.Edit, { id: res.id }),
 			errorsHandler,
 			errorNotification: "Impossible de créer la préparation",
 			clearCache: [GET_ORDERS],

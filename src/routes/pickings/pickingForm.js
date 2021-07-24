@@ -45,7 +45,7 @@ export const denormalizeProduct = (products, productsPrepared) => {
 	return product;
 };
 
-export const denormalizePreparationProducts = (products, productsPrepared) =>
+export const denormalizePickingProducts = (products, productsPrepared) =>
 	products.reduce((acc, curr) => {
 		if (!acc.find((p) => p.id == curr.productId)) {
 			acc = [

@@ -5,12 +5,12 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import ChooseAvailablePreparationModal from "./ChooseAvailablePreparationModal.svelte";
-	import PreparationItem from "./PreparationItem.svelte";
+	import ChooseAvailablePickingModal from "./ChooseAvailablePickingModal.svelte";
+	import PickingItem from "./PickingItem.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
 	import { writable } from "svelte/store";
 	import { faPlay, faHistory } from "@fortawesome/free-solid-svg-icons";
-	import PreparationRoutes from "./routes";
+	import PickingRoutes from "./routes";
 	import GetRouterInstance from "../../services/SheaftRouter";
 
 	const routerInstance = GetRouterInstance();
@@ -23,7 +23,7 @@
 
 	const actions = [
 		{
-			click: () => handleCreatePreparation(),
+			click: () => handleCreatePicking(),
 			disabled: $items.length < 1,
 			text: "Lancer une préparation",
 			icon: faPlay,
@@ -31,7 +31,7 @@
 			hideIfDisabled: true,
 		},
 		{
-			click: () => routerInstance.goTo(PreparationRoutes.History),
+			click: () => routerInstance.goTo(PickingRoutes.History),
 			text: "Voir l'historique",
 			icon: faHistory,
 			color: "blue",
@@ -49,7 +49,7 @@
 		isLoading = false;
 	});
 
-	const handleCreatePreparation = () => open(ChooseAvailablePreparationModal);
+	const handleCreatePicking = () => open(ChooseAvailablePickingModal);
 </script>
 
 <TransitionWrapper>
@@ -64,15 +64,13 @@
 		<Actions {actions} />
 		{#if $items.length > 0}
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-32">
-				{#each $items as preparation}
-					<PreparationItem {preparation} />
+				{#each $items as picking}
+					<PickingItem {picking} />
 				{/each}
 			</div>
 		{:else}
 			<p class="text-center">Aucune préparation en cours</p>
-			<button on:click={handleCreatePreparation} class="btn btn-lg btn-accent m-auto mt-4"
-				>Lancer une préparation</button
-			>
+			<button on:click={handleCreatePicking} class="btn btn-lg btn-accent m-auto mt-4">Lancer une préparation</button>
 		{/if}
 	</PageBody>
 </TransitionWrapper>

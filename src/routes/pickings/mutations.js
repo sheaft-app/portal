@@ -1,15 +1,15 @@
 import gql from "graphql-tag";
 
-export const CREATE_PREPARATION = gql`
-	mutation CreatePreparation($input: CreatePickingInput) {
+export const CREATE_PICKING = gql`
+	mutation CreatePicking($input: CreatePickingInput) {
 		createPicking(input: $input) {
 			id
 		}
 	}
 `;
 
-export const UPDATE_PREPARATION = gql`
-	mutation UpdatePreparation($input: UpdatePickingInput) {
+export const UPDATE_PICKING = gql`
+	mutation UpdatePicking($input: UpdatePickingInput) {
 		updatePicking(input: $input) {
 			id
 		}

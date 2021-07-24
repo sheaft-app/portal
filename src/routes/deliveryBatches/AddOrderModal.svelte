@@ -47,7 +47,7 @@
 
 	const handleSubmit = async () => {
 		let deliveriesToSend = deliveryBatch.deliveries.map((o) => ({
-			clientId: o.client.Id,
+			clientId: o.client.id,
 			position: o.position,
 			purchaseOrderIds: o.purchaseOrders.map((p) => p.id),
 		}));
