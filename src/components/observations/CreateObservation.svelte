@@ -48,6 +48,7 @@
 
     const handleCreateObservation = async () => {
         isSubmitting = true;
+
 		await mutate({
 			mutation: CREATE_OBSERVATION,
 			variables: { 
@@ -82,7 +83,7 @@
         }, []).filter((value, index, array) => array.findIndex(batch => batch.id === value.id) === index);
     }
 
-    $: isValid = newObservation.products.length > 0 && newObservation.comment;
+    $: isValid = newObservation.products && newObservation.products.length > 0 && newObservation.comment;
 </script>
 
 <div class="form-control">
