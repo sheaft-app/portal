@@ -38,7 +38,8 @@
 			},
 			success: (res) => {
 				value = null;
-				allReplies = [omit(res, ["replies"]), ...res.replies];
+				observation.replies = res.replies;
+				allReplies = [omit(observation, ["replies"]), ...observation.replies];
 			},
 			errorsHandler,
 			errorNotification: "Impossible de répondre à l'observation",

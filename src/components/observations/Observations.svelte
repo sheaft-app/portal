@@ -154,7 +154,7 @@
 		<div in:receive="{{key: selectedObservation}}">
 			<Chat 
 				on:previous={() => selectedObservation = null} 
-				observation={selectedObservation} 
+				bind:observation={selectedObservation} 
 			/>
 		</div>
 	{/if}
