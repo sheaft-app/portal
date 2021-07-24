@@ -8,17 +8,19 @@
 	import Icon from "svelte-awesome";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
-  	import { portal } from "svelte-portal";
+	import { portal } from "svelte-portal";
+	import CreateObservation from "./CreateObservation.svelte";
 	
 	export let observations = [];
 	export let title = "Observations";
 
 	const dispatch = createEventDispatcher();
 	const errorsHandler = new SheaftErrors();
-	const { query } = getContext("api");
+	const { query, mutate } = getContext("api");
 
 	let isLoading = false;
 	let selectedObservation = null;
+	let createObservation = false;
 
 	var popStateListener = (event) => {
 		if (selectedObservation) {
@@ -64,8 +66,8 @@
 	style="z-index: 10; padding-bottom: 70px;"
 >
 	<div class="mb-3 mt-3">
-		{#if selectedObservation}
-			<button class="text-gray-600 items-center flex uppercase" on:click={() => selectedObservation = null}>
+		{#if selectedObservation || createObservation}
+			<button class="text-gray-600 items-center flex uppercase" on:click={() => { selectedObservation = null; createObservation = false; }}>
 				<Icon data={faChevronLeft} class="mr-2 inline" />
 				Retour
 			</button>
@@ -80,8 +82,9 @@
 	<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 	{#if isLoading}
 		<p>Chargement...</p>
-	{:else if !selectedObservation}
+	{:else if !selectedObservation && !createObservation}
 		<div in:fly|local={{ x: 200, duration: 300 }}>
+			<button class="btn btn-accent btn-lg mb-2" on:click={() => createObservation = true}>Créer une observation</button>
 			{#each observations as observation}
 				<div class="flex bg-white shadow px-4 py-2 rounded hover:bg-gray-100 cursor-pointer mb-2 items-center" 
 					on:click={() => selectObservation(observation)}>
@@ -108,6 +111,8 @@
 				<p>Aucune observation remontée.</p>
 			{/each}
 		</div>
+	{:else if createObservation}
+		<CreateObservation {close} />
 	{:else}
 		<div transition:fly|local={{ x: 200, duration: 300 }}>
 			<Chat 

@@ -37,3 +37,30 @@ export const REPLY_TO_OBSERVATION = gql`
 		}
 	}
 `
+
+export const CREATE_OBSERVATION = gql`
+	mutation CreateObservation($input: CreateObservationInput!) {
+		createObservation(input: $input) {
+			id
+			comment
+			user {
+				id
+				picture
+				name
+			}
+			createdOn
+			updatedOn
+			replies {
+				id
+				comment
+				user {
+					id
+					picture
+					name
+				}
+				createdOn
+				updatedOn
+			}
+		}
+	}
+`

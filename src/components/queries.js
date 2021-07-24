@@ -13,6 +13,19 @@ export const GET_CATEGORIES = gql`
 	}
 `;
 
+export const GET_STORE_PRODUCERS = gql`
+	query GetStoreProducers {
+		tags(where: { kind: { in: [CATEGORY] } }) {
+			nodes {
+				id
+				kind
+				icon
+				name
+			}
+		}
+	}
+`;
+
 export const GET_COUNTRIES = gql`
 	query GetCountries {
 		countries {
@@ -48,6 +61,29 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				conditioning
 				unit
 				available
+				batches {
+					id
+					number
+				}
+			}
+		}
+	}
+`;
+
+export const GET_PRODUCTS_WITH_BATCHES = gql`
+	query GetProductBatches {
+		products {
+			nodes {
+				id
+				name
+				quantityPerUnit
+				conditioning
+				unit
+				available
+				batches {
+					id
+					number
+				}
 			}
 		}
 	}
