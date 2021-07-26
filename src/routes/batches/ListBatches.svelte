@@ -1,5 +1,5 @@
 <script>
-	import { faClock, faEye } from "@fortawesome/free-solid-svg-icons";
+	import { faClock, faEye, faPlus } from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -12,9 +12,12 @@
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 	import Observations from "../../components/observations/Observations.svelte";
+	import CreateBatchModal from "./../pickings/process/CreateBatchModal.svelte";
+	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
+	const { open } = getContext("modal");
 
 	let isLoading = true;
 	let items = [];
@@ -26,11 +29,21 @@
 
 	const actions = [
 		{
+			click: () => open(CreateBatchModal, { 
+				onClose: (res) => {
+					items = [res, ...items];
+				}
+			}),
+			text: "Créer un nouveau lot",
+			icon: faPlus,
+			color: "green"
+		},
+		{
 			click: () => (displayObservationsPanel = true),
 			text: "Voir la liste des observations",
 			icon: faEye,
 			color: "blue",
-		},
+		}
 	];
 </script>
 

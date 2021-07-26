@@ -47,6 +47,7 @@ export const CREATE_BATCH = gql`
 			number
 			dlc
 			ddm
+			createdOn
 		}
 	}
 `;
