@@ -3,10 +3,10 @@ node_modules
 yarn.lock
 dist/
 DevProfile*
-public/sw.*
-public/workbox-*
 src/configs/config.js
 .history
 .idea
 *.log
 .vs
+public/*.js
+public/*.js.map

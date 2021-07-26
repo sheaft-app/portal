@@ -120,7 +120,6 @@
 
 		if (signalrInstance) await signalrInstance.stop();
 	});
-
 </script>
 
 {#if !$authInitialized || isLoading}
@@ -162,7 +161,6 @@
 							stroke-linejoin: round;
 							stroke-width: 3px;
 						}
-
 					</style>
 				</defs>
 				<title>FAVICON_SHEAFT_V1_white</title>
@@ -209,7 +207,11 @@
 		class:reset-margin={!$authRegistered || authInstance.isInRole([Roles.Consumer.Value]) || $fullScreenMap}
 	>
 		<Modal>
-			<div class={`${$fullScreenMap ? '' : 'p-4 md:px-6 md:py-4 lg:px-8 lg:py-4'} h-full`} id="main-content" class:noNav={!$authRegistered || $fullScreenMap}>
+			<div
+				class={`${$fullScreenMap ? "" : "p-4 md:px-6 md:py-4 lg:px-8 lg:py-4"} h-full`}
+				id="main-content"
+				class:noNav={!$authRegistered || $fullScreenMap}
+			>
 				<Router routes={guardInstance.routes} />
 			</div>
 		</Modal>
@@ -865,18 +867,17 @@
 		visibility: hidden;
 		opacity: 0;
 	}
-    .bottom-cta {
-        left: 0;
-        bottom: 0;
+	.bottom-cta {
+		left: 0;
+		bottom: 0;
 		padding-bottom: 20px;
 		padding-top: 20px;
-    	background-color: #fbfbfb;
-        margin: 0 auto;
-        text-align: center;
+		background-color: #fbfbfb;
+		margin: 0 auto;
+		text-align: center;
 		@apply fixed;
 		@media (min-width: 1024px) {
 			@apply absolute;
 		}
-
-    }
+	}
 </style>

@@ -13,11 +13,11 @@
 
 	let authSettings = config.auth.settings;
 	authSettings.userStore = new Oidc.WebStorageStateStore({ store: window.localStorage });
-
+  
 	const authInstance = InitAuth(authSettings);
 	const notificationsInstance = InitNotifications({
 		duration: 6000,
-		ripple: true,
+		ripple: true, 
 		dismissible: true,
 		position: { x: "right", y: "top" },
 	});
