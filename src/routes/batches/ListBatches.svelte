@@ -74,7 +74,7 @@
 				{#if batch.dlc}
 					<p>{format(new Date(batch.dlc), "PPPP", { locale: fr })}</p>
 				{/if}
-				{#if batch.dluo}
+				{#if batch.ddm}
 					<p>{format(new Date(batch.ddm), "PPPP", { locale: fr })}</p>
 				{/if}
 			</td>
