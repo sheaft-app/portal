@@ -19,6 +19,7 @@
 		isLoading = false;
 
 	const handleSubmit = async () => {
+		isLoading = true;
 		await mutate({
 			mutation: CREATE_BATCH,
 			variables: {
@@ -31,9 +32,11 @@
 				await onClose(res);
 				close();
 			},
+			successNotification: "Lot créé avec succès",
 			errorNotification: "Impossible de créer le lot",
 			clearCache: [GET_BATCHES],
 		});
+		isLoading = false;
 	};
 </script>
 

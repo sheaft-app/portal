@@ -13,6 +13,17 @@ export const GET_CATEGORIES = gql`
 	}
 `;
 
+export const GET_STORE_PRODUCERS = gql`
+	query GetStoreProducers($id: ID!) {
+		store(id: $id) {
+			producers {
+				id
+				name
+			}
+		}
+	}
+`;
+
 export const GET_COUNTRIES = gql`
 	query GetCountries {
 		countries {
@@ -48,6 +59,29 @@ export const GET_PRODUCER_PRODUCTS = gql`
 				conditioning
 				unit
 				available
+				batches {
+					id
+					number
+				}
+			}
+		}
+	}
+`;
+
+export const GET_PRODUCTS_WITH_BATCHES = gql`
+	query GetProductBatches {
+		products {
+			nodes {
+				id
+				name
+				quantityPerUnit
+				conditioning
+				unit
+				available
+				batches {
+					id
+					number
+				}
 			}
 		}
 	}
@@ -65,3 +99,42 @@ export const GET_BUSINESS_CLOSINGS = gql`
 		}
 	}
 `;
+
+export const GET_OBSERVATIONS = gql`
+	query GetObservations($producerId: ID) {
+		observations(producerId: $producerId, order: { updatedOn: ASC }) {
+			nodes {
+				id
+				comment
+				user {
+					id
+					kind
+					picture
+					name
+				}
+				createdOn
+				updatedOn
+				batches {
+					id
+					number
+				}
+				products {
+					id
+					name
+				}
+				replies {
+					id
+					comment
+					user {
+						id
+						picture
+						kind
+						name
+					}
+					createdOn
+					updatedOn
+				}
+			}
+		}
+	}
+`

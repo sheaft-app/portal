@@ -23,6 +23,7 @@
 	import JobRoutes from "./../../routes/jobs/routes.js";
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
+	import BatchesRoutes from "./../../routes/batches/routes.js";
 	import CatalogRoutes from "./../../routes/catalogs/routes.js";
 	import PurchaseOrderRoutes from "./../../routes/purchase-orders/routes.js";
 	import MyOrderRoutes from "./../../routes/my-orders/routes.js";
@@ -40,6 +41,7 @@
 	import RecallRoutes from "../../routes/recalls/routes";
 	import MyRecallRoutes from "../../routes/my-recalls/routes";
 	import RetrievalRoutes from "../../routes/retrievals/routes";
+	import StoreTraceabilityRoutes from "../../routes/storeTraceability/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -332,7 +334,7 @@
 					<NavLink route={MyOrderRoutes.List} />
 					<NavLink route={ExpectedDeliveriesRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
+					<NavLink route={StoreTraceabilityRoutes.List} />
 					<NavLink route={MyRecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
@@ -346,7 +348,7 @@
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
+					<NavLink route={BatchesRoutes.List} />
 					<NavLink route={RecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
