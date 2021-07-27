@@ -381,7 +381,8 @@
 	.nav {
 		z-index: 5;
 		width: 200px;
-		padding-top: 64px;
+		margin-top: 64px;
+		padding-bottom: 64px;
 		height: 100vh;
 		background-color: #fbfbfb;
 		transition: all 0.13s linear;
@@ -425,7 +426,8 @@
 			position: absolute;
 			transform: translateX(-270px);
 			box-shadow: none;
-			padding-top: 45px;
+			margin-top: 45px;
+			padding-bottom: 45px;
 
 			+ div {
 				@apply px-3;
