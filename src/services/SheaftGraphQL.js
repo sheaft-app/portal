@@ -19,17 +19,20 @@ class SheaftGraphQL {
 		errorsHandler = errHandler;
 	}
 
-	async query(request, variables, trackerUuid) {
+	async query(request, variables, trackerUuid, skipCache) {
 		try {
 			if (trackerUuid) errorsHandler.clearErrors(trackerUuid);
 
-			var response = await query(client, {
+			let qry = query(client, {
 				query: request,
 				variables,
-			}).result();
+			});
 
-			var dataType = this.findDataType(request);
-			var res = this.handleResults(response.data, dataType);
+			if (skipCache) await qry.setOptions({ fetchPolicy: "network-only" });
+
+			let response = await qry.result();
+			let dataType = this.findDataType(request);
+			let res = this.handleResults(response.data, dataType);
 			if (!res.success) {
 				errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			}
@@ -37,7 +40,7 @@ class SheaftGraphQL {
 			return res;
 		} catch (ex) {
 			console.error(ex);
-			var res = this.formatServerError(ex);
+			let res = this.formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
 		}
@@ -49,15 +52,15 @@ class SheaftGraphQL {
 			// let typename = input["__typename"];
 			// enlever toutes les occurences de typename dans l'objet en profondeur
 			removeKeys(input, ["__typename"]);
-			var response = await mutate(client, {
+			let response = await mutate(client, {
 				mutation: request,
 				variables: {
 					input,
 				},
 			});
 
-			var dataType = this.findDataType(request);
-			var res = this.handleResults(response.data, dataType);
+			let dataType = this.findDataType(request);
+			let res = this.handleResults(response.data, dataType);
 
 			if (!res.success) {
 				errorsHandler.handleUuidErrors(res.errors, trackerUuid);
@@ -67,7 +70,7 @@ class SheaftGraphQL {
 
 			return res;
 		} catch (ex) {
-			var res = this.formatServerError(ex);
+			let res = this.formatServerError(ex);
 			errorsHandler.handleUuidErrors(res.errors, trackerUuid);
 			return res;
 		}

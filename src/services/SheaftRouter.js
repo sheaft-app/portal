@@ -13,10 +13,14 @@ class SheaftRouter {
 		});
 	}
 
-	async goTo(route, routeParams, refresh) {
-		let url = handleUrl(route, routeParams);
-		if (refresh == null || !refresh) await push(url);
-		else await replace(url);
+	async goTo(route, routeParams, skipCache) {
+		let url = handleUrl(route, routeParams, skipCache);
+		await push(url);
+	}
+
+	async replacePage(route, routeParams, skipCache) {
+		let url = handleUrl(route, routeParams, skipCache);
+		await replace(url);
 	}
 
 	async goBack() {
@@ -31,6 +35,10 @@ class SheaftRouter {
 		let params = this.getQueryParams();
 		params["refresh"] = Guid.NewGuid();
 		this.replaceQueryParams(params);
+	}
+
+	shouldSkipCache() {
+		return getParams(this.currentQueryString)["refresh"] != null;
 	}
 
 	replaceQueryParams(params) {
@@ -61,11 +69,20 @@ class SheaftRouter {
 	}
 }
 
-function handleUrl(route, routeParams) {
+function handleUrl(route, routeParams, skipCache) {
 	let isObject = typeof route === "object";
 	let url = isObject ? route.Path : route;
 
-	url = handleRoutesParams(url, routeParams, isObject ? route.Params : null);
+	let params = null;
+	if (isObject && skipCache) {
+		if (route.Params && route.Params.Query) route.Params.Query.refresh = Guid.NewGuid();
+		else if (route.Params) route.Params.Query = { refresh: Guid.NewGuid() };
+		else route.Params = { Query: { refresh: Guid.NewGuid() } };
+	} else if (skipCache) {
+		params = { Query: { refresh: Guid.NewGuid() } };
+	}
+
+	url = handleRoutesParams(url, routeParams, isObject ? route.Params : params);
 	if (url == null) url = "/";
 
 	return url;
@@ -116,7 +133,8 @@ function handleRoutesParams(url, routeParams, defaultRouteParams) {
 	});
 
 	if (queryParams.length > 0) {
-		url += "?";
+		if (url.indexOf("?") < 0) url += "?";
+
 		queryParams.forEach((qp) => {
 			url += `&${qp.key}=${qp.value}`;
 		});
@@ -139,7 +157,7 @@ function handleParams(method, query, params, currentUrl) {
 	let newParams = createOrUpdateQueryStringParams(query, params);
 	let searchString = formatObjectAsQueryString(newParams);
 	if (searchString && searchString.length > 0) {
-		method(`${currentUrl}?${searchString}`);
+		method(`${currentUrl}?&${searchString}`);
 		return newParams;
 	}
 

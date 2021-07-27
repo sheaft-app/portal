@@ -7,9 +7,9 @@
     "sprint": "set NODE_ENV=PRODUCTION && rollup -c",
     "staging": "set NODE_ENV=PRODUCTION && rollup -c",
     "production": "set NODE_ENV=PRODUCTION && rollup -c",
-    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
-    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
-    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
+    "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
+    "portal:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
+    "portal:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
     "start": "sirv public --dev --single --port 4200"
   },
   "dependencies": {
@@ -40,7 +40,7 @@
     "svelte-awesome": "~2.3.1",
     "svelte-image-encoder": "~1.2.5",
     "svelte-portal": "~2.1.2",
-    "svelte-spa-router": "~3.1.0",
+    "svelte-spa-router": "~3.2.0",
     "swiper": "~6.6.2",
     "timeUtils": "~2.0.0"
   },

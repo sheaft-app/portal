@@ -30,9 +30,9 @@
 		open(ChangeDeliveryModal, {
 			agreement: agreement,
 			errorsHandler: errorsHandler,
-			onClose: async (res) => {
+			onClose: (res) => {
 				if (res.success) {
-					routerInstance.reload();
+					routerInstance.refresh();
 				}
 			},
 		});
@@ -42,9 +42,9 @@
 		open(ChangeCatalogModal, {
 			agreement: agreement,
 			errorsHandler: errorsHandler,
-			onClose: async (res) => {
+			onClose: (res) => {
 				if (res.success) {
-					routerInstance.reload();
+					routerInstance.refresh();
 				}
 			},
 		});

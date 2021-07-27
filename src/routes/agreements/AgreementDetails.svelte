@@ -16,6 +16,7 @@
 	import StoreAgreement from "./StoreAgreement.svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -48,7 +49,7 @@
 	const handleAgreementModal = (Modal, obj) =>
 		open(Modal, {
 			agreements: [obj],
-			onClose: () => routerInstance.reload(),
+			onClose: () => routerInstance.refresh(),
 		});
 
 	const isSender = (agreement) => {
@@ -69,6 +70,10 @@
 
 	onMount(async () => {
 		loadingMessage = "Chargement du partenariat en cours... veuillez patienter";
+		await getAgreement();
+	});
+
+	const getAgreement = async () => {
 		isLoading = true;
 
 		agreement = await query({
@@ -84,10 +89,13 @@
 				)),
 			error: () => routerInstance.goTo(AgreementRoutes.List),
 			errorNotification: "Le partenariat auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
-		isLoading = false;
-	});
 
+		isLoading = false;
+	};
+
+	$: getAgreement($querystring);
 </script>
 
 <TransitionWrapper>

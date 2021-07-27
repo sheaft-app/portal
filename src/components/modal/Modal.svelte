@@ -18,7 +18,8 @@
 
 	const open = (NewComponent, newProps = {}) => {
 		window.addEventListener("popstate", popStateListener, false);
-		history.pushState({ Component }, "Modal");
+		if (window.mobileAndTabletCheck()) history.pushState({ Component }, "Modal");
+
 		Component = NewComponent;
 		props = newProps;
 
@@ -27,6 +28,7 @@
 
 	const close = () => {
 		window.removeEventListener("popstate", popStateListener, false);
+
 		Component = null;
 		props = null;
 
@@ -49,7 +51,6 @@
 	};
 
 	setContext(key, { open, close });
-
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
@@ -120,5 +121,4 @@
 			max-height: 100%;
 		}
 	}
-
 </style>

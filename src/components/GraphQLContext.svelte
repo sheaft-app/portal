@@ -24,11 +24,12 @@
 		success = () => {},
 		error = () => {},
 		errorNotification,
+		skipCache,
 	}) => {
 		isLoading.set(true);
 
 		try {
-			const res = await graphQLInstance.query(query, variables, errorsHandler.Uuid);
+			let res = await graphQLInstance.query(query, variables, errorsHandler.Uuid, skipCache);
 
 			isLoading.set(false);
 
@@ -88,7 +89,6 @@
 		}
 	};
 	setContext(key, { mutate, query, isLoading, clearApolloCache });
-
 </script>
 
 <slot />

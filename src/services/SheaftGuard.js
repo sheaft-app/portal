@@ -273,7 +273,7 @@ class SheaftGuard {
 					if (this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) > -1) return false;
 
 					var redirectRoute = this.getRedirectRoute();
-					this.routerInstance.goTo(redirectRoute, null, true);
+					this.routerInstance.replacePage(redirectRoute);
 					return false;
 				},
 			],
@@ -281,7 +281,7 @@ class SheaftGuard {
 
 		this.initializedSub = authInitialized.subscribe((initialized) => {
 			if (initialized && this.authInstance.authorized && !this.authInstance.registered)
-				this.routerInstance.goTo(RegisterRoutes.Choose);
+				this.routerInstance.replacePage(RegisterRoutes.Choose);
 		});
 	}
 
@@ -325,13 +325,13 @@ class SheaftGuard {
 			!this.authInstance.registered &&
 			this.routerInstance.currentUrl.indexOf(RegisterRoutes.Prefix) < 0
 		) {
-			this.routerInstance.goTo(RegisterRoutes.Choose, null, true);
+			this.routerInstance.replacePage(RegisterRoutes.Choose);
 			return false;
 		}
 
 		var result = exec();
 		if (!result && autoRedirect) {
-			this.routerInstance.goTo(HomeRoutes.Prefix, null, true);
+			this.routerInstance.replacePage(HomeRoutes.Prefix);
 		}
 
 		return result;

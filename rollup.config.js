@@ -27,13 +27,11 @@ export default {
 			dir: "public",
 			format: "es",
 			chunkFileNames: "[name]-[hash].js",
-			sourcemap: !production,
+			sourcemap: isNollup || !production,
 			compact: production,
 		},
 	],
 	manualChunks(id) {
-		if (isDev || isNollup) return;
-
 		if (id.includes("node_modules")) return "vendor";
 
 		if (

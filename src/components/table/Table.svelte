@@ -63,18 +63,18 @@
 	const selectRow = (item) => {
 		if (!selectedItems) return;
 
-		var filteredItems = selectedItems.filter((si) => si.id != item.id);
+		let filteredItems = selectedItems.filter((si) => si.id != item.id);
 		if (filteredItems.length != selectedItems.length) selectedItems = filteredItems;
 		else selectedItems = [...selectedItems, item];
 	};
 
-	const getArrowClass = (headerSortLabel, status) => {
-		var direction = routerInstance.getQueryParams()["direction"];
+	$: getArrowClass = (headerSortLabel, status) => {
+		let direction = routerInstance.getQueryParams()["direction"];
 		return direction === status && headerSortLabel === _searchValues.orderBy ? "text-gray-700" : "text-gray-300";
 	};
 
 	const refetch = async (querystring) => {
-		var variables = createVariables();
+		let variables = createVariables();
 		if (!variables) return;
 
 		if (!errorsHandler)
@@ -93,6 +93,7 @@
 				window.scrollTo(0, 0);
 			},
 			errorNotification: "Impossible de récupérer la liste",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};
@@ -135,7 +136,7 @@
 	const createVariables = () => {
 		_searchValues = routerInstance.getQueryParams();
 
-		var updateQueryParams = false;
+		let updateQueryParams = false;
 		if (Object.keys(_searchValues).length == 0) {
 			_searchValues = defaultSearchValues;
 			updateQueryParams = true;
@@ -214,8 +215,8 @@
 		}
 
 		if (_searchValues.where && _searchValues.whereValues) {
-			var splittedFilter = _searchValues.where.split("_");
-			var filter = {};
+			let splittedFilter = _searchValues.where.split("_");
+			let filter = {};
 			filter[splittedFilter[1]] = _searchValues.whereValues.split(",");
 			settings.where[splittedFilter[0]] = filter;
 		}
