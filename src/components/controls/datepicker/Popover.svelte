@@ -35,6 +35,9 @@
 	function checkForFocusLoss(evt) {
 		if (!open) return;
 		let el = evt.target;
+
+		if (el.classList.value.includes('scal-')) return;
+
 		// eslint-disable-next-line
 		do {
 			if (el === popover) return;
