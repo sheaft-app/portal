@@ -26,12 +26,14 @@ import SearchStores from "./../routes/search-stores/SearchStores.svelte";
 import Agreements from "./../routes/agreements/Agreements.svelte";
 import External from "./../routes/external/External.svelte";
 import DeliveryBatches from "./../routes/delivery-batches/DeliveryBatches.svelte";
+import Batches from "./../routes/batches/Batches.svelte";
 import Pickings from "./../routes/pickings/Pickings.svelte";
 import QuickFreePurchase from "./../routes/quick-purchases/QuickFreePurchase.svelte";
 import QuickTemplatePurchase from "./../routes/quick-purchases/QuickTemplatePurchase.svelte";
 import Recalls from "./../routes/recalls/Recalls.svelte";
 import MyRecalls from "./../routes/my-recalls/MyRecalls.svelte";
 import Retrievals from "./../routes/retrievals/Retrievals.svelte";
+import StoreTraceability from "./../routes/storeTraceability/StoreTraceability.svelte";
 
 import ProductRoutes from "./../routes/products/routes.js";
 import JobRoutes from "./../routes/jobs/routes.js";
@@ -56,6 +58,7 @@ import Roles from "./../enums/Roles";
 import { authInitialized } from "../stores/auth";
 import CatalogRoutes from "../routes/catalogs/routes";
 import DeliveryBatchesRoutes from "../routes/delivery-batches/routes";
+import BatchesRoutes from "../routes/batches/routes";
 import PickingRoutes from "../routes/pickings/routes";
 import BillingRoutes from "../routes/billings/routes";
 import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
@@ -63,6 +66,7 @@ import ExpectedDeliveriesRoutes from "../routes/expected-deliveries/routes";
 import RecallRoutes from "../routes/recalls/routes";
 import MyRecallRoutes from "../routes/my-recalls/routes";
 import RetrievalRoutes from "../routes/retrievals/routes";
+import StoreTraceabilityRoutes from "../routes/storeTraceability/routes";
 
 class SheaftGuard {
 	constructor(authInstance, routerInstance) {
@@ -233,6 +237,28 @@ class SheaftGuard {
 				() =>
 					this.handleRouteNavigation(
 						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(PickingRoutes.Roles),
+						true
+					),
+			],
+		});
+		this.routes[`${BatchesRoutes.Prefix}/*`] = wrap({
+			component: Batches,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(BatchesRoutes.Roles),
+						true
+					),
+			],
+		});
+		this.routes[`${StoreTraceabilityRoutes.Prefix}/*`] = wrap({
+			component: StoreTraceability,
+			customData: null,
+			conditions: [
+				() =>
+					this.handleRouteNavigation(
+						() => this.authInstance.userIsAnonymous() || this.authInstance.userHasAccess(StoreTraceabilityRoutes.Roles),
 						true
 					),
 			],

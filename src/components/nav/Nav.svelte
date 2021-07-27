@@ -23,6 +23,7 @@
 	import JobRoutes from "./../../routes/jobs/routes.js";
 	import AgreementRoutes from "./../../routes/agreements/routes.js";
 	import ReturnableRoutes from "./../../routes/returnables/routes.js";
+	import BatchesRoutes from "./../../routes/batches/routes.js";
 	import CatalogRoutes from "./../../routes/catalogs/routes.js";
 	import PurchaseOrderRoutes from "./../../routes/purchase-orders/routes.js";
 	import MyOrderRoutes from "./../../routes/my-orders/routes.js";
@@ -40,6 +41,7 @@
 	import RecallRoutes from "../../routes/recalls/routes";
 	import MyRecallRoutes from "../../routes/my-recalls/routes";
 	import RetrievalRoutes from "../../routes/retrievals/routes";
+	import StoreTraceabilityRoutes from "../../routes/storeTraceability/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
@@ -317,7 +319,7 @@
 
 {#if $authRegistered && isInRole( $authUserAccount, [Roles.Store.Value, Roles.Producer.Value] ) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
 	<nav
-		class="nav fixed content-between overflow-hidden"
+		class="nav fixed content-between overflow-auto"
 		class:hidden={!(
 			$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
 		)}
@@ -332,7 +334,7 @@
 					<NavLink route={MyOrderRoutes.List} />
 					<NavLink route={ExpectedDeliveriesRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
+					<NavLink route={StoreTraceabilityRoutes.List} />
 					<NavLink route={MyRecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={QuickOrderRoutes.List} />
@@ -346,7 +348,7 @@
 					<NavLink route={DeliveryBatchesRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
-					<!--					Tracabilité-->
+					<NavLink route={BatchesRoutes.List} />
 					<NavLink route={RecallRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={ProductRoutes.List} />
@@ -379,7 +381,8 @@
 	.nav {
 		z-index: 5;
 		width: 200px;
-		padding-top: 64px;
+		margin-top: 64px;
+		padding-bottom: 64px;
 		height: 100vh;
 		background-color: #fbfbfb;
 		transition: all 0.13s linear;
@@ -423,7 +426,8 @@
 			position: absolute;
 			transform: translateX(-270px);
 			box-shadow: none;
-			padding-top: 45px;
+			margin-top: 45px;
+			padding-bottom: 45px;
 
 			+ div {
 				@apply px-3;

@@ -67,40 +67,24 @@
 		<Actions {actions} />
 
 		{#if $items.length > 0}
-			{#if deliveries && deliveries.length > 0}
-				<div
-					class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
-          md:rounded md:mb-2 flex items-center"
-				>
-					<div class="mr-5">
-						<Icon data={faInfoCircle} style="width: 50px; height:50px;" />
-					</div>
-					<div class="w-full">
-						<p class="text-center">
-							D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos livraisons
-							non validées ou bien en programmer une nouvelle.
-						</p>
-						<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
-							>Programmer une autre livraison</button
-						>
-					</div>
-				</div>
-				<div
-					class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100 shadow
-          md:rounded md:mb-2 flex items-center"
-				>
-					<div>
-						<Icon data={faInfoCircle} style="width: 50px; height:50px;" />
-					</div>
-					<div>
-						<p class="text-center">D'autres commandes sont disponibles pour être livrées</p>
-						<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
-							>Programmer une autre livraison</button
-						>
-					</div>
-				</div>
-			{/if}
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
+				{#if deliveries.length > 0}
+					<div class="rounded-3xl px-4 py-2 bg-blue-100" style="box-shadow: 0px 0px 30px 0px rgb(0 0 0 / 10%);">
+						<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
+							<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
+							<p class="font-semibold text-xl">De nouvelles livraisons sont prêtes à être programmées !</p>
+						</div>
+						<div class="w-full mt-3 px-10 xl:px-12">
+							<p>
+								D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos livraisons
+							non validées ou bien en programmer une nouvelle.
+							</p>
+							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+								Programmer une autre livraison
+							</button>
+						</div>
+					</div>
+				{/if}
 				{#each $items as deliveryBatch}
 					<DeliveryBatchItem {deliveryBatch} />
 				{/each}

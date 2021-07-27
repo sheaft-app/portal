@@ -336,6 +336,7 @@
 	main a,
 	main .btn-link {
 		color: #ff4081;
+		cursor: pointer;
 	}
 
 	code {

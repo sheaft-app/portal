@@ -22,6 +22,7 @@
 
 	let picking = null;
 	let isLoading = true;
+	let isSubmitting = false;
 	let loadingMessage = "Chargement des informations de la préparation en cours...";
 
 	onMount(async () => {
@@ -38,6 +39,7 @@
 
 	const handleSubmit = async () => {
 		loadingMessage = "Mise à jour de la préparation...";
+		isSubmitting = true;
 		await mutate({
 			mutation: UPDATE_PICKING,
 			variables: {
@@ -51,6 +53,7 @@
 			errorNotification: "Impossible de modifier la préparation",
 			clearCache: [GET_PICKINGS],
 		});
+		isSubmitting = false;
 	};
 
 	onDestroy(() => (picking = null));
@@ -100,10 +103,11 @@
 			<button
 				type="button"
 				on:click={handleSubmit}
-				class:disabled={isLoading}
+				disabled={isLoading || isSubmitting}
+				class:disabled={isLoading || isSubmitting}
 				class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 			>
-				<Icon data={isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isLoading} />
+				<Icon data={isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isSubmitting} />
 				Valider
 			</button>
 		</div>
