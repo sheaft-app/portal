@@ -319,7 +319,7 @@
 
 {#if $authRegistered && isInRole( $authUserAccount, [Roles.Store.Value, Roles.Producer.Value] ) && (!$fullScreenMap || ($fullScreenMap && $navExpended))}
 	<nav
-		class="nav fixed content-between overflow-hidden"
+		class="nav fixed content-between overflow-auto"
 		class:hidden={!(
 			$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
 		)}
