@@ -73,11 +73,13 @@
 		id="messages"
 		class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
 	>
-		<p>
-			<span class="font-semibold">Produits concernés :</span>
-			{observation.products.map((b) => b.name).join(", ")}
-		</p>
-		{#if observation.batches.length > 0}
+		{#if observation.products && observation.products.length > 0}
+			<p>
+				<span class="font-semibold">Produits concernés :</span>
+				{observation.products.map((b) => b.name).join(", ")}
+			</p>
+		{/if}
+		{#if observation.batches && observation.batches.length > 0}
 			<p class="mt-2">
 				<span class="font-semibold">Lots concernés :</span>
 				{#if authInstance.isInRole([Roles.Producer.Value])}

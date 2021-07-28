@@ -44,6 +44,22 @@ export const GET_NATIONALITIES = gql`
 	}
 `;
 
+export const GET_BATCHES = gql`
+	query GetDeliveryBatches {
+		batches(first: 50) {
+			nodes {
+				id
+				number
+				ddm
+				dlc
+				observationsCount
+				productsCount
+				createdOn
+			}
+		}
+	}
+`;
+
 export const GET_PRODUCER_PRODUCTS = gql`
 	query GetProducerProducts($id: ID!) {
 		producer(id: $id) {

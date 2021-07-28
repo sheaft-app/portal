@@ -174,8 +174,8 @@
 
 		{#if displayObservationsPanel}
 			<Observations
-				title="Observations du lot"
-				batchId={batch.id}
+				title="Observations du lot {batch.number}"
+				{batch}
 				on:close={() => (displayObservationsPanel = false)}
 			/>
 		{/if}

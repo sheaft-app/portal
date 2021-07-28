@@ -8,8 +8,11 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import Observations from "../../components/observations/Observations.svelte";
 	import { getContext, onMount } from "svelte";
+	import { querystring } from "svelte-spa-router";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
 	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
 	const { query } = getContext("api");
 
 	let isLoading = true;
@@ -17,6 +20,10 @@
 	let selectedProducer = null;
 
 	onMount(async () => {
+		await getProducers();
+	});
+
+	const getProducers = async () => {
 		isLoading = true;
 		await query({
 			query: GET_PRODUCERS,
@@ -25,9 +32,12 @@
 			success: (res) => (items = res.producers),
 			error: () => close(),
 			errorNotification: "Impossible de récupérer les producteurs.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
-	});
+	};
+
+	$: getProducers($querystring);
 </script>
 
 <TransitionWrapper>

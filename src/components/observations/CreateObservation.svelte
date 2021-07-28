@@ -1,19 +1,21 @@
 <script>
 	import { onMount, getContext } from "svelte";
-    import Toggle from "../controls/Toggle.svelte";
+	import Toggle from "../controls/Toggle.svelte";
 	import Select from "../controls/select/Select.svelte";
-	import { GET_PRODUCER_PRODUCTS, GET_PRODUCTS_WITH_BATCHES, GET_OBSERVATIONS, GET_STORE_PRODUCERS } from "../queries";
+	import { GET_PRODUCER_PRODUCTS, GET_PRODUCTS_WITH_BATCHES, GET_OBSERVATIONS, GET_BATCHES } from "../queries";
 	import { CREATE_OBSERVATION } from "../mutations";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import Roles from "../../enums/Roles";
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import GetAuthInstance from "../../services/SheaftAuth";
+	import GetRouterInstance from "../../services/SheaftRouter";
 
-	export let close, producerId;
+	export let close, producerId, batch;
 
 	const errorsHandler = new SheaftErrors();
 	const authInstance = GetAuthInstance();
+	const routerInstance = GetRouterInstance();
 	const { query, mutate } = getContext("api");
 
 	let batches = [];
@@ -22,9 +24,9 @@
 	let products = [];
 	let newObservation = {
 		products: [],
-		batches: [],
+		batches: batch ? [batch] : [],
 		comment: null,
-		visibleToAll: false
+		visibleToAll: false,
 	};
 	let handleClearProducts, handleClearBatches;
 
@@ -45,6 +47,12 @@
 				error: () => close(),
 				errorNotification: "Impossible de récupérer les produits.",
 			});
+			batches = await query({
+				query: GET_BATCHES,
+				errorsHandler,
+				error: () => close(),
+				errorNotification: "Impossible de récupérer les lots.",
+			});
 		}
 	};
 
@@ -59,7 +67,10 @@
 				visibleToAll: newObservation.visibleToAll,
 				comment: newObservation.comment,
 			},
-			success: () => close(),
+			success: () => {
+				routerInstance.refresh();
+				close();
+			},
 			errorsHandler,
 			successNotification: "Observation envoyée",
 			errorNotification: "Impossible d'envoyer l'observation",
@@ -69,10 +80,12 @@
 	};
 
 	onMount(async () => {
-		loadProducts();
+		await loadProducts();
 	});
 
 	const selectProduct = (e) => {
+		if (!producerId) return;
+
 		if (!newObservation.products) {
 			batches = [];
 			newObservation.products = [];
@@ -87,11 +100,16 @@
 			.filter((value, index, array) => array.findIndex((batch) => batch.id === value.id) === index);
 	};
 
-	$: isValid = newObservation.products && newObservation.products.length > 0 && newObservation.comment;
+	$: isValid =
+		newObservation.comment && (producerId ? newObservation.products && newObservation.products.length > 0 : true);
 </script>
 
 <div class="form-control">
-	<label>Produits *</label>
+	<label>Commentaire *</label>
+	<textarea bind:value={newObservation.comment} disabled={isSubmitting} class:skeleton-box={isSubmitting} />
+</div>
+<div class="form-control">
+	<label>Produits {batch ? "" : "*"}</label>
 	<div class="themed w-full">
 		<Select
 			items={products}
@@ -113,40 +131,38 @@
 		/>
 	</div>
 </div>
-<div class="form-control">
-	<label>Commentaire *</label>
-	<textarea bind:value={newObservation.comment} disabled={isSubmitting} class:skeleton-box={isSubmitting} />
-</div>
-<div class="form-control">
-	<label>Lots</label>
-	<div class="themed w-full">
-		<Select
-			items={batches}
-			getOptionLabel={(l) => l.number}
-			isMulti
-			getSelectionLabel={(l) => l.number}
-			isDisabled={isSubmitting}
-			showChevron={true}
-			hideSelectedOnFocus={true}
-			optionIdentifier="id"
-			placeholder="Sélectionnez un ou des lots"
-			noOptionsMessage="Aucun lot trouvé"
-			bind:selectedValue={newObservation.batches}
-			bind:handleClear={handleClearBatches}
-			isSearchable={true}
-			isClearable={false}
-			containerStyles="font-weight: 600; color: #4a5568;"
-		/>
+{#if !batch}
+	<div class="form-control">
+		<label>Lots</label>
+		<div class="themed w-full">
+			<Select
+				items={batches}
+				getOptionLabel={(l) => l.number}
+				isMulti
+				getSelectionLabel={(l) => l.number}
+				isDisabled={isSubmitting}
+				showChevron={true}
+				hideSelectedOnFocus={true}
+				optionIdentifier="id"
+				placeholder="Sélectionnez un ou des lots"
+				noOptionsMessage="Aucun lot trouvé"
+				bind:selectedValue={newObservation.batches}
+				bind:handleClear={handleClearBatches}
+				isSearchable={true}
+				isClearable={false}
+				containerStyles="font-weight: 600; color: #4a5568;"
+			/>
+		</div>
 	</div>
-</div>
+{/if}
 {#if authInstance.isInRole([Roles.Producer.Value])}
-    <div class="form-control mt-2">
-        <Toggle classs="ml-1" bind:isChecked={newObservation.visibleToAll}>
-            <div class="ml-2">
-                <span class="ml-1">Je veux que mes clients puissent voir cette observation.</span>
-            </div>
-        </Toggle>
-    </div>
+	<div class="form-control mt-2">
+		<Toggle classs="ml-1" bind:isChecked={newObservation.visibleToAll}>
+			<div class="ml-2">
+				<span class="ml-1">Je veux que mes clients puissent voir cette observation.</span>
+			</div>
+		</Toggle>
+	</div>
 {/if}
 <p class="text-small">* champs requis</p>
 <button

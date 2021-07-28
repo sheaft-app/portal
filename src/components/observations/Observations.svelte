@@ -17,7 +17,7 @@
 	import GroupBy from "lodash/groupBy";
 
 	export let producerId = null;
-	export let batchId = null;
+	export let batch = null;
 	export let observations = [];
 	export let title = "Observations";
 
@@ -74,7 +74,7 @@
 			query: GET_OBSERVATIONS,
 			variables: {
 				producerId: producerId,
-				batchId: batchId,
+				batchId: batch?.id,
 				first: PAGE_LIMIT_SIZE,
 				after: pageInfo.endCursor,
 			},
@@ -183,7 +183,7 @@
 			{/if}
 		</div>
 	{:else if createObservation}
-		<CreateObservation {close} {producerId} />
+		<CreateObservation {close} {producerId} {batch} />
 	{:else}
 		<div in:receive={{ key: selectedObservation }}>
 			<Chat on:previous={() => (selectedObservation = null)} bind:observation={selectedObservation} />
