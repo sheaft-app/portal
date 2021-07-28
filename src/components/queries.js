@@ -101,8 +101,8 @@ export const GET_BUSINESS_CLOSINGS = gql`
 `;
 
 export const GET_OBSERVATIONS = gql`
-	query GetObservations($producerId: ID) {
-		observations(producerId: $producerId, order: { updatedOn: DESC }) {
+	query GetObservations($producerId: ID, $first: Int, $after: String) {
+		observations(first: $first, after: $after, producerId: $producerId, order: { updatedOn: DESC }) {
 			nodes {
 				id
 				comment
@@ -135,6 +135,10 @@ export const GET_OBSERVATIONS = gql`
 					createdOn
 					updatedOn
 				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
 			}
 		}
 	}

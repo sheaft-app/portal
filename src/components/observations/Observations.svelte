@@ -28,6 +28,12 @@
 	let isLoading = false;
 	let selectedObservation = null;
 	let createObservation = false;
+	const PAGE_LIMIT_SIZE = 10;
+
+	let pageInfo = {
+		hasNextPage: false,
+		endCursor: null,
+	};
 
 	const [send, receive] = crossfade({
 		duration: (d) => Math.sqrt(d * 200),
@@ -59,26 +65,46 @@
 		history.pushState({ observations }, "Observations");
 
 		isLoading = true;
+		await fetchObservations();
+		isLoading = false;
+	});
+
+	const fetchObservations = async () => {
 		if (producerId !== null) {
-			observations = await query({
+			await query({
 				query: GET_OBSERVATIONS,
-				variables: { producerId },
+				variables: { 
+					producerId,
+					first: PAGE_LIMIT_SIZE, 
+					after: pageInfo.endCursor
+				},
+				success: (res) => {
+					pageInfo = res.pageInfo;
+					observations = [...observations, ...res.data];
+				},
 				errorsHandler,
 				error: () => close(),
 				errorNotification: "Impossible de récupérer les observations.",
 				skipCache: true,
 			});
 		} else {
-			observations = await query({
+			await query({
 				query: GET_OBSERVATIONS,
+				variables: { 
+					first: PAGE_LIMIT_SIZE, 
+					after: pageInfo.endCursor
+				},
 				errorsHandler,
+				success: (res) => {
+					pageInfo = res.pageInfo;
+					observations = [...observations, ...res.data];
+				},
 				error: () => close(),
 				errorNotification: "Impossible de récupérer les observations.",
 				skipCache: true,
 			});
 		}
-		isLoading = false;
-	});
+	}
 
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);
@@ -169,6 +195,9 @@
 			{:else}
 				<p>Aucune observation remontée.</p>
 			{/each}
+			{#if pageInfo.hasNextPage}
+				<button on:click={fetchObservations} class="btn btn-lg btn-outline m-auto">Charger plus</button>
+			{/if}
 		</div>
 	{:else if createObservation}
 		<CreateObservation {close} {producerId} />
