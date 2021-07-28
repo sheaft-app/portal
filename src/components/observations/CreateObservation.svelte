@@ -1,5 +1,6 @@
 <script>
 	import { onMount, getContext } from "svelte";
+    import Toggle from "../controls/Toggle.svelte";
 	import Select from "../controls/select/Select.svelte";
 	import { GET_PRODUCER_PRODUCTS, GET_PRODUCTS_WITH_BATCHES, GET_OBSERVATIONS, GET_STORE_PRODUCERS } from "../queries";
 	import { CREATE_OBSERVATION } from "../mutations";
@@ -23,6 +24,7 @@
 		products: [],
 		batches: [],
 		comment: null,
+		visibleToAll: false
 	};
 	let handleClearProducts, handleClearBatches;
 
@@ -54,7 +56,7 @@
 			variables: {
 				batchIds: newObservation.batches ? newObservation.batches.map((b) => b.id) : [],
 				productIds: newObservation.products.map((p) => p.id),
-				visibleToAll: authInstance.isInRole([Roles.Producer.Value]),
+				visibleToAll: newObservation.visibleToAll,
 				comment: newObservation.comment,
 			},
 			success: () => close(),
@@ -137,6 +139,15 @@
 		/>
 	</div>
 </div>
+{#if authInstance.isInRole([Roles.Producer.Value])}
+    <div class="form-control mt-2">
+        <Toggle classs="ml-1" bind:isChecked={newObservation.visibleToAll}>
+            <div class="ml-2">
+                <span class="ml-1">Je veux que mes clients puissent voir cette observation.</span>
+            </div>
+        </Toggle>
+    </div>
+{/if}
 <p class="text-small">* champs requis</p>
 <button
 	on:click={handleCreateObservation}
