@@ -39,15 +39,3 @@ export const SET_PICKING_PRODUCT_PREPARED_QUANTITY = gql`
 		}
 	}
 `;
-
-export const CREATE_BATCH = gql`
-	mutation CreateBatch($input: CreateBatchInput) {
-		createBatch(input: $input) {
-			id
-			number
-			dlc
-			ddm
-			createdOn
-		}
-	}
-`;

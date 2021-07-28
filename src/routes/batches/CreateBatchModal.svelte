@@ -1,12 +1,12 @@
 <script>
-	import ActionConfirm from "../../../components/modal/ActionConfirm.svelte";
-	import { CREATE_BATCH } from "../mutations";
+	import ActionConfirm from "../../components/modal/ActionConfirm.svelte";
+	import { CREATE_BATCH } from "./mutations";
 	import { getContext } from "svelte";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
-	import SheaftErrors from "../../../services/SheaftErrors";
-	import { getIsoDate } from "../../../helpers/app";
-	import DatePickerWrapper from "./../../../components/controls/DatePickerWrapper.svelte";
-	import { GET_BATCHES } from "../queries";
+	import SheaftErrors from "../../services/SheaftErrors";
+	import { getIsoDate } from "../../helpers/app";
+	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
+	import { GET_BATCHES } from "./queries";
 
 	export let close, onClose;
 
@@ -17,6 +17,10 @@
 		expirationDate,
 		dlcOrDluo = "dlc",
 		isLoading = false;
+
+	let date = new Date();
+	let end = new Date(date.getFullYear() + 5, date.getMonth(), date.getDate());
+	let start = new Date(date.getFullYear() - 3, date.getMonth(), date.getDate());
 
 	const handleSubmit = async () => {
 		isLoading = true;
@@ -83,7 +87,7 @@
 	</div>
 	<div class="form-control text-left" style="display:block;">
 		<label>{dlcOrDluo == "dlc" ? "DLC *" : "DDM *"}</label>
-		<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
+		<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} {start} {end} />
 	</div>
 
 	<small>* champs requis</small>

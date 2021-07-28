@@ -12,7 +12,7 @@
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
 	import Observations from "../../components/observations/Observations.svelte";
-	import CreateBatchModal from "./../pickings/process/CreateBatchModal.svelte";
+	import CreateBatchModal from "./CreateBatchModal.svelte";
 	import { getContext } from "svelte";
 
 	const errorsHandler = new SheaftErrors();

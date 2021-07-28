@@ -21,6 +21,9 @@
 	let isLoading = false;
 	let producers = [];
 
+	let end = new Date();
+	let start = new Date(end.getFullYear() - 2, end.getMonth(), end.getDate());
+
 	(() => (recall = form.initialize(recall, validators, initialValues)))();
 
 	const handleSubmit = async () => {
@@ -55,12 +58,12 @@
 		</div>
 		<div class="form-control">
 			<label>Début de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={false} />
+			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={false} {start} {end} />
 			<ErrorContainer field={$form.fields.saleStartedOn} />
 		</div>
 		<div class="form-control">
 			<label>Fin de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={false} />
+			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={false} {start} {end} />
 			<ErrorContainer field={$form.fields.saleEndedOn} />
 		</div>
 		<div class="form-control">

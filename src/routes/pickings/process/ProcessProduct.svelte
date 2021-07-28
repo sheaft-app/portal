@@ -12,7 +12,7 @@
 	import PageHeader from "../../../components/PageHeader.svelte";
 	import PageBody from "../../../components/PageBody.svelte";
 	import Icon from "svelte-awesome";
-	import CreateBatchModal from "./CreateBatchModal.svelte";
+	import CreateBatchModal from "./../../batches/CreateBatchModal.svelte";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import ValidateProductModal from "./ValidateProductModal.svelte";
 	import format from "date-fns/format";

@@ -6,6 +6,8 @@
 	export let placeholder = null;
 	export let selected = new Date();
 	export let dateChosen = false;
+	export let start = new Date();
+	export let end = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate());
 	export let props = {};
 
 	let formattedSelected;
@@ -14,6 +16,8 @@
 <SvelteDatePicker
 	format={(date) => format(new Date(selected), "PPPP", { locale: fr })}
 	{...props}
+	{start}
+	{end}
 	bind:selected
 	bind:dateChosen
 	bind:formattedSelected
@@ -35,5 +39,4 @@
 			color: #ff4081;
 		}
 	}
-
 </style>
