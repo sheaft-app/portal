@@ -25,15 +25,7 @@
 	let items = writable([]);
 	let pickings = [];
 
-	const actions = [
-		{
-			click: () => handleCreatePicking(),
-			disabled: $items.length < 1,
-			text: "Lancer une préparation",
-			icon: faPlay,
-			color: "green",
-			hideIfDisabled: true,
-		},
+	$: actions = [
 		{
 			click: () => routerInstance.goTo(PickingRoutes.History),
 			text: "Voir l'historique",
@@ -50,12 +42,14 @@
 			success: (res) => (pickings = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
 			errorsHandler,
 			errorNotification: "Impossible de charger les préparations disponibles",
+			skipCache: true,
 		});
 		await query({
 			query: GET_PICKINGS,
 			errorsHandler,
 			success: (res) => items.set(res.data),
 			errorNotification: "Impossible de récupérer les préparations",
+			skipCache: true,
 		});
 		isLoading = false;
 	});

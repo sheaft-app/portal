@@ -47,11 +47,12 @@
 	const showDeleteModal = () =>
 		open(DeleteReturnable, {
 			returnable,
-			onClose: () => routerInstance.goTo(ReturnableRoutes.List),
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(ReturnableRoutes.List);
+			},
 		});
 
-	const buttons = [{ text: "Supprimer", click: () => showDeleteModal(), color: "red" }];
-
+	$: buttons = [{ text: "Supprimer", click: () => showDeleteModal(), color: "red" }];
 </script>
 
 <TransitionWrapper>

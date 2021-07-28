@@ -2,7 +2,7 @@
 	import BatchesRoutes from "./routes.js";
 	import ListBatches from "./ListBatches.svelte";
 	import BatchDetails from "./BatchDetails.svelte";
-	
+
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 

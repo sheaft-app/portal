@@ -1,20 +1,8 @@
 import gql from "graphql-tag";
 
 export const GET_BATCHES = gql`
-	query GetDeliveryBatches (
-		$first: Int
-		$last: Int
-		$after: String
-		$before: String
-		$orderBy: [BatchSortInput!]
-	) {
-		batches(
-			first: $first
-			last: $last
-			after: $after
-			before: $before
-			order: $orderBy
-		) {
+	query GetDeliveryBatches($first: Int, $last: Int, $after: String, $before: String, $orderBy: [BatchSortInput!]) {
+		batches(first: $first, last: $last, after: $after, before: $before, order: $orderBy) {
 			edges {
 				cursor
 				node {

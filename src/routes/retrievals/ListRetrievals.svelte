@@ -38,7 +38,7 @@
 		open(ConfirmRetrievals, {
 			retrievals: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.reload();
+				if (res.success) routerInstance.refresh();
 			},
 		});
 	};

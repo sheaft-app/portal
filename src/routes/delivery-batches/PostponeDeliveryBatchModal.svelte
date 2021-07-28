@@ -15,7 +15,7 @@
 	import { timeToTimeSpan, getIsoDate } from "../../helpers/app";
 	import DeliveryStatus from "../../enums/DeliveryStatus";
 
-	export let id, close;
+	export let id, close, onClose;
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -53,12 +53,17 @@
 			mutation: POSTPONE_DELIVERY_BATCH,
 			variables: { id, reason, scheduledOn: getIsoDate(scheduledOn), from: timeToTimeSpan(from) },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: "Livraison décalée avec succès !",
 			errorNotification: "Impossible de reporter la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
+	};
+
+	const handleClose = async (res) => {
+		if (onClose) await onClose(res);
+		close();
 	};
 
 	const rescheduleSubmit = async () => {

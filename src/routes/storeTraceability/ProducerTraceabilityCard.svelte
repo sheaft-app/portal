@@ -31,7 +31,7 @@
 				<img
 					class="h-16 w-16 rounded-full p-1 border
             border-gray-800 border-solid m-auto absolute"
-                    src={producer.picture}
+					src={producer.picture}
 					alt="Photo du producteur"
 				/>
 			</div>

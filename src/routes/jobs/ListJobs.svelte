@@ -53,20 +53,20 @@
 
 	const pauseJobs = async () => {
 		await handleJobsCommand(PAUSE_JOBS);
-		routerInstance.refresh();
 	};
 
 	const resumeJobs = async () => {
 		await handleJobsCommand(RESUME_JOBS);
-		routerInstance.refresh();
 	};
 
 	const openModal = (modal, selectedJobs) =>
 		open(modal, {
 			jobs: selectedJobs,
-			onClose: async () => {
-				routerInstance.refresh();
-				selectedItems = [];
+			onClose: async (res) => {
+				if (res.success) {
+					routerInstance.refresh();
+					selectedItems = [];
+				}
 			},
 		});
 
@@ -76,7 +76,10 @@
 			mutation: mutation,
 			variables: { ids: selectedItems.map((s) => s.id) },
 			errorsHandler,
-			success: () => (selectedItems = []),
+			success: (res) => {
+				selectedItems = [];
+				routerInstance.refresh();
+			},
 			successNotification: "Succès !",
 			errorNotification: "Un problème est survenu",
 			clearCache: [GET_JOBS],

@@ -41,7 +41,7 @@
 			},
 			errorsHandler,
 			success: async (res) => {
-				await onClose(res);
+				await onClose({ success: true, data: res });
 				showSuccess = true;
 			},
 			successNotification: "L'accord a bien été accepté",

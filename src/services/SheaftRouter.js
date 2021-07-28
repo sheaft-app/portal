@@ -27,10 +27,6 @@ class SheaftRouter {
 		await pop();
 	}
 
-	reload() {
-		location.reload();
-	}
-
 	refresh() {
 		let params = this.getQueryParams();
 		params["refresh"] = Guid.NewGuid();

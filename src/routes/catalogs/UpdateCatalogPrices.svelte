@@ -24,7 +24,7 @@
 			mutation: UPDATE_CATALOG_PRICES,
 			variables: { id: catalog.id, percent: percent },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			errorNotification: "Impossible de mettre à jour les prix du catalogue",
 			clearCache: [GET_CATALOGS],
 		});
@@ -35,7 +35,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm

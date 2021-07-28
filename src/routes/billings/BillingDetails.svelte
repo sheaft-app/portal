@@ -12,6 +12,7 @@
 	import { formatMoney } from "../../helpers/app";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -30,6 +31,10 @@
 	let loadingMessage = "Chargement des informations de votre livraison en cours.";
 
 	onMount(async () => {
+		await getBilling();
+	});
+
+	const getBilling = async () => {
 		isLoading = true;
 		delivery = await query({
 			query: GET_DELIVERY_DETAILS,
@@ -127,15 +132,19 @@
 		});
 
 		isLoading = false;
-	});
+	};
 
 	const markAsBilled = () =>
 		open(MarkDeliveriesAsBilled, {
 			deliveries: [delivery],
-			onClose: () => routerInstance.goTo(DeliveryRoutes.List),
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(DeliveryRoutes.List);
+			},
 		});
 
 	onDestroy(() => (delivery = null));
+
+	$: getBilling($querystring);
 
 	$: buttons =
 		delivery && !delivery.billedOn

@@ -4,7 +4,6 @@ import Paginate from "../../enums/Paginate";
 import { faFileSignature } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/store-traceability";
-
 const traceability = "/";
 
 const StoreTraceabilityRoutes = {
@@ -24,9 +23,10 @@ const StoreTraceabilityRoutes = {
 				paginate: Paginate.First,
 				where: null,
 				whereValues: null,
+				refresh: "clear",
 			},
 		},
-	}
+	},
 };
 
 export default StoreTraceabilityRoutes;

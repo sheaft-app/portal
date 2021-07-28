@@ -42,12 +42,14 @@
 			success: (res) => (deliveries = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
 			errorsHandler,
 			errorNotification: "Impossible de charger les livraisons disponibles",
+			skipCache: true,
 		});
 		await query({
 			query: GET_DELIVERY_BATCHES,
 			errorsHandler,
 			success: (res) => items.set(res.data),
 			errorNotification: "Impossible de récupérer les livraisons programmées",
+			skipCache: true,
 		});
 		isLoading = false;
 	});
@@ -77,7 +79,7 @@
 						<div class="w-full mt-3 px-10 xl:px-12">
 							<p>
 								D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos livraisons
-							non validées ou bien en programmer une nouvelle.
+								non validées ou bien en programmer une nouvelle.
 							</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une autre livraison

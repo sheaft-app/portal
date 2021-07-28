@@ -11,6 +11,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeDelivery, denormalizeDelivery } from "./deliveryForm";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -23,7 +24,9 @@
 	let isLoading = true;
 	let loadingMessage = "Chargement des informations de votre créneau de livraison en cours.";
 
-	onMount(async () => {
+	onMount(async () => {});
+
+	const getDelivery = async () => {
 		isLoading = true;
 		await query({
 			query: GET_DELIVERY_DETAILS,
@@ -34,7 +37,7 @@
 			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
-	});
+	};
 
 	const handleSubmit = async () => {
 		loadingMessage = "Mise à jour de votre créneau de livraison en cours.";
@@ -57,7 +60,8 @@
 
 	onDestroy(() => (delivery = null));
 
-	const buttons = [
+	$: getDelivery($querystring);
+	$: buttons = [
 		{
 			text: "Supprimer",
 			color: "red",

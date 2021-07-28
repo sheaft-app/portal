@@ -23,6 +23,7 @@ const JobRoutes = {
 				direction: OrderByDirection.DESC,
 				take: 20,
 				paginate: Paginate.First,
+				refresh: "clear",
 			},
 		},
 	},

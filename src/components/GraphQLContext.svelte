@@ -34,22 +34,21 @@
 			isLoading.set(false);
 
 			if (!res.success) {
-				await error(res);
-
+				if (error) await error(res);
 				if (errorNotification) notificationsInstance.error(errorNotification);
 				return;
 			}
 
 			if (res.pageInfo) {
-				await success(res);
+				if (success) await success(res);
 				return res;
 			} else {
-				await success(res.data);
+				if (success) await success(res.data);
 				return res.data;
 			}
 		} catch (e) {
 			console.error(e);
-			await error(e);
+			if (error) await error(e);
 			if (errorNotification) notificationsInstance.error(errorNotification);
 			return;
 		}
@@ -73,14 +72,14 @@
 			isLoading.set(false);
 
 			if (!res.success) {
-				await error(res);
+				if (error) await error(res);
 				if (errorNotification) notificationsInstance.error(errorNotification);
 				return res;
 			}
 
 			clearApolloCache(clearCache);
 
-			await success(res.data);
+			if (success) await success(res.data);
 			if (successNotification) notificationsInstance.success(successNotification);
 
 			return res.data;

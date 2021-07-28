@@ -24,6 +24,7 @@ const AgreementRoutes = {
 				paginate: Paginate.First,
 				where: null,
 				whereValues: null,
+				refresh: "clear",
 			},
 		},
 	},

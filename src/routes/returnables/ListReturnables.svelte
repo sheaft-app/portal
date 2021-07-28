@@ -29,7 +29,7 @@
 		routerInstance.goTo(ReturnableRoutes.Details, { id: item.id });
 	};
 
-	const actions = [
+	$: actions = [
 		{
 			click: () => routerInstance.goTo(ReturnableRoutes.Create),
 			text: "Ajouter une consigne",

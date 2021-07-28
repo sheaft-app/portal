@@ -15,7 +15,7 @@
 			mutation: DELETE_DELIVERY_BATCH,
 			variables: { id: deliveryBatch.id },
 			errorsHandler,
-			success: (res) => handleClose(res),
+			success: (res) => handleClose({ success: true, data: res }),
 			successNotification: `La programmation a bien été supprimé`,
 			errorNotification: `Impossible de supprimer cette programmation`,
 			clearCache: [deliveryBatch.id],

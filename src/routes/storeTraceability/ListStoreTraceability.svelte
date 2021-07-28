@@ -22,14 +22,13 @@
 			query: GET_PRODUCERS,
 			variables: { id: $authUserAccount.id },
 			errorsHandler,
-			success: (res) => items = res.producers,
+			success: (res) => (items = res.producers),
 			error: () => close(),
-			errorNotification: "Impossible de récupérer les producteurs."
+			errorNotification: "Impossible de récupérer les producteurs.",
 		});
 		isLoading = false;
-	})
+	});
 </script>
-
 
 <TransitionWrapper>
 	<PageHeader name="Traçabilité" />
@@ -71,10 +70,7 @@
 				md:gap-3 -mx-4 md:mx-0"
 			>
 				{#each items as producer}
-					<ProducerTraceabilityCard 
-						{producer} 
-						on:click={() => selectedProducer = producer}
-					/>
+					<ProducerTraceabilityCard {producer} on:click={() => (selectedProducer = producer)} />
 				{/each}
 			</div>
 		{/if}
@@ -82,8 +78,8 @@
 </TransitionWrapper>
 
 {#if selectedProducer}
-	<Observations 
-		on:close={() => selectedProducer = null}
+	<Observations
+		on:close={() => (selectedProducer = null)}
 		title="Observations - {selectedProducer.name}"
 		producerId={selectedProducer.id}
 	/>

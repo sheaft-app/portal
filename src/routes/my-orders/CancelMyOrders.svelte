@@ -21,7 +21,7 @@
 			mutation: CANCEL_MY_ORDERS,
 			variables: { ids: orders.map((o) => o.id), reason },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: orders.length > 1 ? "Commandes annulées" : "Commande annulée",
 			errorNotification: "Impossible d'annuler la commande.",
 			clearCache: [MY_ORDERS],
@@ -33,7 +33,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm

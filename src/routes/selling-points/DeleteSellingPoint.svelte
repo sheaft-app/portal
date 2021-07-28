@@ -15,7 +15,7 @@
 			mutation: DELETE_SELLING_POINT,
 			variables: { id: sellingPoint.id },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: "Le point de vente a été supprimé avec succès",
 			errorNotification: "Impossible de supprimer le point de vente",
 			clearCache: [GET_SELLING_POINTS],
@@ -26,7 +26,6 @@
 		if (onClose) await onClose(res);
 		close();
 	};
-
 </script>
 
 <ActionConfirm

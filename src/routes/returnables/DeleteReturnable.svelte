@@ -15,7 +15,7 @@
 			mutation: DELETE_RETURNABLE,
 			variables: { id: returnable.id },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: "La consigne a été supprimée avec succès",
 			errorNotification: "Impossible de supprimer la consigne",
 			clearCache: [GET_RETURNABLES],
@@ -26,7 +26,6 @@
 		if (onClose) await onClose(res);
 		close();
 	};
-
 </script>
 
 <ActionConfirm

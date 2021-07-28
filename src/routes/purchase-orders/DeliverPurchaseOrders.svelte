@@ -19,7 +19,7 @@
 			mutation: DELIVER_PURCHASE_ORDERS,
 			variables: { ids: purchaseOrders.map((o) => o.id) },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: "Commande livrée",
 			errorNotification: "Impossible de marquer la commande comme livrée.",
 			clearCache: [GET_ORDERS],

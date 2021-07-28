@@ -60,7 +60,7 @@
 			errorsHandler,
 			success: () => {
 				close();
-				routerInstance.reload();
+				routerInstance.refresh();
 			},
 			successNotification: "Commande(s) ajoutée(s) avec succès !",
 			errorNotification: "Impossible d'ajouter une commande",

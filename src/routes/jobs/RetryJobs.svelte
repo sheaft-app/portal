@@ -19,7 +19,7 @@
 			mutation: RETRY_JOBS,
 			variables: { ids: jobs.map((j) => j.id) },
 			errorsHandler,
-			success: async (res) => handleClose(res),
+			success: async (res) => handleClose({ success: true, data: res }),
 			successNotification: "La tâche a bien été relancée",
 			errorNotification: "Impossible de relancer la tâche",
 			clearCache: [GET_JOBS],
@@ -31,7 +31,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -56,5 +55,4 @@
 			color: #ffffff;
 		}
 	}
-
 </style>

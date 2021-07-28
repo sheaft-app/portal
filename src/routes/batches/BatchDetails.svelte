@@ -10,8 +10,7 @@
 	import { faPaperPlane, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import BatchesRoutes from "./routes";
-	import format from "date-fns/format";
-	import fr from "date-fns/locale/fr";
+	import ProductRoutes from "./../products/routes";
 	import { UPDATE_BATCH } from "./mutations";
 	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
 	import Observations from "../../components/observations/Observations.svelte";
@@ -27,7 +26,7 @@
 	let isLoading = true;
 	let isSubmitting = false;
 
-	let dlcOrDluo = 'dlc'; 
+	let dlcOrDluo = "dlc";
 	let expirationDate = new Date();
 
 	onMount(async () => {
@@ -36,10 +35,10 @@
 			query: GET_BATCH_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
-			error: () => routerInstance.goTo(BatchesRoutes.History),
+			error: () => routerInstance.goTo(BatchesRoutes.List),
 			errorNotification: "Impossible de trouver le lot.",
 		});
-		dlcOrDluo = batch.dlc ? 'dlc' : 'ddm';
+		dlcOrDluo = batch.dlc ? "dlc" : "ddm";
 		expirationDate = batch.dlc ? new Date(batch.dlc) : new Date(batch.ddm);
 
 		isLoading = false;
@@ -56,7 +55,9 @@
 				ddm: dlcOrDluo == "ddm" ? getIsoDate(expirationDate) : null,
 			},
 			errorsHandler,
+			success: (res) => routerInstance.goTo(BatchesRoutes.List),
 			successNotification: "Lot modifié avec succès",
+			error: () => routerInstance.goTo(BatchesRoutes.List),
 			errorNotification: "Impossible de modifier le lot",
 			clearCache: [GET_BATCHES],
 		});
@@ -65,18 +66,8 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Détails du lot" previousPage={BatchesRoutes.List} />
+	<PageHeader name="Détails du lot {batch ? batch.number : ''}" previousPage={BatchesRoutes.List} />
 	<PageBody {errorsHandler} {isLoading}>
-		<p class="text-2xl font-semibold">
-			Lot numéro {batch.number}
-		</p>
-		<p>créé le {format(new Date(batch.createdOn), "PPPP", { locale: fr })}</p>
-		{#if batch.dlc}
-			<p>DLC : {format(new Date(batch.dlc), "PPPP", { locale: fr })}</p>
-		{/if}
-		{#if batch.ddm}
-			<p>DDM : {format(new Date(batch.ddm), "PPPP", { locale: fr })}</p>
-		{/if}
 		{#if batch.observations.length > 0}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100
@@ -86,7 +77,9 @@
 				<div class="mt-2">
 					<p>Des observations ont été remontées par vous ou par un ou plusieurs magasins concernant ce lot.</p>
 					<p>Vous pouvez les consulter en cliquant sur le bouton ci-dessous.</p>
-					<button class="btn btn-outline btn-lg mt-2" on:click={() => displayObservationsPanel = true}>Voir les observations</button>
+					<button class="btn btn-outline btn-lg mt-2" on:click={() => (displayObservationsPanel = true)}
+						>Voir les observations</button
+					>
 				</div>
 			</div>
 		{/if}
@@ -124,13 +117,26 @@
 			<label>{dlcOrDluo == "dlc" ? "DLC *" : "DDM *"}</label>
 			<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
 		</div>
-
+		{#if batch.products && batch.products.length > 0}
+			<div class="form-control text-left mt-5 mb-2">
+				<label>Produits concernés par ce lot</label>
+			</div>
+			<div class="flex items-left mb-4">
+				{#each batch.products as product}
+					<a
+						class="bg-white overflow-hidden rounded-lg p-3 lg:p-6 shadow mr-3"
+						href="javascript:void(0)"
+						on:click={() => routerInstance.goTo(ProductRoutes.Details, { id: product.id })}>{product.name}</a
+					>
+				{/each}
+			</div>
+		{/if}
 		<small>* champs requis</small>
 		<div class="form-control mt-5">
 			<button
 				type="button"
 				disabled={isLoading || isSubmitting}
-				class:disabled={isLoading ||isSubmitting}
+				class:disabled={isLoading || isSubmitting}
 				on:click={handleSubmit}
 				class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 			>
@@ -138,20 +144,12 @@
 				Valider
 			</button>
 		</div>
-		{#each batch.products as product}
-			<div
-				class="bg-white overflow-hidden rounded-lg p-3 lg:p-6 shadow flex
-				relative flex-wrap justify-between mt-3"
-			>
-				<p>{product.name}</p>
-			</div>
-		{/each}
 
 		{#if displayObservationsPanel}
-			<Observations 
-				title="Observations du lot" 
-				observations={batch.observations} 
-				on:close={() => displayObservationsPanel = false}
+			<Observations
+				title="Observations du lot"
+				observations={batch.observations}
+				on:close={() => (displayObservationsPanel = false)}
 			/>
 		{/if}
 	</PageBody>

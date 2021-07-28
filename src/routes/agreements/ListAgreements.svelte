@@ -48,9 +48,10 @@
 		open(modal, {
 			agreements: selectedAgreements,
 			onClose: (res) => {
-				//TODO hack this refresh (not refreshing when acceptAgreements...)
-				routerInstance.refresh();
-				selectedItems = [];
+				if (res.success) {
+					routerInstance.refresh();
+					selectedItems = [];
+				}
 			},
 		});
 	};

@@ -132,7 +132,9 @@
 	const markAsRetrieved = () =>
 		open(ConfirmRetrievals, {
 			retrievals: [retrieval],
-			onClose: () => routerInstance.goTo(DeliveryRoutes.List),
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(DeliveryRoutes.List);
+			},
 		});
 
 	onDestroy(() => (retrieval = null));

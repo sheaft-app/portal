@@ -49,7 +49,9 @@
 	const handleAgreementModal = (Modal, obj) =>
 		open(Modal, {
 			agreements: [obj],
-			onClose: () => routerInstance.refresh(),
+			onClose: (res) => {
+				if (res.success) routerInstance.refresh();
+			},
 		});
 
 	const isSender = (agreement) => {

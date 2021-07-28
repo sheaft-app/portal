@@ -40,7 +40,7 @@
 		open(DeleteQuickOrdersModal, {
 			selectedItems: [quickOrder],
 			onClose: (res) => {
-				routerInstance.goTo(QuickOrderRoutes.List);
+				if (res.success) routerInstance.goTo(QuickOrderRoutes.List);
 			},
 		});
 	};

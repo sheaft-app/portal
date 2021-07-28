@@ -41,6 +41,7 @@
 	import ProfileKind from "../../enums/ProfileKind";
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
 	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -52,11 +53,11 @@
 	let order = null;
 	let isLoading = true;
 
-	const getPurchaseOrder = async (id) => {
+	const getPurchaseOrder = async () => {
 		isLoading = true;
 		order = await query({
 			query: GET_ORDER_DETAILS,
-			variables: { id },
+			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(PurchaseOrderRoutes.List),
 			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus.",
@@ -66,7 +67,7 @@
 	};
 
 	onMount(async () => {
-		await getPurchaseOrder(params.id);
+		await getPurchaseOrder();
 	});
 
 	const cancelOrder = () => handleOrdersModal(CancelPurchaseOrders, order);
@@ -84,8 +85,12 @@
 	const handleOrdersModal = (modal, item) =>
 		open(modal, {
 			purchaseOrders: [item],
-			onClose: async () => await getPurchaseOrder(item.id),
+			onClose: async (res) => {
+				if (res.success) routerInstance.refresh();
+			},
 		});
+
+	$: getPurchaseOrder($querystring);
 </script>
 
 <TransitionWrapper>

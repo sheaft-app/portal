@@ -49,15 +49,19 @@
 
 	const showDeleteModal = () => {
 		open(DeleteSellingPoint, {
-			onClose: () => routerInstance.goTo(SellingPointRoutes.List),
 			sellingPoint,
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(SellingPointRoutes.List);
+			},
 		});
 	};
 
 	const showSetAvailabilityModal = () => {
 		open(SetSellingPointAvailability, {
-			onClose: () => routerInstance.goTo(SellingPointRoutes.List),
 			sellingPoint,
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(SellingPointRoutes.List);
+			},
 		});
 	};
 

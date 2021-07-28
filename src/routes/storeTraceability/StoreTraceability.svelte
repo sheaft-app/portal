@@ -1,7 +1,7 @@
 <script>
 	import StoreRoutes from "./routes.js";
 	import ListStoreTraceability from "./ListStoreTraceability.svelte";
-	
+
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 

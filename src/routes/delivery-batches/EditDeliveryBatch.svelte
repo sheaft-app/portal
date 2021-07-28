@@ -12,6 +12,7 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeDeliveryBatch, denormalizeDeliveryBatch } from "./deliveryBatchForm";
 	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -25,6 +26,10 @@
 	let loadingMessage = "Chargement des informations de votre programmation en cours...";
 
 	onMount(async () => {
+		await getDeliveryBatch();
+	});
+
+	const getDeliveryBatch = async () => {
 		isLoading = true;
 		await query({
 			query: GET_DELIVERY_BATCH_DETAILS,
@@ -35,7 +40,7 @@
 			errorNotification: "La programmation à laquelle vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
-	});
+	};
 
 	const handleSubmit = async () => {
 		loadingMessage = "Mise à jour de la programmation...";
@@ -52,11 +57,18 @@
 
 	onDestroy(() => (deliveryBatch = null));
 
-	const buttons = [
+	$: getDeliveryBatch($querystring);
+	$: buttons = [
 		{
 			text: "Décaler",
 			color: "blue",
-			click: () => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id }),
+			click: () =>
+				open(PostponeDeliveryBatchModal, {
+					id: deliveryBatch.id,
+					onClose: (res) => {
+						if (res.success) routerInstance.refresh();
+					},
+				}),
 		},
 		{
 			text: "Supprimer",
@@ -64,7 +76,9 @@
 			click: () =>
 				open(DeleteDeliveryBatch, {
 					deliveryBatch,
-					onClose: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
+					onClose: (res) => {
+						if (res.success) routerInstance.goTo(DeliveryBatchesRoutes.List);
+					},
 				}),
 		},
 	];

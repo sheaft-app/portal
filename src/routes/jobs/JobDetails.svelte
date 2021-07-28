@@ -31,6 +31,7 @@
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import Roles from "../../enums/Roles";
 	import AccountRoutes from "../account/routes";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -90,7 +91,9 @@
 			mutation,
 			variables: { ids: [currentJob.id] },
 			errorsHandler,
-			success: async () => await getJob(currentJob.id),
+			success: async (res) => {
+				if (res.success) routerInstance.refresh();
+			},
 			successNotification: "Succès !",
 			errorNotification: "Un problème est survenu",
 			clearCache: [GET_JOBS],
@@ -110,6 +113,8 @@
 				await routerInstance.goTo(JobRoutes.List);
 			},
 		});
+
+	$: getJob($querystring);
 
 	$: canPauseJob = job && job.status == ProcessStatusKind.Processing.Value;
 

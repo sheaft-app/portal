@@ -56,7 +56,7 @@
 		open(DeleteRecallsModal, {
 			selectedItems: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.reload();
+				if (res.success) routerInstance.refresh();
 			},
 		});
 	};
@@ -65,7 +65,7 @@
 		open(SendRecallsModal, {
 			selectedItems: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.reload();
+				if (res.success) routerInstance.refresh();
 			},
 		});
 	};

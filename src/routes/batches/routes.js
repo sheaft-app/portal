@@ -4,9 +4,7 @@ import Paginate from "../../enums/Paginate";
 import { faFileSignature } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/traceability";
-
 const batches = "/";
-
 const batchDetails = "/batch/:id";
 
 const BatchesRoutes = {
@@ -37,7 +35,7 @@ const BatchesRoutes = {
 		Params: {
 			id: null,
 		},
-	}
+	},
 };
 
 export default BatchesRoutes;

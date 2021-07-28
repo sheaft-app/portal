@@ -29,21 +29,22 @@
 
 	const actions = [
 		{
-			click: () => open(CreateBatchModal, { 
-				onClose: (res) => {
-					items = [res, ...items];
-				}
-			}),
+			click: () =>
+				open(CreateBatchModal, {
+					onClose: (res) => {
+						items = [res, ...items];
+					},
+				}),
 			text: "Créer un nouveau lot",
 			icon: faPlus,
-			color: "green"
+			color: "green",
 		},
 		{
 			click: () => (displayObservationsPanel = true),
 			text: "Voir la liste des observations",
 			icon: faEye,
 			color: "blue",
-		}
+		},
 	];
 </script>
 

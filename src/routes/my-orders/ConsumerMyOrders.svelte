@@ -43,6 +43,7 @@
 				);
 			},
 			errorNotification: "Impossible de récupérer les commandes",
+			skipCache: true,
 		});
 		isLoading = false;
 	};
@@ -53,6 +54,7 @@
 			query: MY_VALIDATING_ORDERS,
 			errorsHandler,
 			errorNotification: "Impossible de récupérer les commandes validées",
+			skipCache: true,
 		});
 		isLoading = false;
 	};

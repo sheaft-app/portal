@@ -26,6 +26,7 @@ const PurchaseOrderRoutes = {
 				paginate: Paginate.First,
 				where: "status_in",
 				whereValues: "WAITING,ACCEPTED",
+				refresh: "clear",
 			},
 		},
 	},

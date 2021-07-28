@@ -11,10 +11,10 @@
 	import fr from "date-fns/locale/fr";
 	import { portal } from "svelte-portal";
 	import CreateObservation from "./CreateObservation.svelte";
-	import { flip } from 'svelte/animate';
-	import { quintOut } from 'svelte/easing';
-	import { crossfade } from 'svelte/transition';
-	
+	import { flip } from "svelte/animate";
+	import { quintOut } from "svelte/easing";
+	import { crossfade } from "svelte/transition";
+
 	export let producerId = null;
 	export let observations = [];
 	export let title = "Observations";
@@ -28,27 +28,27 @@
 	let createObservation = false;
 
 	const [send, receive] = crossfade({
-		duration: d => Math.sqrt(d * 200),
+		duration: (d) => Math.sqrt(d * 200),
 
 		fallback(node, params) {
 			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
+			const transform = style.transform === "none" ? "" : style.transform;
 
 			return {
 				duration: 300,
 				easing: quintOut,
-				css: t => `
+				css: (t) => `
 					transform: ${transform} scale(${t});
 					opacity: ${t}
-				`
+				`,
 			};
-		}
+		},
 	});
 
 	var popStateListener = (event) => {
 		if (selectedObservation) {
-			return selectedObservation = null;
-		} 
+			return (selectedObservation = null);
+		}
 		return close();
 	};
 
@@ -65,7 +65,8 @@
 				variables: { producerId },
 				errorsHandler,
 				error: () => close(),
-				errorNotification: "Impossible de récupérer les observations."
+				errorNotification: "Impossible de récupérer les observations.",
+				skipCache: true,
 			});
 			isLoading = false;
 			return;
@@ -75,22 +76,22 @@
 				query: GET_OBSERVATIONS,
 				errorsHandler,
 				error: () => close(),
-				errorNotification: "Impossible de récupérer les observations."
+				errorNotification: "Impossible de récupérer les observations.",
 			});
-			isLoading = false;	
+			isLoading = false;
 		}
-	})
+	});
 
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	const close = () => dispatch('close');
+	const close = () => dispatch("close");
 
-	const selectObservation = observation => {
+	const selectObservation = (observation) => {
 		history.pushState({ observation }, "Observations");
 		selectedObservation = observation;
-	}
+	};
 </script>
 
 <div
@@ -101,7 +102,13 @@
 >
 	<div class="mb-3 mt-3">
 		{#if selectedObservation || createObservation}
-			<button class="text-gray-600 items-center flex uppercase" on:click={() => { selectedObservation = null; createObservation = false; }}>
+			<button
+				class="text-gray-600 items-center flex uppercase"
+				on:click={() => {
+					selectedObservation = null;
+					createObservation = false;
+				}}
+			>
 				<Icon data={faChevronLeft} class="mr-2 inline" />
 				Retour
 			</button>
@@ -118,26 +125,25 @@
 		<p>Chargement...</p>
 	{:else if !selectedObservation && !createObservation}
 		<div>
-			<button class="btn btn-accent btn-lg mb-2" on:click={() => createObservation = true}>Créer une observation</button>
+			<button class="btn btn-accent btn-lg mb-2" on:click={() => (createObservation = true)}
+				>Créer une observation</button
+			>
 			{#each observations as observation (observation.id)}
 				<div
-					animate:flip 
-					in:receive="{{key: observation.id}}"
-					class="flex bg-white shadow px-4 py-2 rounded hover:bg-gray-100 cursor-pointer mb-2 items-center" 
-					on:click={() => selectObservation(observation)}>
+					animate:flip
+					in:receive={{ key: observation.id }}
+					class="flex bg-white shadow px-4 py-2 rounded hover:bg-gray-100 cursor-pointer mb-2 items-center"
+					on:click={() => selectObservation(observation)}
+				>
 					<div class="w-1/12">
-						<img
-							src={observation.user.picture ?? "img/icons/store.svg"}
-							alt="Photo"
-							class="w-8 h-8 rounded-full"
-						/>
+						<img src={observation.user.picture ?? "img/icons/store.svg"} alt="Photo" class="w-8 h-8 rounded-full" />
 					</div>
 					<div class="w-9/12 ml-3">
-						<p class="font-semibold">{observation.user.id == $authUserAccount.id ? 'Vous' : observation.user.name}</p>
+						<p class="font-semibold">{observation.user.id == $authUserAccount.id ? "Vous" : observation.user.name}</p>
 						<p class="text-gray-600 truncate" style="max-width: 200px;">{observation.comment}</p>
 						{#if observation.replies.length > 0}
 							<p class="text-green-500 text-sm">
-								<Icon data={faCheck} class="mr-2" /> 
+								<Icon data={faCheck} class="mr-2" />
 								Une réponse a été apportée à cette observation
 							</p>
 						{/if}
@@ -151,15 +157,14 @@
 	{:else if createObservation}
 		<CreateObservation {close} {producerId} />
 	{:else}
-		<div in:receive="{{key: selectedObservation}}">
-			<Chat 
-				on:previous={() => selectedObservation = null} 
-				bind:observation={selectedObservation} 
-			/>
+		<div in:receive={{ key: selectedObservation }}>
+			<Chat on:previous={() => (selectedObservation = null)} bind:observation={selectedObservation} />
 		</div>
 	{/if}
 </div>
-<div use:portal={"body"} class="cursor-pointer w-full h-full opacity-50 bg-black fixed hidden
+<div
+	use:portal={"body"}
+	class="cursor-pointer w-full h-full opacity-50 bg-black fixed hidden
 lg:block top-0"
 	style="z-index: 7;"
 	on:click={close}

@@ -15,7 +15,7 @@
 			mutation: DELETE_QUICKORDERS,
 			variables: { ids: selectedItems.map((s) => s.id) },
 			errorsHandler,
-			success: (res) => handleClose(res),
+			success: (res) => handleClose({ success: true, data: res }),
 			successNotification: "Le modèle de commande a bien été supprimé",
 			errorNotification: "Impossible de supprimer ce modèle de commande",
 			clearCache: [GET_QUICKORDERS],

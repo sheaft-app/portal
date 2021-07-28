@@ -24,11 +24,12 @@ const MyRecallRoutes = {
 				paginate: Paginate.First,
 				where: null,
 				whereValues: null,
+				refresh: "clear",
 			},
 		},
 	},
 	NoResults: {
-		Text: "Vous n'avez pas encore de campagne de rappel.",
+		Text: "Aucune campagne de rappel en cours.",
 	},
 };
 

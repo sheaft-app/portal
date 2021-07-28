@@ -43,7 +43,7 @@
 			},
 			errorsHandler,
 			errorNotification: "Impossible de répondre à l'observation",
-			clearCache: [GET_OBSERVATIONS, observation.id]
+			clearCache: [GET_OBSERVATIONS, observation.id],
 		});
 		isSubmitting = false;
 	};
@@ -59,9 +59,13 @@
 			/>
 			<div class="flex flex-col leading-tight">
 				<div class="text-2xl mt-1 flex items-center">
-					<span class="text-gray-700 mr-3">{observation.user.id == authInstance.user.id ? 'Vous' : observation.user.name}</span>
+					<span class="text-gray-700 mr-3"
+						>{observation.user.id == authInstance.user.id ? "Vous" : observation.user.name}</span
+					>
 				</div>
-				<span class="text-gray-600">dernière mise à jour le {format(new Date(observation.updatedOn), "PPPP", { locale: fr })}</span>
+				<span class="text-gray-600"
+					>dernière mise à jour le {format(new Date(observation.updatedOn), "PPPP", { locale: fr })}</span
+				>
 			</div>
 		</div>
 	</div>
@@ -69,38 +73,42 @@
 		id="messages"
 		class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
 	>
-		<p><span class="font-semibold">Produits concernés :</span>
-			{observation.products.map(b => b.name).join(', ')}
+		<p>
+			<span class="font-semibold">Produits concernés :</span>
+			{observation.products.map((b) => b.name).join(", ")}
 		</p>
 		{#if observation.batches.length > 0}
-			<p class="mt-2"><span class="font-semibold">Lots concernés :</span>
+			<p class="mt-2">
+				<span class="font-semibold">Lots concernés :</span>
 				{#if authInstance.isInRole([Roles.Producer.Value])}
 					{#each observation.batches as batch, index}
 						{#if index == observation.batches.length - 1 && observation.batches.length > 1}
 							<span>et </span>
 						{/if}
-						<span class="btn-link" on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}>{batch.number}</span>
+						<span class="btn-link" on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}
+							>{batch.number}</span
+						>
 						{#if index !== observation.batches.length - 1 && index !== observation.batches.length - 2}
 							<span>&#44; </span>
 						{/if}
 					{/each}
 				{:else}
-					{observation.batches.map(b => b.number).join(', ')}
+					{observation.batches.map((b) => b.number).join(", ")}
 				{/if}
 			</p>
 		{/if}
 		{#each allReplies as reply, index}
 			<div class="chat-message">
 				<div class="flex items-end" class:justify-end={reply.user.id == authInstance.user.id}>
-					<div 
+					<div
 						class="flex flex-col space-y-2 text-xs max-w-xs mx-2"
 						class:order-2={reply.user.id !== authInstance.user.id}
 						class:items-start={reply.user.id !== authInstance.user.id}
 						class:order-1={reply.user.id == authInstance.user.id}
 						class:items-end={reply.user.id == authInstance.user.id}
-						>
+					>
 						<div>
-							<span 
+							<span
 								class="px-4 py-2 rounded-lg inline-block"
 								class:rounded-bl-none={reply.user.id !== authInstance.user.id}
 								class:bg-gray-300={reply.user.id !== authInstance.user.id}
@@ -109,10 +117,11 @@
 								class:bg-primary={reply.user.id == authInstance.user.id}
 								class:text-white={reply.user.id == authInstance.user.id}
 							>
-								{reply.comment}</span>
+								{reply.comment}</span
+							>
 						</div>
 					</div>
-					{#if !allReplies[index + 1] || (allReplies[index + 1].user.id !== reply.user.id)}					
+					{#if !allReplies[index + 1] || allReplies[index + 1].user.id !== reply.user.id}
 						<img
 							src={reply.user.picture ?? "img/icons/store.svg"}
 							alt={reply.user.name}
@@ -121,17 +130,17 @@
 							class="w-6 h-6 rounded-full"
 						/>
 					{:else}
-						<div 
+						<div
 							class="w-6 h-6"
 							class:order-1={reply.user.id !== authInstance.user.id}
-							class:order-2={reply.user.id == authInstance.user.id}>
-						</div>
+							class:order-2={reply.user.id == authInstance.user.id}
+						/>
 					{/if}
 				</div>
 			</div>
 		{/each}
 	</div>
-	{#if observation.user.kind === Roles.Producer.Value && (observation.user.id !== authInstance.user.id)}
+	{#if observation.user.kind === Roles.Producer.Value && observation.user.id !== authInstance.user.id}
 		<p>Vous ne pouvez pas répondre à une observation quand elle est émise par le producteur.</p>
 	{:else}
 		<div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">

@@ -14,6 +14,7 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeCatalog } from "./catalogForm";
 	import CatalogKind from "../../enums/CatalogKind";
+	import { querystring } from "svelte-spa-router";
 
 	export let params;
 
@@ -27,6 +28,10 @@
 	let loadingMessage = "Chargement du catalogue en cours... veuillez patienter";
 
 	onMount(async () => {
+		await getCatalog();
+	});
+
+	const getCatalog = async () => {
 		isLoading = true;
 		catalog = await query({
 			query: GET_CATALOG_DETAILS,
@@ -36,7 +41,7 @@
 			errorNotification: "Le catalogue auquel vous essayez d'accéder n'existe plus.",
 		});
 		isLoading = false;
-	});
+	};
 
 	const handleSubmit = async () => {
 		loadingMessage = "Enregistrement du catalogue en cours... veuillez patienter";
@@ -57,18 +62,20 @@
 	const showDeleteModal = () =>
 		open(DeleteCatalog, {
 			catalog,
-			onClose: async () => await routerInstance.goTo(CatalogRoutes.List),
+			onClose: async (res) => {
+				if (res.success) await routerInstance.goTo(CatalogRoutes.List);
+			},
 		});
 
 	const showCloneModal = () =>
 		open(CloneCatalog, {
 			catalog,
 			onClose: async (res) => {
-				await routerInstance.goTo(CatalogRoutes.Details, { id: res.id });
-				routerInstance.reload();
+				if (res.success) await routerInstance.goTo(CatalogRoutes.Details, { id: res.id }, true);
 			},
 		});
 
+	$: getCatalog($querystring);
 	$: isConsumerCatalog = catalog && catalog.kind === CatalogKind.Consumers.Value;
 
 	$: buttons = [

@@ -16,7 +16,7 @@
 			mutation: DELETE_CATALOGS,
 			variables: { ids: [catalog.id] },
 			errorsHandler,
-			success: (res) => handleClose(res),
+			success: (res) => handleClose({ success: true, data: res }),
 			successNotification: "Le catalogue a bien été supprimé",
 			errorNotification: "Impossible de supprimer ce catalogue",
 			clearCache: [GET_CATALOGS],
@@ -26,7 +26,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm title="Suppression" level="danger" isLoading={$isLoading} submit={handleSubmit} {errorsHandler} {close}>

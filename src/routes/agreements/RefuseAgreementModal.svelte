@@ -28,7 +28,7 @@
 				reason,
 			},
 			errorsHandler,
-			success: async (res) => handleClose(res),
+			success: async (res) => handleClose({ success: true, data: res }),
 			successNotification: "L'accord a bien été refusé",
 			errorNotification: "Impossible de traiter l'accord",
 			clearCache: [GET_AGREEMENTS],
@@ -40,7 +40,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm

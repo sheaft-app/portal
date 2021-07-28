@@ -18,6 +18,7 @@
 	import DeliveryStatus from "../../enums/DeliveryStatus";
 	import { formatMoney } from "./../../helpers/app";
 	import { timeSpanToFrenchHour, encodeQuerySearchUrl } from "../../helpers/app";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -50,7 +51,9 @@
 	const cancelOrder = () =>
 		open(CancelMyOrders, {
 			orders: [purchaseOrder],
-			onClose: () => routerInstance.goTo(MyOrderRoutes.List),
+			onClose: (res) => {
+				if (res.success) routerInstance.refresh();
+			},
 		});
 
 	onMount(async () => {
@@ -59,6 +62,10 @@
 			return;
 		}
 
+		await getOrder();
+	});
+
+	const getOrder = async () => {
 		isLoading = true;
 		purchaseOrder = await query({
 			query: GET_MY_ORDER_DETAILS,
@@ -70,7 +77,9 @@
 
 		processStep = getProcessStep(purchaseOrder.status, purchaseOrder.delivery?.status);
 		isLoading = false;
-	});
+	};
+
+	$: getOrder($querystring);
 
 	$: canCancelOrder =
 		purchaseOrder &&

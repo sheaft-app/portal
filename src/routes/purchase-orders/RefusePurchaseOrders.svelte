@@ -20,7 +20,7 @@
 			mutation: REFUSE_PURCHASE_ORDERS,
 			variables: { ids: purchaseOrders.map((o) => o.id), reason },
 			errorsHandler,
-			success: async (res) => await handleClose(res),
+			success: async (res) => await handleClose({ success: true, data: res }),
 			successNotification: "Commande refusée",
 			errorNotification: "Impossible de refuser la commande.",
 			clearCache: [GET_ORDERS],

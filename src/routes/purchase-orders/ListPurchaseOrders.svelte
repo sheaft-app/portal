@@ -107,10 +107,12 @@
 	const handleOrdersModal = (modal) =>
 		open(modal, {
 			purchaseOrders: selectedItems,
-			onClose: () => {
-				routerInstance.refresh();
-				toggleMoreActions.set(false);
-				selectedItems = [];
+			onClose: (res) => {
+				if (res.success) {
+					routerInstance.refresh();
+					toggleMoreActions.set(false);
+					selectedItems = [];
+				}
 			},
 		});
 

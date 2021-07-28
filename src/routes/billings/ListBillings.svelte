@@ -40,7 +40,7 @@
 		open(MarkDeliveriesAsBilled, {
 			deliveries: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.reload();
+				if (res.success) routerInstance.refresh();
 			},
 		});
 	};

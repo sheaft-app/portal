@@ -19,7 +19,7 @@
 			mutation: ARCHIVE_JOBS,
 			variables: { ids: jobs.map((j) => j.id) },
 			errorsHandler,
-			success: async (res) => handleClose(res),
+			success: async (res) => handleClose({ success: true, data: res }),
 			successNotification: "La tâche a bien été archivée",
 			errorNotification: "Impossible d'archiver la tâche",
 			clearCache: [GET_JOBS],
@@ -31,7 +31,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -57,5 +56,4 @@
 			color: #ffffff;
 		}
 	}
-
 </style>
