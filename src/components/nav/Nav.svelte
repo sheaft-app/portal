@@ -41,7 +41,7 @@
 	import RecallRoutes from "../../routes/recalls/routes";
 	import MyRecallRoutes from "../../routes/my-recalls/routes";
 	import RetrievalRoutes from "../../routes/retrievals/routes";
-	import StoreTraceabilityRoutes from "../../routes/storeTraceability/routes";
+	import StoreTraceabilityRoutes from "../../routes/store-traceabilities/routes";
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
