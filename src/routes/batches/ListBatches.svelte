@@ -23,7 +23,7 @@
 	let items = [];
 	let noResults = true;
 
-	const headers = [{ name: "Lot", sortLabel: "number" }, { name: "DLC/DDM" }];
+	const headers = [{ name: "Lot", sortLabel: "number" }, { name: "DLC/DDM" }, { name: "Observations" }];
 
 	let displayObservationsPanel = false;
 
@@ -32,7 +32,7 @@
 			click: () =>
 				open(CreateBatchModal, {
 					onClose: (res) => {
-						items = [res, ...items];
+						if (res.success) items = [res.data, ...items];
 					},
 				}),
 			text: "Créer un nouveau lot",
@@ -78,6 +78,9 @@
 				{#if batch.ddm}
 					<p>{format(new Date(batch.ddm), "PPPP", { locale: fr })}</p>
 				{/if}
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap">
+				<p>{batch.observationsCount}</p>
 			</td>
 		</Table>
 	</PageBody>

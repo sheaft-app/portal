@@ -111,9 +111,11 @@
 	const openCreateBatchModal = () =>
 		open(CreateBatchModal, {
 			onClose: (res) => {
-				batches = [res, ...batches];
-				displayedBatches = batches;
-				selectedBatches = [...selectedBatches, res.id];
+				if (res.success) {
+					batches = [res.data, ...batches];
+					displayedBatches = batches;
+					selectedBatches = [...selectedBatches, res.data.id];
+				}
 			},
 		});
 

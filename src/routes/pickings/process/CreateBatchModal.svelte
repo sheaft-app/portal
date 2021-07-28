@@ -29,7 +29,7 @@
 			},
 			errorsHandler,
 			success: async (res) => {
-				await onClose(res);
+				await onClose({ success: true, data: res });
 				close();
 			},
 			successNotification: "Lot créé avec succès",

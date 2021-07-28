@@ -10,9 +10,8 @@ export const GET_BATCHES = gql`
 					number
 					ddm
 					dlc
-					deliveries {
-						id
-					}
+					observationsCount
+					productsCount
 					createdOn
 				}
 			}
@@ -34,37 +33,7 @@ export const GET_BATCH_DETAILS = gql`
 			dlc
 			ddm
 			createdOn
-			observations {
-				id
-				comment
-				user {
-					id
-					picture
-					name
-					kind
-				}
-				createdOn
-				batches {
-					id
-					number
-				}
-				products {
-					id
-					name
-				}
-				updatedOn
-				replies {
-					id
-					comment
-					user {
-						id
-						picture
-						name
-					}
-					createdOn
-					updatedOn
-				}
-			}
+			observationsCount
 			products {
 				id
 				name

@@ -68,7 +68,7 @@
 <TransitionWrapper>
 	<PageHeader name="Détails du lot {batch ? batch.number : ''}" previousPage={BatchesRoutes.List} />
 	<PageBody {errorsHandler} {isLoading}>
-		{#if batch.observations.length > 0}
+		{#if batch.observationsCount > 0}
 			<div
 				class="py-5 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-blue-100
 				shadow md:rounded md:mb-3 mt-3"
