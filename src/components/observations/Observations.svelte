@@ -14,6 +14,8 @@
 	import { flip } from "svelte/animate";
 	import { quintOut } from "svelte/easing";
 	import { crossfade } from "svelte/transition";
+	import GroupBy from "lodash/groupBy";
+	import OrderBy from "lodash/orderBy";
 
 	export let producerId = null;
 	export let observations = [];
@@ -45,7 +47,7 @@
 		},
 	});
 
-	var popStateListener = (event) => {
+	let popStateListener = (event) => {
 		if (selectedObservation) {
 			return (selectedObservation = null);
 		}
@@ -56,10 +58,8 @@
 		window.addEventListener("popstate", popStateListener, false);
 		history.pushState({ observations }, "Observations");
 
-		if (observations.length > 0) {
-			return;
-		} else if (producerId !== null) {
-			isLoading = true;
+		isLoading = true;
+		if (producerId !== null) {
 			observations = await query({
 				query: GET_OBSERVATIONS,
 				variables: { producerId },
@@ -68,18 +68,16 @@
 				errorNotification: "Impossible de récupérer les observations.",
 				skipCache: true,
 			});
-			isLoading = false;
-			return;
 		} else {
-			isLoading = true;
 			observations = await query({
 				query: GET_OBSERVATIONS,
 				errorsHandler,
 				error: () => close(),
 				errorNotification: "Impossible de récupérer les observations.",
+				skipCache: true,
 			});
-			isLoading = false;
 		}
+		isLoading = false;
 	});
 
 	onDestroy(() => {
@@ -91,6 +89,22 @@
 	const selectObservation = (observation) => {
 		history.pushState({ observation }, "Observations");
 		selectedObservation = observation;
+	};
+
+	const getLastReply = (observation) => {
+		if (observation.replies && observation.replies.length > 0) return observation.replies[0].comment;
+
+		return observation.comment;
+	};
+
+	const userHasReplied = (observation) => {
+		if (!observation.replies || observation.replies.length < 1) return false;
+
+		let grouped = GroupBy(observation.replies, (o) => o.user.id);
+		if (Object.keys(grouped).length < 2) return false;
+
+		let lastReply = observation.replies[observation.replies.length - 1];
+		return lastReply.user.id !== $authUserAccount.id;
 	};
 </script>
 
@@ -140,15 +154,17 @@
 					</div>
 					<div class="w-9/12 ml-3">
 						<p class="font-semibold">{observation.user.id == $authUserAccount.id ? "Vous" : observation.user.name}</p>
-						<p class="text-gray-600 truncate" style="max-width: 200px;">{observation.comment}</p>
-						{#if observation.replies.length > 0}
+						<p class="text-gray-600 truncate" style="max-width: 200px;">{getLastReply(observation)}</p>
+						{#if userHasReplied(observation)}
 							<p class="text-green-500 text-sm">
 								<Icon data={faCheck} class="mr-2" />
 								Une réponse a été apportée à cette observation
 							</p>
 						{/if}
 					</div>
-					<p class="text-gray-600 w-2/12">{format(new Date(observation.createdOn), "P", { locale: fr })}</p>
+					<p class="text-gray-600 w-2/12">
+						{format(new Date(observation.updatedOn ?? observation.createdOn), "P", { locale: fr })}
+					</p>
 				</div>
 			{:else}
 				<p>Aucune observation remontée.</p>

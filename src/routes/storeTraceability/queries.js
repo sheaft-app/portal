@@ -7,6 +7,7 @@ export const GET_PRODUCERS = gql`
 				id
 				name
 				picture
+				observationsCount
 			}
 		}
 	}

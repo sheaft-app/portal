@@ -1,4 +1,7 @@
 <script>
+	import Icon from "svelte-awesome";
+	import { faEye } from "@fortawesome/free-solid-svg-icons";
+
 	export let producer;
 </script>
 
@@ -36,13 +39,16 @@
 				/>
 			</div>
 			<div class="bg-white rounded-lg p-0 pl-3 lg:p-4 w-full">
-				<div class="pr-8">
+				<div class="flex justify-between">
 					<h4
 						class="font-semibold text-base lg:text-lg leading-tight
-            mb-1 mt-3"
+            mb-1 mt-3 mr-3"
 					>
 						{producer.name}
 					</h4>
+					<p class="flex items-center">
+						<Icon data={faEye} class="mr-2" />{producer.observationsCount}
+					</p>
 				</div>
 			</div>
 		</div>

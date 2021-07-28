@@ -102,7 +102,7 @@ export const GET_BUSINESS_CLOSINGS = gql`
 
 export const GET_OBSERVATIONS = gql`
 	query GetObservations($producerId: ID) {
-		observations(producerId: $producerId, order: { updatedOn: ASC }) {
+		observations(producerId: $producerId, order: { updatedOn: DESC }) {
 			nodes {
 				id
 				comment
@@ -112,6 +112,7 @@ export const GET_OBSERVATIONS = gql`
 					picture
 					name
 				}
+				visibleToAll
 				createdOn
 				updatedOn
 				batches {
@@ -137,4 +138,4 @@ export const GET_OBSERVATIONS = gql`
 			}
 		}
 	}
-`
+`;
