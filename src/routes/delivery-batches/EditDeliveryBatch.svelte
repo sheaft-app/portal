@@ -38,6 +38,7 @@
 			success: (res) => (deliveryBatch = denormalizeDeliveryBatch(res)),
 			error: () => routerInstance.goTo(DeliveryBatchesRoutes.List),
 			errorNotification: "La programmation à laquelle vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};

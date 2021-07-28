@@ -73,6 +73,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(MyOrderRoutes.List),
 			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 
 		processStep = getProcessStep(purchaseOrder.status, purchaseOrder.delivery?.status);

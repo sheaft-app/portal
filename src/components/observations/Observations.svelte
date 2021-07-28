@@ -15,9 +15,9 @@
 	import { quintOut } from "svelte/easing";
 	import { crossfade } from "svelte/transition";
 	import GroupBy from "lodash/groupBy";
-	import OrderBy from "lodash/orderBy";
 
 	export let producerId = null;
+	export let batchId = null;
 	export let observations = [];
 	export let title = "Observations";
 
@@ -70,41 +70,24 @@
 	});
 
 	const fetchObservations = async () => {
-		if (producerId !== null) {
-			await query({
-				query: GET_OBSERVATIONS,
-				variables: { 
-					producerId,
-					first: PAGE_LIMIT_SIZE, 
-					after: pageInfo.endCursor
-				},
-				success: (res) => {
-					pageInfo = res.pageInfo;
-					observations = [...observations, ...res.data];
-				},
-				errorsHandler,
-				error: () => close(),
-				errorNotification: "Impossible de récupérer les observations.",
-				skipCache: true,
-			});
-		} else {
-			await query({
-				query: GET_OBSERVATIONS,
-				variables: { 
-					first: PAGE_LIMIT_SIZE, 
-					after: pageInfo.endCursor
-				},
-				errorsHandler,
-				success: (res) => {
-					pageInfo = res.pageInfo;
-					observations = [...observations, ...res.data];
-				},
-				error: () => close(),
-				errorNotification: "Impossible de récupérer les observations.",
-				skipCache: true,
-			});
-		}
-	}
+		await query({
+			query: GET_OBSERVATIONS,
+			variables: {
+				producerId: producerId,
+				batchId: batchId,
+				first: PAGE_LIMIT_SIZE,
+				after: pageInfo.endCursor,
+			},
+			success: (res) => {
+				pageInfo = res.pageInfo;
+				observations = [...observations, ...res.data];
+			},
+			errorsHandler,
+			error: () => close(),
+			errorNotification: "Impossible de récupérer les observations.",
+			skipCache: true,
+		});
+	};
 
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);

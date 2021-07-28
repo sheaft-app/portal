@@ -3,6 +3,8 @@ import SearchProductRoutes from "../routes/search-products/routes";
 import ProductRoutes from "../routes/products/routes";
 import QuickOrderRoutes from "../routes/quick-orders/routes";
 import RegisterRoutes from "../routes/register/routes";
+import PurchaseOrderRoutes from "../routes/purchase-orders/routes";
+import QuickPurchaseRoutes from "../routes/quick-purchases/routes";
 
 export const goToHome = (authManager, routerInstance) => {
 	if (authManager.authenticated && !authManager.registered) {
@@ -11,12 +13,12 @@ export const goToHome = (authManager, routerInstance) => {
 	}
 
 	if (authManager.isInRole([Roles.Producer.Value])) {
-		routerInstance.goTo(ProductRoutes.List);
+		routerInstance.goTo(PurchaseOrderRoutes.List);
 		return;
 	}
 
 	if (authManager.isInRole([Roles.Store.Value])) {
-		routerInstance.goTo(QuickOrderRoutes.Purchase);
+		routerInstance.goTo(QuickPurchaseRoutes.Purchase);
 		return;
 	}
 

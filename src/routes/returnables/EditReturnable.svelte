@@ -10,6 +10,7 @@
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	export let params;
 
@@ -22,15 +23,7 @@
 	let isLoading = true;
 
 	onMount(async () => {
-		isLoading = true;
-		returnable = await query({
-			query: GET_RETURNABLE_DETAILS,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(ReturnableRoutes.List),
-			errorNotification: "Impossible de récupérer les informations de la consigne.",
-		});
-		isLoading = false;
+		await getReturnable();
 	});
 
 	const handleSubmit = async () =>
@@ -52,6 +45,20 @@
 			},
 		});
 
+	const getReturnable = async () => {
+		isLoading = true;
+		returnable = await query({
+			query: GET_RETURNABLE_DETAILS,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(ReturnableRoutes.List),
+			errorNotification: "Impossible de récupérer les informations de la consigne.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+		isLoading = false;
+	};
+
+	$: getReturnable($querystring);
 	$: buttons = [{ text: "Supprimer", click: () => showDeleteModal(), color: "red" }];
 </script>
 

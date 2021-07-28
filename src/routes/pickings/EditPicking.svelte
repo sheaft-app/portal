@@ -12,6 +12,7 @@
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 	import PickingRoutes from "./routes";
 	import PickingStatus from "../../enums/PickingStatus";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -26,15 +27,7 @@
 	let loadingMessage = "Chargement des informations de la préparation en cours...";
 
 	onMount(async () => {
-		isLoading = true;
-		picking = await query({
-			query: GET_PICKING_DETAILS,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(PickingRoutes.List),
-			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
-		});
-		isLoading = false;
+		await getPicking();
 	});
 
 	const handleSubmit = async () => {
@@ -56,9 +49,23 @@
 		isSubmitting = false;
 	};
 
+	const getPicking = async () => {
+		isLoading = true;
+		picking = await query({
+			query: GET_PICKING_DETAILS,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(PickingRoutes.List),
+			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+		isLoading = false;
+	};
+
 	onDestroy(() => (picking = null));
 
-	const buttons =
+	$: getPicking($querystring);
+	$: buttons =
 		picking && picking.status != PickingStatus.Completed.Value
 			? [
 					{

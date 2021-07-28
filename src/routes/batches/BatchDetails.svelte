@@ -14,10 +14,13 @@
 	import { UPDATE_BATCH } from "./mutations";
 	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
 	import Observations from "../../components/observations/Observations.svelte";
+	import { querystring } from "svelte-spa-router";
+	import CreateBatchObservation from "./CreateBatchObservation.svelte";
 
 	export let params = {};
 
 	const { query, mutate } = getContext("api");
+	const { open } = getContext("modal");
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
@@ -30,6 +33,10 @@
 	let expirationDate = new Date();
 
 	onMount(async () => {
+		await getBatch();
+	});
+
+	const getBatch = async () => {
 		isLoading = true;
 		batch = await query({
 			query: GET_BATCH_DETAILS,
@@ -37,12 +44,13 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(BatchesRoutes.List),
 			errorNotification: "Impossible de trouver le lot.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		dlcOrDluo = batch.dlc ? "dlc" : "ddm";
 		expirationDate = batch.dlc ? new Date(batch.dlc) : new Date(batch.ddm);
 
 		isLoading = false;
-	});
+	};
 
 	const handleSubmit = async () => {
 		isSubmitting = true;
@@ -63,10 +71,29 @@
 		});
 		isSubmitting = false;
 	};
+
+	const showAddObservationModal = () => {
+		open(CreateBatchObservation, {
+			batch: batch,
+			onClose: (res) => {
+				if (res.success) routerInstance.refresh();
+			},
+		});
+	};
+
+	$: getBatch($querystring);
+
+	$: buttons = [
+		{
+			text: "Ajouter une observation",
+			click: () => showAddObservationModal(),
+			color: "blue",
+		},
+	];
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Détails du lot {batch ? batch.number : ''}" previousPage={BatchesRoutes.List} />
+	<PageHeader name="Détails du lot {batch ? batch.number : ''}" previousPage={BatchesRoutes.List} {buttons} />
 	<PageBody {errorsHandler} {isLoading}>
 		{#if batch.observationsCount > 0}
 			<div
@@ -148,7 +175,7 @@
 		{#if displayObservationsPanel}
 			<Observations
 				title="Observations du lot"
-				observations={batch.observations}
+				batchId={batch.id}
 				on:close={() => (displayObservationsPanel = false)}
 			/>
 		{/if}

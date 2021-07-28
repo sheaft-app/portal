@@ -42,6 +42,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
 			errorNotification: "La livraison à laquelle vous essayez d'accéder n'est pas disponible.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 
 		if (delivery.products) {

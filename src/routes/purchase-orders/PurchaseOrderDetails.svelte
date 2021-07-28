@@ -61,7 +61,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(PurchaseOrderRoutes.List),
 			errorNotification: "La commande à laquelle vous essayez d'accéder n'existe plus.",
-			clearCache: [GET_ORDERS],
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};

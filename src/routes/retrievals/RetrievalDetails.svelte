@@ -12,6 +12,7 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import ConfirmRetrievals from "./ConfirmRetrievals.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -30,6 +31,20 @@
 	let loadingMessage = "Chargement des informations de votre livraison en cours.";
 
 	onMount(async () => {
+		await getRetrieval();
+	});
+
+	const markAsRetrieved = () =>
+		open(ConfirmRetrievals, {
+			retrievals: [retrieval],
+			onClose: (res) => {
+				if (res.success) routerInstance.goTo(DeliveryRoutes.List);
+			},
+		});
+
+	onDestroy(() => (retrieval = null));
+
+	const getRetrieval = async () => {
 		isLoading = true;
 		retrieval = await query({
 			query: GET_DELIVERY_DETAILS,
@@ -37,6 +52,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
 			errorNotification: "La livraison à laquelle vous essayez d'accéder n'est pas disponible.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 
 		if (retrieval.products) {
@@ -127,18 +143,9 @@
 		});
 
 		isLoading = false;
-	});
+	};
 
-	const markAsRetrieved = () =>
-		open(ConfirmRetrievals, {
-			retrievals: [retrieval],
-			onClose: (res) => {
-				if (res.success) routerInstance.goTo(DeliveryRoutes.List);
-			},
-		});
-
-	onDestroy(() => (retrieval = null));
-
+	$: getRetrieval($querystring);
 	$: buttons =
 		retrieval && !retrieval.deliveredOn
 			? [

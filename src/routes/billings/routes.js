@@ -26,6 +26,7 @@ const BillingRoutes = {
 				paginate: Paginate.First,
 				where: null,
 				whereValues: null,
+				refresh: "clear",
 			},
 		},
 	},

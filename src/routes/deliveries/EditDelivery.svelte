@@ -35,6 +35,7 @@
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
 			success: (res) => (delivery = denormalizeDelivery(res)),
 			errorNotification: "Le créneau auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};

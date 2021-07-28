@@ -12,6 +12,7 @@
 	import { normalizeSellingPoint } from "./sellingPointForm";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -24,15 +25,7 @@
 	let sellingPoint = null;
 
 	onMount(async () => {
-		isLoading = true;
-		sellingPoint = await query({
-			query: GET_SELLING_POINT_DETAILS,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(SellingPointRoutes.List),
-			errorNotification: "Le point de vente auquel vous essayez d'accéder n'existe plus.",
-		});
-		isLoading = false;
+		await getSellingPoint();
 	});
 
 	const handleSubmit = async () => {
@@ -65,8 +58,22 @@
 		});
 	};
 
+	const getSellingPoint = async () => {
+		isLoading = true;
+		sellingPoint = await query({
+			query: GET_SELLING_POINT_DETAILS,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(SellingPointRoutes.List),
+			errorNotification: "Le point de vente auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+		isLoading = false;
+	};
+
 	onDestroy(() => (sellingPoint = null));
 
+	$: getSellingPoint($querystring);
 	$: buttons = [
 		{
 			text: "Supprimer",

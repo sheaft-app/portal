@@ -18,6 +18,7 @@
 	import RecallStatus from "../../enums/RecallStatus";
 	import Roles from "../../enums/Roles";
 	import ExternalRoutes from "../external/routes";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -30,22 +31,7 @@
 	let recall = undefined;
 
 	onMount(async () => {
-		isLoading = true;
-		recall = await query({
-			query: GET_RECALL,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(RecallRoutes.List),
-			errorNotification: "La campagne de rappel à laquelle vous essayez d'accéder n'existe plus.",
-		});
-
-		if (recall.status !== RecallStatus.Waiting.Value || !GetAuthInstance().isInRole(Roles.Producer.Value))
-			return await routerInstance.goTo(ExternalRoutes.RecallDetails, { id: params.id });
-
-		recall.saleStartedOn = new Date(recall.saleStartedOn);
-		recall.saleEndedOn = new Date(recall.saleEndedOn);
-
-		isLoading = false;
+		await getRecall();
 	});
 
 	const deleteRecall = () => {
@@ -78,6 +64,27 @@
 		});
 	};
 
+	const getRecall = async () => {
+		isLoading = true;
+		recall = await query({
+			query: GET_RECALL,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(RecallRoutes.List),
+			errorNotification: "La campagne de rappel à laquelle vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+
+		if (recall.status !== RecallStatus.Waiting.Value || !GetAuthInstance().isInRole(Roles.Producer.Value))
+			return await routerInstance.goTo(ExternalRoutes.RecallDetails, { id: params.id });
+
+		recall.saleStartedOn = new Date(recall.saleStartedOn);
+		recall.saleEndedOn = new Date(recall.saleEndedOn);
+
+		isLoading = false;
+	};
+
+	$: getRecall($querystring);
 	$: actions =
 		recall && recall.status === RecallStatus.Waiting.Value
 			? [

@@ -56,6 +56,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(JobRoutes.List),
 			errorNotification: "La tâche à laquelle vous essayez d'accéder n'existe plus",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};

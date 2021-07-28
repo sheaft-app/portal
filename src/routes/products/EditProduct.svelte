@@ -12,6 +12,7 @@
 	import { normalizeUpdateProduct } from "./productForm";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -24,15 +25,7 @@
 	let isLoading = true;
 
 	onMount(async () => {
-		isLoading = true;
-		product = await query({
-			query: GET_PRODUCT_DETAILS,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(ProductRoutes.List),
-			errorNotification: "Le produit auquel vous essayez d'accéder n'existe plus.",
-		});
-		isLoading = false;
+		await getProduct();
 	});
 
 	const handleSubmit = async () => {
@@ -56,6 +49,20 @@
 		});
 	};
 
+	const getProduct = async () => {
+		isLoading = true;
+		product = await query({
+			query: GET_PRODUCT_DETAILS,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(ProductRoutes.List),
+			errorNotification: "Le produit auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+		isLoading = false;
+	};
+
+	$: getProduct($querystring);
 	$: buttons = [
 		{
 			text: "Voir dans votre boutique",

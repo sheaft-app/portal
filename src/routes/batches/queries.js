@@ -49,3 +49,17 @@ export const GET_BATCH_DETAILS = gql`
 		}
 	}
 `;
+
+export const GET_PRODUCTS = gql`
+	query GetProducts {
+		products {
+			edges {
+				node {
+					id
+					reference
+					name
+				}
+			}
+		}
+	}
+`;

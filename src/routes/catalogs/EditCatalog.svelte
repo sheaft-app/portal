@@ -39,6 +39,7 @@
 			errorsHandler,
 			error: () => routerInstance.goTo(CatalogRoutes.List),
 			errorNotification: "Le catalogue auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
 		});
 		isLoading = false;
 	};
@@ -71,11 +72,14 @@
 		open(CloneCatalog, {
 			catalog,
 			onClose: async (res) => {
-				if (res.success) await routerInstance.goTo(CatalogRoutes.Details, { id: res.id }, true);
+				if (res.success) await routerInstance.goTo(CatalogRoutes.Details, { id: res.data.id });
 			},
 		});
 
-	$: getCatalog($querystring);
+	$: if (params.id || $querystring) {
+		getCatalog();
+	}
+
 	$: isConsumerCatalog = catalog && catalog.kind === CatalogKind.Consumers.Value;
 
 	$: buttons = [

@@ -13,6 +13,7 @@
 	import QuickOrderForm from "./QuickOrderForm.svelte";
 	import { faFileExport, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 	import DeleteQuickOrdersModal from "./DeleteQuickOrdersModal.svelte";
+	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
 
@@ -25,15 +26,7 @@
 	let quickOrder = undefined;
 
 	onMount(async () => {
-		isLoading = true;
-		quickOrder = await query({
-			query: GET_QUICKORDER,
-			variables: { id: params.id },
-			errorsHandler,
-			error: () => routerInstance.goTo(QuickOrderRoutes.List),
-			errorNotification: "Le modèle auquel vous essayez d'accéder n'existe plus.",
-		});
-		isLoading = false;
+		await getQuickOrder();
 	});
 
 	const deleteQuickOrder = () => {
@@ -57,6 +50,20 @@
 		});
 	};
 
+	const getQuickOrder = async () => {
+		isLoading = true;
+		quickOrder = await query({
+			query: GET_QUICKORDER,
+			variables: { id: params.id },
+			errorsHandler,
+			error: () => routerInstance.goTo(QuickOrderRoutes.List),
+			errorNotification: "Le modèle auquel vous essayez d'accéder n'existe plus.",
+			skipCache: routerInstance.shouldSkipCache(),
+		});
+		isLoading = false;
+	};
+
+	$: getQuickOrder($querystring);
 	$: actions = [
 		{
 			click: () => deleteQuickOrder(),
