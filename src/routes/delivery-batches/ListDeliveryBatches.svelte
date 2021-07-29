@@ -104,9 +104,9 @@
 			{#each $items as deliveryBatch}
 				<DeliveryBatchItem {deliveryBatch} />
 			{/each}
-			{#if (!deliveries || deliveries.length === 0) && $items.length === 0}
-				<p class="text-center">Aucune commande disponible pour être livrée</p>
-			{/if}
 		</div>
+		{#if (!deliveries || deliveries.length === 0) && $items.length === 0}
+			<p class="text-center">Aucune commande disponible pour être livrée</p>
+		{/if}
 	</PageBody>
 </TransitionWrapper>

@@ -89,12 +89,12 @@
 								D'autres commandes sont disponibles à la préparation. Vous pouvez les ajouter à l'une de vos
 								préparations en cours à l'aide du bouton "Modifier" ou bien en créer une nouvelle.
 							</p>
-							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+							<button on:click={handleCreatePicking} class="btn btn-lg btn-accent mt-4">
 								Créer une autre préparation
 							</button>
 						{:else}
 							<p>Des commandes sont disponibles pour être préparées.</p>
-							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+							<button on:click={handleCreatePicking} class="btn btn-lg btn-accent mt-4">
 								Lancer une préparation
 							</button>
 						{/if}
@@ -104,9 +104,9 @@
 			{#each $items as picking}
 				<PickingItem {picking} />
 			{/each}
-			{#if (!pickings || pickings.length === 0) && $items.length === 0}
-				<p class="text-center">Aucune commande disponible pour être préparée</p>
-			{/if}
 		</div>
+		{#if (!pickings || pickings.length === 0) && $items.length === 0}
+			<p class="text-center">Aucune commande disponible pour être préparée</p>
+		{/if}
 	</PageBody>
 </TransitionWrapper>
