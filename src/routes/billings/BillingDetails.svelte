@@ -8,6 +8,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import AccountingRoutes from "./routes";
+	import PurchaseOrderRoutes from "./../purchase-orders/routes";
 	import MarkDeliveriesAsBilled from "./MarkDeliveriesAsBilled.svelte";
 	import { formatMoney } from "../../helpers/app";
 	import { format } from "date-fns";
@@ -215,7 +216,12 @@
 								<ul>
 									{#each delivery.purchaseOrders as purchaseOrder}
 										<li>
-											{purchaseOrder.reference} ({format(new Date(purchaseOrder.createdOn), "P", { locale: fr })})
+											<a
+												href="javascript:void(0)"
+												on:click={() => routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
+												>{purchaseOrder.reference}</a
+											>
+											({format(new Date(purchaseOrder.createdOn), "P", { locale: fr })})
 										</li>
 									{/each}
 								</ul>

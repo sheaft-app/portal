@@ -24,7 +24,7 @@
 				autostart: true,
 				purchaseOrderIds: purchaseOrders.map((po) => po.id),
 			},
-			success: async (res) => await routerInstance.goTo(PickingRoutes.Edit, { id: res.id }),
+			success: async (res) => await routerInstance.goTo(PickingRoutes.Process, { id: res.id }),
 			errorsHandler,
 			errorNotification: "Impossible de créer la préparation",
 			clearCache: [GET_ORDERS],

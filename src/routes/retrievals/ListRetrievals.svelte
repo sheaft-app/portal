@@ -26,7 +26,7 @@
 	const headers = [
 		{ name: "Client" },
 		{ name: "Commande" },
-		{ name: "Récupération le", sortLabel: "scheduledOn" },
+		{ name: "A distribuer le", sortLabel: "scheduledOn" },
 		{ name: "Lieu" },
 	];
 

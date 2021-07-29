@@ -32,6 +32,12 @@ export const PAUSE_PICKING = gql`
 	}
 `;
 
+export const DELETE_PICKING = gql`
+	mutation DeletePicking($input: DeletePickingInput) {
+		deletePicking(input: $input)
+	}
+`;
+
 export const SET_PICKING_PRODUCT_PREPARED_QUANTITY = gql`
 	mutation SetPickingProductPreparedQuantity($input: SetPickingProductPreparedQuantityInput) {
 		setPickingProductPreparedQuantity(input: $input) {

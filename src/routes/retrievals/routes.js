@@ -13,7 +13,7 @@ const RetrievalRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
-		Name: "Récupérations",
+		Name: "Distributions",
 		Icon: faPeopleCarry,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,

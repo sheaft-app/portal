@@ -51,7 +51,7 @@
 			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(DeliveryRoutes.List),
-			errorNotification: "La livraison à laquelle vous essayez d'accéder n'est pas disponible.",
+			errorNotification: "La distribution à laquelle vous essayez d'accéder n'est pas disponible.",
 			skipCache: routerInstance.shouldSkipCache(),
 		});
 
@@ -150,7 +150,7 @@
 		retrieval && !retrieval.deliveredOn
 			? [
 					{
-						text: "Marquer comme récupérée",
+						text: "Marquer comme distribuée",
 						color: "green",
 						click: () => markAsRetrieved(),
 					},
@@ -162,8 +162,8 @@
 	<PageHeader
 		name="Commande {retrieval
 			? retrieval.deliveredOn
-				? ` récupérée le ${format(new Date(retrieval.deliveredOn), 'P', { locale: fr })}`
-				: ` prévue le ${format(new Date(retrieval.scheduledOn), 'P', { locale: fr })}`
+				? ` distribuée le ${format(new Date(retrieval.deliveredOn), 'P', { locale: fr })}`
+				: ` prévue pour le ${format(new Date(retrieval.scheduledOn), 'P', { locale: fr })}`
 			: ''}"
 		previousPage={ExpectedDeliveriesRoutes.List}
 		{buttons}

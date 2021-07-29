@@ -11,8 +11,10 @@
 	import AddOrderModal from "./AddOrderModal.svelte";
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 	import PickingRoutes from "./routes";
+	import PurchaseOrderRoutes from "./../purchase-orders/routes";
 	import PickingStatus from "../../enums/PickingStatus";
 	import { querystring } from "svelte-spa-router";
+	import DeletePicking from "./DeletePicking.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -62,6 +64,12 @@
 		isLoading = false;
 	};
 
+	const showDeleteModal = () =>
+		open(DeletePicking, {
+			picking,
+			onClose: () => routerInstance.goTo(PickingRoutes.List),
+		});
+
 	onDestroy(() => (picking = null));
 
 	$: getPicking($querystring);
@@ -71,7 +79,7 @@
 					{
 						text: "Supprimer",
 						color: "red",
-						click: () => {},
+						click: () => showDeleteModal(),
 					},
 			  ]
 			: [];
@@ -98,7 +106,13 @@
 				{/if}
 				{#each picking.purchaseOrders as purchaseOrder}
 					<div class="bg-white px-4 py-2 shadow rounded">
-						<p class="font-semibold mb-2">{purchaseOrder.sender.name}</p>
+						<p class="font-semibold mb-2">
+							{purchaseOrder.sender.name} (<a
+								href="javascript:void(0)"
+								on:click={() => routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
+								>{purchaseOrder.reference}</a
+							>)
+						</p>
 						{#each purchaseOrder.products as product}
 							<p>{product.name} x{product.quantity}</p>
 						{/each}

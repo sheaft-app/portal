@@ -36,13 +36,13 @@
 			mutation: CREATE_PICKING,
 			variables: {
 				name: selectedPicking.name,
-				autostart: false,
+				autostart: true,
 				purchaseOrderIds: selectedPicking.clients.reduce((acc, curr) => {
 					acc = [...acc, ...curr.purchaseOrders.map((p) => p.id)];
 					return acc;
 				}, []),
 			},
-			success: async (res) => await routerInstance.goTo(PickingRoutes.List),
+			success: async (res) => await routerInstance.goTo(PickingRoutes.Process, { id: res.id }),
 			errorsHandler,
 			errorNotification: "Impossible de créer la préparation",
 			clearCache: [GET_AVAILABLE_PICKINGS, GET_PICKINGS],

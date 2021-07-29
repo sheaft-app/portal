@@ -1,15 +1,68 @@
 import gql from "graphql-tag";
 
 export const GET_ORDERS = gql`
-	query GetOrders(
-		$first: Int
-		$last: Int
-		$after: String
-		$before: String
-		$orderBy: [PurchaseOrderSortInput!]
-		$where: PurchaseOrderFilterInput
-	) {
-		purchaseOrders(first: $first, last: $last, after: $after, before: $before, order: $orderBy, where: $where) {
+	query GetOrders($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PurchaseOrderSortInput!]) {
+		purchaseOrders(
+			first: $first
+			last: $last
+			after: $after
+			before: $before
+			order: $orderBy
+			where: { status: { in: [WAITING, ACCEPTED] } }
+		) {
+			pageInfo {
+				startCursor
+				endCursor
+				hasNextPage
+				hasPreviousPage
+			}
+			edges {
+				cursor
+				node {
+					id
+					totalOnSalePrice
+					totalWholeSalePrice
+					totalVatPrice
+					reference
+					productsCount
+					expectedDelivery {
+						kind
+						expectedDeliveryDate
+					}
+					createdOn
+					status
+					vendor {
+						id
+						name
+					}
+					sender {
+						id
+						name
+						email
+						phone
+					}
+					picking {
+						id
+					}
+					delivery {
+						id
+					}
+				}
+			}
+		}
+	}
+`;
+
+export const GET_ORDERS_HISTORY = gql`
+	query GetOrders($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PurchaseOrderSortInput!]) {
+		purchaseOrders(
+			first: $first
+			last: $last
+			after: $after
+			before: $before
+			order: $orderBy
+			where: { status: { in: [EXPIRED, REFUSED, WITHDRAWNED, CANCELLED] } }
+		) {
 			pageInfo {
 				startCursor
 				endCursor

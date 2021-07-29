@@ -1,20 +1,21 @@
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
 import Roles from "../../enums/Roles";
-import { faFileInvoice, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faFileInvoice, faHourglassHalf, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const prefix = "/purchase-orders";
 
 const list = "/";
 const details = "/:id";
 const create = "/create";
+const history = "/history";
 
 const PurchaseOrderRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
-		Name: "Commandes",
-		Icon: faFileInvoice,
+		Name: "En attente",
+		Icon: faHourglassHalf,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
 		Params: {
@@ -24,9 +25,24 @@ const PurchaseOrderRoutes = {
 				direction: OrderByDirection.DESC,
 				take: 20,
 				paginate: Paginate.First,
-				where: "status_in",
-				whereValues: "WAITING,ACCEPTED",
 				refresh: "clear",
+			},
+		},
+	},
+	History: {
+		Name: "Historique des commandes",
+		Icon: faHourglassHalf,
+		Path: `${prefix}${history}`,
+		SubPart: `${history}`,
+		Params: {
+			Query: {
+				cursor: null,
+				orderBy: "createdOn",
+				direction: OrderByDirection.DESC,
+				take: 20,
+				paginate: Paginate.First,
+				where: null,
+				whereValues: null,
 			},
 		},
 	},

@@ -10,44 +10,12 @@
 	import PurchaseOrderRoutes from "./routes";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";
-	import AcceptPurchaseOrders from "./AcceptPurchaseOrders.svelte";
-	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
-	import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
-	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
-	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
-	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
-	import Select from "./../../components/controls/select/Select.js";
-	import {
-		canCancelOrders,
-		canAcceptOrders,
-		canRefuseOrders,
-		canProcessOrders,
-		canDeliverOrders,
-		canShipOrder,
-		canShipOrders,
-	} from "./validators";
 	import { formatMoney } from "./../../helpers/app";
-	import { GET_ORDERS } from "./queries.js";
-	import {
-		faTimes,
-		faBackspace,
-		faCheck,
-		faClipboardList,
-		faTruckLoading,
-		faCircleNotch,
-		faClock,
-		faCalendarAlt,
-		faMapMarkerAlt,
-		faPlus,
-		faHistory,
-	} from "@fortawesome/free-solid-svg-icons";
-	import JobRoutes from "../jobs/routes";
+	import { GET_ORDERS_HISTORY } from "./queries.js";
+	import { faClock, faCalendarAlt, faMapMarkerAlt, faEye } from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "../../services/SheaftErrors";
-	import { toggleMoreActions } from "./../../stores/app";
-	import JobKind from "../../enums/JobKind";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
-	import RetrievalRoutes from "../retrievals/routes";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -85,32 +53,6 @@
 		})
 		.filter((p) => p);
 
-	const newOrders = () => routerInstance.goTo(PurchaseOrderRoutes.Create);
-
-	const cancelOrders = () => handleOrdersModal(CancelPurchaseOrders);
-
-	const refuseOrders = () => handleOrdersModal(RefusePurchaseOrders);
-
-	const acceptOrders = () => handleOrdersModal(AcceptPurchaseOrders);
-
-	const processOrders = () => handleOrdersModal(CreatePickingForPurchaseOrders);
-
-	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
-
-	const shipOrders = () => handleOrdersModal(CreateDeliveryBatchForPurchaseOrders);
-
-	const handleOrdersModal = (modal) =>
-		open(modal, {
-			purchaseOrders: selectedItems,
-			onClose: (res) => {
-				if (res.success) {
-					routerInstance.refresh();
-					toggleMoreActions.set(false);
-					selectedItems = [];
-				}
-			},
-		});
-
 	const getRowBackgroundColor = (item) => "";
 
 	const onRowClick = (item) => {
@@ -119,74 +61,16 @@
 
 	$: actions = [
 		{
-			click: () => newOrders(),
-			icon: faPlus,
-			text: "Créer une commande",
-			color: "green",
-		},
-		{
-			click: () => acceptOrders(),
-			disabled: !canAcceptOrders(selectedItems),
-			icon: faCheck,
-			text: "Accepter",
-			color: "green",
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => refuseOrders(),
-			disabled: !canRefuseOrders(selectedItems),
-			icon: faTimes,
-			text: "Refuser",
-			color: "red",
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => cancelOrders(),
-			disabled: !canCancelOrders(selectedItems),
-			icon: faTimes,
-			text: "Annuler",
-			color: "orange",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => processOrders(),
-			disabled: !canProcessOrders(selectedItems),
-			icon: faClipboardList,
-			text: "Préparer",
-			color: "green",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => deliverOrders(),
-			disabled: !canDeliverOrders(selectedItems),
-			icon: faTruckLoading,
-			text: "Marquer comme distribuée(s)",
-			color: "teal",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => shipOrders(),
-			disabled: !canShipOrders(selectedItems),
-			icon: faTruckLoading,
-			text: "Planifier la livraison",
-			color: "teal",
-			hideIfDisabled: true,
-			displaySelectedItemsNumber: true,
-		},
-		{
-			click: () => routerInstance.goTo(PurchaseOrderRoutes.History),
-			text: "Voir l'historique",
-			icon: faHistory,
+			click: () => routerInstance.goTo(PurchaseOrderRoutes.List),
+			text: "Voir les commandes en attente",
+			icon: faEye,
 			color: "blue",
 		},
 	];
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Commandes en attente" />
+	<PageHeader name="Commandes archivées" />
 	<PageBody {errorsHandler}>
 		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 		<Table
@@ -195,7 +79,7 @@
 			bind:noResults
 			{headers}
 			bind:isLoading
-			graphQuery={GET_ORDERS}
+			graphQuery={GET_ORDERS_HISTORY}
 			{errorsHandler}
 			loadingMessage="Chargement de vos commandes en cours."
 			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}

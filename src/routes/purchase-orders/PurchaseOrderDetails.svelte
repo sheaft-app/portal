@@ -276,7 +276,7 @@
 						class="py-1 px-3 rounded items-center flex transition duration-300
             ease-in-out text-orange-500 w-full lg:w-auto"
 					>
-						<Icon data={faBackspace} class="mr-2 hidden lg:inline w-4 h-4" />
+						<Icon data={faTimes} class="mr-2 hidden lg:inline w-4 h-4" />
 						<span>Annuler</span>
 					</button>
 					<button
@@ -286,7 +286,7 @@
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
 						<Icon data={faPlay} class="mr-2 hidden lg:inline w-4 h-4" />
-						<span>Démarrer la préparation</span>
+						<span>Préparer</span>
 					</button>
 					<button
 						class:hidden={!canShipOrder(order)}

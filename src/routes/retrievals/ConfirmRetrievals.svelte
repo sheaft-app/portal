@@ -24,8 +24,8 @@
 			},
 			errorsHandler,
 			success: async (res) => await handleClose({ success: true, data: res }),
-			successNotification: "Commande livrée",
-			errorNotification: "Impossible de marquer la commande comme livrée.",
+			successNotification: "Commande distribuée",
+			errorNotification: "Impossible de marquer la commande comme distribuée.",
 			clearCache: [GET_PENDING_RETRIEVALS],
 		});
 		isLoading = false;

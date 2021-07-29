@@ -37,7 +37,7 @@
 	$: actions = [
 		{
 			click: () => routerInstance.goTo(RetrievalRoutes.List),
-			text: "Voir les commandes à réceptionner",
+			text: "Voir les commandes à distribuer",
 			icon: faEye,
 			color: "blue",
 		},

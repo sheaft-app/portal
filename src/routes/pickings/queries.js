@@ -14,6 +14,7 @@ export const GET_AVAILABLE_PICKINGS = gql`
 				purchaseOrdersCount
 				purchaseOrders {
 					id
+					reference
 					productsCount
 					expectedDeliveryDate
 					totalWholeSalePrice
@@ -99,6 +100,7 @@ export const GET_PICKING_DETAILS = gql`
 			purchaseOrdersCount
 			purchaseOrders {
 				id
+				reference
 				sender {
 					id
 					name
@@ -115,6 +117,7 @@ export const GET_PICKING_DETAILS = gql`
 				quantity
 				purchaseOrder {
 					id
+					reference
 					sender {
 						id
 						name
@@ -131,6 +134,7 @@ export const GET_PICKING_DETAILS = gql`
 				}
 				purchaseOrder {
 					id
+					reference
 				}
 				preparedOn
 			}
