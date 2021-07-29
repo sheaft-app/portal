@@ -21,6 +21,8 @@
 			<p class="font-semibold text-xl">{picking.name}</p>
 			{#if picking.status !== PickingStatus.Waiting.Value}
 				<p>commencée le {format(new Date(picking.startedOn), "PPPP", { locale: fr })}</p>
+			{:else}
+				<p>mise à jour le {format(new Date(picking.updatedOn), "PPPP", { locale: fr })}</p>
 			{/if}
 		</div>
 		<div class="flex justify-between xl:justify-end items-top xl:flex-wrap xl:text-right">

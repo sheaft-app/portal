@@ -34,6 +34,7 @@ export const GET_PICKINGS = gql`
 					name
 					startedOn
 					completedOn
+					updatedOn
 					productsPreparedCount
 					productsToPrepareCount
 					purchaseOrdersCount
