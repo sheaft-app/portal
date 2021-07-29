@@ -121,7 +121,7 @@
 			<p class="uppercase font-semibold text-lg mb-1">Supprimer mon compte</p>
 			<p>
 				Si vous souhaitez supprimer votre compte, vous pouvez cliquer sur le bouton ci-dessous. Veuillez noter que la
-				suppression de votre compte implique la perte irréversible de vos commandes et de vos points.
+				suppression de votre compte implique la perte irréversible de toutes vos données.
 			</p>
 			<button
 				on:click={() => {
