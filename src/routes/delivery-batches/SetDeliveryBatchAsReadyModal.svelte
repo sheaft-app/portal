@@ -79,7 +79,7 @@
 		<Loader />
 	{:else}
 		{#each deliveries as delivery}
-			<SimpleStoreCard props={{ ...delivery, name: delivery.client.name }} />
+			<SimpleStoreCard props={{ ...delivery, name: delivery.client.name }} useBorder />
 		{/each}
 	{/if}
 </ActionConfirm>

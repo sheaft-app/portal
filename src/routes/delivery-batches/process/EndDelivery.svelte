@@ -105,7 +105,7 @@
 				Vous avez passé ces magasins. Choisissez quand reprogrammer la livraison de leurs commandes :
 			</p>
 			{#each skippedDeliveries as skippedDelivery}
-				<SimpleStoreCard props={{ ...skippedDelivery, name: skippedDelivery.client }} />
+				<SimpleStoreCard props={{ ...skippedDelivery, name: skippedDelivery.client }} useBorder />
 			{/each}
 		{/if}
 

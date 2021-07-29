@@ -4,10 +4,8 @@
 	import { GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "./queries";
 	import { POSTPONE_DELIVERY_BATCH, COMPLETE_DELIVERY_BATCH } from "./mutations";
 	import DeliveryBatchesRoutes from "./routes";
-	import { denormalizeDeliveryBatch } from "./deliveryBatchForm";
 	import Loader from "../../components/Loader.svelte";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
-	import SimpleStoreCard from "../deliveries/SimpleStoreCard.svelte";
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import DatePickerWrapper from "./../../components/controls/DatePickerWrapper.svelte";
