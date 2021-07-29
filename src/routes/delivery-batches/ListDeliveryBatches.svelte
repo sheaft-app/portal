@@ -73,37 +73,40 @@
 		loadingMessage="Chargement des livraisons..."
 	>
 		<Actions {actions} />
-
-		{#if $items.length > 0}
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
-				{#if deliveries.length > 0}
-					<div class="rounded-3xl px-4 py-2 bg-blue-100" style="box-shadow: 0px 0px 30px 0px rgb(0 0 0 / 10%); max-width: 500px;">
-						<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
-							<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
-							<p class="font-semibold text-xl">De nouvelles livraisons sont prêtes à être programmées !</p>
-						</div>
-						<div class="w-full mt-3 px-10 xl:px-12">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
+			{#if deliveries.length > 0}
+				<div
+					class="rounded-3xl px-4 py-2 bg-blue-100"
+					style="box-shadow: 0px 0px 30px 0px rgb(0 0 0 / 10%); max-width: 500px;"
+				>
+					<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
+						<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
+						<p class="font-semibold text-xl">De nouvelles livraisons sont prêtes à être programmées !</p>
+					</div>
+					<div class="w-full mt-3 px-10 xl:px-12">
+						{#if $items.length > 0}
 							<p>
-								D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos livraisons
-								non validées ou bien en programmer une nouvelle.
+								D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos
+								programmations non validées à l'aide du bouton "Modifier" ou bien en programmer une nouvelle.
 							</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une autre livraison
 							</button>
-						</div>
+						{:else}
+							<p>Des commandes sont disponibles pour être livrées.</p>
+							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+								Programmer une livraison
+							</button>
+						{/if}
 					</div>
-				{/if}
-				{#each $items as deliveryBatch}
-					<DeliveryBatchItem {deliveryBatch} />
-				{/each}
-			</div>
-		{:else if deliveries && deliveries.length > 0}
-			<p class="text-center">Une ou plusieurs commandes sont disponibles pour être livrées</p>
-			<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent m-auto mt-4"
-				>Programmer une livraison</button
-			>
-		{:else if $items.length === 0}
-			<p class="text-center">Aucune commande disponible pour être livrée</p>
-		{/if}
+				</div>
+			{/if}
+			{#each $items as deliveryBatch}
+				<DeliveryBatchItem {deliveryBatch} />
+			{/each}
+			{#if (!deliveries || deliveries.length === 0) && $items.length === 0}
+				<p class="text-center">Aucune commande disponible pour être livrée</p>
+			{/if}
+		</div>
 	</PageBody>
 </TransitionWrapper>

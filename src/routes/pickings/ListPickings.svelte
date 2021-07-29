@@ -73,34 +73,40 @@
 		loadingMessage="Chargement des préparations..."
 	>
 		<Actions {actions} />
-		{#if $items.length > 0}
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
-				{#if pickings && pickings.length > 0}
-					<div class="rounded-3xl px-4 py-2 bg-blue-100" style="box-shadow: 0px 0px 30px 0px rgb(0 0 0 / 10%); max-width: 500px;">
-						<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
-							<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
-							<p class="font-semibold text-xl">De nouvelles commandes sont prêtes à être préparées !</p>
-						</div>
-						<div class="w-full mt-3 px-10 xl:px-12">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
+			{#if pickings && pickings.length > 0}
+				<div
+					class="rounded-3xl px-4 py-2 bg-blue-100"
+					style="box-shadow: 0px 0px 30px 0px rgb(0 0 0 / 10%); max-width: 500px;"
+				>
+					<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
+						<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
+						<p class="font-semibold text-xl">De nouvelles commandes sont prêtes à être préparées !</p>
+					</div>
+					<div class="w-full mt-3 px-10 xl:px-12">
+						{#if $items.length > 0}
 							<p>
 								D'autres commandes sont disponibles à la préparation. Vous pouvez les ajouter à l'une de vos
 								préparations en cours à l'aide du bouton "Modifier" ou bien en créer une nouvelle.
 							</p>
-							<button on:click={handleCreatePicking} class="btn btn-lg btn-accent mt-4">
-								Programmer une autre préparation
+							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+								Créer une autre préparation
 							</button>
-						</div>
+						{:else}
+							<p>Des commandes sont disponibles pour être préparées.</p>
+							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
+								Lancer une préparation
+							</button>
+						{/if}
 					</div>
-				{/if}
-				{#each $items as picking}
-					<PickingItem {picking} />
-				{/each}
-			</div>
-		{:else if pickings && pickings.length > 0}
-			<p class="text-center">Une ou plusieurs commandes sont disponibles pour être préparées</p>
-			<button on:click={handleCreatePicking} class="btn btn-lg btn-accent m-auto mt-4">Lancer une préparation</button>
-		{:else if $items.length === 0}
-			<p class="text-center">Aucune commande disponible pour être préparée</p>
-		{/if}
+				</div>
+			{/if}
+			{#each $items as picking}
+				<PickingItem {picking} />
+			{/each}
+			{#if (!pickings || pickings.length === 0) && $items.length === 0}
+				<p class="text-center">Aucune commande disponible pour être préparée</p>
+			{/if}
+		</div>
 	</PageBody>
 </TransitionWrapper>
