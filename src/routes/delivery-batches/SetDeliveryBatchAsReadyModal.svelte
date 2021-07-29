@@ -41,8 +41,8 @@
 			variables: { id },
 			errorsHandler,
 			success: () => {
-				close();
 				routerInstance.refresh();
+				close();
 			},
 			successNotification: "Livraison confirmée !",
 			errorNotification: "Impossible de confirmer la livraison",

@@ -15,6 +15,7 @@
 	import Guid from "../../helpers/Guid";
 	import Icon from "svelte-awesome";
 	import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -35,6 +36,10 @@
 	];
 
 	onMount(async () => {
+		await loadDeliveryBatches();
+	});
+
+	const loadDeliveryBatches = async () => {
 		isLoading = true;
 		await query({
 			query: GET_AVAILABLE_DELIVERY_BATCHES,
@@ -52,9 +57,10 @@
 			skipCache: true,
 		});
 		isLoading = false;
-	});
+	};
 
 	const handleCreateDeliveryBatch = () => open(ChooseAvailableDelivery);
+	$: loadDeliveryBatches($querystring);
 </script>
 
 <TransitionWrapper>

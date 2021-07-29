@@ -15,6 +15,7 @@
 	import Guid from "../../helpers/Guid";
 	import Icon from "svelte-awesome";
 	import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+	import { querystring } from "svelte-spa-router";
 
 	const routerInstance = GetRouterInstance();
 	const errorsHandler = new SheaftErrors();
@@ -35,6 +36,10 @@
 	];
 
 	onMount(async () => {
+		await loadPickings();
+	});
+
+	const loadPickings = async () => {
 		isLoading = true;
 		await query({
 			query: GET_AVAILABLE_PICKINGS,
@@ -52,9 +57,10 @@
 			skipCache: true,
 		});
 		isLoading = false;
-	});
+	};
 
 	const handleCreatePicking = () => open(ChooseAvailablePickingModal);
+	$: loadPickings($querystring);
 </script>
 
 <TransitionWrapper>
