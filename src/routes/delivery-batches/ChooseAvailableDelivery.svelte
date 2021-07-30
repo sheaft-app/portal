@@ -44,7 +44,10 @@
 					position: c.position,
 				})),
 			},
-			success: async (res) => await routerInstance.goTo(DeliveryBatchesRoutes.List),
+			success: async (res) => {
+				routerInstance.refresh();
+				close();
+			},
 			errorsHandler,
 			errorNotification: "Impossible de programmer la livraison",
 			clearCache: [GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES],
