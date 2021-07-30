@@ -100,7 +100,7 @@
 		<div class="text-center absolute center-block">
 			<p class="mb-5 text-lg">Prochain arrêt...</p>
 			<div class="border bg-gray-200 rounded-3xl py-2 px-8">
-				<p class="text-primary text-2xl font-semibold uppercase mt-2">{nextStop.client}</p>
+				<p class="text-primary text-2xl font-semibold uppercase mt-2">{nextStop.client.name}</p>
 				<p class="text-lg">{nextStop.address.line1}</p>
 				<p class="text-lg">{nextStop.address.zipcode} {nextStop.address.city}</p>
 			</div>
