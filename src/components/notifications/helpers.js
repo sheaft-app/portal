@@ -270,7 +270,7 @@ export const getFormattedNotification = (notification, local, display) => {
 		}
 	}
 
-	return getNotification(notification, local.type, local.message, local.url, display, local.addToStore);
+	return getNotification(notification, local.type, local.message, local.url, display, false);
 };
 
 export const getNotificationIcon = (notification) => {

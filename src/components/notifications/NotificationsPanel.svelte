@@ -66,24 +66,33 @@
 
 	const markAsRead = async (notification) => {
 		if (notification.url) routerInstance.goTo(notification.url);
+		if (notification.id.length <= 36) {
+			// local notification with guid
+			toggleNotification(notification.id);
+			return;
+		}
 
 		await mutate({
 			mutation: MARK_USER_NOTIFICATION_AS_READ,
 			variables: { id: notification.id },
 			errorsHandler,
 			success: () => {
-				const array = $notifications.map((e) => {
-					if (e.id == notification.id) e.unread = false;
-					return e;
-				});
-
-				notifications.set(array);
-				notificationsCount.set(array.filter((e) => e.unread).length);
-				displayNotificationCenter.set(false);
+				toggleNotification(notification.id);
 			},
 			errorNotification: "Impossible de marquer les notifications comme lues",
 		});
 		isLoading = false;
+	};
+
+	const toggleNotification = (id) => {
+		const array = $notifications.map((e) => {
+			if (e.id === id) e.unread = false;
+			return e;
+		});
+
+		notifications.set(array);
+		notificationsCount.set(array.filter((e) => e.unread).length);
+		displayNotificationCenter.set(false);
 	};
 
 	const parseNotifications = (notifs) => {
