@@ -13,7 +13,7 @@ const BillingRoutes = {
 	Prefix: `${prefix}`,
 	Roles: [Roles.Producer.Value],
 	List: {
-		Name: "A facturer",
+		Name: "À facturer",
 		Icon: faFileInvoiceDollar,
 		Path: `${prefix}${list}`,
 		SubPart: `${list}`,
