@@ -109,8 +109,8 @@
 	{/if}
 	<h3 class="uppercase font-bold mt-6">Automatisations</h3>
 	<small
-		>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le consommateur
-		(par exemple, du lait frais, ou si vous avez un stock conséquent)</small
+		>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le client (par
+		exemple, du lait frais, ou si vous avez un stock conséquent)</small
 	>
 	<div class="form-control mt-3" style="display: block;">
 		<label>Accepter automatiquement les nouvelles commandes</label>

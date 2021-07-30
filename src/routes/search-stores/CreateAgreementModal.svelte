@@ -37,7 +37,6 @@
 		close();
 		if (onClosed) await onClosed(obj);
 	}
-
 </script>
 
 <ActionConfirm
@@ -52,7 +51,7 @@
 	{close}
 >
 	<p class="leading-5">
-		Vous vous apprêtez à demander un accord de partenariat avec {store.name}
+		Vous vous apprêtez à demander un accord de partenariat avec {store.name}.
 	</p>
 	<p class="leading-5 mb-5">Le magasin sera automatiquement notifié de votre demande.</p>
 	<SelectTime bind:selectedDelivery {errorsHandler} />

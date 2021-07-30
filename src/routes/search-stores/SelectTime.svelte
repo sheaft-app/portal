@@ -52,7 +52,7 @@
 	{#if isLoading}
 		<Loader />
 	{:else if deliveries && deliveries.length < 1}
-		<p>Vous devez renseigner vos créneaux de livraisons pour accepter un partenariat.</p>
+		<p>Vous devez renseigner vos créneaux de livraisons pour demander/accepter un partenariat.</p>
 		<button class="btn btn-accent btn-lg" on:click={() => routerInstance.goTo(DeliveryRoutes.List)}
 			>Renseigner mes livraisons
 		</button>
