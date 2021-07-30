@@ -178,7 +178,12 @@
 								Refuser
 							</button>
 						</div>
-					{/if}
+					{:else}
+						<div class="mt-6 flex justify-center items-center">
+							<button on:click={showCancelAgreementModal} class="btn bg-red-500 text-white btn-lg shadow">
+								Annuler la demande
+							</button>
+						</div>{/if}
 				</div>
 			{/if}
 			{#if authManager.isInRole(Roles.Store.Value)}

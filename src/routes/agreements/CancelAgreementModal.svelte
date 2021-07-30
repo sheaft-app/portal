@@ -7,6 +7,7 @@
 	import Roles from "../../enums/Roles";
 	import GetAuthInstance from "../../services/SheaftAuth";
 	import { getContext } from "svelte";
+	import AgreementStatusKind from "../../enums/AgreementStatusKind";
 
 	const errorsHandler = new SheaftErrors();
 
@@ -55,20 +56,26 @@
 >
 	{#if agreements.length > 1}
 		<p class="leading-5">
-			VoclassNameus apprêtez à annuler les accords avec les {isProducer ? "magasins" : "producteurs"} suivants:
+			Vous vous apprêtez à annuler les accords avec les {isProducer ? "magasins" : "producteurs"} suivants:
 		</p>
 		<ul>
 			{#each agreements as agreement}
 				<li>{isProducer ? agreement.store.name : agreement.producer.name}</li>
 			{/each}
 		</ul>
+		<div class="form-control w-full mt-3">
+			<label for="reasonAll"> Raison </label>
+			<input bind:value={reason} id="reasonAll" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
+		</div>
 	{:else}
 		<p class="leading-5">
 			Vous vous apprêtez à annuler l'accord avec {isProducer ? agreements[0].store.name : agreements[0].producer.name}.
 		</p>
+		{#if agreements[0].status.indexOf("WAITING") < 0}
+			<div class="form-control w-full mt-3">
+				<label for="reason"> Raison </label>
+				<input bind:value={reason} id="reason" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
+			</div>
+		{/if}
 	{/if}
-	<div class="form-control w-full mt-3">
-		<label for="reason"> Raison </label>
-		<input bind:value={reason} id="reason" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
-	</div>
 </ActionConfirm>
