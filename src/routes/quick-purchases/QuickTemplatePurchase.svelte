@@ -5,7 +5,7 @@
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import { GET_STORE_DELIVERIES_FOR_PRODUCERS, GET_PURCHASE_QUICKORDERS } from "./queries.js";
 	import Select from "./../../components/controls/select/Select";
-	import QuickOrderRoutes from "./routes";
+	import QuickOrderRoutes from "./../quick-orders/routes";
 	import orderBy from "lodash/orderBy";
 	import groupBy from "lodash/groupBy";
 	import PageHeader from "../../components/PageHeader.svelte";

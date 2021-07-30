@@ -45,7 +45,10 @@
 		open(DeleteQuickOrdersModal, {
 			selectedItems: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.refresh();
+				if (res.success) {
+					routerInstance.refresh();
+					selectedItems = [];
+				}
 			},
 		});
 	};
