@@ -104,56 +104,49 @@
 					class="block btn btn-lg btn-outline w-full text-center justify-center cancel"
 					on:click={close}>Annuler</button
 				>
-				{#if returnables.length}
-					<button
-						type="button"
-						class="block btn btn-lg btn-accent w-full text-center justify-center"
-						on:click={() => ++step}>Suivant</button
-					>
-				{:else}
-					<button
-						on:click={handleSubmit}
-						type="button"
-						class="block btn btn-lg btn-accent w-full text-center justify-center"
-						disabled={isSubmitting}
-						class:disabled={isSubmitting}
-					>
-						{#if isSubmitting}
-							<Icon data={faCircleNotch} class="mr-2" spin />
-						{/if}
-						Valider le compte-rendu
-					</button>
-				{/if}
+				<button
+					type="button"
+					class="block btn btn-lg btn-accent w-full text-center justify-center"
+					on:click={() => ++step}>Suivant</button
+				>
 			</div>
 		{/if}
 	{:else}
-		<div class="py-2">
-			<p class="text-lg font-medium">Avez-vous récupéré des consignes ?</p>
-			<p class="text-gray-600">Si oui, vous pouvez les comptabiliser ici avant de valider le compte-rendu.</p>
-		</div>
-		{#each returnables as returnable}
-			<div class="flex justify-between items-center space-x-2">
-				<div>
-					<p>{returnable.name}</p>
-				</div>
-				<div class="w-1/2">
-					<ProductCounter
-						bind:value={returnable.count}
-						disabled={isSubmitting}
-						label="Récupérées"
-						showLabel={false}
-						color="gray-800"
-					/>
-				</div>
+		{#if returnables && returnables.length > 0}
+			<div class="py-2">
+				<p class="text-lg font-medium">Avez-vous récupéré des consignes ?</p>
+				<p class="text-gray-600">Si oui, vous pouvez les comptabiliser ici avant de valider le compte-rendu.</p>
 			</div>
-		{/each}
+			{#each returnables as returnable}
+				<div class="flex justify-between items-center space-x-2">
+					<div>
+						<p>{returnable.name}</p>
+					</div>
+					<div class="w-1/2">
+						<ProductCounter
+							bind:value={returnable.count}
+							disabled={isSubmitting}
+							label="Récupérées"
+							showLabel={false}
+							color="gray-800"
+						/>
+					</div>
+				</div>
+			{/each}
+		{/if}
 		<div class="form-control w-full mt-3">
-			<label for="grid-reference">Livraison réceptionnée par *</label>
-			<input bind:value={receptionedBy} disabled={isSubmitting} type="text" placeholder="ex: Stéphanie A." />
+			<label for="receptionedBy">Livraison réceptionnée par *</label>
+			<input
+				id="receptionedBy"
+				bind:value={receptionedBy}
+				disabled={isSubmitting}
+				type="text"
+				placeholder="ex: Stéphanie A."
+			/>
 		</div>
 		<div class="form-control w-full">
-			<label for="grid-reference">Commentaire (optionnel)</label>
-			<textarea bind:value={comment} class="block" />
+			<label for="comment">Commentaire (optionnel)</label>
+			<textarea id="comment" bind:value={comment} class="block" />
 		</div>
 		<div class="bottom-cta fixed lg:static w-full px-4 space-y-3 z-10">
 			<button
