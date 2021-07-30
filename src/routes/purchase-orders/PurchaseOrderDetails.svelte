@@ -32,6 +32,8 @@
 		faFileExport,
 	} from "@fortawesome/free-solid-svg-icons";
 	import PurchaseOrderRoutes from "./routes";
+	import DeliveryBatchRoutes from "./../delivery-batches/routes";
+	import RetrievalRoutes from "./../retrievals/routes";
 	import PurchaseOrderStatusKind from "../../enums/PurchaseOrderStatusKind";
 	import DeliveryKind from "./../../enums/DeliveryKind";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -164,25 +166,40 @@
 				<div class="flex">
 					<Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
 					<div>
-						<p class="uppercase font-bold leading-none">Livraison</p>
-						<div class="mt-2">
-							{#if order.delivery.status === DeliveryStatus.Waiting.Value}
-								<p>Cette commande est en attente de validation de la tournée de livraison.</p>
-							{:else if order.delivery.status === DeliveryStatus.Ready.Value}
-								<p>
-									Cette commande est prête à être livrée. (<a href={order.delivery.deliveryFormUrl}>bon de livraison</a
-									>)
-								</p>
-							{:else if order.delivery.status === DeliveryStatus.InProgress.Value}
-								<p>Cette commande est en cours de livraison.</p>
-							{:else if order.delivery.status === DeliveryStatus.Delivered.Value}
-								<p>Cette commande est livrée.</p>
-							{:else if order.delivery.status === DeliveryStatus.Rejected.Value}
-								<p>Cette commande a été refusée à la livraison.</p>
-							{:else if order.delivery.status === DeliveryStatus.Skipped.Value}
-								<p>Cette commande a été passée lors de la livraison.</p>
-							{/if}
-						</div>
+						{#if order.delivery.kind === DeliveryKind.ProducerToStore.Value}
+							<p class="uppercase font-bold leading-none">
+								Livraison (<a
+									href="javascript:void(0)"
+									on:click={() =>
+										routerInstance.goTo(DeliveryBatchRoutes.Edit, { id: order.delivery.deliveryBatch.id })}
+									>cliquez pour voir le détails</a
+								>)
+							</p>
+							<div class="mt-2">
+								{#if order.delivery.status === DeliveryStatus.Waiting.Value}
+									<p>Cette commande est en attente de validation de la tournée de livraison.</p>
+								{:else if order.delivery.status === DeliveryStatus.Ready.Value}
+									<p>
+										Cette commande est prête à être livrée. (<a href={order.delivery.deliveryFormUrl}
+											>bon de livraison</a
+										>)
+									</p>
+								{:else if order.delivery.status === DeliveryStatus.InProgress.Value}
+									<p>Cette commande est en cours de livraison.</p>
+								{:else if order.delivery.status === DeliveryStatus.Delivered.Value}
+									<p>Cette commande est livrée.</p>
+								{:else if order.delivery.status === DeliveryStatus.Rejected.Value}
+									<p>Cette commande a été refusée à la livraison.</p>
+								{:else if order.delivery.status === DeliveryStatus.Skipped.Value}
+									<p>Cette commande a été passée lors de la livraison.</p>
+								{/if}
+							</div>
+						{:else}
+							Distribution (<a
+								href="javascript:void(0)"
+								on:click={() => routerInstance.goTo(RetrievalRoutes.Details, { id: order.id })}
+								>cliquez pour voir le détails</a
+							>){/if}
 					</div>
 				</div>
 			</div>
@@ -194,7 +211,6 @@
 			>
 				<p class="font-semibold leading-none">
 					Commande {order.sender.kind === ProfileKind.Store.Value ? "livrée" : "récupérée"}
-					{#if order.delivery.deliveryFormUrl}(<a href={order.delivery.deliveryFormUrl}>bon de livraison</a>).{/if}
 				</p>
 			</div>
 		{/if}
@@ -215,7 +231,7 @@
 								{#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
 									À livrer le :
 								{:else}
-									Le client récupérera la commande le :
+									À distribuer le :
 								{/if}
 								<b class="font-semibold">
 									{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPPP", {
@@ -232,7 +248,7 @@
 									{#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
 										Adresse de livraison :
 									{:else}
-										Adresse de récupération :
+										Adresse de distribution :
 									{/if}
 									<b class="font-semibold">
 										{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
@@ -304,7 +320,7 @@
             ease-in-out text-green-500 w-full lg:w-auto"
 					>
 						<Icon data={faClipboardCheck} class="mr-2 hidden lg:inline w-4 h-4" />
-						<span>Marquer comme récupérée</span>
+						<span>Marquer comme distribuée</span>
 					</button>
 				</div>
 			</div>
@@ -335,7 +351,11 @@
 						{#if order.status == PurchaseOrderStatusKind.Delivered.Value}
 							<div class="flex items-center mb-2">
 								<p>
-									<span class="text-gray-600">Livrée le :</span>
+									{#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
+										<span class="text-gray-600">Livrée le :</span>
+									{:else}
+										<span class="text-gray-600">Distribuée le :</span>
+									{/if}
 									{format(new Date(order.delivery.deliveredOn), "PPPPp", { locale: fr })}
 								</p>
 							</div>

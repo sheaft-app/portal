@@ -157,6 +157,9 @@ export const GET_ORDER_DETAILS = gql`
 				deliveredOn
 				status
 				deliveryFormUrl
+				deliveryBatch {
+					id
+				}
 			}
 			expectedDelivery {
 				expectedDeliveryDate

@@ -164,6 +164,7 @@ export const GET_DELIVERY_BATCH_DETAILS = gql`
 				}
 				purchaseOrders {
 					id
+					reference
 					totalWholeSalePrice
 					productsCount
 					createdOn

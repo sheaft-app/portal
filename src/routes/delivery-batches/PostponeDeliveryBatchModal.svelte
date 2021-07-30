@@ -51,7 +51,10 @@
 			mutation: POSTPONE_DELIVERY_BATCH,
 			variables: { id, reason, scheduledOn: getIsoDate(scheduledOn), from: timeToTimeSpan(from) },
 			errorsHandler,
-			success: async (res) => await handleClose({ success: true, data: res }),
+			success: async (res) => {
+				routerInstance.refresh();
+				await handleClose({ success: true, data: res });
+			},
 			successNotification: "Livraison décalée avec succès !",
 			errorNotification: "Impossible de reporter la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
