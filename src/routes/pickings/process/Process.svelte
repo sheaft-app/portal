@@ -10,6 +10,11 @@
 	import { denormalizePickingProducts } from "../pickingForm";
 	import PageBody from "../../../components/PageBody.svelte";
 	import PickingStatus from "../../../enums/PickingStatus.js";
+	import DeliveryKind from "../../../enums/DeliveryKind.js";
+	import DeliveryBatchRoutes from "../../delivery-batches/routes";
+	import RetrievalRoutes from "../../retrievals/routes";
+	import Icon from "svelte-awesome";
+	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 	export let params;
 
@@ -61,9 +66,37 @@
 	<PageBody {errorsHandler} {isLoading} noResultsPage={null} loadingMessage="Chargement de la préparation...">
 		{#if !isLoading}
 			{#if ![PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(picking.status)}
-				<p class="text-green-500 mb-2">Cette préparation est maintenant terminée.</p>
+				<div
+					class="my-4 py-4 px-3 md:px-8 overflow-x-auto -mx-4 md:mx-0 bg-green-200 shadow
+          md:rounded md:mb-2 flex items-center"
+				>
+					<Icon data={faCheck} style="width: 30px; height:30px;" />
+					<div class="ml-3">
+						<p>
+							<strong>Cette préparation est maintenant terminée.</strong>
+						</p>
+						{#if picking.purchaseOrders
+							.map((p) => p.expectedDelivery.kind)
+							.includes(DeliveryKind.ProducerToStore.Value)}
+							<p class="my-2">
+								Vous pouvez programmer une livraison pour les commandes concernées en <a
+									href="javascript:void(0)"
+									on:click={() => routerInstance.goTo(DeliveryBatchRoutes.List)}>cliquant ici</a
+								>.
+							</p>
+						{/if}
+						{#if picking.purchaseOrders.some( (p) => [DeliveryKind.Market.Value, DeliveryKind.Farm.Value, DeliveryKind.Withdrawal.Value, DeliveryKind.Collective.Value].includes(p.expectedDelivery.kind) )}
+							<p class="my-2">
+								Vous pouvez accéder aux informations de distribution pour les commandes concernées en <a
+									href="javascript:void(0)"
+									on:click={() => routerInstance.goTo(RetrievalRoutes.List)}>cliquant ici</a
+								>.
+							</p>
+						{/if}
+					</div>
+				</div>
 			{/if}
-			<div>
+			<div class="pt-2">
 				{#each products as product}
 					<div class="bg-white shadow px-4 py-2 rounded mb-2 flex justify-between flex-wrap">
 						<div>

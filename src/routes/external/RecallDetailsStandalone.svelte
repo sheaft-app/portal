@@ -55,9 +55,9 @@
 				<p class="ml-3">
 					<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en question
 					et n'hésitez pas à contacter le producteur{#if recall.producer.email}
-						par
+						&nbsp;par
 						<a href="mailto:{recall.producer.email}">email</a>{/if}{#if recall.producer.phone}
-						ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
+						&nbsp;ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
 				</p>
 			</div>
 		{/if}

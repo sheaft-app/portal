@@ -109,6 +109,9 @@ export const GET_PICKING_DETAILS = gql`
 					name
 					quantity
 				}
+				expectedDelivery {
+					kind
+				}
 			}
 			productsToPrepare {
 				id
