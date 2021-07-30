@@ -32,6 +32,7 @@ export const GET_BATCH_DETAILS = gql`
 			number
 			dlc
 			ddm
+			lockedForEditing
 			createdOn
 			observationsCount
 			products {

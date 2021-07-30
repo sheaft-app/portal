@@ -16,6 +16,8 @@
 	import Observations from "../../components/observations/Observations.svelte";
 	import { querystring } from "svelte-spa-router";
 	import CreateBatchObservation from "./CreateBatchObservation.svelte";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
 
 	export let params = {};
 
@@ -112,37 +114,50 @@
 		{/if}
 		<div class="form-control text-left mt-3">
 			<label for="batch">Numéro du lot *</label>
-			<input bind:value={batch.number} id="batch" type="text" />
+			<input bind:value={batch.number} id="batch" type="text" disabled={batch.lockedForEditing} />
 		</div>
-		<div class="form-control">
-			<div class="flex w-full">
-				<div class="w-full">
-					<div class="w-full text-lg justify-center button-group">
-						<button
-							on:click={() => (dlcOrDluo = "dlc")}
-							type="button"
-							class="text-sm md:text-base"
-							class:selected={dlcOrDluo == "dlc"}
-							class:skeleton-box={isLoading || isSubmitting}
-						>
-							DLC
-						</button>
-						<button
-							on:click={() => (dlcOrDluo = "ddm")}
-							type="button"
-							class="text-sm md:text-base"
-							class:selected={dlcOrDluo == "ddm"}
-							class:skeleton-box={isLoading || isSubmitting}
-						>
-							DDM
-						</button>
+
+		{#if !batch.lockedForEditing}
+			<div class="form-control">
+				<div class="flex w-full">
+					<div class="w-full">
+						<div class="w-full text-lg justify-center button-group">
+							<button
+								on:click={() => (dlcOrDluo = "dlc")}
+								type="button"
+								class="text-sm md:text-base"
+								disabled={batch.lockedForEditing}
+								class:selected={dlcOrDluo == "dlc"}
+								class:skeleton-box={isLoading || isSubmitting}
+							>
+								DLC
+							</button>
+							<button
+								on:click={() => (dlcOrDluo = "ddm")}
+								type="button"
+								class="text-sm md:text-base"
+								disabled={batch.lockedForEditing}
+								class:selected={dlcOrDluo == "ddm"}
+								class:skeleton-box={isLoading || isSubmitting}
+							>
+								DDM
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 		<div class="form-control text-left" style="display:block;">
 			<label>{dlcOrDluo == "dlc" ? "DLC *" : "DDM *"}</label>
-			<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
+			{#if batch.lockedForEditing}
+				<p>
+					{format(new Date(expirationDate), "PPPP", {
+						locale: fr,
+					})}
+				</p>
+			{:else}
+				<DatePickerWrapper bind:selected={expirationDate} dateChosen={true} />
+			{/if}
 		</div>
 		{#if batch.products && batch.products.length > 0}
 			<div class="form-control text-left mt-5 mb-2">
@@ -158,19 +173,21 @@
 				{/each}
 			</div>
 		{/if}
-		<small>* champs requis</small>
-		<div class="form-control mt-5">
-			<button
-				type="button"
-				disabled={isLoading || isSubmitting}
-				class:disabled={isLoading || isSubmitting}
-				on:click={handleSubmit}
-				class="btn btn-primary btn-xl justify-center w-full md:w-auto"
-			>
-				<Icon data={isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isSubmitting} />
-				Valider
-			</button>
-		</div>
+		{#if !batch.lockedForEditing}
+			<small>* champs requis</small>
+			<div class="form-control mt-5">
+				<button
+					type="button"
+					disabled={isLoading || isSubmitting}
+					class:disabled={isLoading || isSubmitting}
+					on:click={handleSubmit}
+					class="btn btn-primary btn-xl justify-center w-full md:w-auto"
+				>
+					<Icon data={isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isSubmitting} />
+					Valider
+				</button>
+			</div>
+		{/if}
 
 		{#if displayObservationsPanel}
 			<Observations
