@@ -45,14 +45,14 @@
 	let loadingMessage = "Chargement de la tâche en cours... veuillez patienter";
 
 	onMount(async () => {
-		await getJob(params.id);
+		await getJob();
 	});
 
-	const getJob = async (id) => {
+	const getJob = async () => {
 		isLoading = true;
 		job = await query({
 			query: GET_JOB_DETAILS,
-			variables: { id },
+			variables: { id: params.id },
 			errorsHandler,
 			error: () => routerInstance.goTo(JobRoutes.List),
 			errorNotification: "La tâche à laquelle vous essayez d'accéder n'existe plus",
