@@ -7,6 +7,8 @@
 	import { GET_ORDERS } from "./queries";
 	import { getContext, onMount } from "svelte";
 	import DeliveryBatchesRoutes from "../delivery-batches/routes";
+	import DatePickerWrapper from "../../components/controls/DatePickerWrapper.svelte";
+	import TimePicker from "../../components/controls/TimePicker.svelte";
 
 	export let onClose, close, purchaseOrders;
 
@@ -18,7 +20,7 @@
 	let deliveries = [];
 	let selectedDelivery = {
 		name: null,
-		from: null,
+		from: { hours: null, minutes: null },
 		expectedDeliveryDate: new Date(),
 	};
 
@@ -29,7 +31,7 @@
 		await mutate({
 			mutation: CREATE_DELIVERY_BATCH,
 			variables: {
-				from: `PT${selectedDelivery.from?.split(":")[0]}H`,
+				from: `PT${selectedDelivery.from.hours ?? 0}H${selectedDelivery.from.minutes ?? 0}M`,
 				name: selectedDelivery.name,
 				scheduledOn: new Date(selectedDelivery.expectedDeliveryDate),
 				deliveries: Object.keys(deliveries).map((c, index) => ({
@@ -38,7 +40,7 @@
 					position: index,
 				})),
 			},
-			success: async (res) => await routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: res.id }),
+			success: async (res) => await routerInstance.goTo(DeliveryBatchesRoutes.List),
 			errorsHandler,
 			errorNotification: "Impossible de programmer la livraison",
 			clearCache: [GET_ORDERS],
@@ -74,24 +76,10 @@
 >
 	<p class="leading-5">Livraison</p>
 	<form class="mt-2">
-		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4" for="date">Prévue le *</label>
-		<input
-			bind:value={selectedDelivery.expectedDeliveryDate}
-			class="appearance-none block w-full text-gray-700 border input-bg-clr
-			rounded py-3 px-4 leading-tight focus:outline-none focus:border-green-200
-			focus:shadow-outline-green focus:bg-white"
-			id="date"
-			type="date"
-		/>
-		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4" for="time">A partir de *</label>
-		<input
-			bind:value={selectedDelivery.from}
-			class="appearance-none block w-full text-gray-700 border input-bg-clr
-			rounded py-3 px-4 leading-tight focus:outline-none focus:border-green-200
-			focus:shadow-outline-green focus:bg-white"
-			id="time"
-			type="time"
-		/>
+		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4">Prévue le *</label>
+		<DatePickerWrapper bind:selected={selectedDelivery.expectedDeliveryDate} dateChosen={false} />
+		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4">A partir de *</label>
+		<TimePicker bind:time={selectedDelivery.from} />
 		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4" for="name">Nom</label>
 		<input
 			bind:value={selectedDelivery.name}

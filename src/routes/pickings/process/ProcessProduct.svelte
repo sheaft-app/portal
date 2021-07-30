@@ -231,7 +231,7 @@
 						class:disabled={disabledStep3}
 						on:click={openValidateModal}
 					>
-						Valider et terminer
+						Valider ce produit
 					</button>
 				</div>
 			{/if}
