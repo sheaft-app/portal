@@ -88,7 +88,6 @@
 		purchaseOrder.status != PurchaseOrderStatusKind.Cancelled.Value &&
 		purchaseOrder.status != PurchaseOrderStatusKind.Withdrawned.Value &&
 		purchaseOrder.status != PurchaseOrderStatusKind.Delivered.Value &&
-		purchaseOrder.status != PurchaseOrderStatusKind.Shipping.Value &&
 		purchaseOrder.status != PurchaseOrderStatusKind.Processing.Value &&
 		purchaseOrder.status != PurchaseOrderStatusKind.Refused.Value &&
 		purchaseOrder.status != PurchaseOrderStatusKind.Expired.Value;
