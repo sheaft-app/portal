@@ -42,7 +42,8 @@
 			errorsHandler,
 			success: async (res) => {
 				await onClose({ success: true, data: res });
-				showSuccess = true;
+				if (authInstance.isInRole(Roles.Producer.Value)) showSuccess = true;
+				else close();
 			},
 			successNotification: "L'accord a bien été accepté",
 			errorNotification: "Impossible de traiter l'accord",
@@ -51,7 +52,7 @@
 	};
 </script>
 
-{#if showSuccess}
+{#if authInstance.isInRole(Roles.Producer.Value) && showSuccess}
 	<div class="m-auto text-center">
 		<div class="rounded-full bg-white shadow w-12 h-12 m-auto items-center flex justify-center text-green-500">
 			<Icon data={faCheck} scale="1.4" />
