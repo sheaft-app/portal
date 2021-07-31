@@ -44,7 +44,6 @@
 				routerInstance.refresh();
 				close();
 			},
-			successNotification: "Livraison confirmée !",
 			errorNotification: "Impossible de confirmer la livraison",
 			clearCache: [GET_DELIVERY_BATCHES, id],
 		});
@@ -54,7 +53,7 @@
 
 <ActionConfirm
 	{errorsHandler}
-	title="Confirmer la livraison"
+	title="Valider la programmation"
 	{submit}
 	{isLoading}
 	{close}
@@ -63,7 +62,7 @@
 	closeText="Fermer"
 >
 	<div class="mb-3">
-		<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à confirmer la livraison.</p>
+		<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à valider la programmation de la livraison.</p>
 		<p class="pt-2 pb-1 leading-5">Une fois la livraison confirmée, vous ne pourrez plus la modifier.</p>
 		{#if deliveries.length > 1}
 			<p class="pt-2 pb-1 leading-5">
