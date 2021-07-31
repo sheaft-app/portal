@@ -13,6 +13,7 @@
 	import fr from "date-fns/locale/fr";
 	import ConfirmRetrievals from "./ConfirmRetrievals.svelte";
 	import { querystring } from "svelte-spa-router";
+	import { getPurchaseOrderModel } from "../../helpers/purchaseOrder";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -21,12 +22,8 @@
 
 	export let params;
 
-	let productsGroupedToBill = {};
-	let returnablesGroupedToBill = {};
-	let totalHT = 0;
-	let totalTVA = 0;
-	let totalTTC = 0;
 	let retrieval = null;
+	let purchaseOrder = null;
 	let isLoading = true;
 	let loadingMessage = "Chargement des informations de votre livraison en cours.";
 
@@ -55,92 +52,7 @@
 			skipCache: routerInstance.shouldSkipCache(),
 		});
 
-		if (retrieval.products) {
-			for (let i = 0; i < retrieval.products.length; i++) {
-				if (!productsGroupedToBill[retrieval.products[i].productId])
-					productsGroupedToBill[retrieval.products[i].productId] = {
-						id: retrieval.products[i].productId,
-						name: retrieval.products[i].name,
-						reference: retrieval.products[i].reference,
-						quantity: retrieval.products[i].quantity,
-						vat: retrieval.products[i].vat,
-						unitWholeSalePrice: retrieval.products[i].unitWholeSalePrice,
-						totalWholeSalePrice: retrieval.products[i].totalProductWholeSalePrice,
-						totalOnSalePrice: retrieval.products[i].totalProductOnSalePrice,
-						totalVatPrice: retrieval.products[i].totalProductVatPrice,
-					};
-				else {
-					productsGroupedToBill[retrieval.products[i].productId].quantity += retrieval.products[i].quantity;
-					productsGroupedToBill[retrieval.products[i].productId].totalWholeSalePrice +=
-						retrieval.products[i].totalProductWholeSalePrice;
-					productsGroupedToBill[retrieval.products[i].productId].totalOnSalePrice +=
-						retrieval.products[i].totalProductOnSalePrice;
-					productsGroupedToBill[retrieval.products[i].productId].totalVatPrice +=
-						retrieval.products[i].totalProductVatPrice;
-				}
-
-				if (!retrieval.products[i].isReturnable) continue;
-
-				if (!returnablesGroupedToBill[retrieval.products[i].returnableId])
-					returnablesGroupedToBill[retrieval.products[i].returnableId] = {
-						id: retrieval.products[i].returnableId,
-						name: `${retrieval.products[i].returnableName} (Consignes déposées)`,
-						quantity: retrieval.products[i].quantity,
-						vat: retrieval.products[i].returnableVat,
-						unitWholeSalePrice: retrieval.products[i].returnableWholeSalePrice,
-						totalWholeSalePrice: retrieval.products[i].totalReturnableWholeSalePrice,
-						totalOnSalePrice: retrieval.products[i].totalReturnableOnSalePrice,
-						totalVatPrice: retrieval.products[i].totalReturnableVatPrice,
-					};
-				else {
-					returnablesGroupedToBill[retrieval.products[i].returnableId].quantity += retrieval.products[i].quantity;
-					returnablesGroupedToBill[retrieval.products[i].returnableId].totalWholeSalePrice +=
-						retrieval.products[i].totalReturnableWholeSalePrice;
-					returnablesGroupedToBill[retrieval.products[i].returnableId].totalOnSalePrice +=
-						retrieval.products[i].totalReturnableOnSalePrice;
-					returnablesGroupedToBill[retrieval.products[i].returnableId].totalVatPrice +=
-						retrieval.products[i].totalReturnableVatPrice;
-				}
-			}
-		}
-
-		if (retrieval.returnedReturnables) {
-			for (let i = 0; i < retrieval.returnedReturnables.length; i++) {
-				if (!returnablesGroupedToBill[retrieval.returnedReturnables[i].id])
-					returnablesGroupedToBill[retrieval.returnedReturnables[i].id] = {
-						id: retrieval.returnedReturnables[i].id,
-						name: `${retrieval.returnedReturnables[i].name} (Consignes récupérées)`,
-						quantity: retrieval.returnedReturnables[i].quantity,
-						vat: retrieval.returnedReturnables[i].vat,
-						unitWholeSalePrice: retrieval.returnedReturnables[i].unitWholeSalePrice,
-						totalWholeSalePrice: retrieval.returnedReturnables[i].totalWholeSalePrice,
-						totalOnSalePrice: retrieval.returnedReturnables[i].totalOnSalePrice,
-						totalVatPrice: retrieval.returnedReturnables[i].totalVatPrice,
-					};
-				else {
-					returnablesGroupedToBill[retrieval.returnedReturnables[i].id].quantity +=
-						retrieval.returnedReturnables[i].quantity;
-					returnablesGroupedToBill[retrieval.returnedReturnables[i].id].totalWholeSalePrice +=
-						retrieval.returnedReturnables[i].totalWholeSalePrice;
-					returnablesGroupedToBill[retrieval.returnedReturnables[i].id].totalOnSalePrice +=
-						retrieval.returnedReturnables[i].totalOnSalePrice;
-					returnablesGroupedToBill[retrieval.returnedReturnables[i].id].totalVatPrice +=
-						retrieval.returnedReturnables[i].totalVatPrice;
-				}
-			}
-		}
-
-		Object.keys(productsGroupedToBill).map((id) => {
-			totalHT += productsGroupedToBill[id].totalWholeSalePrice;
-			totalTVA += productsGroupedToBill[id].totalVatPrice;
-			totalTTC += productsGroupedToBill[id].totalOnSalePrice;
-		});
-
-		Object.keys(returnablesGroupedToBill).map((id) => {
-			totalHT += returnablesGroupedToBill[id].totalWholeSalePrice;
-			totalTVA += returnablesGroupedToBill[id].totalVatPrice;
-			totalTTC += returnablesGroupedToBill[id].totalOnSalePrice;
-		});
+		purchaseOrder = getPurchaseOrderModel(retrieval.products, retrieval.returnedReturnables);
 
 		isLoading = false;
 	};
@@ -291,19 +203,19 @@
 									</tr>
 								</thead>
 								<tbody>
-									{#each Object.keys(productsGroupedToBill) as id, index}
+									{#each purchaseOrder.products as product, index}
 										<tr>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
                         bg-white text-sm lg:text-base"
 											>
 												<div class="items-center">
-													<p>{productsGroupedToBill[id].name}</p>
+													<p>{product.name}</p>
 													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(productsGroupedToBill[id].unitWholeSalePrice)}
+														{formatMoney(product.unitWholeSalePrice)}
 													</p>
 													<p class="text-gray-600 whitespace-no-wrap">
-														#{productsGroupedToBill[id].reference}
+														#{product.reference}
 													</p>
 												</div>
 											</td>
@@ -312,27 +224,27 @@
                         bg-white text-sm lg:text-base hidden md:table-cell"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(productsGroupedToBill[id].unitWholeSalePrice)}
+													{formatMoney(product.unitWholeSalePrice)}
 												</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{productsGroupedToBill[id].quantity}</p>
+												<p class="whitespace-no-wrap">{product.quantity}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{productsGroupedToBill[id].vat}%</p>
+												<p class="whitespace-no-wrap">{product.vat}%</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(productsGroupedToBill[id].totalWholeSalePrice)}
+													{formatMoney(product.totalWholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -340,21 +252,21 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(productsGroupedToBill[id].totalOnSalePrice)}
+													{formatMoney(product.totalOnSalePrice)}
 												</p>
 											</td>
 										</tr>
 									{/each}
-									{#each Object.keys(returnablesGroupedToBill) as id, index}
+									{#each purchaseOrder.returnables as returnable, index}
 										<tr>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
                         bg-white text-sm lg:text-base"
 											>
 												<div class="items-center">
-													<p>{returnablesGroupedToBill[id].name}</p>
+													<p>{returnable.name}</p>
 													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(returnablesGroupedToBill[id].unitWholeSalePrice)}
+														{formatMoney(returnable.unitWholeSalePrice)}
 													</p>
 												</div>
 											</td>
@@ -363,27 +275,27 @@
                         bg-white text-sm lg:text-base hidden md:table-cell"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(returnablesGroupedToBill[id].unitWholeSalePrice)}
+													{formatMoney(returnable.unitWholeSalePrice)}
 												</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{returnablesGroupedToBill[id].quantity}</p>
+												<p class="whitespace-no-wrap">{returnable.quantity}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{returnablesGroupedToBill[id].vat}%</p>
+												<p class="whitespace-no-wrap">{returnable.vat}%</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(returnablesGroupedToBill[id].totalWholeSalePrice)}
+													{formatMoney(returnable.totalWholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -391,7 +303,7 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(returnablesGroupedToBill[id].totalOnSalePrice)}
+													{formatMoney(returnable.totalOnSalePrice)}
 												</p>
 											</td>
 										</tr>
@@ -416,7 +328,7 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colSpan="1"
 										>
-											{formatMoney(totalHT)}
+											{formatMoney(purchaseOrder.totalWholeSalePrice)}
 										</td>
 									</tr>
 									<tr>
@@ -439,7 +351,7 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colspan="1"
 										>
-											{formatMoney(totalTVA)}
+											{formatMoney(purchaseOrder.totalVatPrice)}
 										</td>
 									</tr>
 									<tr>
@@ -462,7 +374,7 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colspan="1"
 										>
-											{formatMoney(totalTTC)}
+											{formatMoney(purchaseOrder.totalOnSalePrice)}
 										</td>
 									</tr>
 								</tbody>

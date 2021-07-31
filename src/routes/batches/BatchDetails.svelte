@@ -85,13 +85,16 @@
 
 	$: getBatch($querystring);
 
-	$: buttons = [
-		{
-			text: "Ajouter une observation",
-			click: () => showAddObservationModal(),
-			color: "blue",
-		},
-	];
+	$: buttons =
+		batch && batch.observationsCount === 0
+			? [
+					{
+						text: "Ajouter une observation",
+						click: () => showAddObservationModal(),
+						color: "blue",
+					},
+			  ]
+			: [];
 </script>
 
 <TransitionWrapper>
