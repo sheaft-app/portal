@@ -24,7 +24,7 @@
 					class="h-32 w-32 rounded-full p-1 border
           border-gray-800 border-solid m-auto absolute"
 					style="top: calc(50% - 64px);left: calc(50% - 64px);"
-					src={producer.picture}
+					src={producer.picture && producer.picture.length > 0 ? producer.picture : "/img/icons/farmer.svg"}
 					alt="Photo du producteur"
 				/>
 			</div>
@@ -32,9 +32,9 @@
 		<div class="relative lg:block flex p-3 lg:p-0">
 			<div class="block lg:hidden w-1/4 text-xs">
 				<img
-					class="h-16 w-16 rounded-full p-1 border
+					class="h-10 w-10 rounded-full p-1 border
             border-gray-800 border-solid m-auto absolute"
-					src={producer.picture}
+					src={producer.picture && producer.picture.length > 0 ? producer.picture : "/img/icons/farmer.svg"}
 					alt="Photo du producteur"
 				/>
 			</div>
