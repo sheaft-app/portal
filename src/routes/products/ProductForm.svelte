@@ -31,7 +31,6 @@
 	const { open } = getContext("modal");
 	const { query, isLoading } = getContext("api");
 
-	let invalidCatalogs = false;
 	let selectedCategory = null;
 	let returnables = [];
 	let organicTag;
@@ -241,7 +240,7 @@
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues</label>
-		<ProductCatalogs bind:catalogs={product.catalogs} bind:invalidCatalogs />
+		<ProductCatalogs bind:catalogs={product.catalogs} {form} />
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Catégorie *</label>
@@ -404,8 +403,8 @@
 	<div class="form-control mt-5">
 		<button
 			type="submit"
-			disabled={$isLoading || invalidCatalogs}
-			class:disabled={$isLoading || !$form.valid || invalidCatalogs}
+			disabled={$isLoading}
+			class:disabled={$isLoading || !$form.valid}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 		>
 			<Icon data={$isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={$isLoading} />

@@ -2,13 +2,11 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import CatalogKind from "../../enums/CatalogKind";
-	import { getContext } from "svelte";
+	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import SelectAddCatalog from "./SelectAddCatalog.svelte";
 
-	export let invalidCatalogs = false,
-		catalogs = [];
-
-	const { open } = getContext("modal");
+	export let catalogs = [];
+	export let form;
 
 	let headers = [
 		{ label: "Nom", mobile: true },
@@ -17,7 +15,6 @@
 		{ label: "Ajouté le", mobile: false },
 		{ label: "Actions", mobile: false },
 	];
-	let isLoading = true;
 
 	const removeCatalog = (catalog) => {
 		if (catalog.checked) catalogs = catalogs.filter((c) => c.id != catalog.id);
@@ -30,8 +27,6 @@
 		catalog.markForDeletion = false;
 		catalogs = catalogs;
 	};
-
-	$: invalidCatalogs = catalogs.length > 0 && catalogs.filter((c) => !c.wholeSalePricePerUnit).length > 0;
 </script>
 
 <table class="shadow w-full">
@@ -78,6 +73,7 @@
 							id="grid-price"
 							required
 							type="number"
+							use:bindClass={{ form, name: "wholeSalePricePerUnit" }}
 							step=".01"
 							name="wholeSalePricePerUnit"
 							placeholder="ex : 2.49"
