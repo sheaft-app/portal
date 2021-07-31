@@ -134,14 +134,14 @@
                             bg-gray-100 text-center md:text-left text-xs font-semibold
                             text-gray-600 uppercase tracking-wider"
 												>
-													Cassé
+													Cassés
 												</th>
 												<th
 													class="px-4 md:px-8 py-3 border-b border-gray-400
                             bg-gray-100 text-center md:text-left text-xs font-semibold
                             text-gray-600 uppercase tracking-wider"
 												>
-													Manquant
+													Manquants
 												</th>
 												<th
 													class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -155,7 +155,7 @@
                             bg-gray-100 text-right text-xs font-semibold text-gray-600
                             uppercase tracking-wider"
 												>
-													Livré
+													Livrés
 												</th>
 											</tr>
 										</thead>
