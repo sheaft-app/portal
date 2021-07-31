@@ -40,18 +40,28 @@
 		open(MarkDeliveriesAsBilled, {
 			deliveries: selectedItems,
 			onClose: (res) => {
-				if (res.success) routerInstance.refresh();
+				if (res.success) {
+					routerInstance.refresh();
+					selectedItems = [];
+				}
 			},
 		});
 	};
 
 	const exportTimeRange = () => {
-		open(ExportTimeRangeAccounting);
+		open(ExportTimeRangeAccounting, {
+			onClose: (res) => {
+				if (res.success) selectedItems = [];
+			},
+		});
 	};
 
 	const exportToBill = () => {
 		open(ExportSelectedAccountings, {
 			deliveries: selectedItems,
+			onClose: (res) => {
+				if (res.success) selectedItems = [];
+			},
 		});
 	};
 

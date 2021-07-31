@@ -6,7 +6,9 @@ let enums = {
 	ExportUserData: { Value: "EXPORT_USER_DATA", Label: "Export RGPD" },
 	ExportUserTransactions: { Value: "EXPORT_USER_TRANSACTIONS", Label: "Export des virements" },
 	ExportPurchaseOrders: { Value: "EXPORT_USER_PURCHASE_ORDERS", Label: "Export des commandes" },
-	ExportDeliveries: { Value: "EXPORT_USER_DELIVERIES", Label: "Export des ventes" },
+	ExportUserBillingsTimeRange: { Value: "EXPORT_USER_BILLINGS_TIME_RANGE", Label: "Export périodique à facturer" },
+	ExportUserBillings: { Value: "EXPORT_USER_BILLINGS", Label: "Export spécifique à facturer" },
+	SendRecalls: { Value: "SEND_RECALLS", Label: "Envoi campagne de rappel" },
 };
 
 let JobKind = {

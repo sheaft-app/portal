@@ -175,7 +175,7 @@
 <TransitionWrapper>
 	<PageHeader name="Mes tâches" />
 	<PageBody {errorsHandler}>
-		<Actions {actions} />
+		<Actions {actions} selectedItemsNumber={selectedItems.length} />
 		<Table
 			graphQuery={GET_JOBS}
 			{errorsHandler}
