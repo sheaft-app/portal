@@ -23,7 +23,6 @@
 			variables: { id, startFirstDelivery: true },
 			errorsHandler,
 			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: res.id }),
-			successNotification: "Livraison démarrée !",
 			errorNotification: "Impossible de démarrer la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
