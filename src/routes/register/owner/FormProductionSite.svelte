@@ -38,7 +38,6 @@
 		$productionSite.address.zipcode &&
 		acceptCgv &&
 		acceptMangoCgv;
-
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -48,9 +47,11 @@
 	<p class="font-bold text-lg">
 		Terminons par l'adresse de votre {isStore ? "magasin" : "lieu de production"}
 	</p>
-	<p class="text-gray-600">
-		Cette adresse sera visible publiquement. Elle doit représenter votre lieu de production principal.
-	</p>
+	{#if !isStore}
+		<p class="text-gray-600">
+			Cette adresse sera visible publiquement. Elle doit représenter votre lieu de production principal.
+		</p>
+	{/if}
 	<p class="text-gray-600">Tapez l'adresse puis cliquez sur celle qui correspond dans la liste.</p>
 </div>
 {#if isSearchingAddress}
@@ -63,6 +64,7 @@
 			<div class="form-control">
 				<label for="line1">Adresse*</label>
 				<input
+					id="line1"
 					type="text"
 					required="required"
 					class="disabled"
