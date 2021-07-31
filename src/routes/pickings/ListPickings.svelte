@@ -1,7 +1,7 @@
 <script>
 	import { getContext, onMount } from "svelte";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
-	import { GET_AVAILABLE_PICKINGS, GET_PICKINGS } from "./queries.js";
+	import { GET_ACCEPTED_ORDERS, GET_PICKINGS } from "./queries.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
@@ -36,30 +36,33 @@
 	];
 
 	onMount(async () => {
+		let routeParams = routerInstance.getQueryParam("selectModal");
+		if (routeParams) handleCreatePicking();
+
 		await loadPickings();
 	});
 
 	const loadPickings = async () => {
 		isLoading = true;
 		await query({
-			query: GET_AVAILABLE_PICKINGS,
+			query: GET_ACCEPTED_ORDERS,
 			variables: { includePendingPurchaseOrders: true },
-			success: (res) => (pickings = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
+			success: (res) => (pickings = res.data),
 			errorsHandler,
-			errorNotification: "Impossible de charger les préparations disponibles",
+			errorNotification: "Impossible de charger les commandes en attente de préparation",
 			skipCache: true,
 		});
 		await query({
 			query: GET_PICKINGS,
 			errorsHandler,
 			success: (res) => items.set(res.data),
-			errorNotification: "Impossible de récupérer les préparations",
+			errorNotification: "Impossible de récupérer les préparations en cours",
 			skipCache: true,
 		});
 		isLoading = false;
 	};
 
-	const handleCreatePicking = () => open(ChooseAvailablePickingModal);
+	const handleCreatePicking = () => open(ChooseAvailablePickingModal, { selectedItems: [] });
 	$: loadPickings($querystring);
 </script>
 

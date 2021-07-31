@@ -1,23 +1,33 @@
 import gql from "graphql-tag";
 
-export const GET_AVAILABLE_PICKINGS = gql`
-	query GetAvailablePickings($includePendingPurchaseOrders: Boolean!) {
-		availablePickings(includePendingPurchaseOrders: $includePendingPurchaseOrders) {
-			name
-			expectedDeliveryDate
-			purchaseOrdersCount
-			productsCount
-			clientsCount
-			clients {
-				id
-				name
-				purchaseOrdersCount
-				purchaseOrders {
+export const GET_ACCEPTED_ORDERS = gql`
+	query GetAcceptedOrders {
+		purchaseOrders(first: 50, where: { status: { in: [ACCEPTED] } }) {
+			pageInfo {
+				startCursor
+				endCursor
+				hasNextPage
+				hasPreviousPage
+			}
+			edges {
+				cursor
+				node {
 					id
+					totalOnSalePrice
+					totalWholeSalePrice
+					totalVatPrice
 					reference
 					productsCount
-					expectedDeliveryDate
-					totalWholeSalePrice
+					expectedDelivery {
+						kind
+						name
+						expectedDeliveryDate
+					}
+					createdOn
+					sender {
+						id
+						name
+					}
 				}
 			}
 		}

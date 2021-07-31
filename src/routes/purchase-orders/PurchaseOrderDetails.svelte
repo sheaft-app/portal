@@ -42,7 +42,7 @@
 	import DeliveryStatus from "../../enums/DeliveryStatus";
 	import ProfileKind from "../../enums/ProfileKind";
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
-	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
+	import ChooseAvailablePickingModal from "./../pickings/ChooseAvailablePickingModal.svelte";
 	import { querystring } from "svelte-spa-router";
 
 	export let params = {};
@@ -78,7 +78,11 @@
 
 	const acceptOrder = () => handleOrdersModal(AcceptPurchaseOrders, order);
 
-	const processOrder = () => handleOrdersModal(CreatePickingForPurchaseOrders, order);
+	const processOrder = () => {
+		open(ChooseAvailablePickingModal, {
+			selectedItems: [order],
+		});
+	};
 
 	const shipOrder = () => handleOrdersModal(CreateDeliveryBatchForPurchaseOrders, order);
 

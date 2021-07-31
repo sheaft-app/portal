@@ -20,6 +20,11 @@ const PickingRoutes = {
 		Icon: faClipboardList,
 		Path: `${prefix}${listing}`,
 		SubPart: `${listing}`,
+		Params: {
+			Query: {
+				selectModal: null,
+			},
+		},
 	},
 	History: {
 		Name: "Historique préparations",

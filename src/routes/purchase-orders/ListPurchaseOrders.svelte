@@ -14,7 +14,7 @@
 	import RefusePurchaseOrders from "./RefusePurchaseOrders.svelte";
 	import CancelPurchaseOrders from "./CancelPurchaseOrders.svelte";
 	import DeliverPurchaseOrders from "./DeliverPurchaseOrders.svelte";
-	import CreatePickingForPurchaseOrders from "./CreatePickingForPurchaseOrders.svelte";
+	import ChooseAvailablePickingModal from "./../pickings/ChooseAvailablePickingModal.svelte";
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
 	import Select from "./../../components/controls/select/Select.js";
 	import {
@@ -93,7 +93,11 @@
 
 	const acceptOrders = () => handleOrdersModal(AcceptPurchaseOrders);
 
-	const processOrders = () => handleOrdersModal(CreatePickingForPurchaseOrders);
+	const processOrders = () => {
+		open(ChooseAvailablePickingModal, {
+			selectedItems: selectedItems,
+		});
+	};
 
 	const deliverOrders = () => handleOrdersModal(DeliverPurchaseOrders);
 
@@ -130,6 +134,7 @@
 			icon: faCheck,
 			text: "Accepter",
 			color: "green",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
 		{
@@ -138,6 +143,7 @@
 			icon: faTimes,
 			text: "Refuser",
 			color: "red",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
 		{
@@ -154,7 +160,7 @@
 			disabled: !canProcessOrders(selectedItems),
 			icon: faClipboardList,
 			text: "Préparer",
-			color: "green",
+			color: "teal",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
