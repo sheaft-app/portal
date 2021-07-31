@@ -29,7 +29,15 @@
 			query: GET_PRODUCERS,
 			variables: { id: $authUserAccount.id },
 			errorsHandler,
-			success: (res) => (items = res.producers),
+			success: (res) => {
+				items = res.producers;
+
+				const values = routerInstance.getQueryParams();
+
+				if (values.producerId) {
+					selectedProducer = items.find(p => p.id == values.producerId);
+				}
+			},
 			error: () => close(),
 			errorNotification: "Impossible de récupérer les producteurs.",
 			skipCache: routerInstance.shouldSkipCache(),

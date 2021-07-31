@@ -265,6 +265,34 @@ export const getFormattedNotification = (notification, local, display) => {
 					true,
 					true
 				);
+			case "ObservationAddedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Une nouvelle observation a été émise.`,
+					`#${notification.content.PortalUrl.split('#')[1]}`,
+					true,
+					true
+				);
+			case "RecallSentEvent":
+				console.log(notification);
+				return getNotification(
+					notification,
+					"success",
+					`${notification.content.ProducerName} procède au rappel de certains produits.`,
+					`#${notification.content.PortalUrl.split('#')[1]}`,
+					true,
+					true
+				);
+			case "ObservationRepliedEvent":
+				return getNotification(
+					notification,
+					"success",
+					`Une réponse a été apportée à une observation.`,
+					`#${notification.content.PortalUrl.split('#')[1]}`,
+					true,
+					true
+				);
 			default:
 				return null;
 		}

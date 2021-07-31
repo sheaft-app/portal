@@ -15,6 +15,7 @@
 	import { quintOut } from "svelte/easing";
 	import { crossfade } from "svelte/transition";
 	import GroupBy from "lodash/groupBy";
+	import GetRouterInstance from "../../services/SheaftRouter.js";
 
 	export let producerId = null;
 	export let batch = null;
@@ -23,6 +24,7 @@
 
 	const dispatch = createEventDispatcher();
 	const errorsHandler = new SheaftErrors();
+	const routerInstance = GetRouterInstance();
 	const { query, mutate } = getContext("api");
 
 	let isLoading = false;
@@ -81,6 +83,12 @@
 			success: (res) => {
 				pageInfo = res.pageInfo;
 				observations = [...observations, ...res.data];
+
+				const values = routerInstance.getQueryParams();
+
+				if (values.observationId) {
+					selectedObservation = observations.find(o => o.id == values.observationId);
+				}
 			},
 			errorsHandler,
 			error: () => close(),
@@ -93,7 +101,13 @@
 		window.removeEventListener("popstate", popStateListener, false);
 	});
 
-	const close = () => dispatch("close");
+	const close = () => {
+		dispatch("close");
+		routerInstance.replaceQueryParams({
+			producerId: null,
+			observationId: null
+		});
+	}
 
 	const selectObservation = (observation) => {
 		history.pushState({ observation }, "Observations");
