@@ -89,16 +89,16 @@
 		recall && recall.status === RecallStatus.Waiting.Value
 			? [
 					{
-						click: () => deleteRecall(),
-						text: "Supprimer",
-						icon: faTrash,
-						color: "red",
-					},
-					{
 						click: () => sendRecall(),
 						text: "Envoyer",
 						icon: faEnvelope,
 						color: "green",
+					},
+					{
+						click: () => deleteRecall(),
+						text: "Supprimer",
+						icon: faTrash,
+						color: "red",
 					},
 			  ]
 			: [];

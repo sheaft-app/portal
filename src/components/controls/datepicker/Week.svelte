@@ -122,9 +122,9 @@
 	@media (min-width: 480px) {
 		.scal-day--label.scal-highlighted,
 		.scal-day--label:not(.scal-disabled):hover {
-			background: var(--day-highlighted-background-color);
-			border-color: var(--day-highlighted-background-color);
-			color: var(--day-highlighted-text-color);
+			background: none;
+			border-color: #009688;
+			color: #009688;
 		}
 	}
 	.scal-day--label.scal-shake-date {
@@ -133,16 +133,16 @@
 	.scal-day--label.scal-selected:hover,
 	.scal-day--label.scal-selected,
 	.scal-day--label:active:not(.scal-disabled) {
-		background-color: var(--highlight-color);
-		border-color: var(--highlight-color);
-		color: #fff;
+		background: none;
+		border-color: #ff4081;
+		color: #ff4081;
 	}
 	.scal-day.scal-is-today .scal-day--label,
 	.scal-day.scal-is-today .scal-day--label:hover {
 		opacity: 1;
 		background: none;
-		border-color: var(--highlight-color);
-		color: #000;
+		border-color: #333;
+		color: #333;
 	}
 
 	@keyframes shake {

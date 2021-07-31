@@ -43,7 +43,6 @@
 		dispatch("monthSelected", i);
 		toggleMonthSelectorOpen();
 	}
-
 </script>
 
 <div class="title">
@@ -119,10 +118,13 @@
 	.scal-month-selector--month.scal-selectable:hover {
 		cursor: pointer;
 		box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.15);
+		border-color: #009688;
+		color: #009688;
 	}
 	.scal-month-selector--month.scal-selected {
-		background: var(--highlight-color);
-		color: #fff;
+		background: none;
+		border-color: #ff4081;
+		color: #ff4081;
 	}
 	.scal-month-selector--month:before {
 		content: " ";
@@ -166,5 +168,4 @@
 		transform: rotate(135deg);
 		-webkit-transform: rotate(135deg);
 	}
-
 </style>

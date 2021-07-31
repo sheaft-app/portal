@@ -58,12 +58,12 @@
 		</div>
 		<div class="form-control">
 			<label>Début de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={false} {start} {end} />
+			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={recall.id} {start} {end} />
 			<ErrorContainer field={$form.fields.saleStartedOn} />
 		</div>
 		<div class="form-control">
 			<label>Fin de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={false} {start} {end} />
+			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={recall.id} {start} {end} />
 			<ErrorContainer field={$form.fields.saleEndedOn} />
 		</div>
 		<div class="form-control">
