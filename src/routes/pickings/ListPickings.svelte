@@ -106,7 +106,7 @@
 			{/each}
 		</div>
 		{#if (!pickings || pickings.length === 0) && $items.length === 0}
-			<p class="text-center">Aucune commande disponible pour être préparée</p>
+			<p class="text-center">Aucune commande en attente d'être préparée</p>
 		{/if}
 	</PageBody>
 </TransitionWrapper>

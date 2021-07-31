@@ -29,7 +29,7 @@
 		faTruckLoading,
 		faClipboardCheck,
 		faPlay,
-		faFileExport,
+		faPeopleCarry,
 	} from "@fortawesome/free-solid-svg-icons";
 	import PurchaseOrderRoutes from "./routes";
 	import DeliveryBatchRoutes from "./../delivery-batches/routes";
@@ -164,7 +164,11 @@
         md:rounded mb-3"
 			>
 				<div class="flex">
-					<Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
+					{#if order.delivery.kind === DeliveryKind.ProducerToStore.Value}
+						<Icon data={faTruck} scale="1.5" class="mr-5 text-blue-400" />
+					{:else}
+						<Icon data={faPeopleCarry} scale="1.5" class="mr-5 text-blue-400" />
+					{/if}
 					<div>
 						{#if order.delivery.kind === DeliveryKind.ProducerToStore.Value}
 							<p class="uppercase font-bold leading-none">
@@ -195,7 +199,7 @@
 								{/if}
 							</div>
 						{:else}
-							Distribution (<a
+							Distribution {order.expectedDelivery.name}(<a
 								href="javascript:void(0)"
 								on:click={() => routerInstance.goTo(RetrievalRoutes.Details, { id: order.id })}
 								>cliquez pour voir le détails</a
@@ -222,8 +226,10 @@
 				<div class="flex">
 					{#if order.status === PurchaseOrderStatusKind.Completed.Value}
 						<Icon data={faCheck} scale="1.2" class="mr-5" />
-					{:else}
+					{:else if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
 						<Icon data={faTruck} scale="1.2" class="mr-5" />
+					{:else}
+						<Icon data={faPeopleCarry} scale="1.2" class="mr-5" />
 					{/if}
 					<div>
 						<div>
@@ -246,14 +252,19 @@
 							{#if order.expectedDelivery.address}
 								<p>
 									{#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
-										Adresse de livraison :
+										Adresse :
+										<b class="font-semibold">
+											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+											{order.expectedDelivery.address.city}
+										</b>
 									{:else}
-										Adresse de distribution :
+										Lieu :
+										<b class="font-semibold">
+											{order.expectedDelivery.name} au
+											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+											{order.expectedDelivery.address.city}
+										</b>
 									{/if}
-									<b class="font-semibold">
-										{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
-										{order.expectedDelivery.address.city}
-									</b>
 								</p>
 							{/if}
 						</div>
