@@ -1,6 +1,6 @@
 <script>
 	import Icon from "svelte-awesome";
-	import { onMount, getContext, onDestroy } from "svelte";
+	import { onDestroy } from "svelte";
 	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import { validators, initialValues } from "./recallForm";
@@ -17,9 +17,7 @@
 		close = null;
 
 	const errorsHandler = new SheaftErrors();
-	const { query, mutate } = getContext("api");
 	let isLoading = false;
-	let producers = [];
 
 	let end = new Date();
 	let start = new Date(end.getFullYear() - 2, end.getMonth(), end.getDate());
@@ -58,12 +56,12 @@
 		</div>
 		<div class="form-control">
 			<label>Début de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={recall.id} {start} {end} />
+			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={$form.fields.saleStartedOn?.dirty || recall.id} {start} {end} />
 			<ErrorContainer field={$form.fields.saleStartedOn} />
 		</div>
 		<div class="form-control">
 			<label>Fin de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={recall.id} {start} {end} />
+			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={$form.fields.saleEndedOn?.dirty || recall.id} {start} {end} />
 			<ErrorContainer field={$form.fields.saleEndedOn} />
 		</div>
 		<div class="form-control">
