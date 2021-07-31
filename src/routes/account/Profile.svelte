@@ -106,7 +106,7 @@
         hover:bg-gray-100"
 				class:disabled={isSendingGPDRRequest || hasSentGPDRRequest}
 				disabled={isSendingGPDRRequest || hasSentGPDRRequest}
-				on:click={() => handleExport()}
+				on:click={handleExport}
 			>
 				Je demande une copie de mes données
 			</button>
