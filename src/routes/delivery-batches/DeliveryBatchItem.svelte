@@ -39,7 +39,7 @@
 				<div class="xl:w-full">
 					<a target="_blank" href={deliveryBatch.deliveryFormsUrl} class="btn-link" style="display: inline-block;">
 						<Icon data={faEye} class="mr-1" />
-						Voir les bons de livraison
+						Voir les B.L
 					</a>
 				</div>
 			{/if}
