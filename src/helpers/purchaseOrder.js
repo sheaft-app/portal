@@ -1,5 +1,6 @@
+import { denormalizeDeliveryBatchProducts } from "../routes/delivery-batches/deliveryBatchForm";
+
 export const getPurchaseOrderModel = (products, returnedReturnables) => {
-	let productsGroupedToBill = {};
 	let returnablesGroupedToBill = {};
 	let model = {
 		products: [],
@@ -9,87 +10,65 @@ export const getPurchaseOrderModel = (products, returnedReturnables) => {
 		totalOnSalePrice: 0,
 	};
 
-	if (products) {
-		for (let i = 0; i < products.length; i++) {
-			if (!productsGroupedToBill[products[i].productId])
-				productsGroupedToBill[products[i].productId] = {
-					id: products[i].productId,
-					name: products[i].name,
-					reference: products[i].reference,
-					quantity: products[i].quantity,
-					vat: products[i].vat,
-					unitWholeSalePrice: products[i].unitWholeSalePrice,
-					totalWholeSalePrice: products[i].totalProductWholeSalePrice,
-					totalOnSalePrice: products[i].totalProductOnSalePrice,
-					totalVatPrice: products[i].totalProductVatPrice,
-				};
-			else {
-				productsGroupedToBill[products[i].productId].quantity += products[i].quantity;
-				productsGroupedToBill[products[i].productId].totalWholeSalePrice += products[i].totalProductWholeSalePrice;
-				productsGroupedToBill[products[i].productId].totalOnSalePrice += products[i].totalProductOnSalePrice;
-				productsGroupedToBill[products[i].productId].totalVatPrice += products[i].totalProductVatPrice;
-			}
-
-			if (!products[i].isReturnable) continue;
-
-			if (!returnablesGroupedToBill[products[i].returnableId])
-				returnablesGroupedToBill[products[i].returnableId] = {
-					id: products[i].returnableId,
-					name: `${products[i].returnableName} (Consignes déposées)`,
-					quantity: products[i].quantity,
-					vat: products[i].returnableVat,
-					unitWholeSalePrice: products[i].returnableWholeSalePrice,
-					totalWholeSalePrice: products[i].totalReturnableWholeSalePrice,
-					totalOnSalePrice: products[i].totalReturnableOnSalePrice,
-					totalVatPrice: products[i].totalReturnableVatPrice,
-				};
-			else {
-				returnablesGroupedToBill[products[i].returnableId].quantity += products[i].quantity;
-				returnablesGroupedToBill[products[i].returnableId].totalWholeSalePrice +=
-					products[i].totalReturnableWholeSalePrice;
-				returnablesGroupedToBill[products[i].returnableId].totalOnSalePrice += products[i].totalReturnableOnSalePrice;
-				returnablesGroupedToBill[products[i].returnableId].totalVatPrice += products[i].totalReturnableVatPrice;
-			}
+	const accumulateProps = (obj, reference, propName) => {
+		if (obj.id == reference.id) {
+			return obj;
 		}
+
+		const props = ['quantity', `${propName}WholeSalePrice`, `${propName}OnSalePrice`, `${propName}VatPrice`];
+		props.map(prop => obj[prop] += reference[prop]);
+
+		return obj;
+	};
+
+	if (products) {
+		const productsGroupedToBill = products.reduce((allProducts, product) => {
+			const productDeliveryData = denormalizeDeliveryBatchProducts(products.filter(p => p.productId == product.productId)).shift();
+
+			allProducts[product.productId] = {
+				...productDeliveryData,
+				...accumulateProps(allProducts[product.productId] || product, product, 'totalProduct')
+			}
+
+			if (!product.isReturnable) return allProducts;
+
+			returnablesGroupedToBill[`${product.returnableId}_deposed`] = accumulateProps(returnablesGroupedToBill[`${product.returnableId}_deposed`] || {
+				id: product.returnableId,
+				name: `${product.returnableName} (Consignes déposées)`,
+				totalWholeSalePrice: product.totalReturnableWholeSalePrice,
+				totalVatPrice: product.totalReturnableVatPrice,
+				totalOnSalePrice: product.totalReturnableOnSalePrice,
+				quantity: product.quantity
+			}, product, 'totalReturnable');
+
+			return allProducts;
+		}, {});
+
+		Object.values(productsGroupedToBill).map(value => {
+			model.totalWholeSalePrice += value.totalProductWholeSalePrice;
+			model.totalVatPrice += value.totalProductVatPrice;
+			model.totalOnSalePrice += value.totalProductOnSalePrice;
+			model.products = [...model.products, value];
+		});
 	}
 
 	if (returnedReturnables) {
-		for (let i = 0; i < returnedReturnables.length; i++) {
-			if (!returnablesGroupedToBill[returnedReturnables[i].id])
-				returnablesGroupedToBill[returnedReturnables[i].id] = {
-					id: returnedReturnables[i].id,
-					name: `${returnedReturnables[i].name} (Consignes récupérées)`,
-					quantity: returnedReturnables[i].quantity,
-					vat: returnedReturnables[i].vat,
-					unitWholeSalePrice: returnedReturnables[i].unitWholeSalePrice,
-					totalWholeSalePrice: returnedReturnables[i].totalWholeSalePrice,
-					totalOnSalePrice: returnedReturnables[i].totalOnSalePrice,
-					totalVatPrice: returnedReturnables[i].totalVatPrice,
-				};
-			else {
-				returnablesGroupedToBill[returnedReturnables[i].id].quantity += returnedReturnables[i].quantity;
-				returnablesGroupedToBill[returnedReturnables[i].id].totalWholeSalePrice +=
-					returnedReturnables[i].totalWholeSalePrice;
-				returnablesGroupedToBill[returnedReturnables[i].id].totalOnSalePrice += returnedReturnables[i].totalOnSalePrice;
-				returnablesGroupedToBill[returnedReturnables[i].id].totalVatPrice += returnedReturnables[i].totalVatPrice;
-			}
-		}
+		returnablesGroupedToBill = returnedReturnables.reduce((returnables, returnable) => {
+			returnables[`${returnable.id}_retrieved`] = accumulateProps(returnables[`${returnable.id}_retrieved`] || {
+				name: `${returnable.name} (Consignes récupérées)`,
+				...returnable
+			}, returnable, 'total');
+
+			return returnables;
+		}, {});
+
+		Object.values(returnablesGroupedToBill).map(value => {
+			model.totalWholeSalePrice += value.totalWholeSalePrice;
+			model.totalVatPrice += value.totalVatPrice;
+			model.totalOnSalePrice += value.totalOnSalePrice;
+			model.returnables = [...model.returnables, value];
+		});
 	}
-
-	Object.keys(productsGroupedToBill).map((id) => {
-		model.totalWholeSalePrice += productsGroupedToBill[id].totalWholeSalePrice;
-		model.totalVatPrice += productsGroupedToBill[id].totalVatPrice;
-		model.totalOnSalePrice += productsGroupedToBill[id].totalOnSalePrice;
-	});
-
-	Object.keys(returnablesGroupedToBill).map((id) => {
-		model.totalWholeSalePrice += returnablesGroupedToBill[id].totalWholeSalePrice;
-		model.totalVatPrice += returnablesGroupedToBill[id].totalVatPrice;
-		model.totalOnSalePrice += returnablesGroupedToBill[id].totalOnSalePrice;
-	});
-
-	model.products = Object.keys(productsGroupedToBill).map((id) => productsGroupedToBill[id]);
-	model.returnables = Object.keys(returnablesGroupedToBill).map((id) => returnablesGroupedToBill[id]);
 
 	return model;
 };

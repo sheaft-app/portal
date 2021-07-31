@@ -212,14 +212,14 @@
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider"
 										>
-											Qté
+											Qté demandée
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider"
 										>
-											TVA
+											Qté livrée
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -266,20 +266,20 @@
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{product.quantity}</p>
+												<p class="whitespace-no-wrap">{product.productsToDeliver}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{product.vat}%</p>
+												<p class="whitespace-no-wrap">{calculateDelivered(product)}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(product.totalWholeSalePrice)}
+													{formatMoney(product.totalProductWholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -287,8 +287,9 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(product.totalOnSalePrice)}
+													{formatMoney(product.totalProductOnSalePrice)}
 												</p>
+												<p class="whitespace-no-wrap">TVA : {product.vat}%</p>
 											</td>
 										</tr>
 									{/each}
@@ -317,13 +318,12 @@
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{returnable.quantity}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{returnable.vat}%</p>
+												<p class="whitespace-no-wrap">{returnable.quantity}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
@@ -340,6 +340,7 @@
 												<p class="whitespace-no-wrap">
 													{formatMoney(returnable.totalOnSalePrice)}
 												</p>
+												<p class="whitespace-no-wrap">TVA : {returnable.vat}%</p>
 											</td>
 										</tr>
 									{/each}
