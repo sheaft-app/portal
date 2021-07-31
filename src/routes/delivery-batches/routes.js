@@ -22,6 +22,11 @@ const DeliveryBatchesRoutes = {
 		Icon: faTruck,
 		Path: `${prefix}${listing}`,
 		SubPart: `${listing}`,
+		Params: {
+			Query: {
+				selectModal: null,
+			},
+		},
 	},
 	History: {
 		Name: "Historique livraisons",

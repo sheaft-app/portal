@@ -36,6 +36,9 @@
 	];
 
 	onMount(async () => {
+		let routeParams = routerInstance.getQueryParam("selectModal");
+		if (routeParams) handleCreateDeliveryBatch();
+
 		await loadDeliveryBatches();
 	});
 
@@ -81,19 +84,18 @@
 				>
 					<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
 						<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
-						<p class="font-semibold text-xl">De nouvelles livraisons sont prêtes à être programmées !</p>
+						<p class="font-semibold text-xl">Des commandes sont prêtes à être livrées !</p>
 					</div>
 					<div class="w-full mt-3 px-10 xl:px-12">
 						{#if $items.length > 0}
 							<p>
-								D'autres commandes sont disponibles pour être livrées. Vous pouvez les ajouter à l'une de vos
-								programmations non validées à l'aide du bouton "Modifier" ou bien en programmer une nouvelle.
+								Vous pouvez les ajouter à l'une de vos programmations non validées à l'aide du bouton "Modifier" ou bien
+								en programmer une nouvelle.
 							</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une autre livraison
 							</button>
 						{:else}
-							<p>Des commandes sont disponibles pour être livrées.</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une livraison
 							</button>

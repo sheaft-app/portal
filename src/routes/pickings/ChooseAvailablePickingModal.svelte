@@ -20,14 +20,13 @@
 
 	let isLoading = false;
 	let purchaseOrders = [];
-	let selectedIds = [];
+	let selectedIds = selectedItems.map((s) => s.id);
 	let name = `Préparation du ${format(new Date(), "P", {
 		locale: fr,
 	})}`;
 
 	onMount(async () => {
 		isLoading = true;
-		selectedIds = selectedItems.map((s) => s.id);
 		await query({
 			query: GET_ACCEPTED_ORDERS,
 			success: (res) => {
@@ -84,8 +83,6 @@
 	{#if isLoading}
 		<Loader />
 	{:else if purchaseOrders && purchaseOrders.length > 0}
-		<p>Sélectionnez les commandes à préparer.</p>
-		<p class="mb-5">Vous pourrez par la suite joindre d'autres commandes à cette préparation si nécessaire.</p>
 		<div class="form-control w-full my-3">
 			<label for="name">Nom</label>
 			<input bind:value={name} id="name" type="text" placeholder="Donnez un nom à votre préparation (optionnel)" />
@@ -156,6 +153,7 @@
 				{/each}
 			</tbody>
 		</table>
+		<p class="mt-5">Vous pourrez par la suite joindre d'autres commandes à cette préparation si nécessaire.</p>
 	{:else}
 		<p>Aucune commande n'est en attente de préparation.</p>
 	{/if}

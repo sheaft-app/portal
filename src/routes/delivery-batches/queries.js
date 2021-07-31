@@ -111,6 +111,9 @@ export const GET_AVAILABLE_DELIVERY_BATCHES = gql`
 				position
 				purchaseOrders {
 					id
+					client
+					clientId
+					reference
 					productsCount
 					expectedDeliveryDate
 					totalWholeSalePrice
