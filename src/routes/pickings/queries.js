@@ -62,6 +62,30 @@ export const GET_PICKINGS = gql`
 	}
 `;
 
+export const GET_AVAILABLE_PICKINGS = gql`
+	query GetAvailablePickings($includePendingPurchaseOrders: Boolean!) {
+		availablePickings(includePendingPurchaseOrders: $includePendingPurchaseOrders) {
+			name
+			expectedDeliveryDate
+			purchaseOrdersCount
+			productsCount
+			clientsCount
+			clients {
+				id
+				name
+				purchaseOrdersCount
+				purchaseOrders {
+					id
+					reference
+					productsCount
+					expectedDeliveryDate
+					totalWholeSalePrice
+				}
+			}
+		}
+	}
+`;
+
 export const GET_PICKINGS_HISTORY = gql`
 	query GetPickingsHistory($first: Int, $last: Int, $after: String, $before: String, $orderBy: [PickingSortInput!]) {
 		pickings(

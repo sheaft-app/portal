@@ -37,7 +37,6 @@
 							.flat(),
 					];
 				});
-				console.log(availableOrders);
 			},
 			errorsHandler,
 			errorNotification: "Impossible de charger les préparations disponibles",

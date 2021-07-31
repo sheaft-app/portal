@@ -40,16 +40,12 @@
 		});
 
 		purchaseOrder = getPurchaseOrderModel(delivery.products, delivery.returnedReturnables);
-		console.log(purchaseOrder);
 
 		isLoading = false;
 	});
 
 	const calculateDelivered = (product) =>
-		product.productsToDeliver +
-		product.productsInExcess +
-		product.productsBroken +
-		product.productsMissing;
+		product.productsToDeliver + product.productsInExcess + product.productsBroken + product.productsMissing;
 
 	onDestroy(() => (delivery = null));
 </script>
@@ -298,8 +294,7 @@
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
-											>
-											</td>
+											/>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
