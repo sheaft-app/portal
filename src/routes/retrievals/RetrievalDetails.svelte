@@ -68,6 +68,12 @@
 					},
 			  ]
 			: [];
+
+	const calculateDelivered = (product) =>
+		product.productsToDeliver +
+		product.productsInExcess +
+		product.productsBroken +
+		product.productsMissing;
 </script>
 
 <TransitionWrapper>
