@@ -21,7 +21,7 @@ const isDev = isWatch || isLiveReload;
 const production = !isDev;
 
 export default {
-	input: "src/index.js",
+	input: ["src/index.js"],
 	output: [
 		{
 			dir: "public",
@@ -33,6 +33,8 @@ export default {
 	],
 	manualChunks(id) {
 		if (id.includes("node_modules")) return "vendor";
+
+		if (id.includes("src/configs")) return "config";
 
 		if (
 			id.includes("src/routes") ||
@@ -51,7 +53,7 @@ export default {
 			forms: __dirname + "vendors/svelte-forms",
 		}),
 		del({
-			targets: "public/dist/*",
+			targets: ["public/app-*", "public/vendor-*"],
 			runOnce: true,
 		}),
 		define({
