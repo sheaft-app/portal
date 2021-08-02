@@ -8,6 +8,7 @@ import {
 	faRedoAlt,
 	faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+
 import Guid from "./../../helpers/Guid.js";
 
 export const getFormattedNotification = (notification, local, display) => {
@@ -240,7 +241,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre commande a été prise en compte.`,
-					`#${notification.content.PortalUrl.split("#")[1]}`,
+					`#${notification.content.PortalUrl?.split("#")[1]}`,
 					true,
 					true
 				);
@@ -276,7 +277,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"info",
 					`Vous avez une livraison programmée qui n'est toujours pas terminée.`,
-					`#${notification.content.Url.split("#")[1]}`,
+					`#${notification.content.Url?.split("#")[1]}`,
 					true,
 					true
 				);
@@ -285,7 +286,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`${notification.content.ProducerName} a décalé la livraison.`,
-					`#${notification.content.Url.split("#")[1]}`,
+					`#${notification.content.Url?.split("#")[1]}`,
 					true,
 					true
 				);
@@ -294,7 +295,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Une nouvelle observation a été émise.`,
-					`#${notification.content.PortalUrl.split("#")[1]}`,
+					`#${notification.content.PortalUrl?.split("#")[1]}`,
 					true,
 					true
 				);
@@ -304,7 +305,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`${notification.content.ProducerName} procède au rappel de certains produits.`,
-					`#${notification.content.PortalUrl.split("#")[1]}`,
+					`#${notification.content.PortalUrl?.split("#")[1]}`,
 					true,
 					true
 				);
@@ -313,7 +314,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Une réponse a été apportée à une observation.`,
-					`#${notification.content.PortalUrl.split("#")[1]}`,
+					`#${notification.content.PortalUrl?.split("#")[1]}`,
 					true,
 					true
 				);
