@@ -27,7 +27,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"info",
 					`Nouvelle demande de partenariat.`,
-					`#/agreements/${notification.content.AgreementId}`,
+					`#/agreements/${notification.content.AgreementId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -37,7 +37,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre demande de partenariat a été accepté.`,
-					`#/agreements/${notification.content.AgreementId}`,
+					`#/agreements/${notification.content.AgreementId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true,
 					local
@@ -48,7 +48,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`Votre partenariat a été annulé.`,
-					`#/agreements/${notification.content.AgreementId}`,
+					`#/agreements/${notification.content.AgreementId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true,
 					local
@@ -59,7 +59,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"error",
 					`Votre demande de partenariat a été refusée.`,
-					`#/agreements/${notification.content.AgreementId}`,
+					`#/agreements/${notification.content.AgreementId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -68,7 +68,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`Votre export de données est en cours.`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					false
 				);
@@ -77,7 +77,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre export de données est terminé.`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -86,7 +86,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`Votre export de données a échoué.`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -95,7 +95,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`La création de votre bon de préparation a échoué.`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -104,7 +104,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`Votre bon de préparation est en cours de génération...`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					false
 				);
@@ -113,7 +113,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre bon de préparation est prêt !`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -122,7 +122,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`L'import de vos produits a échoué.`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -131,7 +131,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`L'import de vos produits est en cours...`,
-					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}`,
+					`#/jobs/${notification.content.JobId ? notification.content.JobId : ""}?refresh=${Guid.NewGuid()}`,
 					true,
 					false
 				);
@@ -140,7 +140,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre import de produits est terminé !`,
-					`#/products/`,
+					`#/products/?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -149,7 +149,9 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"info",
 					`Vous avez reçu une nouvelle commande.`,
-					`#/purchase-orders/${notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""}`,
+					`#/purchase-orders/${
+						notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""
+					}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -158,7 +160,9 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"progress",
 					`Votre commande est en cours de préparation.`,
-					`#/my-orders/${notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""}`,
+					`#/my-orders/${
+						notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""
+					}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -167,20 +171,40 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`Une commande a été annulée.`,
-					`#/purchase-orders/`,
+					`#/purchase-orders/${
+						notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""
+					}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
 			case "PurchaseOrderCancelledEvent":
-				return getNotification(notification, "error", `Votre commande a été annulée.`, `#/my-orders/`, true, true);
+				return getNotification(
+					notification,
+					"error",
+					`Votre commande a été annulée.`,
+					`#/my-orders/${
+						notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""
+					}?refresh=${Guid.NewGuid()}`,
+					true,
+					true
+				);
 			case "PurchaseOrderExpiredEvent":
-				return getNotification(notification, "error", `Commande expirée.`, `#/my-orders/`, true, local);
+				return getNotification(
+					notification,
+					"error",
+					`Commande expirée.`,
+					`#/my-orders/${
+						notification.content.PurchaseOrderId ? notification.content.PurchaseOrderId : ""
+					}?refresh=${Guid.NewGuid()}`,
+					true,
+					local
+				);
 			case "PurchaseOrderCompletedEvent":
 				return getNotification(
 					notification,
 					"success",
 					`Votre commande est prête.`,
-					`#/my-orders/${notification.content.PurchaseOrderId}`,
+					`#/my-orders/${notification.content.PurchaseOrderId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -189,7 +213,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"error",
 					`Votre commande a été refusée par le producteur.`,
-					`#/my-orders/${notification.content.PurchaseOrderId}`,
+					`#/my-orders/${notification.content.PurchaseOrderId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -198,7 +222,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"info",
 					`Votre commande a été acceptée.`,
-					`#/my-orders/${notification.content.PurchaseOrderId}`,
+					`#/my-orders/${notification.content.PurchaseOrderId}?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -207,7 +231,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"warning",
 					`Le paiement de votre commande a échoué.`,
-					`#/my-orders/`,
+					`#/my-orders/?refresh=${Guid.NewGuid()}`,
 					true,
 					true
 				);
@@ -216,7 +240,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Votre commande a été prise en compte.`,
-					`#/my-orders/`,
+					`#${notification.content.PortalUrl.split("#")[1]}`,
 					true,
 					true
 				);
@@ -238,15 +262,6 @@ export const getFormattedNotification = (notification, local, display) => {
 					true,
 					true
 				);
-			case "DeliveryBatchFormsCompletedEvent":
-				return getNotification(
-					notification,
-					"success",
-					`Les bons de livraisons de votre tournée ont été mis à jour.`,
-					notification.content.Url,
-					true,
-					true
-				);
 			case "DeliveryBatchFormsGeneratedEvent":
 				return getNotification(
 					notification,
@@ -256,12 +271,21 @@ export const getFormattedNotification = (notification, local, display) => {
 					true,
 					true
 				);
+			case "DeliveryBatchPendingEvent":
+				return getNotification(
+					notification,
+					"info",
+					`Vous avez une livraison programmée qui n'est toujours pas terminée.`,
+					`#${notification.content.Url.split("#")[1]}`,
+					true,
+					true
+				);
 			case "DeliveryPostponedEvent":
 				return getNotification(
 					notification,
 					"success",
-					`La livraison de votre commande a été décalée.`,
-					`#/my-orders/`,
+					`${notification.content.ProducerName} a décalé la livraison.`,
+					`#${notification.content.Url.split("#")[1]}`,
 					true,
 					true
 				);
@@ -270,7 +294,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Une nouvelle observation a été émise.`,
-					`#${notification.content.PortalUrl.split('#')[1]}`,
+					`#${notification.content.PortalUrl.split("#")[1]}`,
 					true,
 					true
 				);
@@ -280,7 +304,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`${notification.content.ProducerName} procède au rappel de certains produits.`,
-					`#${notification.content.PortalUrl.split('#')[1]}`,
+					`#${notification.content.PortalUrl.split("#")[1]}`,
 					true,
 					true
 				);
@@ -289,7 +313,7 @@ export const getFormattedNotification = (notification, local, display) => {
 					notification,
 					"success",
 					`Une réponse a été apportée à une observation.`,
-					`#${notification.content.PortalUrl.split('#')[1]}`,
+					`#${notification.content.PortalUrl.split("#")[1]}`,
 					true,
 					true
 				);
