@@ -14,6 +14,7 @@
 	import Observations from "../../components/observations/Observations.svelte";
 	import CreateBatchModal from "./CreateBatchModal.svelte";
 	import { getContext, onMount } from "svelte";
+import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -28,11 +29,15 @@
 	let displayObservationsPanel = false;
 
 	onMount(() => {
+		checkObservation();
+	});
+
+	const checkObservation = () => {
 		const values = routerInstance.getQueryParams();
 
 		if (values.observationId) 
 			displayObservationsPanel = true;
-	});
+	}
 
 	const actions = [
 		{
@@ -53,6 +58,8 @@
 			color: "blue",
 		},
 	];
+
+	$: checkObservation($querystring);
 </script>
 
 <TransitionWrapper>
