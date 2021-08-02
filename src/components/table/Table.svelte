@@ -157,6 +157,11 @@
 			updateQueryParams = true;
 		}
 
+		if (!_searchValues.orderBy) {
+			_searchValues.orderBy = defaultSearchValues.orderBy;
+			updateQueryParams = true;
+		}
+
 		if (_take && _take != _searchValues.take) {
 			_pagination = [];
 		}
@@ -221,7 +226,7 @@
 			settings.where[splittedFilter[0]] = filter;
 		}
 
-		settings.orderBy[_searchValues.orderBy] = _searchValues.direction;
+		settings.orderBy[_searchValues.orderBy ? _searchValues.orderBy : defaultSearchValues.orderBy] = _searchValues.direction ? _searchValues.direction : defaultSearchValues.direction;
 		return settings;
 	};
 

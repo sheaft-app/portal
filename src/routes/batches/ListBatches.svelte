@@ -13,7 +13,7 @@
 	import fr from "date-fns/locale/fr";
 	import Observations from "../../components/observations/Observations.svelte";
 	import CreateBatchModal from "./CreateBatchModal.svelte";
-	import { getContext } from "svelte";
+	import { getContext, onMount } from "svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -26,6 +26,13 @@
 	const headers = [{ name: "Lot", sortLabel: "number" }, { name: "DLC/DDM" }, { name: "Observations" }];
 
 	let displayObservationsPanel = false;
+
+	onMount(() => {
+		const values = routerInstance.getQueryParams();
+
+		if (values.observationId) 
+			displayObservationsPanel = true;
+	});
 
 	const actions = [
 		{

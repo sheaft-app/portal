@@ -1,7 +1,8 @@
-import Roles from "../../enums/Roles";
+import { faFileSignature } from "@fortawesome/free-solid-svg-icons";
+
 import OrderByDirection from "../../enums/OrderByDirection";
 import Paginate from "../../enums/Paginate";
-import { faFileSignature } from "@fortawesome/free-solid-svg-icons";
+import Roles from "../../enums/Roles";
 
 const prefix = "/traceability";
 const batches = "/";
@@ -25,6 +26,7 @@ const BatchesRoutes = {
 				where: null,
 				whereValues: null,
 				refresh: "clear",
+				observationId:null,
 			},
 		},
 	},

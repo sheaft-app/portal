@@ -49,7 +49,7 @@
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Traçabilité" />
+	<PageHeader name="Traçabilité des producteurs" />
 	<PageBody {errorsHandler}>
 		{#if isLoading}
 			<div
