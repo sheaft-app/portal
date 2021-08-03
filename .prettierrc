@@ -1,8 +1,9 @@
 {
 	"svelteSortOrder": "options-scripts-markup-styles",
 	"printWidth": 120,
-	"tabWidth": 2,
+	"tabWidth": 4,
 	"semi": true,
 	"bracketSpacing": true,
+	"jsxBracketSameLine": true,
 	"plugins": ["prettier-plugin-svelte"]
 }

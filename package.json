@@ -9,8 +9,11 @@
     "rollup:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
     "nollup:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
     "nollup:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
+    "lint": "npx eslint --fix \"{src,!(node_modules|public|vendors|dist)/**/}*.{js,svelte}\"",
+    "format": "npx prettier --write \"{src,!(node_modules|public|vendors|dist)/**/}*.{js,svelte}\"",
     "build": "set NODE_ENV=PRODUCTION && rollup -c",
-    "start": "sirv public --dev --single --port 4200"
+    "start": "sirv public --dev --single --port 4200",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "~7.13.17",
@@ -80,8 +83,14 @@
     "@rollup/plugin-typescript": "~8.2.1",
     "@tsconfig/svelte": "~1.0.10",
     "autoprefixer": "~10.2.5",
+    "babel-eslint": "^10.1.0",
     "core-js": "~3.11.0",
     "cpy-cli": "~3.1.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-svelte3": "^3.2.0",
+    "git-format-staged": "^2.1.2",
+    "husky": "^7.0.0",
     "node-sass": "~6.0.0",
     "nollup": "~0.16.5",
     "npm-run-all": "~4.1.5",
