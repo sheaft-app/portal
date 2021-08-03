@@ -42,7 +42,6 @@
 	};
 
 	$: displayedCatalogs = allCatalogs.filter((c) => !catalogs.map((c1) => c1.id).includes(c.id));
-
 </script>
 
 {#if !$isLoading}
@@ -83,5 +82,4 @@
 		--indicatorTop: 9px;
 		--indicatorColor: #ff4081;
 	}
-
 </style>

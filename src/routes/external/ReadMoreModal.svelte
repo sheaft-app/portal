@@ -1,6 +1,5 @@
 <script>
 	export let close, entity;
-
 </script>
 
 <div class="px-6 pt-8" style="max-width: 650px;">
@@ -17,5 +16,4 @@
 		@apply mb-2;
 		@apply text-lg;
 	}
-
 </style>

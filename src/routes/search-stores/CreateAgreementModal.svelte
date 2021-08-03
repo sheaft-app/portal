@@ -23,7 +23,12 @@
 		isLoading = true;
 		await mutate({
 			mutation: CREATE_AGREEMENT,
-			variables: { storeId: store.id, catalogId: selectedCatalog.id, producerId, deliveryId: selectedDelivery.id },
+			variables: {
+				storeId: store.id,
+				catalogId: selectedCatalog.id,
+				producerId,
+				deliveryId: selectedDelivery.id,
+			},
 			errorsHandler,
 			success: async (res) => closeModal(res),
 			successNotification: "Demande de partenariat envoyée !",

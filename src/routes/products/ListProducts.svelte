@@ -150,7 +150,6 @@
 			color: "blue",
 		},
 	];
-
 </script>
 
 <TransitionWrapper>
@@ -167,8 +166,8 @@
 					<div>
 						<p class="uppercase font-bold leading-none mb-2">Imports de produits</p>
 						<p>
-							Plusieurs imports de produits dans votre catalogue sont en cours. Nous vous informerons quand ce sera
-							terminé.
+							Plusieurs imports de produits dans votre catalogue sont en cours. Nous vous informerons
+							quand ce sera terminé.
 						</p>
 						<div class="mt-2">
 							<a
@@ -257,5 +256,4 @@
 			left: calc(50% + 100px);
 		}
 	}
-
 </style>

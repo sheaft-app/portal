@@ -10,7 +10,6 @@
 
 	const routes = {};
 	routes[SponsorshipRoutes.Share.SubPart] = ShareCode;
-
 </script>
 
 <Meta />

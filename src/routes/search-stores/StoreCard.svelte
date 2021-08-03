@@ -125,7 +125,12 @@
 							style="color: {distanceInfos.color}; border-color: {distanceInfos.color};"
 						>
 							<div class="inline distance-badge-content">
-								<Icon data={faMapMarkerAlt} scale=".8" class="ml-1 mr-1 distance-icon" style="margin-top:-4px;" />
+								<Icon
+									data={faMapMarkerAlt}
+									scale=".8"
+									class="ml-1 mr-1 distance-icon"
+									style="margin-top:-4px;"
+								/>
 								{distanceInfos.label}
 							</div>
 						</div>

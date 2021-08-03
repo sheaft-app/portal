@@ -25,8 +25,8 @@ const StoreTraceabilityRoutes = {
 				where: null,
 				whereValues: null,
 				refresh: "clear",
-				observationId:null,
-				producerId:null
+				observationId: null,
+				producerId: null,
 			},
 		},
 	},

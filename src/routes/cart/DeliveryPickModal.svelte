@@ -32,7 +32,12 @@
 				...d,
 				distanceInfos:
 					location && d.address && d.address.latitude && d.address.longitude
-						? GetDistanceInfos(location.latitude, location.longitude, d.address.latitude, d.address.longitude)
+						? GetDistanceInfos(
+								location.latitude,
+								location.longitude,
+								d.address.latitude,
+								d.address.longitude
+						  )
 						: null,
 			};
 		});
@@ -51,7 +56,6 @@
 		close();
 		if (onClose) await onClose(selected, selectedDeliveryHour);
 	}
-
 </script>
 
 <div class="pb-2">
@@ -162,5 +166,4 @@
 			@apply cursor-default;
 		}
 	}
-
 </style>

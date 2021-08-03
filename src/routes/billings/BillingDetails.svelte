@@ -71,10 +71,7 @@
 			: [];
 
 	const calculateDelivered = (product) =>
-		product.productsToDeliver +
-		product.productsInExcess +
-		product.productsBroken +
-		product.productsMissing;
+		product.productsToDeliver + product.productsInExcess + product.productsBroken + product.productsMissing;
 </script>
 
 <TransitionWrapper>
@@ -135,8 +132,10 @@
 										<li>
 											<a
 												href="javascript:void(0)"
-												on:click={() => routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
-												>{purchaseOrder.reference}</a
+												on:click={() =>
+													routerInstance.goTo(PurchaseOrderRoutes.Details, {
+														id: purchaseOrder.id,
+													})}>{purchaseOrder.reference}</a
 											>
 											({format(new Date(purchaseOrder.createdOn), "P", { locale: fr })})
 										</li>
@@ -323,8 +322,7 @@
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
-											>
-											</td>
+											/>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"

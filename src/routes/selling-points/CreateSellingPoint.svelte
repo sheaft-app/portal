@@ -27,7 +27,6 @@
 			clearCache: [GET_SELLING_POINTS],
 		});
 	};
-
 </script>
 
 <TransitionWrapper>

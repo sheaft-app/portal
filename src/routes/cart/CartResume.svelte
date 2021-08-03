@@ -132,7 +132,6 @@
 		routerInstance.goTo(CartRoutes.Checkout);
 		localStorage.setItem("user_first_time_on_cart", JSON.stringify(false));
 	};
-
 </script>
 
 <svelte:head>
@@ -157,8 +156,9 @@
 						<p class="uppercase font-bold leading-none">Des produits ne sont plus disponibles</p>
 						<ul class="mt-4">
 							<p>
-								Certains produits dans votre panier ne sont plus disponibles et ont été retirés. Les produits concernés
-								sont les produits barrés avec un fond orange dans la liste. Ces produits ne seront pas commandés.
+								Certains produits dans votre panier ne sont plus disponibles et ont été retirés. Les
+								produits concernés sont les produits barrés avec un fond orange dans la liste. Ces
+								produits ne seront pas commandés.
 							</p>
 						</ul>
 					</div>
@@ -171,8 +171,8 @@
 						<p class="uppercase font-bold leading-none">Des producteurs ne sont plus disponibles</p>
 						<ul class="mt-4">
 							<p>
-								Les points de vente de certains producteurs dans votre panier ne sont plus disponibles. Leurs produits
-								ont été retirés de votre panier.
+								Les points de vente de certains producteurs dans votre panier ne sont plus disponibles.
+								Leurs produits ont été retirés de votre panier.
 							</p>
 						</ul>
 					</div>
@@ -215,7 +215,9 @@
 											class:hidden={product.producer.disabled}
 										>
 											{$cart.selectedDeliveries.find((d) => d.producerId == product.producer.id)
-												? $cart.selectedDeliveries.find((d) => d.producerId == product.producer.id).number
+												? $cart.selectedDeliveries.find(
+														(d) => d.producerId == product.producer.id
+												  ).number
 												: "-"}
 										</span>
 										{product.producer.name}
@@ -249,7 +251,9 @@
 										<div class="text-lg leading-5 font-medium">
 											<p>{product.name}</p>
 										</div>
-										<div class="text-sm leading-5">{formatMoney(product.unitOnSalePrice)} / unité</div>
+										<div class="text-sm leading-5">
+											{formatMoney(product.unitOnSalePrice)} / unité
+										</div>
 									</div>
 									<div class="md:w-2/12 px-3 block md:hidden">
 										<p>
@@ -257,13 +261,21 @@
 												{formatMoney(product.unitOnSalePrice * product.quantity || 0)}
 											</span>
 										</p>
-										<button type="button" class="btn-link text-sm" on:click={() => cart.removeProduct(product.id)}>
+										<button
+											type="button"
+											class="btn-link text-sm"
+											on:click={() => cart.removeProduct(product.id)}
+										>
 											Retirer
 										</button>
 									</div>
 									<div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
 										{#if !product.disabled && !product.producer.disabled}
-											<ProductCartQuantity productId={product.id} noMargin={true} minQuantity={1} />
+											<ProductCartQuantity
+												productId={product.id}
+												noMargin={true}
+												minQuantity={1}
+											/>
 										{/if}
 									</div>
 									<div class="md:w-3/12 px-3 text-right hidden md:block">
@@ -272,7 +284,11 @@
 												{formatMoney(product.unitOnSalePrice * product.quantity || 0)}
 											</span>
 										</p>
-										<button type="button" class="btn-link text-sm" on:click={() => cart.removeProduct(product.id)}>
+										<button
+											type="button"
+											class="btn-link text-sm"
+											on:click={() => cart.removeProduct(product.id)}
+										>
 											Retirer
 										</button>
 									</div>
@@ -298,16 +314,27 @@
 										<p class="text-sm text-gray-600" class:invisible={$cart.isSaving}>
 											{$cart.productsCount} articles
 											{#if $cart.returnablesCount >= 1}
-												dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1 ? "s" : ""}
+												dont {$cart.returnablesCount} consigné{$cart.returnablesCount > 1
+													? "s"
+													: ""}
 											{/if}
 										</p>
 									</div>
 									<div class="text-right" class:skeleton-box={$cart.isSaving}>
-										<p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.totalOnSalePrice)}</p>
+										<p class="font-medium" class:invisible={$cart.isSaving}>
+											{formatMoney($cart.totalOnSalePrice)}
+										</p>
 										{#if $cart.returnablesCount >= 1}
-											<p class="text-blue-500 font-medium text-sm" class:invisible={$cart.isSaving}>
+											<p
+												class="text-blue-500 font-medium text-sm"
+												class:invisible={$cart.isSaving}
+											>
 												dont
-												<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;" />
+												<img
+													src="./img/returnable.svg"
+													alt="consigne"
+													style="width: 15px; display: inline;"
+												/>
 												{formatMoney($cart.totalReturnableOnSalePrice)}
 											</p>
 										{/if}
@@ -319,19 +346,25 @@
 											<p class:invisible={$cart.isSaving}>Don</p>
 										</div>
 										<div class:skeleton-box={$cart.isSaving}>
-											<p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.donation)}</p>
+											<p class="font-medium" class:invisible={$cart.isSaving}>
+												{formatMoney($cart.donation)}
+											</p>
 										</div>
 									</div>
 								{/if}
 								<div class="flex justify-between w-full lg:px-3 pb-2">
 									<div class="text-left" class:skeleton-box={$cart.isSaving}>
 										<p class:invisible={$cart.isSaving}>Frais bancaires</p>
-										<button class:invisible={$cart.isSaving} class="btn-link" on:click={showTransactionInfo}
-											>C'est quoi ?</button
+										<button
+											class:invisible={$cart.isSaving}
+											class="btn-link"
+											on:click={showTransactionInfo}>C'est quoi ?</button
 										>
 									</div>
 									<div class:skeleton-box={$cart.isSaving}>
-										<p class="font-medium" class:invisible={$cart.isSaving}>{formatMoney($cart.totalFees)}</p>
+										<p class="font-medium" class:invisible={$cart.isSaving}>
+											{formatMoney($cart.totalFees)}
+										</p>
 									</div>
 								</div>
 								<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
@@ -339,7 +372,9 @@
 										<p class="uppercase font-semibold" class:invisible={$cart.isSaving}>Total</p>
 									</div>
 									<div class:skeleton-box={$cart.isSaving}>
-										<p class="font-bold text-lg" class:invisible={$cart.isSaving}>{formatMoney($cart.totalPrice)}</p>
+										<p class="font-bold text-lg" class:invisible={$cart.isSaving}>
+											{formatMoney($cart.totalPrice)}
+										</p>
 									</div>
 								</div>
 							</div>

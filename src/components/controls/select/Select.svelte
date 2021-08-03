@@ -404,9 +404,12 @@
 			case "Backspace":
 				if (!isMulti || filterText.length > 0) return;
 				if (isMulti && selectedValue && selectedValue.length > 0) {
-					handleMultiItemClear(activeSelectedValue !== undefined ? activeSelectedValue : selectedValue.length - 1);
+					handleMultiItemClear(
+						activeSelectedValue !== undefined ? activeSelectedValue : selectedValue.length - 1
+					);
 					if (activeSelectedValue === 0 || activeSelectedValue === undefined) break;
-					activeSelectedValue = selectedValue.length > activeSelectedValue ? activeSelectedValue - 1 : undefined;
+					activeSelectedValue =
+						selectedValue.length > activeSelectedValue ? activeSelectedValue - 1 : undefined;
 				}
 				break;
 			case "ArrowLeft":
@@ -605,7 +608,6 @@
 	onDestroy(() => {
 		removeList();
 	});
-
 </script>
 
 <svelte:window on:click={handleWindowClick} on:keydown={handleKeyDown} on:resize={getPosition} />
@@ -862,5 +864,4 @@
 			transform: rotate(360deg);
 		}
 	}
-
 </style>

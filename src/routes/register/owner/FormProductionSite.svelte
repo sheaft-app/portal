@@ -136,8 +136,8 @@
 			/>
 		</div>
 		<small class="text-gray-600"
-			><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Tapez une adresse puis sélectionnez la correspondance dans
-			la liste.</small
+			><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Tapez une adresse puis sélectionnez la correspondance
+			dans la liste.</small
 		>
 	</div>
 {/if}

@@ -247,7 +247,6 @@
 
 	$: getProducerFilter($filters.producerId);
 	let metadata = { title: "Explorer" };
-
 </script>
 
 <Meta {metadata} />
@@ -276,7 +275,8 @@
 							<p class="uppercase font-bold leading-none">Module consommateur</p>
 							<div class="mt-2 text-sm">
 								<p>
-									Cette page est réservée aux consommateurs. Vous ne pouvez l'utiliser qu'à des fins de consultation.
+									Cette page est réservée aux consommateurs. Vous ne pouvez l'utiliser qu'à des fins
+									de consultation.
 								</p>
 								<div class="mt-1 flex flex-wrap">
 									{#if authManager.isInRole([Roles.Store.Value])}
@@ -287,7 +287,9 @@
 											Passer une commande
 										</button>
 									{/if}
-									<button class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow"> Changer de compte </button>
+									<button class="ml-0 mt-2 md:mt-0 md:ml-2 btn bg-white btn-lg shadow">
+										Changer de compte
+									</button>
 								</div>
 							</div>
 						</div>
@@ -307,10 +309,15 @@
 					<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 					<p class="mt-5 mb-5">Nous n'avons pas encore de producteur enregistré autour de vous 😔.</p>
 					<p class="mb-5">
-						Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme auprès
-						des producteurs de votre département !
+						Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la
+						plateforme auprès des producteurs de votre département !
 					</p>
-					<img src="./img/maps.svg" width="230" class="m-auto" alt="Nous ne sommes pas encore dans ce département" />
+					<img
+						src="./img/maps.svg"
+						width="230"
+						class="m-auto"
+						alt="Nous ne sommes pas encore dans ce département"
+					/>
 				</div>
 			{:else if $filters.latitude && $filters.longitude}
 				{#if departmentProgress && departmentProgress.ProducersCount >= 0 && departmentProgress.ProducersCount < departmentProgress.ProducersRequired}
@@ -328,7 +335,9 @@
 								<span class="bg-primary h-1 w-20 block mt-2 mb-4" />
 								<div class="mt-2 text-sm">
 									{#if departmentProgress.ProducersCount == 0}
-										<p class="mb-2">Nous avons trouvé des producteurs dans les départements voisins.</p>
+										<p class="mb-2">
+											Nous avons trouvé des producteurs dans les départements voisins.
+										</p>
 									{:else if departmentProgress.ProducersCount == 1}
 										<p class="mb-2">
 											<span class="font-semibold"
@@ -347,8 +356,8 @@
 										</p>
 									{/if}
 									<p>
-										Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire connaître la plateforme
-										et amener plus de producteurs !
+										Parlez de Sheaft sur les réseaux et sur les marchés pour nous aider à faire
+										connaître la plateforme et amener plus de producteurs !
 									</p>
 								</div>
 							</div>
@@ -466,9 +475,15 @@
 					{#if totalProducts < 1}
 						<div class="m-auto text-center">
 							<p class="mb-5 text-gray-600">
-								Zut, nous n'avons pas encore de produit qui réponde à ces critères. Essayez de retirer des filtres.
+								Zut, nous n'avons pas encore de produit qui réponde à ces critères. Essayez de retirer
+								des filtres.
 							</p>
-							<img src="./img/empty_results.svg" alt="Pas de résultat" style="width: 200px;" class="m-auto" />
+							<img
+								src="./img/empty_results.svg"
+								alt="Pas de résultat"
+								style="width: 200px;"
+								class="m-auto"
+							/>
 						</div>
 					{/if}
 				{/if}
@@ -574,5 +589,4 @@
 			transform: translateY(0px);
 		}
 	}
-
 </style>

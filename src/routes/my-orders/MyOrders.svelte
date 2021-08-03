@@ -11,7 +11,6 @@
 	const routes = {};
 	routes[MyOrderRoutes.List.SubPart] = ListMyOrders;
 	routes[MyOrderRoutes.Details.SubPart] = MyOrderDetails;
-
 </script>
 
 <Meta />

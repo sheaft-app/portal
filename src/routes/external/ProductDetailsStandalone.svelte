@@ -114,7 +114,10 @@
 							g.filter(
 								(delivery, index, self) =>
 									index ===
-									self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
+									self.findIndex(
+										(d) =>
+											d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+									)
 							)
 						),
 					}));
@@ -179,8 +182,8 @@
 		{#if authInstance.isInRole([Roles.Producer.Value])}
 			<div class="mb-3 p-4 text-white bg-blue-500 rounded">
 				<p>
-					Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos réseaux pour
-					avoir une référence directe vers ce produit.
+					Vous pouvez partager le lien présent dans votre barre de navigation sur votre site ou sur vos
+					réseaux pour avoir une référence directe vers ce produit.
 				</p>
 				<p>Le bouton "Ajouter au panier" se dégrisera automatiquement pour les consommateurs.</p>
 			</div>
@@ -226,7 +229,11 @@
 							<p class="text-xl lg:text-2xl font-bold">
 								{formatMoney(product.onSalePricePerUnit)}
 								<span class="font-normal">
-									{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+									{formatConditioningDisplay(
+										product.conditioning,
+										product.quantityPerUnit,
+										product.unit
+									)}
 								</span>
 							</p>
 						{/if}
@@ -249,7 +256,12 @@
 							<div class="flex justify-center">
 								{#if product.returnable.onSalePrice}
 									<div class="text-center">
-										<img src="./img/returnable.svg" alt="Consigné" class="m-auto mb-1" style="width: 30px;" />
+										<img
+											src="./img/returnable.svg"
+											alt="Consigné"
+											class="m-auto mb-1"
+											style="width: 30px;"
+										/>
 										<p class="font-semibold">Consigne</p>
 										<p class="text-gray-600">{formatMoney(product.returnable.onSalePrice)}</p>
 									</div>
@@ -258,14 +270,19 @@
 						</div>
 					{/if}
 					{#if product.available && product.onSalePricePerUnit && product.onSalePricePerUnit > 0}
-						<AddToCart {product} disabled={authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])} />
+						<AddToCart
+							{product}
+							disabled={authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+						/>
 					{:else}
 						<div class="text-red-500">Ce produit n'est pas disponible pour le moment.</div>
 					{/if}
 				</div>
 				<div class="relative lg:w-1/2">
 					<PictureSlider
-						elements={product.pictures ? product.pictures.map((p) => ({ url: p.large })) : [{ url: product.picture }]}
+						elements={product.pictures
+							? product.pictures.map((p) => ({ url: p.large }))
+							: [{ url: product.picture }]}
 					/>
 				</div>
 			</div>
@@ -313,7 +330,10 @@
 								</div>
 								<button
 									type="button"
-									on:click={() => routerInstance.goTo(ExternalRoutes.ProducerDetails, { id: product.producer.id })}
+									on:click={() =>
+										routerInstance.goTo(ExternalRoutes.ProducerDetails, {
+											id: product.producer.id,
+										})}
 									class="btn btn-link mt-1 items-center"
 								>
 									<Icon data={faEye} class="mr-1" />
@@ -337,7 +357,9 @@
 										<a
 											class="mt-1"
 											target="_blank"
-											href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}
+											href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+												delivery.address
+											)}`}
 										>
 											Voir sur Google Maps
 										</a>
@@ -355,7 +377,11 @@
 											</p>
 											<div>
 												{#each deliveryHour as hours}
-													<p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+													<p>
+														{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(
+															hours.to
+														)}`}
+													</p>
 												{/each}
 											</div>
 										</div>
@@ -363,7 +389,9 @@
 								</div>
 							</div>
 						{:else}
-							<p class="text-gray-600">Il semblerait que ce producteur n'ait aucun point de récupération.</p>
+							<p class="text-gray-600">
+								Il semblerait que ce producteur n'ait aucun point de récupération.
+							</p>
 						{/each}
 						<div
 							on:click={() => (producerDescriptionExpanded = !producerDescriptionExpanded)}
@@ -419,7 +447,7 @@
 						Soyez le premier à évaluer ce produit !
 					{/if}
 				</p>
-				{#if !product.currentUserHasRatedProduct && !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+				{#if !product.currentUserHasRatedProduct && !authInstance.isInRole( [Roles.Store.Value, Roles.Producer.Value] )}
 					{#if authInstance.authenticated}
 						<div class="flex items-start py-4">
 							<div class="flex-shrink-0">

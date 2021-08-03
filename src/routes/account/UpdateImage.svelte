@@ -55,7 +55,6 @@
 		close();
 		return await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -99,5 +98,4 @@
 		@apply cursor-move;
 		margin: auto;
 	}
-
 </style>

@@ -104,7 +104,6 @@
 	};
 
 	$: invalid = !$facturationForm.valid;
-
 </script>
 
 <slot name="header" />

@@ -2,7 +2,6 @@
 	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import Loader from "../../components/Loader.svelte";
 	GetAuthInstance().loginCallback();
-
 </script>
 
 <svelte:head>

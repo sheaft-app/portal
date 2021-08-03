@@ -54,7 +54,6 @@
 		$authUserAccount && $authUserAccount.profile && $authUserAccount.profile.picture
 			? $authUserAccount.profile.picture
 			: config.content + "/pictures/users/profile.svg";
-
 </script>
 
 <svelte:head>
@@ -98,8 +97,8 @@
 		<div>
 			<p class="uppercase font-semibold text-lg mb-1">Télécharger mes données</p>
 			<p>
-				Vous pouvez obtenir une copie des informations collectées par notre application (soit vos nom, prénom, nombre de
-				points, commandes et avis) en cliquant sur le bouton ci-dessous.
+				Vous pouvez obtenir une copie des informations collectées par notre application (soit vos nom, prénom,
+				nombre de points, commandes et avis) en cliquant sur le bouton ci-dessous.
 			</p>
 			<button
 				class="btn bg-white px-4 py-2 shadow mt-3 font-semibold
@@ -120,8 +119,8 @@
 		<div>
 			<p class="uppercase font-semibold text-lg mb-1">Supprimer mon compte</p>
 			<p>
-				Si vous souhaitez supprimer votre compte, vous pouvez cliquer sur le bouton ci-dessous. Veuillez noter que la
-				suppression de votre compte implique la perte irréversible de toutes vos données.
+				Si vous souhaitez supprimer votre compte, vous pouvez cliquer sur le bouton ci-dessous. Veuillez noter
+				que la suppression de votre compte implique la perte irréversible de toutes vos données.
 			</p>
 			<button
 				on:click={() => {

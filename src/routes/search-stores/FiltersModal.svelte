@@ -5,7 +5,7 @@
 	import Icon from "svelte-awesome";
 	import { faTimes } from "@fortawesome/free-solid-svg-icons";
 	import SheaftErrors from "./../../services/SheaftErrors";
-	import {isBio} from "../../helpers/app";
+	import { isBio } from "../../helpers/app";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -32,7 +32,6 @@
 	};
 
 	$: activeLabels = routerInstance.getQueryParams()["labels"] ? routerInstance.getQueryParams()["labels"] : [];
-
 </script>
 
 <div class="flex justify-between items-center pb-2">

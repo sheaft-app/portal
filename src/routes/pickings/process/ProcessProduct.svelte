@@ -121,7 +121,9 @@
 
 	const handleFilterInput = (e) => {
 		if (e.target.value) {
-			displayedBatches = batches.filter((b) => b.number.includes(e.target.value) || selectedBatches.includes(b.id));
+			displayedBatches = batches.filter(
+				(b) => b.number.includes(e.target.value) || selectedBatches.includes(b.id)
+			);
 		} else {
 			displayedBatches = batches;
 		}

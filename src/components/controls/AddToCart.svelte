@@ -16,7 +16,6 @@
 	};
 
 	$: state = $cart.products.find((i) => i.id == product.id) ? 1 : 0;
-
 </script>
 
 {#if state == 1}

@@ -62,7 +62,9 @@
 			<div class="w-full">
 				<label>Clients à livrer</label>
 				{#if deliveryBatch.deliveries.length > 1}
-					<p class="text-gray-600 mb-2">Vous pouvez faire glisser les blocs pour changer l'ordre de livraison.</p>
+					<p class="text-gray-600 mb-2">
+						Vous pouvez faire glisser les blocs pour changer l'ordre de livraison.
+					</p>
 				{/if}
 				<button
 					type="button"

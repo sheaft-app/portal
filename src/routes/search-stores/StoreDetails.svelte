@@ -70,7 +70,6 @@
 	onDestroy(() => (openings = []));
 
 	$: if ($selectedItem) openAndLoad($selectedItem);
-
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
@@ -168,7 +167,9 @@
 						<a
 							class="mt-1"
 							target="_blank"
-							href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(store.address)}`}
+							href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+								store.address
+							)}`}
 						>
 							Voir sur Google Maps
 						</a>
@@ -246,7 +247,9 @@
 				</div>
 			{/if}
 			<div class="w-full px-4 mt-5">
-				<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"> Intéressé par </label>
+				<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+					Intéressé par
+				</label>
 				<div class="flex flex-wrap">
 					{#if store.tags && store.tags.length > 0}
 						{#each store.tags as tag}
@@ -277,7 +280,11 @@
 							</p>
 							<div class="ml-3">
 								{#each opening as openingHour}
-									<p>{`${timeSpanToFrenchHour(openingHour.from)} à ${timeSpanToFrenchHour(openingHour.to)}`}</p>
+									<p>
+										{`${timeSpanToFrenchHour(openingHour.from)} à ${timeSpanToFrenchHour(
+											openingHour.to
+										)}`}
+									</p>
 								{/each}
 							</div>
 						</div>
@@ -294,5 +301,4 @@
 	.title-margin {
 		margin-top: 20px;
 	}
-
 </style>

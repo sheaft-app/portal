@@ -182,7 +182,10 @@
 				<title>FAVICON_SHEAFT_V1_white</title>
 				<g id="FRAISE">
 					<path class="cls-1" d="M132,162.12s52.52-.66,72.3-48.83c12.54-30.51,5.76-73.38-1.9-99.37" />
-					<path class="cls-1" d="M201.32,11.68c-26.91-4.35-73.44-12-102.39,4.1C53.22,41.2,49.87,96,49.87,96" />
+					<path
+						class="cls-1"
+						d="M201.32,11.68c-26.91-4.35-73.44-12-102.39,4.1C53.22,41.2,49.87,96,49.87,96"
+					/>
 					<circle class="cls-2" cx="175.01" cy="33.92" r="7.15" />
 					<circle class="cls-2" cx="132.75" cy="89.66" r="7.15" />
 					<circle class="cls-2" cx="164.44" cy="113.51" r="7.15" />
@@ -196,8 +199,14 @@
 					d="M20.69,218.51c-6-73.94,41.35-65.24,51.15-62.67,1.12.29-21.12,13-4.84,39C77.41,211.43,27.35,207.26,20.69,218.51Z"
 				/>
 				<path class="cls-3" d="M7.2,97.41c-.91,43.29,34,25.45,34,25.45C24.48,120.72,13.46,104.07,7.2,97.41Z" />
-				<path class="cls-2" d="M89.25,209.55c-40.95-31.1-10.85-52-10.85-52C109.46,173.75,85,198.13,89.25,209.55Z" />
-				<path class="cls-4" d="M1.5,162.34c36.09-45.51,58.21-9.16,58.21-9.16C40.57,188.18,14.35,158.14,1.5,162.34Z" />
+				<path
+					class="cls-2"
+					d="M89.25,209.55c-40.95-31.1-10.85-52-10.85-52C109.46,173.75,85,198.13,89.25,209.55Z"
+				/>
+				<path
+					class="cls-4"
+					d="M1.5,162.34c36.09-45.51,58.21-9.16,58.21-9.16C40.57,188.18,14.35,158.14,1.5,162.34Z"
+				/>
 				<path
 					class="cls-2"
 					d="M122.67,207.88c-30.45-12-13.73-29.82-13.73-29.82C131.09,182.69,118.44,201.65,122.67,207.88Z"
@@ -293,8 +302,8 @@
 
 	body {
 		margin: 0;
-		font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-			Helvetica Neue, sans-serif;
+		font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans,
+			Droid Sans, Helvetica Neue, sans-serif;
 		font-size: 14px;
 		line-height: 1.5;
 		color: #205164;

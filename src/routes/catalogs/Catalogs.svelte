@@ -13,7 +13,6 @@
 		"/create": CreateCatalog,
 		"/:id": EditCatalog,
 	};
-
 </script>
 
 <Meta />

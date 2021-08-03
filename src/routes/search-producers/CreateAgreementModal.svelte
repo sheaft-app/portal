@@ -32,7 +32,6 @@
 		close();
 		if (onClosed) await onClosed(obj);
 	}
-
 </script>
 
 <ActionConfirm

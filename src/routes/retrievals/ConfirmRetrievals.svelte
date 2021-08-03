@@ -39,7 +39,9 @@
 
 <ActionConfirm
 	{errorsHandler}
-	title={retrievals.length > 1 ? "Marquer ces commandes comme distribuées" : "Marquer cette commande comme distribuée"}
+	title={retrievals.length > 1
+		? "Marquer ces commandes comme distribuées"
+		: "Marquer cette commande comme distribuée"}
 	submit={handleSubmit}
 	submitText="Oui"
 	closeText="Non"

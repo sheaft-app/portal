@@ -25,7 +25,6 @@
 			stripLeadingZeroes: false,
 		});
 	};
-
 </script>
 
 <input
@@ -68,7 +67,13 @@
 		margin: 0 auto;
 		width: $in-w;
 		color: #205164;
-		background: repeating-linear-gradient(90deg, dimgrey 0, dimgrey $char-w, transparent 0, transparent $char-w + $gap)
+		background: repeating-linear-gradient(
+				90deg,
+				dimgrey 0,
+				dimgrey $char-w,
+				transparent 0,
+				transparent $char-w + $gap
+			)
 			0 100% / #{$in-w - $gap} 2px no-repeat;
 		font: 3ch droid sans mono, consolas, monospace;
 		letter-spacing: $gap;
@@ -82,5 +87,4 @@
 			color: #009688;
 		}
 	}
-
 </style>

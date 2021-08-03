@@ -46,7 +46,7 @@ export const REPLY_TO_OBSERVATION = gql`
 			}
 		}
 	}
-`
+`;
 
 export const CREATE_OBSERVATION = gql`
 	mutation CreateObservation($input: CreateObservationInput!) {
@@ -81,4 +81,4 @@ export const CREATE_OBSERVATION = gql`
 			}
 		}
 	}
-`
+`;

@@ -58,7 +58,10 @@ const store = () => {
 						variables: { input: currentOrderId },
 						errorsHandler,
 						success: (res) => {
-							if (!res || ![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(res.status))
+							if (
+								!res ||
+								![OrderStatusKind.Created.Value, OrderStatusKind.Waiting.Value].includes(res.status)
+							)
 								this.clearStorage();
 							else {
 								currentOrder = res;
@@ -253,7 +256,9 @@ const store = () => {
 		},
 		getNormalizedSelectedDeliveries() {
 			state.selectedDeliveries.map((d) => {
-				let hasProducerInCart = state.products.filter((p) => p.producer).find((i) => i.producer.id === d.producerId);
+				let hasProducerInCart = state.products
+					.filter((p) => p.producer)
+					.find((i) => i.producer.id === d.producerId);
 
 				if (!hasProducerInCart) {
 					setters.resetSelectedDeliveryForProducerId(d.producerId);
@@ -270,7 +275,9 @@ const store = () => {
 					deliveryModeId: d.delivery ? d.delivery.id : null,
 					expectedDeliveryDate: d.deliveryHour ? d.deliveryHour.expectedDeliveryDate : null,
 				}))
-				.filter((producer, index, self) => index === self.findIndex((t) => t.producerId === producer.producerId));
+				.filter(
+					(producer, index, self) => index === self.findIndex((t) => t.producerId === producer.producerId)
+				);
 		},
 		getSelectedDelivery(deliveries) {
 			for (const delivery of deliveries) {

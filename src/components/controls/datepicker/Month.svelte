@@ -14,7 +14,6 @@
 		direction = lastId < id ? 1 : -1;
 		lastId = id;
 	}
-
 </script>
 
 <div class="scal-month-container">
@@ -31,5 +30,4 @@
 		-ms-grid-columns: 1fr;
 		-ms-grid-rows: 1fr;
 	}
-
 </style>

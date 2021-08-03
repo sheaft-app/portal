@@ -62,7 +62,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -136,5 +135,4 @@
 			color: #33d7a3;
 		}
 	}
-
 </style>

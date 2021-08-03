@@ -3,7 +3,6 @@
 		disabled = false,
 		onClick = () => {},
 		classes = null;
-
 </script>
 
 <input
@@ -96,5 +95,4 @@
 			}
 		}
 	}
-
 </style>

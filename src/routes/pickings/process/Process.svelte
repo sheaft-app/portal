@@ -81,7 +81,8 @@
 							<p class="my-2">
 								Vous pouvez programmer une livraison pour les commandes concernées en <a
 									href="javascript:void(0)"
-									on:click={() => routerInstance.goTo(DeliveryBatchRoutes.List, { Query: { selectModal: true } })}
+									on:click={() =>
+										routerInstance.goTo(DeliveryBatchRoutes.List, { Query: { selectModal: true } })}
 									>cliquant ici</a
 								>.
 							</p>

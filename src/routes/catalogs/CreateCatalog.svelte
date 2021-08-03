@@ -38,7 +38,6 @@
 		close();
 		if (onClose) await onClose(res);
 	};
-
 </script>
 
 <TransitionWrapper>

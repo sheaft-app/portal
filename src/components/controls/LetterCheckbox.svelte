@@ -3,7 +3,6 @@
 		onClick = () => {},
 		sign = "o",
 		classes = null;
-
 </script>
 
 <input
@@ -30,5 +29,4 @@
 		@apply bg-accent;
 		color: #ffffff;
 	}
-
 </style>

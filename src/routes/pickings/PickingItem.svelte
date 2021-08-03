@@ -16,7 +16,9 @@
 </script>
 
 <div class="delivery-card rounded-3xl px-4 py-2 bg-white">
-	<div class="flex justify-between py-2 border-b border-gray-300 flex-wrap flex-col-reverse xl:flex-nowrap xl:flex-row">
+	<div
+		class="flex justify-between py-2 border-b border-gray-300 flex-wrap flex-col-reverse xl:flex-nowrap xl:flex-row"
+	>
 		<div class="picking-item-title">
 			<p class="font-semibold text-xl">{picking.name}</p>
 			{#if picking.status !== PickingStatus.Waiting.Value}

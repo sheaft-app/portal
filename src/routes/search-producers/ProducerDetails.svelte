@@ -188,7 +188,9 @@
 				<div class="flex flex-wrap justify-between w-full px-4 mt-5">
 					<div
 						class={`flex flex-row justify-start items-start mb-3 w-2/3 ${
-							producer.tags && producer.tags.length > 0 && producer.tags.find((t) => t.name === "Bio") ? "lg:w-1/3" : ""
+							producer.tags && producer.tags.length > 0 && producer.tags.find((t) => t.name === "Bio")
+								? "lg:w-1/3"
+								: ""
 						}`}
 					>
 						<div>
@@ -201,7 +203,9 @@
 							<a
 								class="mt-1"
 								target="_blank"
-								href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(producer.address)}`}
+								href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+									producer.address
+								)}`}
 							>
 								Voir sur Google Maps
 							</a>
@@ -280,7 +284,9 @@
 				{/if}
 				{#if producer.tags && producer.tags.length > 0}
 					<div class="mt-5 px-4">
-						<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Catégories</label>
+						<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+							>Catégories</label
+						>
 						<div class="flex flex-wrap">
 							{#each producer.tags as tag}
 								<span
@@ -307,7 +313,11 @@
 											{DayOfWeekKind.label(deliveryHour.day)}
 										</p>
 										<div>
-											<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+											<p>
+												{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(
+													deliveryHour.to
+												)}`}
+											</p>
 										</div>
 									</div>
 								{/each}
@@ -326,7 +336,10 @@
 								class="rounded hover:bg-gray-100 transition duration-200
           ease-in-out focus:outline-none"
 							>
-								<div class="h-full bg-white border-gray-400" class:border-b={index !== producer.products.length - 1}>
+								<div
+									class="h-full bg-white border-gray-400"
+									class:border-b={index !== producer.products.length - 1}
+								>
 									<div class="relative py-4 w-full">
 										<div class="bg-white rounded-lg p-0 w-full flex justify-between">
 											<div
@@ -350,7 +363,11 @@
 											<div class="text-base text-right font-semibold">
 												{formatMoney(product.wholeSalePricePerUnit)} H.T
 												<div class="text-xs">
-													{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+													{formatConditioningDisplay(
+														product.conditioning,
+														product.quantityPerUnit,
+														product.unit
+													)}
 												</div>
 											</div>
 										</div>

@@ -62,7 +62,10 @@
 				</div>
 				<div class="w-full">
 					<label>TVA *</label>
-					<div class="w-full text-lg justify-center button-group" use:bindClass={{ form: returnableForm, name: "vat" }}>
+					<div
+						class="w-full text-lg justify-center button-group"
+						use:bindClass={{ form: returnableForm, name: "vat" }}
+					>
 						<button
 							on:click={() => selectVat(5.5)}
 							type="button"

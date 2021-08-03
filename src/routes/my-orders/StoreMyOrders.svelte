@@ -95,7 +95,11 @@
 				</div>
 			</section>
 			<td class="px-2 md:px-6 py-4 whitespace-no-wrap">
-				<div class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(order.status)} block md:hidden">
+				<div
+					class="text-xs leading-5 font-semibold text-{PurchaseOrderStatusKind.color(
+						order.status
+					)} block md:hidden"
+				>
 					{PurchaseOrderStatusKind.label(order.status)}
 				</div>
 				<div class="text-sm leading-5 font-medium text-gray-900 truncate" style="max-width: 180px;">
@@ -116,7 +120,11 @@
 					<p>
 						<Icon data={faCalendarAlt} scale=".8" class=" inline" />
 						{format(
-							new Date(order.delivery ? order.delivery.scheduledOn : order.expectedDelivery.expectedDeliveryDate),
+							new Date(
+								order.delivery
+									? order.delivery.scheduledOn
+									: order.expectedDelivery.expectedDeliveryDate
+							),
 							"PP",
 							{
 								locale: fr,

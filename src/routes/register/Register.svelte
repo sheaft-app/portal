@@ -14,7 +14,6 @@
 	routes[RegisterRoutes.Choose.SubPart] = RegisterChoose;
 	routes[RegisterRoutes.Owner.SubPart] = RegisterOwner;
 	routes[RegisterRoutes.Consumer.SubPart] = RegisterConsumer;
-
 </script>
 
 <Meta />

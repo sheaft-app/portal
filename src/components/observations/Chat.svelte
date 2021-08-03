@@ -87,7 +87,9 @@
 						{#if index == observation.batches.length - 1 && observation.batches.length > 1}
 							<span>et </span>
 						{/if}
-						<span class="btn-link" on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}
+						<span
+							class="btn-link"
+							on:click={() => routerInstance.goTo(BatchesRoutes.BatchDetails, { id: batch.id })}
 							>{batch.number}</span
 						>
 						{#if index !== observation.batches.length - 1 && index !== observation.batches.length - 2}
@@ -157,7 +159,7 @@
 					<div class="absolute right-0 items-center inset-y-0 flex">
 						<button
 							disabled={isSubmitting || !value}
-							class:disabled={isSubmitting || !value}
+							class:disabled={isSubmitting || !value}
 							on:click={sendReply}
 							class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-white bg-primary hover:bg-green-400 focus:outline-none"
 						>

@@ -10,7 +10,6 @@
 	export let highlighted;
 	export let shouldShakeDate;
 	export let direction;
-
 </script>
 
 <div
@@ -165,5 +164,4 @@
 			transform: translate(0px);
 		}
 	}
-
 </style>

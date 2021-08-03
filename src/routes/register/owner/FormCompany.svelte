@@ -164,7 +164,12 @@
 				{/if}
 				<div class="w-full form-control">
 					<label for="$company_email">Email de contact *</label>
-					<input id="$company_email" type="email" use:bindClass={{ form, name: "email" }} bind:value={$company.email} />
+					<input
+						id="$company_email"
+						type="email"
+						use:bindClass={{ form, name: "email" }}
+						bind:value={$company.email}
+					/>
 					<ErrorContainer field={$form.fields.email} />
 				</div>
 				<div class="w-full form-control">
@@ -179,8 +184,8 @@
 					<ErrorContainer field={$form.fields.phone} />
 				</div>
 				<small class="text-gray-600"
-					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant commandé
-					auprès de vous peuvent voir votre mail et votre téléphone.</small
+					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant
+					commandé auprès de vous peuvent voir votre mail et votre téléphone.</small
 				>
 			</div>
 			<div class="px-5 py-3 bg-white lg:w-6/12 w-full">
@@ -192,7 +197,10 @@
 
 				<div class="w-full form-control">
 					<label>Immatriculation *</label>
-					<div class="w-full text-xs justify-center button-group" use:bindClass={{ form, name: "registrationKind" }}>
+					<div
+						class="w-full text-xs justify-center button-group"
+						use:bindClass={{ form, name: "registrationKind" }}
+					>
 						<button
 							on:click={() => selectRegistrationKind(RegistrationKind.RCS.Value)}
 							type="button"
@@ -279,7 +287,12 @@
 				</div>
 				<div class="w-full form-control" style="display: block">
 					<label for="country">Pays *</label>
-					<CountrySelect bind:selectedValue={$company.address.country} formName={form} name="country" {errorsHandler} />
+					<CountrySelect
+						bind:selectedValue={$company.address.country}
+						formName={form}
+						name="country"
+						{errorsHandler}
+					/>
 				</div>
 			</div>
 		</div>

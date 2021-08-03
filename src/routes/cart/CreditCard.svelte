@@ -101,7 +101,6 @@
 	//     }, 300);
 	//     isInputFocused = false;
 	// }
-
 </script>
 
 <div class="wrapper" id="app">
@@ -813,5 +812,4 @@
 		background-repeat: no-repeat;
 		padding-right: 30px;
 	}
-
 </style>

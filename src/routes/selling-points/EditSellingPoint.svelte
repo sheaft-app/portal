@@ -85,7 +85,11 @@
 
 <TransitionWrapper>
 	<PageHeader name="Modifier un point de vente" previousPage={SellingPointRoutes.List} {buttons} />
-	<PageBody {errorsHandler} {isLoading} loadingMessage="Chargement des informations de votre point de vente en cours.">
+	<PageBody
+		{errorsHandler}
+		{isLoading}
+		loadingMessage="Chargement des informations de votre point de vente en cours."
+	>
 		<SellingPointForm submit={handleSubmit} bind:sellingPoint />
 	</PageBody>
 </TransitionWrapper>

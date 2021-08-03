@@ -47,7 +47,11 @@
 
 <div class="title">
 	<div class="scal-heading-section">
-		<div class="scal-control" class:scal-enabled={canDecrementMonth} on:click={() => dispatch("incrementMonth", -1)}>
+		<div
+			class="scal-control"
+			class:scal-enabled={canDecrementMonth}
+			on:click={() => dispatch("incrementMonth", -1)}
+		>
 			<i class="scal-arrow scal-left" />
 		</div>
 		<div class="scal-label" on:click={toggleMonthSelectorOpen}>

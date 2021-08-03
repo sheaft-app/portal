@@ -85,7 +85,12 @@
 	{:else if purchaseOrders && purchaseOrders.length > 0}
 		<div class="form-control w-full my-3">
 			<label for="name">Nom</label>
-			<input bind:value={name} id="name" type="text" placeholder="Donnez un nom à votre préparation (optionnel)" />
+			<input
+				bind:value={name}
+				id="name"
+				type="text"
+				placeholder="Donnez un nom à votre préparation (optionnel)"
+			/>
 		</div>
 		<div class="form-control w-full mt-4" style="margin-bottom: 0">
 			<label>Commandes disponibles *</label>
@@ -138,12 +143,16 @@
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200 hidden"
-							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "PPPP", { locale: fr })}</td
+							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "PPPP", {
+								locale: fr,
+							})}</td
 						>
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200 md:table-cell"
-							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "P", { locale: fr })}</td
+							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "P", {
+								locale: fr,
+							})}</td
 						>
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b

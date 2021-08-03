@@ -145,7 +145,12 @@
 								style="color: {distanceInfos.color}; border-color: {distanceInfos.color};"
 							>
 								<div class="inline distance-badge-content">
-									<Icon data={faMapMarkerAlt} scale=".8" class="ml-1 mr-1 distance-icon" style="margin-top:-4px;" />
+									<Icon
+										data={faMapMarkerAlt}
+										scale=".8"
+										class="ml-1 mr-1 distance-icon"
+										style="margin-top:-4px;"
+									/>
 									{distanceInfos.label}
 								</div>
 							</div>
@@ -158,7 +163,12 @@
 							<img src={config.content + "/pictures/tags/icons/bio.png"} alt="Bio" class="mb-1" />
 						{/if}
 						{#if product.isReturnable}
-							<img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
+							<img
+								src="./img/returnable.svg"
+								alt="Consigné"
+								class="mb-1"
+								style="transform: scale(0.7);"
+							/>
 						{/if}
 					</div>
 					<div class="pr-8">
@@ -167,7 +177,12 @@
 								class="hidden lg:inline-block mb-2 text-xs font-bold px-2 py-1 rounded-full border"
 								style="color: {distanceInfos.color}; border-color: {distanceInfos.color};"
 							>
-								<Icon data={faMapMarkerAlt} scale=".8" class="ml-1 mr-1 distance-icon" style="margin-top:-4px;" />
+								<Icon
+									data={faMapMarkerAlt}
+									scale=".8"
+									class="ml-1 mr-1 distance-icon"
+									style="margin-top:-4px;"
+								/>
 								{distanceInfos.label}
 							</div>
 						{/if}
@@ -193,7 +208,11 @@
 							>
 								{formatMoney(productPrice)}{authInstance.isInRole(["STORE"]) ? "HT" : ""}
 								<span class="text-xxs lg:text-sm lg:inline hidden font-normal">
-									{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+									{formatConditioningDisplay(
+										product.conditioning,
+										product.quantityPerUnit,
+										product.unit
+									)}
 								</span>
 							</div>
 						{/if}
@@ -232,7 +251,11 @@
 							<div class="text-base lg:text-lg w-3/12 lg:w-full font-semibold lg:hidden">
 								{formatMoney(productPrice)}{authInstance.isInRole(["STORE"]) ? "HT" : ""}
 								<div class="text-xxs">
-									{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+									{formatConditioningDisplay(
+										product.conditioning,
+										product.quantityPerUnit,
+										product.unit
+									)}
 								</div>
 							</div>
 						{/if}

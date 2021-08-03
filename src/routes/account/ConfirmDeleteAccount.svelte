@@ -32,7 +32,6 @@
 		close();
 		await onClose(res);
 	};
-
 </script>
 
 <ActionConfirm
@@ -50,9 +49,12 @@
 	<p class="leading-5" />
 	<form class="mt-6">
 		<p class="block uppercase tracking-wide text-red-500 text-xs font-bold">
-			Attention, la suppression du compte est irréversible, vous perdrez toutes vos données (points, commandes, etc.).
+			Attention, la suppression du compte est irréversible, vous perdrez toutes vos données (points, commandes,
+			etc.).
 		</p>
-		<p class="mb-3 mt-1">Vous nous quittez ? 😔 Pour nous aider à améliorer notre service, dites-nous pourquoi ici :</p>
+		<p class="mb-3 mt-1">
+			Vous nous quittez ? 😔 Pour nous aider à améliorer notre service, dites-nous pourquoi ici :
+		</p>
 		<textarea
 			bind:value={reason}
 			class="appearance-none block w-full text-gray-700 border input-bg-clr

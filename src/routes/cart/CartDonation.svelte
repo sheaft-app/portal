@@ -31,7 +31,6 @@
 	onDestroy(() => {
 		choice = null;
 	});
-
 </script>
 
 <div class="flex justify-center m-auto" style="max-width: 450px;">
@@ -40,7 +39,9 @@
 		<p class="font-light mb-3">
 			En donnant 1€ à Sheaft, vous économisez plus d'argent qu'en payant la marge d'un intermédiaire.
 		</p>
-		<p class="font-light mb-3">En prime, vous devenez une pierre angulaire de ce grand projet social et solidaire.</p>
+		<p class="font-light mb-3">
+			En prime, vous devenez une pierre angulaire de ce grand projet social et solidaire.
+		</p>
 		<BlowingButton
 			blowed={choice === CHOICE_EURO}
 			on:click={() => choose(CHOICE_EURO)}
@@ -116,5 +117,4 @@
 			width: 100%;
 		}
 	}
-
 </style>

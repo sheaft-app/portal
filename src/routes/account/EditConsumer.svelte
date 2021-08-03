@@ -7,7 +7,6 @@
 	export let errorsHandler;
 
 	let consumer = { ...initialValues };
-
 </script>
 
 <ProfileForm

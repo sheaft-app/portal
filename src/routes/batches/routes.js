@@ -26,7 +26,7 @@ const BatchesRoutes = {
 				where: null,
 				whereValues: null,
 				refresh: "clear",
-				observationId:null,
+				observationId: null,
 			},
 		},
 	},

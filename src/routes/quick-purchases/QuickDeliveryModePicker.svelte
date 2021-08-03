@@ -45,7 +45,11 @@
 	</div>
 {:else}
 	{#if data && !selected && !selectedDeliveryHour}
-		<div class="cursor-pointer p-4 bg-gray-100 border border-gray-400" class:disabled on:click={showDeliveryPickModal}>
+		<div
+			class="cursor-pointer p-4 bg-gray-100 border border-gray-400"
+			class:disabled
+			on:click={showDeliveryPickModal}
+		>
 			<div class="flex text-accent">
 				<Icon data={faEdit} class="mr-2 w-4" />
 				<p class="uppercase font-medium text-xs">Sélectionner l'horaire et le lieu de récupération</p>

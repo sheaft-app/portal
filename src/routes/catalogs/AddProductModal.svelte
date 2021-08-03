@@ -75,7 +75,8 @@
 				<p class:font-semibold={product.checked}>{product.name}</p>
 			</div>
 		{/each}
-		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}>Ajouter ces produits</button
+		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}
+			>Ajouter ces produits</button
 		>
 	{:else}
 		<p class="my-3">Vous ne possédez pas de produits.</p>

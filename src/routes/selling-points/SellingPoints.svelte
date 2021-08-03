@@ -15,7 +15,6 @@
 	routes[SellingPointRoutes.List.SubPart] = ListSellingPoints;
 	routes[SellingPointRoutes.Create.SubPart] = CreateSellingPoint;
 	routes[SellingPointRoutes.Details.SubPart] = EditSellingPoint;
-
 </script>
 
 <Meta />

@@ -33,7 +33,10 @@
 			variables: { id: params.id },
 			errorsHandler,
 			success: (res) => {
-				if (res.status == DeliveryBatchStatus.InProgress.Value || res.status == DeliveryBatchStatus.Completed.Value) {
+				if (
+					res.status == DeliveryBatchStatus.InProgress.Value ||
+					res.status == DeliveryBatchStatus.Completed.Value
+				) {
 					if (res.deliveries.find((d) => d.status == DeliveryStatus.InProgress.Value)) {
 						return routerInstance.goTo(DeliveryBatchRoutes.Process, { id: params.id });
 					}
@@ -45,7 +48,10 @@
 					if (!res.deliveries.find((d) => d.status == DeliveryStatus.Skipped.Value)) {
 						routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
 					}
-				} else if (res.status == DeliveryBatchStatus.Waiting.Value || res.status == DeliveryBatchStatus.Ready.Value) {
+				} else if (
+					res.status == DeliveryBatchStatus.Waiting.Value ||
+					res.status == DeliveryBatchStatus.Ready.Value
+				) {
 					routerInstance.goTo(DeliveryBatchRoutes.List);
 				} else {
 					routerInstance.goTo(DeliveryBatchRoutes.Summary, { id: params.id });
@@ -84,7 +90,9 @@
 		<p class="font-semibold mb-2">Coup d'oeil</p>
 
 		<p class="mb-2 text-gray-600">
-			Produits cassés : <span class="text-red-500 font-semibold">{Math.abs(deliveryBatch.brokenProductsCount)}</span>
+			Produits cassés : <span class="text-red-500 font-semibold"
+				>{Math.abs(deliveryBatch.brokenProductsCount)}</span
+			>
 		</p>
 		<p class="mb-2 text-gray-600">
 			Produits manquants : <span class="text-orange-500 font-semibold"

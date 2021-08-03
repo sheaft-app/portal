@@ -4,7 +4,7 @@ let enums = {
 	Waiting: { Value: "WAITING", Label: "En attente" },
 	Completed: { Value: "COMPLETED", Label: "Terminée" },
 	InProgress: { Value: "IN_PROGRESS", Label: "En cours" },
-	Paused: { Value: "PAUSED", Label: "En pause" }
+	Paused: { Value: "PAUSED", Label: "En pause" },
 };
 
 let PickingStatus = {

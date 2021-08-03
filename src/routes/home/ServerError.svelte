@@ -5,7 +5,6 @@
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
-
 </script>
 
 <svelte:head>
@@ -24,7 +23,8 @@
 			<h1 class="font-bold">Ce n'est pas vous, c'est nous...</h1>
 			<p class="text-gray-600">Il y a eu un problème lors du traitement de la requête.</p>
 			<p class="text-gray-600">
-				Nous vous invitons à réessayer dans quelques minutes. Si le problème persiste, contactez le service technique.
+				Nous vous invitons à réessayer dans quelques minutes. Si le problème persiste, contactez le service
+				technique.
 			</p>
 			<a class="btn-link" href="javascript:void(0)" on:click={() => goToHome(authInstance, routerInstance)}
 				>Retourner à l'accueil</a

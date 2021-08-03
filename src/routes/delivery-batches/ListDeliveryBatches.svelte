@@ -89,8 +89,8 @@
 					<div class="w-full mt-3 px-10 xl:px-12">
 						{#if $items.length > 0}
 							<p>
-								Vous pouvez les ajouter à l'une de vos programmations non validées à l'aide du bouton "Modifier" ou bien
-								en programmer une nouvelle.
+								Vous pouvez les ajouter à l'une de vos programmations non validées à l'aide du bouton
+								"Modifier" ou bien en programmer une nouvelle.
 							</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une autre livraison

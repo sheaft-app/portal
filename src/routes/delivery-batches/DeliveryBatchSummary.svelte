@@ -223,7 +223,11 @@
 					<p>Commentaire : <span class="font-semibold">{delivery.comment}</span></p>
 				{/if}
 				{#if delivery.returnedReturnablesCount}
-					<p>Consignes récupérées : <span class="font-semibold">{Math.abs(delivery.returnedReturnablesCount)}</span></p>
+					<p>
+						Consignes récupérées : <span class="font-semibold"
+							>{Math.abs(delivery.returnedReturnablesCount)}</span
+						>
+					</p>
 				{/if}
 			</div>
 		{/each}

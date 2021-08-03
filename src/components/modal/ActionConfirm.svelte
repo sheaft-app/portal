@@ -38,7 +38,6 @@
 	async function handleClose() {
 		await close();
 	}
-
 </script>
 
 <div>
@@ -138,5 +137,4 @@
 			}
 		}
 	}
-
 </style>

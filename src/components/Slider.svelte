@@ -36,7 +36,6 @@
 			next();
 		}
 	}
-
 </script>
 
 <svelte:window on:keyup={handleShortcut} />
@@ -123,5 +122,4 @@
 		text-align: center;
 		display: block;
 	}
-
 </style>

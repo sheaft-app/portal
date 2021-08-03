@@ -109,7 +109,8 @@
 						<p class="font-semibold mb-2">
 							{purchaseOrder.sender.name} (<a
 								href="javascript:void(0)"
-								on:click={() => routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
+								on:click={() =>
+									routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
 								>{purchaseOrder.reference}</a
 							>)
 						</p>

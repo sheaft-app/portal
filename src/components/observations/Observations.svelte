@@ -87,7 +87,7 @@
 				const values = routerInstance.getQueryParams();
 
 				if (values.observationId) {
-					selectedObservation = observations.find(o => o.id == values.observationId);
+					selectedObservation = observations.find((o) => o.id == values.observationId);
 				}
 			},
 			errorsHandler,
@@ -105,9 +105,9 @@
 		dispatch("close");
 		routerInstance.replaceQueryParams({
 			producerId: null,
-			observationId: null
+			observationId: null,
 		});
-	}
+	};
 
 	const selectObservation = (observation) => {
 		history.pushState({ observation }, "Observations");
@@ -173,10 +173,16 @@
 					on:click={() => selectObservation(observation)}
 				>
 					<div class="w-1/12">
-						<img src={observation.user.picture ?? "img/icons/store.svg"} alt="Photo" class="w-8 h-8 rounded-full" />
+						<img
+							src={observation.user.picture ?? "img/icons/store.svg"}
+							alt="Photo"
+							class="w-8 h-8 rounded-full"
+						/>
 					</div>
 					<div class="w-9/12 ml-3">
-						<p class="font-semibold">{observation.user.id == $authUserAccount.id ? "Vous" : observation.user.name}</p>
+						<p class="font-semibold">
+							{observation.user.id == $authUserAccount.id ? "Vous" : observation.user.name}
+						</p>
 						<p class="text-gray-600 truncate" style="max-width: 200px;">{getLastReply(observation)}</p>
 						{#if userHasReplied(observation)}
 							<p class="text-green-500 text-sm">

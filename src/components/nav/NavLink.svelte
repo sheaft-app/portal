@@ -15,7 +15,6 @@
 	$: isActive = (str) => {
 		return $location.indexOf(str.split("?")[0]) > -1;
 	};
-
 </script>
 
 <li>
@@ -78,5 +77,4 @@
 			}
 		}
 	}
-
 </style>

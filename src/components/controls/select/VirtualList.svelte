@@ -132,7 +132,6 @@
 		rows = contents.getElementsByTagName("svelte-virtual-list-row");
 		mounted = true;
 	});
-
 </script>
 
 <svelte-virtual-list-viewport
@@ -166,5 +165,4 @@
 	svelte-virtual-list-row {
 		overflow: hidden;
 	}
-
 </style>

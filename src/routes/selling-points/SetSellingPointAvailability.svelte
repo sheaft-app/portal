@@ -15,7 +15,9 @@
 			variables: { ids: [sellingPoint.id], available: !sellingPoint.available },
 			errorsHandler,
 			success: async (res) => await handleClose({ success: true, data: res }),
-			successNotification: `Le point de vente a été ${sellingPoint.available ? "désactivé" : "activé"} avec succès`,
+			successNotification: `Le point de vente a été ${
+				sellingPoint.available ? "désactivé" : "activé"
+			} avec succès`,
 			errorNotification: `Le point de vente n'a pas pu être ${sellingPoint.available ? "désactivé" : "activé"}`,
 		});
 	};

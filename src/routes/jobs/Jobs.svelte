@@ -11,7 +11,6 @@
 	const routes = {};
 	routes[JobRoutes.List.SubPart] = ListJobs;
 	routes[JobRoutes.Details.SubPart] = JobDetails;
-
 </script>
 
 <Meta />

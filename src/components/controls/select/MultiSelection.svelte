@@ -12,7 +12,6 @@
 		event.stopPropagation();
 		dispatch("multiItemClear", { i });
 	}
-
 </script>
 
 {#each selectedValue as value, i}
@@ -88,5 +87,4 @@
 		fill: var(--multiClearFill, #ebedef);
 		vertical-align: top;
 	}
-
 </style>

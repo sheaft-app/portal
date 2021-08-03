@@ -31,7 +31,6 @@
 			errorNotification: "Un problème est survenu pendant la récupération des avis du produit.",
 		});
 	});
-
 </script>
 
 <svelte:head>
@@ -67,7 +66,9 @@
 								<img
 									class="absolute top-0 left-0 w-full h-full bg-cover
                     object-fit object-cover"
-									src={rating.user.picture ? rating.user.picture : config.content + "/pictures/users/profile.svg"}
+									src={rating.user.picture
+										? rating.user.picture
+										: config.content + "/pictures/users/profile.svg"}
 									alt={rating.user.name}
 								/>
 								<div

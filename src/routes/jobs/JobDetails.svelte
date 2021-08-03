@@ -376,7 +376,9 @@
 						<p class="uppercase font-bold text-gray-700 pb-2">Résultat</p>
 						<div class="mt-3">
 							<div class="flex items-center mb-2">
-								<p>Lorsque le traitement sera terminé, les informations relatives seront affichées ici.</p>
+								<p>
+									Lorsque le traitement sera terminé, les informations relatives seront affichées ici.
+								</p>
 							</div>
 						</div>
 					</div>

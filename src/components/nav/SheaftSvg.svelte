@@ -1,6 +1,5 @@
 <script>
 	export let width = 100;
-
 </script>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="width:{width}px;height:auto;" viewBox="0 0 901.44 220.01">
@@ -41,7 +40,6 @@
 			.cls-5 {
 				stroke-width: 5px;
 			}
-
 		</style>
 	</defs>
 	<title>SHEAFT</title>

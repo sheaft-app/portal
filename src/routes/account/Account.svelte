@@ -12,7 +12,6 @@
 
 	const routes = {};
 	routes[AccountRoutes.Profile.SubPart] = Profile;
-
 </script>
 
 <Meta />
@@ -38,5 +37,4 @@
 			}
 		}
 	}
-
 </style>

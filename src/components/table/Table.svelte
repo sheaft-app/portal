@@ -226,7 +226,8 @@
 			settings.where[splittedFilter[0]] = filter;
 		}
 
-		settings.orderBy[_searchValues.orderBy ? _searchValues.orderBy : defaultSearchValues.orderBy] = _searchValues.direction ? _searchValues.direction : defaultSearchValues.direction;
+		settings.orderBy[_searchValues.orderBy ? _searchValues.orderBy : defaultSearchValues.orderBy] =
+			_searchValues.direction ? _searchValues.direction : defaultSearchValues.direction;
 		return settings;
 	};
 
@@ -329,7 +330,10 @@
 								>
 									<div class="flex items-center">
 										<div class="flex-shrink-0">
-											<InputCheckbox disabled={disableRowSelection(item)} checked={isRowSelected(item)} />
+											<InputCheckbox
+												disabled={disableRowSelection(item)}
+												checked={isRowSelected(item)}
+											/>
 										</div>
 									</div>
 								</td>

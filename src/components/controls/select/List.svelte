@@ -38,7 +38,9 @@
 
 	onMount(() => {
 		if (items.length > 0 && !isMulti && selectedValue) {
-			const _hoverItemIndex = items.findIndex((item) => item[optionIdentifier] === selectedValue[optionIdentifier]);
+			const _hoverItemIndex = items.findIndex(
+				(item) => item[optionIdentifier] === selectedValue[optionIdentifier]
+			);
 
 			if (_hoverItemIndex) {
 				hoverItemIndex = _hoverItemIndex;
@@ -192,7 +194,8 @@
 		const focusedElemBounding = container.querySelector(`.listItem .${className}`);
 
 		if (focusedElemBounding) {
-			offsetBounding = container.getBoundingClientRect().bottom - focusedElemBounding.getBoundingClientRect().bottom;
+			offsetBounding =
+				container.getBoundingClientRect().bottom - focusedElemBounding.getBoundingClientRect().bottom;
 		}
 
 		container.scrollTop -= offsetBounding;
@@ -209,7 +212,6 @@
 	function isItemHover(hoverItemIndex, item, itemIndex, items) {
 		return hoverItemIndex === itemIndex || items.length === 1;
 	}
-
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
@@ -217,7 +219,11 @@
 {#if isVirtualList}
 	<div class="ssp-listContainer ssp-virtualList" bind:this={container}>
 		<VirtualList {items} {itemHeight} let:item let:i>
-			<div on:mouseover={() => handleHover(i)} on:click={(event) => handleClick({ item, i, event })} class="listItem">
+			<div
+				on:mouseover={() => handleHover(i)}
+				on:click={(event) => handleClick({ item, i, event })}
+				class="listItem"
+			>
 				<svelte:component
 					this={Item}
 					{item}
@@ -307,5 +313,4 @@
 		padding: var(--listEmptyPadding, 20px 0);
 		color: var(--listEmptyColor, #78848f);
 	}
-
 </style>

@@ -14,7 +14,7 @@
 	import Observations from "../../components/observations/Observations.svelte";
 	import CreateBatchModal from "./CreateBatchModal.svelte";
 	import { getContext, onMount } from "svelte";
-import { querystring } from "svelte-spa-router";
+	import { querystring } from "svelte-spa-router";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -35,9 +35,8 @@ import { querystring } from "svelte-spa-router";
 	const checkObservation = () => {
 		const values = routerInstance.getQueryParams();
 
-		if (values.observationId) 
-			displayObservationsPanel = true;
-	}
+		if (values.observationId) displayObservationsPanel = true;
+	};
 
 	const actions = [
 		{

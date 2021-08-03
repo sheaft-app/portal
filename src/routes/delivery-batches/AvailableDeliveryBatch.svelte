@@ -24,7 +24,9 @@
 		<p class="font-semibold text-xl">{deliveryBatch.name}</p>
 		<p>{format(new Date(deliveryBatch.expectedDeliveryDate), "PPPP", { locale: fr })}</p>
 		<p>
-			entre {from.hours}h{from.minutes == 0 ? "00" : from.minutes} et {to.hours}h{to.minutes == 0 ? "00" : to.minutes}
+			entre {from.hours}h{from.minutes == 0 ? "00" : from.minutes} et {to.hours}h{to.minutes == 0
+				? "00"
+				: to.minutes}
 		</p>
 	</div>
 	<div class="flex justify-between py-2 w-full">

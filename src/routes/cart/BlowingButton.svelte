@@ -19,7 +19,6 @@
 
 	export let text = "Action";
 	export let blowedText = "Merci";
-
 </script>
 
 <button style="display: none;" class="bubbly-button animate" />
@@ -152,5 +151,4 @@
 			background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
 		}
 	}
-
 </style>

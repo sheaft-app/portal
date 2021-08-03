@@ -101,7 +101,6 @@
 			map.fitBounds(productMarkers.getBounds(), { maxZoom: 10 });
 		}
 	}
-
 </script>
 
 <div {id} style="height: {height}; z-index: 1;" />

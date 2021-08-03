@@ -134,8 +134,8 @@
 							<p class="font-semibold text-green-500">Un paiement est en cours de traitement</p>
 						</div>
 						<p>
-							Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours de traitement.
-							Dès que le paiement aura été traité, la commande apparaîtra ici.
+							Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> est en cours
+							de traitement. Dès que le paiement aura été traité, la commande apparaîtra ici.
 						</p>
 						<p>Vous n'avez rien à faire. On vous fait signe dès qu'il arrive quoi que ce soit !</p>
 					</div>
@@ -146,8 +146,8 @@
 							<p class="font-semibold text-green-500">Votre paiement a été validé</p>
 						</div>
 						<p>
-							Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> a bien été traité. La commande
-							correspondante est en cours d'envoi au producteur et apparaîtra d'ici quelques instants.
+							Le paiement de votre panier de <b>{formatMoney(validatingOrder.totalPrice)}</b> a bien été traité.
+							La commande correspondante est en cours d'envoi au producteur et apparaîtra d'ici quelques instants.
 						</p>
 						<p>Vous n'avez rien à faire. On vous fait signe dès que c'est envoyé !</p>
 					</div>

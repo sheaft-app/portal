@@ -75,7 +75,6 @@
 	onMount(() => {
 		document.getElementById("avatar").click();
 	});
-
 </script>
 
 <ActionConfirm
@@ -123,5 +122,4 @@
 	.modal {
 		max-width: 48em !important;
 	}
-
 </style>

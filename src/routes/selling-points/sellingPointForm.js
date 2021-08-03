@@ -39,7 +39,11 @@ export const validators = (values) => ({
 		validators: ["required", "openingsDays", "openingsDates"],
 		enabled: true,
 	},
-	maxPurchaseOrders: { value: values.maxPurchaseOrdersPerTimeSlot, validators: ["min:1"], enabled: values.limitOrders },
+	maxPurchaseOrders: {
+		value: values.maxPurchaseOrdersPerTimeSlot,
+		validators: ["min:1"],
+		enabled: values.limitOrders,
+	},
 	lockPurchaseOrders: {
 		value: values.lockOrderHoursBeforeDelivery,
 		validators: ["min:0"],

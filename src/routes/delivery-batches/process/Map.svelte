@@ -71,7 +71,9 @@
 		meLayer.addTo(map);
 		destinationLayer.addTo(map);
 
-		map.fitBounds([meLayer.getBounds(), destinationLayer.getBounds(), otherStopsLayer.getBounds()], { maxZoom: 12 });
+		map.fitBounds([meLayer.getBounds(), destinationLayer.getBounds(), otherStopsLayer.getBounds()], {
+			maxZoom: 12,
+		});
 
 		return {
 			destroy: () => {

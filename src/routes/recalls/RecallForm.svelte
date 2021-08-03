@@ -56,12 +56,22 @@
 		</div>
 		<div class="form-control">
 			<label>Début de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleStartedOn} dateChosen={$form.fields.saleStartedOn?.dirty || recall.id} {start} {end} />
+			<DatePickerWrapper
+				bind:selected={recall.saleStartedOn}
+				dateChosen={$form.fields.saleStartedOn?.dirty || recall.id}
+				{start}
+				{end}
+			/>
 			<ErrorContainer field={$form.fields.saleStartedOn} />
 		</div>
 		<div class="form-control">
 			<label>Fin de commercialisation *</label>
-			<DatePickerWrapper bind:selected={recall.saleEndedOn} dateChosen={$form.fields.saleEndedOn?.dirty || recall.id} {start} {end} />
+			<DatePickerWrapper
+				bind:selected={recall.saleEndedOn}
+				dateChosen={$form.fields.saleEndedOn?.dirty || recall.id}
+				{start}
+				{end}
+			/>
 			<ErrorContainer field={$form.fields.saleEndedOn} />
 		</div>
 		<div class="form-control">

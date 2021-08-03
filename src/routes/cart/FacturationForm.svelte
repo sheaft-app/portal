@@ -13,7 +13,6 @@
 
 	let selectedAccordeon = "info";
 	let validatedInfoOnce = false;
-
 </script>
 
 <LegalsForm
@@ -27,7 +26,10 @@
 >
 	<section slot="header" class="mb-4 pb-4 pt-3 lg:pt-2 px-5 lg:px-0">
 		<div class="mb-3">
-			<button class="text-gray-600 items-center flex uppercase" on:click={() => routerInstance.goTo(CartRoutes.Resume)}>
+			<button
+				class="text-gray-600 items-center flex uppercase"
+				on:click={() => routerInstance.goTo(CartRoutes.Resume)}
+			>
 				<Icon data={faChevronLeft} class="mr-2 inline" />
 				Aller au panier
 			</button>
@@ -55,7 +57,11 @@
 							<p>né le {user.birthDate}</p>
 						</div>
 						<div class="w-full xl:w-1/2">
-							<p>Résidence : {user.countryOfResidence.name ? user.countryOfResidence.name : user.countryOfResidence}</p>
+							<p>
+								Résidence : {user.countryOfResidence.name
+									? user.countryOfResidence.name
+									: user.countryOfResidence}
+							</p>
 							<p>Nationalité : {user.nationality.name ? user.nationality.name : user.nationality}</p>
 						</div>
 					</div>

@@ -146,8 +146,8 @@
 				<p class="uppercase font-bold leading-none">Votre commande est en cours de traitement</p>
 				<div class="mt-2">
 					<p>
-						Votre commande a été envoyée au producteur. Celui-ci doit maintenant définir s'il est apte à la traiter en
-						fonction de son stock et de sa capacité de production.
+						Votre commande a été envoyée au producteur. Celui-ci doit maintenant définir s'il est apte à la
+						traiter en fonction de son stock et de sa capacité de production.
 					</p>
 					<p>Vous recevrez un e-mail dès l'instant où le producteur aura accepté votre commande.</p>
 				</div>
@@ -321,7 +321,11 @@
 					<div class="md-step p-0 md:p-6" class:active={processStep >= 5}>
 						<div class="md-step-circle">
 							{#if processStep < 5}
-								<span>{authInstance.isInRole([Roles.Store.Value]) && purchaseOrder.delivery ? 5 : 4}</span>
+								<span
+									>{authInstance.isInRole([Roles.Store.Value]) && purchaseOrder.delivery
+										? 5
+										: 4}</span
+								>
 							{:else}
 								<Icon data={faCheck} class="mb-1" />
 							{/if}

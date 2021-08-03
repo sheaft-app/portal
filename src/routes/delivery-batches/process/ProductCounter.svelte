@@ -34,8 +34,10 @@
 
 <div class="custom-number-input">
 	{#if showLabel}
-		<label for="custom-input-number" class="w-full text-{color} text-sm font-semibold" class:text-gray-500={disabled}
-			>{value || 0} {label}</label
+		<label
+			for="custom-input-number"
+			class="w-full text-{color} text-sm font-semibold"
+			class:text-gray-500={disabled}>{value || 0} {label}</label
 		>
 	{/if}
 	<div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1" class:opacity-50={disabled}>

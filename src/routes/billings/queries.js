@@ -8,7 +8,10 @@ export const GET_DELIVERIES = gql`
 			after: $after
 			before: $before
 			order: $orderBy
-			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { eq: null } }] }
+			where: {
+				status: { eq: DELIVERED }
+				and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { eq: null } }]
+			}
 		) {
 			pageInfo {
 				hasPreviousPage
@@ -39,7 +42,10 @@ export const GET_BILLED_DELIVERIES = gql`
 			after: $after
 			before: $before
 			order: $orderBy
-			where: { status: { eq: DELIVERED }, and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { neq: null } }] }
+			where: {
+				status: { eq: DELIVERED }
+				and: [{ kind: { in: [PRODUCER_TO_STORE] } }, { billedOn: { neq: null } }]
+			}
 		) {
 			pageInfo {
 				hasPreviousPage

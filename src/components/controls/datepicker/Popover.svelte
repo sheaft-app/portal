@@ -1,6 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher, tick } from "svelte";
-  	import { portal } from "svelte-portal";
+	import { portal } from "svelte-portal";
 
 	const dispatch = createEventDispatcher();
 
@@ -36,7 +36,7 @@
 		if (!open) return;
 		let el = evt.target;
 
-		if (el.classList.value.includes('scal-')) return;
+		if (el.classList.value.includes("scal-")) return;
 
 		// eslint-disable-next-line
 		do {
@@ -103,7 +103,6 @@
 
 		dispatch("opened");
 	};
-
 </script>
 
 <svelte:window bind:innerWidth={w} />
@@ -207,5 +206,4 @@
 			opacity: 1;
 		}
 	}
-
 </style>

@@ -23,7 +23,6 @@
 			},
 		];
 	};
-
 </script>
 
 <div class="w-full">
@@ -34,7 +33,9 @@
 			{/if}
 			<div class="form-control justify-between" class:justify-end={!mustBeInterval}>
 				{#if !mustBeInterval}
-					<Toggle labelPosition="left" classNames="ml-1" bind:isChecked={closing.isInterval}>Intervalle</Toggle>
+					<Toggle labelPosition="left" classNames="ml-1" bind:isChecked={closing.isInterval}
+						>Intervalle</Toggle
+					>
 				{/if}
 				<button
 					type="button"

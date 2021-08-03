@@ -8,7 +8,6 @@
 		cart.chooseCart(selectedId);
 		close();
 	};
-
 </script>
 
 <div class="pb-2">

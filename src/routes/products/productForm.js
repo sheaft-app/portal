@@ -45,7 +45,8 @@ export const validators = (product) => ({
 		value: product.quantityPerUnit,
 		validators: ["required", "min:0.01"],
 		enabled:
-			product.conditioning !== ConditioningKind.Bunch.Value && product.conditioning !== ConditioningKind.Bouquet.Value,
+			product.conditioning !== ConditioningKind.Bunch.Value &&
+			product.conditioning !== ConditioningKind.Bouquet.Value,
 	},
 });
 
@@ -61,7 +62,11 @@ export const normalizeCreateProduct = (product) =>
 				  }))
 				: [],
 			pictures: product.pictures
-				? product.pictures.map((p) => ({ id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position }))
+				? product.pictures.map((p) => ({
+						id: p.new ? null : p.id,
+						data: p.new ? p.data : null,
+						position: p.position,
+				  }))
 				: [],
 			tags: product.tags.map((i) => i.id),
 		},

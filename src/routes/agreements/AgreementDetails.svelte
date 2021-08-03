@@ -112,7 +112,8 @@
 					<div>
 						<p class="uppercase font-bold leading-none">Accord actif</p>
 						<div class="mt-2">
-							Cet accord est actif. Vous pouvez l'annuler à tout moment en cliquant sur le bouton ci-dessous.
+							Cet accord est actif. Vous pouvez l'annuler à tout moment en cliquant sur le bouton
+							ci-dessous.
 						</div>
 						<div class="mt-2">
 							<a
@@ -173,7 +174,9 @@
 					</p>
 					{#if !isSender(agreement)}
 						<div class="mt-6 flex justify-center items-center">
-							<button on:click={showAcceptAgreementModal} class="btn btn-primary btn-lg shadow mr-2"> Accepter </button>
+							<button on:click={showAcceptAgreementModal} class="btn btn-primary btn-lg shadow mr-2">
+								Accepter
+							</button>
 							<button on:click={showRefuseAgreementModal} class="btn bg-red-500 text-white btn-lg shadow">
 								Refuser
 							</button>

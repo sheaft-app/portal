@@ -147,7 +147,11 @@
 							</p>
 							<div class="ml-3">
 								{#each opening as openingHour}
-									<p>{`${timeSpanToFrenchHour(openingHour.from)} à ${timeSpanToFrenchHour(openingHour.to)}`}</p>
+									<p>
+										{`${timeSpanToFrenchHour(openingHour.from)} à ${timeSpanToFrenchHour(
+											openingHour.to
+										)}`}
+									</p>
 								{/each}
 							</div>
 						</div>
@@ -159,7 +163,9 @@
 	<div class="flex justify-between flex-wrap mt-5 card shadow rounded-lg bg-white">
 		<div class="w-full lg:w-2/4 p-3 lg:p-6 border-b lg:border-b-0 lg:border-r border-gray-300">
 			<p class="text-sm">
-				Créneau de livraison (<a href="javascript:void(0)" on:click={showChangeDeliveryModal}>Changer le créneau</a>)
+				Créneau de livraison (<a href="javascript:void(0)" on:click={showChangeDeliveryModal}
+					>Changer le créneau</a
+				>)
 			</p>
 			{#if agreement.delivery}
 				<p class="font-semibold mb-2">{agreement.delivery.name}</p>
@@ -173,7 +179,11 @@
 							{DayOfWeekKind.label(deliveryHour.day)}
 						</p>
 						<div>
-							<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+							<p>
+								{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(
+									deliveryHour.to
+								)}`}
+							</p>
 						</div>
 					</div>
 				{/each}
@@ -183,7 +193,9 @@
 		</div>
 		<div class="w-full lg:w-2/4 p-3 lg:p-6">
 			<p class="text-sm">
-				Catalogue assigné (<a href="javascript:void(0)" on:click={showChangeCatalogModal}>Changer le catalogue</a>)
+				Catalogue assigné (<a href="javascript:void(0)" on:click={showChangeCatalogModal}
+					>Changer le catalogue</a
+				>)
 			</p>
 			{#if agreement.catalog}
 				<p class="font-semibold mb-2">{agreement.catalog.name}</p>

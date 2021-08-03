@@ -62,7 +62,10 @@
 	</div>
 	{#if tempBatches && tempBatches.length > 0}
 		{#each tempBatches as batch}
-			<div class="flex border-b border-gray-400 py-2 items-center cursor-pointer" on:click={() => toggleBatch(batch)}>
+			<div
+				class="flex border-b border-gray-400 py-2 items-center cursor-pointer"
+				on:click={() => toggleBatch(batch)}
+			>
 				<div class="w-1/12">
 					<InputCheckbox checked={batch.checked} />
 				</div>
@@ -73,7 +76,9 @@
 				</p>
 			</div>
 		{/each}
-		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}>Ajouter ces lots </button>
+		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={handleSubmit}
+			>Ajouter ces lots
+		</button>
 	{:else}
 		<p class="my-3">Vous ne possèdez pas d'autre lot.</p>
 		<button class="btn btn-accent btn-lg my-3 m-auto" type="button" on:click={close}>Fermer</button>

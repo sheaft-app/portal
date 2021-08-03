@@ -82,11 +82,18 @@
 						{product.name}
 						<p class="text-gray-600">#{product.reference}</p>
 						{#if !product.markForDeletion}
-							<button type="button" class="btn-link block lg:hidden" on:click={() => removeProduct(product)}
+							<button
+								type="button"
+								class="btn-link block lg:hidden"
+								on:click={() => removeProduct(product)}
 								>Retirer
 							</button>
 						{:else}
-							<button type="button" class="btn-link block lg:hidden" on:click={() => cancelRemoveProduct(product)}>
+							<button
+								type="button"
+								class="btn-link block lg:hidden"
+								on:click={() => cancelRemoveProduct(product)}
+							>
 								Annuler
 							</button>
 						{/if}
@@ -119,7 +126,10 @@
 								>Retirer
 							</button>
 						{:else}
-							<button type="button" class="btn btn-outline btn-lg" on:click={() => cancelRemoveProduct(product)}
+							<button
+								type="button"
+								class="btn btn-outline btn-lg"
+								on:click={() => cancelRemoveProduct(product)}
 								>Annuler
 							</button>
 						{/if}

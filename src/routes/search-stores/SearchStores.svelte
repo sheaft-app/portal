@@ -101,7 +101,6 @@
 
 	$: history.pushState({ selected: $selectedItem }, "Trouver des magasins");
 	$: refetch($querystring);
-
 </script>
 
 <Meta />
@@ -256,5 +255,4 @@
 			transform: translateY(0px);
 		}
 	}
-
 </style>

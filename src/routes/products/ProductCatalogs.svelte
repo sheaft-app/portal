@@ -51,11 +51,18 @@
 					<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
 						{catalog.name}
 						{#if !catalog.markForDeletion}
-							<button type="button" class="btn-link block lg:hidden" on:click={() => removeCatalog(catalog)}
+							<button
+								type="button"
+								class="btn-link block lg:hidden"
+								on:click={() => removeCatalog(catalog)}
 								>Retirer
 							</button>
 						{:else}
-							<button type="button" class="btn-link block lg:hidden" on:click={() => cancelRemoveCatalog(catalog)}>
+							<button
+								type="button"
+								class="btn-link block lg:hidden"
+								on:click={() => cancelRemoveCatalog(catalog)}
+							>
 								Annuler
 							</button>
 						{/if}
@@ -94,7 +101,10 @@
 								>Retirer
 							</button>
 						{:else}
-							<button type="button" class="btn btn-outline btn-lg" on:click={() => cancelRemoveCatalog(catalog)}
+							<button
+								type="button"
+								class="btn btn-outline btn-lg"
+								on:click={() => cancelRemoveCatalog(catalog)}
 								>Annuler
 							</button>
 						{/if}

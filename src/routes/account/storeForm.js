@@ -34,7 +34,11 @@ export const validators = (store) => ({
 		validators: ["required", "openingsDays", "openingsDates"],
 		enabled: store.openForNewBusiness,
 	},
-	summary: { value: store.summary, validators: ["maxLength:300"], enabled: store.summary && store.summary.length > 0 },
+	summary: {
+		value: store.summary,
+		validators: ["maxLength:300"],
+		enabled: store.summary && store.summary.length > 0,
+	},
 	description: {
 		value: store.description,
 		validators: ["maxLength:1500"],
@@ -44,7 +48,11 @@ export const validators = (store) => ({
 
 export const normalizeStore = (store) => ({
 	...store,
-	pictures: store.pictures.map((p) => ({ id: p.new ? null : p.id, data: p.new ? p.data : null, position: p.position })),
+	pictures: store.pictures.map((p) => ({
+		id: p.new ? null : p.id,
+		data: p.new ? p.data : null,
+		position: p.position,
+	})),
 	tags: store.tags ? store.tags.map((t) => t.id) : [],
 	openingHours: store.openingHours ? normalizeOpeningHours(store.openingHours) : [],
 });

@@ -10,7 +10,6 @@
 		isLoading = false,
 		loadingMessage;
 	const routerInstance = GetRouterInstance();
-
 </script>
 
 {#if !isLoading && errorsHandler}

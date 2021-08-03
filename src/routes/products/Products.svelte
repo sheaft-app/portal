@@ -15,7 +15,6 @@
 	routes[ProductRoutes.Create.SubPart] = CreateProduct;
 	routes[ProductRoutes.Details.SubPart] = EditProduct;
 	routes[ProductRoutes.Ratings.SubPart] = ProductRatings;
-
 </script>
 
 <Meta />

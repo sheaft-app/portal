@@ -15,36 +15,42 @@ export const getPurchaseOrderModel = (products, returnedReturnables) => {
 			return obj;
 		}
 
-		const props = ['quantity', `${propName}WholeSalePrice`, `${propName}OnSalePrice`, `${propName}VatPrice`];
-		props.map(prop => obj[prop] += reference[prop]);
+		const props = ["quantity", `${propName}WholeSalePrice`, `${propName}OnSalePrice`, `${propName}VatPrice`];
+		props.map((prop) => (obj[prop] += reference[prop]));
 
 		return obj;
 	};
 
 	if (products) {
 		const productsGroupedToBill = products.reduce((allProducts, product) => {
-			const productDeliveryData = denormalizeDeliveryBatchProducts(products.filter(p => p.productId == product.productId)).shift();
+			const productDeliveryData = denormalizeDeliveryBatchProducts(
+				products.filter((p) => p.productId == product.productId)
+			).shift();
 
 			allProducts[product.productId] = {
 				...productDeliveryData,
-				...accumulateProps(allProducts[product.productId] || product, product, 'totalProduct')
-			}
+				...accumulateProps(allProducts[product.productId] || product, product, "totalProduct"),
+			};
 
 			if (!product.isReturnable) return allProducts;
 
-			returnablesGroupedToBill[`${product.returnableId}_deposed`] = accumulateProps(returnablesGroupedToBill[`${product.returnableId}_deposed`] || {
-				id: product.returnableId,
-				name: `${product.returnableName} (Consignes déposées)`,
-				totalWholeSalePrice: product.totalReturnableWholeSalePrice,
-				totalVatPrice: product.totalReturnableVatPrice,
-				totalOnSalePrice: product.totalReturnableOnSalePrice,
-				quantity: product.quantity
-			}, product, 'totalReturnable');
+			returnablesGroupedToBill[`${product.returnableId}_deposed`] = accumulateProps(
+				returnablesGroupedToBill[`${product.returnableId}_deposed`] || {
+					id: product.returnableId,
+					name: `${product.returnableName} (Consignes déposées)`,
+					totalWholeSalePrice: product.totalReturnableWholeSalePrice,
+					totalVatPrice: product.totalReturnableVatPrice,
+					totalOnSalePrice: product.totalReturnableOnSalePrice,
+					quantity: product.quantity,
+				},
+				product,
+				"totalReturnable"
+			);
 
 			return allProducts;
 		}, {});
 
-		Object.values(productsGroupedToBill).map(value => {
+		Object.values(productsGroupedToBill).map((value) => {
 			model.totalWholeSalePrice += value.totalProductWholeSalePrice;
 			model.totalVatPrice += value.totalProductVatPrice;
 			model.totalOnSalePrice += value.totalProductOnSalePrice;
@@ -54,15 +60,19 @@ export const getPurchaseOrderModel = (products, returnedReturnables) => {
 
 	if (returnedReturnables) {
 		returnablesGroupedToBill = returnedReturnables.reduce((returnables, returnable) => {
-			returnables[`${returnable.id}_retrieved`] = accumulateProps(returnables[`${returnable.id}_retrieved`] || {
-				name: `${returnable.name} (Consignes récupérées)`,
-				...returnable
-			}, returnable, 'total');
+			returnables[`${returnable.id}_retrieved`] = accumulateProps(
+				returnables[`${returnable.id}_retrieved`] || {
+					name: `${returnable.name} (Consignes récupérées)`,
+					...returnable,
+				},
+				returnable,
+				"total"
+			);
 
 			return returnables;
 		}, {});
 
-		Object.values(returnablesGroupedToBill).map(value => {
+		Object.values(returnablesGroupedToBill).map((value) => {
 			model.totalWholeSalePrice += value.totalWholeSalePrice;
 			model.totalVatPrice += value.totalVatPrice;
 			model.totalOnSalePrice += value.totalOnSalePrice;

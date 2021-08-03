@@ -106,7 +106,9 @@
 								<ul>
 									{#each delivery.purchaseOrders as purchaseOrder}
 										<li>
-											{purchaseOrder.reference} ({format(new Date(purchaseOrder.createdOn), "P", { locale: fr })})
+											{purchaseOrder.reference} ({format(new Date(purchaseOrder.createdOn), "P", {
+												locale: fr,
+											})})
 										</li>
 									{/each}
 								</ul>

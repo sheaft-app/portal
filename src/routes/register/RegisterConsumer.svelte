@@ -45,7 +45,8 @@
 			error: () => {
 				isRegistering = false;
 			},
-			errorNotification: "Impossible d'enregistrer le compte. Veuillez réessayer ou contacter le support technique.",
+			errorNotification:
+				"Impossible d'enregistrer le compte. Veuillez réessayer ou contacter le support technique.",
 		});
 	};
 
@@ -97,7 +98,9 @@
 						</div>
 						<div class="w-full justify-center hidden">
 							<div>
-								<label for="email" class="block uppercase tracking-wide text-xs font-bold mb-2"> Adresse email* </label>
+								<label for="email" class="block uppercase tracking-wide text-xs font-bold mb-2">
+									Adresse email*
+								</label>
 								<input
 									id="email"
 									type="email"
@@ -161,7 +164,10 @@
 						</div>
 						<div class="mt-2">
 							<label class="cursor-pointer">
-								<InputCheckbox checked={acceptMangoCgv} onClick={() => (acceptMangoCgv = !acceptMangoCgv)} />
+								<InputCheckbox
+									checked={acceptMangoCgv}
+									onClick={() => (acceptMangoCgv = !acceptMangoCgv)}
+								/>
 								Je reconnais avoir lu et compris
 								<a href={config.content + "/resources/legals/Mangopay_Terms-FR.pdf"} target="_blank">
 									les conditions générales d'utilisation de MangoPay,

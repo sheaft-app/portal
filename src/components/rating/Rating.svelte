@@ -68,7 +68,6 @@
 		rate = convertValue(value);
 		over = convertValue(value);
 	});
-
 </script>
 
 {#if length > 0}
@@ -187,5 +186,4 @@
 	.Rate__view.disabled .desc {
 		color: #ccc;
 	}
-
 </style>

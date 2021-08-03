@@ -45,11 +45,16 @@
 				disabled={product.excess > 0}
 				color="orange-500"
 			/>
-			<ProductCounter bind:value={product.excess} label="En trop" disabled={product.missing > 0} color="blue-500" />
+			<ProductCounter
+				bind:value={product.excess}
+				label="En trop"
+				disabled={product.missing > 0}
+				color="blue-500"
+			/>
 			{#if product.missing <= 0}
 				<small class="font-semibold text-blue-500"
-					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />S'il y a + de produits que commandé, précisez seulement
-					la quantité conservée par le magasin</small
+					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />S'il y a + de produits que commandé, précisez
+					seulement la quantité conservée par le magasin</small
 				>
 			{/if}
 		{/if}

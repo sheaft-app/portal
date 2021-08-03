@@ -192,7 +192,11 @@
 			{onRowClick}
 		>
 			<td class="px-2 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-xs leading-5 font-semibold text-{ProcessStatusKind.color(job.status)}-500 block md:hidden">
+				<div
+					class="text-xs leading-5 font-semibold text-{ProcessStatusKind.color(
+						job.status
+					)}-500 block md:hidden"
+				>
 					{ProcessStatusKind.label(job.status)}
 				</div>
 				<div class="text-sm leading-5 text-gray-800">{job.name}</div>

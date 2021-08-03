@@ -6,7 +6,6 @@
 	let percentage = 0;
 
 	$: percentage = (rating / scale) * 100;
-
 </script>
 
 <div class="star-ratings-css">
@@ -39,5 +38,4 @@
 			z-index: 0;
 		}
 	}
-
 </style>

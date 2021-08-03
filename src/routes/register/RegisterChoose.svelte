@@ -25,7 +25,6 @@
 				localStorage.removeItem("user_choosen_role");
 		}
 	});
-
 </script>
 
 <svelte:head>
@@ -96,7 +95,8 @@
 						<span class="text-accent">producteur</span>
 					</p>
 					<p class="lg:mt-5 mt-2 lg:text-lg">
-						Je souhaite permettre à des consommateurs et à des commercants de me trouver et de commander mes produits.
+						Je souhaite permettre à des consommateurs et à des commercants de me trouver et de commander mes
+						produits.
 					</p>
 				</div>
 				<div class="block lg:hidden w-1/12 flex items-center -my-2">
@@ -131,8 +131,8 @@
 						<span class="text-accent">commerçant</span>
 					</p>
 					<p class="lg:mt-5 mt-2 lg:text-lg">
-						Je possède un commerce ou un restaurant et souhaite passer des commandes régulièrement aux producteurs
-						locaux.
+						Je possède un commerce ou un restaurant et souhaite passer des commandes régulièrement aux
+						producteurs locaux.
 					</p>
 				</div>
 				<div class="block lg:hidden w-1/12 flex items-center -my-2">

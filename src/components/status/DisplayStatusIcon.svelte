@@ -13,7 +13,6 @@
 	});
 
 	$: data = type === "order" ? PurchaseOrderStatusKind.get(status) : AgreementStatusKind.get(status);
-
 </script>
 
 <div class={`w-6 h-6 rounded-full text-white inline-flex items-center justify-center bg-${data.Color}`}>

@@ -15,7 +15,6 @@
 
 	const routerInstance = GetRouterInstance();
 	const authInstance = GetAuthInstance();
-
 </script>
 
 <div class="px-8 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">
@@ -49,7 +48,9 @@
 				{format(new Date(order.expectedDelivery.expectedDeliveryDate), "PPP", { locale: fr })}
 			</p>
 			<p class="text-normal font-semibold w-full">
-				entre {timeSpanToFrenchHour(order.expectedDelivery.from)} et {timeSpanToFrenchHour(order.expectedDelivery.to)}
+				entre {timeSpanToFrenchHour(order.expectedDelivery.from)} et {timeSpanToFrenchHour(
+					order.expectedDelivery.to
+				)}
 			</p>
 		</div>
 	</div>
@@ -74,7 +75,9 @@
 			target="_blank"
 			class="btn px-3 py-1 bg-white text-accent shadow font-semibold hover:bg-gray-100"
 			style="width: max-content"
-			href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(order.expectedDelivery.address)}`}
+			href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+				order.expectedDelivery.address
+			)}`}
 		>
 			<Icon data={faMapMarkedAlt} class="mr-2 w-4 h-4" />
 			Voir le lieu sur Google Maps

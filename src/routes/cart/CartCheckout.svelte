@@ -154,7 +154,8 @@
 							});
 						}
 					},
-					errorNotification: "Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support.",
+					errorNotification:
+						"Une erreur est survenue pendant le paiement. Veuillez réessayer ou contacter le support.",
 					error: () => {
 						isPaying = false;
 					},
@@ -215,8 +216,8 @@
 		<div class="mb-10 p-4 bg-red-500 text-white text-center lg:text-left">
 			<p class="mb-2">{paymentError}</p>
 			<p class="mb-2">
-				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le service
-				technique.
+				Vous pouvez réessayer. Si vous pensez que cette erreur n'est pas liée à votre carte, contactez le
+				service technique.
 			</p>
 			<button
 				class="btn btn-lg btn-white m-auto lg:m-0"
@@ -261,7 +262,11 @@
 								{#if $cart.returnablesCount >= 1}
 									<p class="text-blue-500 font-medium text-sm">
 										dont
-										<img src="./img/returnable.svg" alt="consigne" style="width: 15px; display: inline;" />
+										<img
+											src="./img/returnable.svg"
+											alt="consigne"
+											style="width: 15px; display: inline;"
+										/>
 										{formatMoney($cart.totalReturnableOnSalePrice)}
 									</p>
 								{/if}

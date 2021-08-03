@@ -110,7 +110,10 @@
 			</div>
 		{:else}
 			<div>
-				<p>Impossible d'afficher votre code de parainage, veuillez rafraichir la page ou contacter notre support.</p>
+				<p>
+					Impossible d'afficher votre code de parainage, veuillez rafraichir la page ou contacter notre
+					support.
+				</p>
 			</div>
 		{/if}
 	</div>

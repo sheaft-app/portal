@@ -4,7 +4,6 @@
 	export let style = null,
 		classNames = null,
 		hasRightPanel = false;
-
 </script>
 
 <div
@@ -22,5 +21,4 @@
 			max-width: calc(100% - 350px);
 		}
 	}
-
 </style>

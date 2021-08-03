@@ -116,7 +116,6 @@
 	};
 
 	$: initDefaultAddress(initAddress);
-
 </script>
 
 <div class="themed" use:bindClass={bindClassData}>
@@ -159,5 +158,4 @@
 		--indicatorTop: 16px;
 		--indicatorColor: #ff4081;
 	}
-
 </style>

@@ -14,7 +14,6 @@
 
 	const routerInstance = GetRouterInstance();
 	const authManager = GetAuthInstance();
-
 </script>
 
 <div class="px-6 py-6 md:mb-3 bg-white md:shadow md:border-none border-b border-gray-400">

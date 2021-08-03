@@ -59,7 +59,9 @@
 					let lastCompletedDelivery = [];
 
 					if (completedDeliveries.length > 1) {
-						lastCompletedDelivery = completedDeliveries.sort((a, b) => (a.position >= b.position ? -1 : 1))[0];
+						lastCompletedDelivery = completedDeliveries.sort((a, b) =>
+							a.position >= b.position ? -1 : 1
+						)[0];
 					} else {
 						lastCompletedDelivery = completedDeliveries[0];
 					}

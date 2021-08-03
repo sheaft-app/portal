@@ -67,7 +67,6 @@
 		dispatch("change", selectedCategory);
 		callback();
 	};
-
 </script>
 
 <div class="inline-flex">
@@ -92,7 +91,11 @@
 					class:text-white={!selectedCategory}
 				>
 					<div class="mb-2">
-						<svelte:component this={allProducts} width="30" style={!selectedCategory ? "fill: #ffffff;" : ""} />
+						<svelte:component
+							this={allProducts}
+							width="30"
+							style={!selectedCategory ? "fill: #ffffff;" : ""}
+						/>
 					</div>
 					<span
 						class="cursor-pointer uppercase tracking-wide text-xs font-bold mb-2"
@@ -144,5 +147,4 @@
 	svg .active {
 		fill: #ffffff;
 	}
-
 </style>

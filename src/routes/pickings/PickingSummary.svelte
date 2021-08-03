@@ -46,7 +46,12 @@
 	<PageHeader name="Résumé de la préparation" previousPage={PickingRoutes.History}>
 		{#if picking?.pickingUrl}
 			<div class="mt-2">
-				<a target="_blank" href={picking.pickingUrl} class="btn btn-outline btn-lg" style="display: inline-block;">
+				<a
+					target="_blank"
+					href={picking.pickingUrl}
+					class="btn btn-outline btn-lg"
+					style="display: inline-block;"
+				>
 					<Icon data={faEye} class="mr-2" />
 					Voir le bon de préparation
 				</a>

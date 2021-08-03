@@ -70,7 +70,6 @@
 	onDestroy(() => {
 		window.removeEventListener("popstate", popStateListener, false);
 	});
-
 </script>
 
 <!-- Mobile -->
@@ -147,8 +146,8 @@
 					<p class="text-orange-500 font-semibold text-xl">Des paniers s'entremêlent</p>
 					<span class="bg-orange-500 m-auto h-1 w-20 block mt-2 mb-4" />
 					<p>
-						Il semblerait que vous ayez plusieurs paniers en cours. Pas de panique, il vous suffit d'en choisir un des
-						deux pour continuer vos achats.
+						Il semblerait que vous ayez plusieurs paniers en cours. Pas de panique, il vous suffit d'en
+						choisir un des deux pour continuer vos achats.
 					</p>
 					<button class="btn btn-lg btn-accent m-auto mt-5" on:click={openCartConflictResolveModal}
 						>Choisir un panier</button
@@ -218,7 +217,10 @@
 					on:click={goToCart}
 					class="btn btn-primary w-full py-3 px-3 leading-none justify-center text-lg font-semibold"
 					disabled={$cart.products.length == 0 || $cart.isSaving || $cart.conflicts.length > 0 || loadToCart}
-					class:disabled={$cart.products.length == 0 || $cart.isSaving || $cart.conflicts.length > 0 || loadToCart}
+					class:disabled={$cart.products.length == 0 ||
+						$cart.isSaving ||
+						$cart.conflicts.length > 0 ||
+						loadToCart}
 				>
 					Suivant
 					{#if loadToCart}
@@ -280,5 +282,4 @@
 			transform: translateY(0px);
 		}
 	}
-
 </style>

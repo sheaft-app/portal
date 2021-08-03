@@ -28,7 +28,6 @@
 		open(ManageYearlyClosingsModal, {
 			onClose: (res) => (closings = res),
 		});
-
 </script>
 
 <div class={container}>
@@ -41,9 +40,13 @@
 		<ul style="list-style: circle;padding: revert;">
 			{#each closings as closing}
 				<li>
-					du {format(new Date(closing.from), "PPPP", { locale: fr })} au {format(new Date(closing.to), "PPPP", {
-						locale: fr,
-					})}
+					du {format(new Date(closing.from), "PPPP", { locale: fr })} au {format(
+						new Date(closing.to),
+						"PPPP",
+						{
+							locale: fr,
+						}
+					)}
 				</li>
 			{/each}
 		</ul>

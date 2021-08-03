@@ -1,7 +1,6 @@
 <script>
 	export let getSelectionLabel = undefined;
 	export let item = undefined;
-
 </script>
 
 <div class="ssp-selection">
@@ -14,5 +13,4 @@
 		overflow: hidden;
 		white-space: nowrap;
 	}
-
 </style>

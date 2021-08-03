@@ -21,8 +21,9 @@
 		componentErrors = errorsHandler.getErrors();
 
 		if (
-			componentErrors.filter((e) => e.code == "BadRequest" || e.code == "Unexpected" || e.code == "EXEC_INVALID_TYPE")
-				.length > 0
+			componentErrors.filter(
+				(e) => e.code == "BadRequest" || e.code == "Unexpected" || e.code == "EXEC_INVALID_TYPE"
+			).length > 0
 		)
 			bgColor = "bg-red-500";
 		else bgColor = "bg-orange-500";
@@ -48,7 +49,6 @@
 	};
 
 	$: getErrors($errors);
-
 </script>
 
 {#if componentErrors.length >= 1}
@@ -90,5 +90,4 @@
 	p {
 		@apply mb-2;
 	}
-
 </style>

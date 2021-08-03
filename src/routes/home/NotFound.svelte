@@ -5,7 +5,6 @@
 
 	const authInstance = GetAuthInstance();
 	const routerInstance = GetRouterInstance();
-
 </script>
 
 <svelte:head>

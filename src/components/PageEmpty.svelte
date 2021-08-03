@@ -4,7 +4,6 @@
 	export let noResultsPage;
 
 	const routerInstance = GetRouterInstance();
-
 </script>
 
 <div class="flex justify-center">

@@ -124,7 +124,8 @@
 		</div>
 		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4 text-left">Prévue le *</label>
 		<DatePickerWrapper bind:selected={scheduledOn} dateChosen={false} />
-		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4 text-left">A partir de *</label>
+		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4 text-left">A partir de *</label
+		>
 		<TimePicker bind:time={from} />
 		<div class="form-control w-full mt-4" style="margin-bottom: 0">
 			<label>Commandes disponibles *</label>

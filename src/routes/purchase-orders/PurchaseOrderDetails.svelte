@@ -179,8 +179,9 @@
 								Livraison (<a
 									href="javascript:void(0)"
 									on:click={() =>
-										routerInstance.goTo(DeliveryBatchRoutes.Edit, { id: order.delivery.deliveryBatch.id })}
-									>cliquez pour voir le détails</a
+										routerInstance.goTo(DeliveryBatchRoutes.Edit, {
+											id: order.delivery.deliveryBatch.id,
+										})}>cliquez pour voir le détails</a
 								>)
 							</p>
 							<div class="mt-2">
@@ -188,8 +189,8 @@
 									<p>Cette commande est en attente de validation de la tournée de livraison.</p>
 								{:else if order.delivery.status === DeliveryStatus.Ready.Value}
 									<p>
-										Cette commande est prête à être livrée. (<a href={order.delivery.deliveryFormUrl}
-											>bon de livraison</a
+										Cette commande est prête à être livrée. (<a
+											href={order.delivery.deliveryFormUrl}>bon de livraison</a
 										>)
 									</p>
 								{:else if order.delivery.status === DeliveryStatus.InProgress.Value}
@@ -258,14 +259,16 @@
 									{#if order.expectedDelivery.kind === DeliveryKind.ProducerToStore.Value}
 										Adresse :
 										<b class="font-semibold">
-											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address
+												.zipcode}
 											{order.expectedDelivery.address.city}
 										</b>
 									{:else}
 										Lieu :
 										<b class="font-semibold">
 											{order.expectedDelivery.name} au
-											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address.zipcode}
+											{order.expectedDelivery.address.line1}, {order.expectedDelivery.address
+												.zipcode}
 											{order.expectedDelivery.address.city}
 										</b>
 									{/if}

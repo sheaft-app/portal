@@ -79,7 +79,8 @@
   items-center top-nav lg:justify-between
   {!$selectedItem &&
 	!(
-		($authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])) ||
+		($authRegistered &&
+			isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])) ||
 		!$authRegistered
 	)
 		? 'justify-end'
@@ -267,7 +268,8 @@
 				aria-label="Afficher les notifications"
 				class="flex uppercase text-white mr-1 md:mr-4 items-center"
 				class:hidden={!(
-					$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
+					$authRegistered &&
+					isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
 				)}
 			>
 				<Icon data={faBell} class="mr-3 inline" scale="1.2" />
@@ -291,7 +293,9 @@
         items-center text-semibold focus:outline-none mr-4"
 			>
 				<span class="text-sm lg:text-base text-normal">
-					{$authUserAccount.profile.given_name ? $authUserAccount.profile.given_name : $authUserAccount.profile.name}
+					{$authUserAccount.profile.given_name
+						? $authUserAccount.profile.given_name
+						: $authUserAccount.profile.name}
 				</span>
 				<div
 					style="background-image: url('{$authUserAccount.profile.picture
@@ -321,7 +325,8 @@
 	<nav
 		class="nav fixed content-between overflow-auto"
 		class:hidden={!(
-			$authRegistered && isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
+			$authRegistered &&
+			isInRole($authUserAccount, [Roles.Consumer.Value, Roles.Producer.Value, Roles.Store.Value])
 		)}
 		class:active={$navExpended}
 	>

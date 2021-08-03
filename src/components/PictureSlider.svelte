@@ -38,7 +38,6 @@
 		isEnd = swipper.isEnd;
 		isBeginning = swipper.isBeginning;
 	};
-
 </script>
 
 <Swiper

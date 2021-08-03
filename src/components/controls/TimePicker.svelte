@@ -48,7 +48,6 @@
 			e.target.value = savedValue;
 		}
 	}
-
 </script>
 
 <div class="time-group">
@@ -108,5 +107,4 @@
 	input[type="number"] {
 		-moz-appearance: textfield;
 	}
-
 </style>

@@ -65,7 +65,9 @@
 				receptionedBy,
 				comment,
 				returnedProducts,
-				returnedReturnables: returnables.filter((r) => r.count > 0).map((r) => ({ id: r.id, quantity: r.count })),
+				returnedReturnables: returnables
+					.filter((r) => r.count > 0)
+					.map((r) => ({ id: r.id, quantity: r.count })),
 			},
 			errorsHandler,
 			success: async () => {

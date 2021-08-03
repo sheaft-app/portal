@@ -18,7 +18,6 @@
 	);
 
 	$: invalidPaymentForm = !$paymentForm.valid;
-
 </script>
 
 <div class="bg-white shadow px-5 py-3 lg:rounded lg:mt-5">

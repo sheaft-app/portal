@@ -89,8 +89,8 @@
 					<div class="w-full mt-3 px-10 xl:px-12">
 						{#if $items.length > 0}
 							<p>
-								Vous pouvez les ajouter à l'une de vos préparations en cours à l'aide du bouton "Modifier" ou bien en
-								créer une nouvelle.
+								Vous pouvez les ajouter à l'une de vos préparations en cours à l'aide du bouton
+								"Modifier" ou bien en créer une nouvelle.
 							</p>
 							<button on:click={handleCreatePicking} class="btn btn-lg btn-accent mt-4">
 								Créer une autre préparation

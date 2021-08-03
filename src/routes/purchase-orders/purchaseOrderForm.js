@@ -28,7 +28,9 @@ export const normalizeCreatePurchaseOrder = (purchaseOrder) =>
 			deliveryModeId: purchaseOrder.client.deliveryMode.id,
 			from: `PT${purchaseOrder.from}H`,
 			to: `PT${purchaseOrder.to}H`,
-			products: purchaseOrder.products ? purchaseOrder.products.map((c) => ({ id: c.id, quantity: c.quantity })) : [],
+			products: purchaseOrder.products
+				? purchaseOrder.products.map((c) => ({ id: c.id, quantity: c.quantity }))
+				: [],
 		},
 		["client"]
 	);

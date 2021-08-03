@@ -67,7 +67,6 @@
 		});
 		isLoading = false;
 	});
-
 </script>
 
 <div class="bg-white shadow px-5 py-3">
@@ -135,7 +134,11 @@
 				class:disabled={isLoading || $form.isSubmitting || !$form.valid}
 				class="btn btn-lg btn-primary w-full md:w-auto justify-center"
 			>
-				<Icon data={$form.isSubmitting ? faCircleNotch : faCheck} class="mr-1 inline" spin={$form.isSubmitting} />
+				<Icon
+					data={$form.isSubmitting ? faCircleNotch : faCheck}
+					class="mr-1 inline"
+					spin={$form.isSubmitting}
+				/>
 				Valider
 			</button>
 		</div>

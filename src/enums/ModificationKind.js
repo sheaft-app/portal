@@ -5,7 +5,7 @@ let enums = {
 	Missing: { Value: "MISSING", Label: "Manquant" },
 	Broken: { Value: "BROKEN", Label: "Cassé" },
 	Improper: { Value: "IMPROPER", Label: "Non conforme" },
-	Excess: { Value: "EXCESS", Label: "En trop" }
+	Excess: { Value: "EXCESS", Label: "En trop" },
 };
 
 let DeliveryKind = {

@@ -184,7 +184,8 @@ function createOrUpdateQueryStringParams(queryString, newParams) {
 
 function removeEmptyParams(params) {
 	return Object.keys(params).reduce((object, queryKey) => {
-		if (!Array.isArray(params[queryKey]) && params[queryKey] != null) params[queryKey] = params[queryKey].toString();
+		if (!Array.isArray(params[queryKey]) && params[queryKey] != null)
+			params[queryKey] = params[queryKey].toString();
 
 		if (params[queryKey] && params[queryKey].length > 0) {
 			object[queryKey] = params[queryKey];

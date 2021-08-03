@@ -155,7 +155,9 @@
 				</a>
 			{/if}
 			{#if hasUnreadNotification}
-				<a href="javascript:void(0)" class="w-1/2 text-right" on:click={markAllAsRead}> Tout marquer comme lu </a>
+				<a href="javascript:void(0)" class="w-1/2 text-right" on:click={markAllAsRead}>
+					Tout marquer comme lu
+				</a>
 			{/if}
 		</div>
 	{/if}
@@ -172,7 +174,11 @@
 				on:click={markAsRead(notification)}
 			>
 				<div class="w-1/12 flex items-center justify-center mx-2">
-					<Icon data={getNotificationIcon(notification)} class={getNotificationColor(notification)} scale="1.2" />
+					<Icon
+						data={getNotificationIcon(notification)}
+						class={getNotificationColor(notification)}
+						scale="1.2"
+					/>
 				</div>
 				<div class="w-11/12 px-1">
 					<div class="text-normal" style="font-size:0.9em;" class:font-semibold={notification.unread}>

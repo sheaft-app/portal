@@ -25,8 +25,8 @@
 	<fieldset>
 		<div class="w-full mb-2 md:mb-0 px-5">
 			<p class="text-gray-600">
-				Votre entreprise peut être visible des {isStore ? "producteurs" : "magasins"}. Un module dédié vous permet de
-				les trouver et leur permettent de vous trouver.
+				Votre entreprise peut être visible des {isStore ? "producteurs" : "magasins"}. Un module dédié vous
+				permet de les trouver et leur permettent de vous trouver.
 			</p>
 			<p class="text-gray-600">Activez cette option si vous souhaitez pouvoir commercer avec eux.</p>
 			<div class="mt-2">

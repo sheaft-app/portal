@@ -35,7 +35,7 @@
 				const values = routerInstance.getQueryParams();
 
 				if (values.producerId) {
-					selectedProducer = items.find(p => p.id == values.producerId);
+					selectedProducer = items.find((p) => p.id == values.producerId);
 				}
 			},
 			error: () => close(),

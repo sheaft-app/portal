@@ -53,8 +53,8 @@
 			>
 				<Icon data={faExclamationTriangle} style="width: 50px; height:50px;" />
 				<p class="ml-3">
-					<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en question
-					et n'hésitez pas à contacter le producteur{#if recall.producer.email}
+					<strong>Vous êtes concerné par cette campagne de rappel</strong>. Veuillez vérifier les produits en
+					question et n'hésitez pas à contacter le producteur{#if recall.producer.email}
 						&nbsp;par
 						<a href="mailto:{recall.producer.email}">email</a>{/if}{#if recall.producer.phone}
 						&nbsp;ou par <a href="tel:{recall.producer.phone}">téléphone</a>{/if}.
@@ -130,9 +130,9 @@
 						<div class="mb-2">
 							{#each recall.batches as batch}
 								<p>
-									{batch.number} ({batch.dlc ? format(new Date(batch.dlc), "P", { locale: fr }) : ""}{batch.ddm
-										? format(new Date(batch.ddm), "P", { locale: fr })
-										: ""})
+									{batch.number} ({batch.dlc
+										? format(new Date(batch.dlc), "P", { locale: fr })
+										: ""}{batch.ddm ? format(new Date(batch.ddm), "P", { locale: fr }) : ""})
 								</p>
 							{/each}
 						</div>

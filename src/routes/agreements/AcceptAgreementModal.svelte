@@ -28,7 +28,8 @@
 	let showSuccess = false;
 
 	$: isValid = isProducer
-		? (!requireDeliverySelection || selectedDelivery != null) && (!requireCatalogSelection || selectedCatalog != null)
+		? (!requireDeliverySelection || selectedDelivery != null) &&
+		  (!requireCatalogSelection || selectedCatalog != null)
 		: true;
 
 	const handleSubmit = async () => {
@@ -85,7 +86,9 @@
 			Vous vous apprêtez à accepter les accords avec les {isProducer ? "magasins" : "producteurs"} suivants:
 			<ul>
 				{#each agreements.filter((a) => a.delivery) as agreement}
-					<li>{isProducer ? agreement.store.name + ` (${agreement.delivery.name})` : agreement.producer.name}</li>
+					<li>
+						{isProducer ? agreement.store.name + ` (${agreement.delivery.name})` : agreement.producer.name}
+					</li>
 				{/each}
 			</ul>
 		</div>
@@ -129,7 +132,9 @@
 		{close}
 	>
 		<div class="leading-5 text-gray-600 mt-2 mb-5">
-			Vous vous apprêtez à accepter l'accord avec {isProducer ? agreements[0].store.name : agreements[0].producer.name}
+			Vous vous apprêtez à accepter l'accord avec {isProducer
+				? agreements[0].store.name
+				: agreements[0].producer.name}
 		</div>
 
 		{#if isProducer && requireDeliverySelection}

@@ -12,7 +12,6 @@
 	if (metadata.imageAlt == null) metadata.imageAlt = "Sheaft";
 
 	if (metadata.url == null) metadata.url = "https://app.sheaft.com";
-
 </script>
 
 <svelte:head>

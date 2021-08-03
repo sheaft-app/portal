@@ -42,7 +42,6 @@
 
 		filters.set({ ...values, tags });
 	}
-
 </script>
 
 {#if inline}
@@ -81,5 +80,4 @@
 		--indicatorHeight: 29px;
 		--indicatorTop: 7px;
 	}
-
 </style>

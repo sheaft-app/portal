@@ -4,7 +4,6 @@
 
 	export let TopItemHandleClick = undefined,
 		isWaiting = false;
-
 </script>
 
 <div

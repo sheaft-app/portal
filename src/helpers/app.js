@@ -106,7 +106,7 @@ export const normalizeOpeningHours = (openingHours) =>
 			to: timeToTimeSpan(openingHour.end),
 		};
 	});
-export const normalizeClosingDates = (closings) => 
+export const normalizeClosingDates = (closings) =>
 	closings
 		? closings.map((c) => {
 				let data = {

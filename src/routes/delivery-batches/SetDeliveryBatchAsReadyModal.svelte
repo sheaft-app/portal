@@ -67,7 +67,11 @@
 		{#if deliveries.length > 1}
 			<p class="pt-2 pb-1 leading-5">
 				Si l'ordre de livraison n'est pas bon, vous pouvez le
-				<button type="button" class="btn-link" on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id })}>
+				<button
+					type="button"
+					class="btn-link"
+					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id })}
+				>
 					modifier en cliquant ici
 				</button>
 				.

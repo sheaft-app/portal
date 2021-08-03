@@ -93,7 +93,10 @@
 											(delivery, index, self) =>
 												index ===
 												self.findIndex(
-													(d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to
+													(d) =>
+														d.day === delivery.day &&
+														d.from === delivery.from &&
+														d.to === delivery.to
 												)
 										)
 									),
@@ -181,7 +184,6 @@
 	};
 
 	$: if ($selectedItem) openAndLoad($selectedItem);
-
 </script>
 
 <svelte:window on:keyup={handleKeyup} />
@@ -224,7 +226,9 @@
 				</div>
 			{/if}
 			<PictureSlider
-				elements={product.pictures ? product.pictures.map((p) => ({ url: p.large })) : [{ url: product.picture }]}
+				elements={product.pictures
+					? product.pictures.map((p) => ({ url: p.large }))
+					: [{ url: product.picture }]}
 			/>
 		</div>
 		<div class="title-margin lg:text-center" style="margin-bottom: 20px;">
@@ -348,7 +352,9 @@
 									<a
 										class="mt-1"
 										target="_blank"
-										href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(delivery.address)}`}
+										href={`https://www.google.com/maps/search/?api=1&query=${encodeQuerySearchUrl(
+											delivery.address
+										)}`}
 									>
 										Voir sur Google Maps
 									</a>
@@ -373,7 +379,11 @@
 										</p>
 										<div>
 											{#each deliveryHour as hours}
-												<p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+												<p>
+													{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(
+														hours.to
+													)}`}
+												</p>
 											{/each}
 										</div>
 									</div>
@@ -426,7 +436,7 @@
 					Soyez le premier à évaluer ce produit !
 				{/if}
 			</p>
-			{#if !product.currentUserHasRatedProduct && !authInstance.isInRole([Roles.Store.Value, Roles.Producer.Value])}
+			{#if !product.currentUserHasRatedProduct && !authInstance.isInRole( [Roles.Store.Value, Roles.Producer.Value] )}
 				{#if authInstance.authenticated}
 					<div class="flex items-start py-4">
 						<div class="flex-shrink-0">
@@ -463,7 +473,12 @@
 							{#if rating > 0}
 								<div class="mt-3" transition:slide>
 									<div class="block form-control mt-1">
-										<textarea use:focus bind:value={comment} placeholder="Commentaire (optionnel)" class="mt-1 block" />
+										<textarea
+											use:focus
+											bind:value={comment}
+											placeholder="Commentaire (optionnel)"
+											class="mt-1 block"
+										/>
 									</div>
 								</div>
 								<div class="mt-3 flex justify-end">
@@ -536,5 +551,4 @@
 	.title-margin {
 		margin-top: 20px;
 	}
-
 </style>

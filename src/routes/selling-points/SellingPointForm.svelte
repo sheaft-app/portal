@@ -30,7 +30,6 @@
 		sellingPoint.lockOrderHoursBeforeDelivery = 24;
 	$: if (sellingPoint.limitOrders && !sellingPoint.maxPurchaseOrdersPerTimeSlot)
 		sellingPoint.maxPurchaseOrdersPerTimeSlot = 5;
-
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -86,7 +85,9 @@
 			<div class="form-control w-full" style="display: block;">
 				<label>Adresse *</label>
 				<CitySearch
-					invalid={$form && $form.fields.address ? !$form.fields.address.valid && $form.fields.address.dirty : false}
+					invalid={$form && $form.fields.address
+						? !$form.fields.address.valid && $form.fields.address.dirty
+						: false}
 					bind:selectedAddress={sellingPoint.address}
 					bindClassData={{ form, name: "address" }}
 				/>
@@ -112,8 +113,8 @@
 			<div class="form-control">
 				<label>Plages de fermeture</label>
 				<p class="text-gray-600 mb-2">
-					Si ce point de vente est fermé durant certaines périodes de l'année, renseignez les dates pour que vos clients
-					ne puissent pas placer de commandes avec retrait sur ces périodes.
+					Si ce point de vente est fermé durant certaines périodes de l'année, renseignez les dates pour que
+					vos clients ne puissent pas placer de commandes avec retrait sur ces périodes.
 				</p>
 				<ClosingDates bind:closings={sellingPoint.denormalizedClosings} />
 			</div>
@@ -155,8 +156,8 @@
 			{/if}
 			<h3 class="uppercase font-bold mt-6">Automatisations</h3>
 			<small
-				>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le consommateur
-				(par exemple, du lait frais, ou si vous avez un stock conséquent)</small
+				>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le
+				consommateur (par exemple, du lait frais, ou si vous avez un stock conséquent)</small
 			>
 			<div class="form-control mt-3" style="display: block;">
 				<label>Accepter automatiquement les nouvelles commandes</label>
@@ -185,7 +186,11 @@
 			class:disabled={$form.isSubmitting || !$form.valid}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 		>
-			<Icon data={$form.isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={$form.isSubmitting} />
+			<Icon
+				data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
+				class="mr-2 inline"
+				spin={$form.isSubmitting}
+			/>
 			Valider
 		</button>
 	</div>

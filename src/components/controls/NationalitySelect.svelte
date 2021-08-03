@@ -32,7 +32,6 @@
 		});
 		isLoading = false;
 	});
-
 </script>
 
 {#if isLoading}
@@ -67,5 +66,4 @@
 		--borderFocusColor: #a0aec0;
 		--placeholderColor: #a0afbf;
 	}
-
 </style>

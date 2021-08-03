@@ -41,7 +41,12 @@
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Actif</label>
-		<Toggle labelPosition="left" disabled={$form.isSubmitting} classNames="ml-1" bind:isChecked={delivery.available} />
+		<Toggle
+			labelPosition="left"
+			disabled={$form.isSubmitting}
+			classNames="ml-1"
+			bind:isChecked={delivery.available}
+		/>
 	</div>
 	<div class="form-control">
 		<div class="w-full" use:bindClass={{ form, name: "openings" }}>
@@ -54,8 +59,8 @@
 	<div class="form-control">
 		<label>Plages de fermeture</label>
 		<p class="text-gray-600 mb-2">
-			Si ce créneau n'est pas assuré durant certaines périodes de l'année, renseignez les dates pour que les magasins ne
-			puissent pas placer de commandes avec livraison sur ces périodes.
+			Si ce créneau n'est pas assuré durant certaines périodes de l'année, renseignez les dates pour que les
+			magasins ne puissent pas placer de commandes avec livraison sur ces périodes.
 		</p>
 		<ClosingDates bind:closings={delivery.denormalizedClosings} />
 	</div>
@@ -65,8 +70,8 @@
 			<label>Ordre de livraison des magasins</label>
 			<p class="text-gray-600 mb-2">
 				C'est l'ordre par défaut dans lequel nous classons les magasins dans vos tournées. Vous pourrez toujours
-				modifier l'ordre avant chaque tournée si cas exceptionnel. Attrapez le bloc d'un magasin pour le faire glisser
-				dans la liste.
+				modifier l'ordre avant chaque tournée si cas exceptionnel. Attrapez le bloc d'un magasin pour le faire
+				glisser dans la liste.
 			</p>
 			<SortList bind:data={delivery.agreements} component={SimpleStoreCard} />
 		</div>
@@ -138,7 +143,11 @@
 			disabled={$form.isSubmitting}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 		>
-			<Icon data={$form.isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={$form.isSubmitting} />
+			<Icon
+				data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
+				class="mr-2 inline"
+				spin={$form.isSubmitting}
+			/>
 			Valider
 		</button>
 	</div>

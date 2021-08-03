@@ -34,7 +34,6 @@
 			user.nationality = user.nationality.code;
 		}
 	});
-
 </script>
 
 {#if !user}
@@ -57,8 +56,8 @@
 				</div>
 				{#if $cart.donation == 1}
 					<p>
-						Merci beaucoup, votre contribution de {formatMoney($cart.donation || 0)} est un très gros coup de pouce et représente
-						beaucoup pour nous ! 😍
+						Merci beaucoup, votre contribution de {formatMoney($cart.donation || 0)} est un très gros coup de
+						pouce et représente beaucoup pour nous ! 😍
 					</p>
 				{:else}
 					<p>Votre contribution de {formatMoney($cart.donation || 0)} représente beaucoup pour nous 😊</p>
@@ -82,12 +81,12 @@
 					<span>Sheaft ne vit que par les dons</span>
 				</div>
 				<p>
-					Sheaft ne gagne pas d'argent. Nous sommes une association qui propose un outil gratuit pour les consommateurs
-					ET les producteurs.
+					Sheaft ne gagne pas d'argent. Nous sommes une association qui propose un outil gratuit pour les
+					consommateurs ET les producteurs.
 				</p>
 				<p>
-					Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à un petit
-					projet de devenir grand.
+					Donner à Sheaft, c'est s'engager dans le développement de l'économie locale en donnant une chance à
+					un petit projet de devenir grand.
 				</p>
 				<button
 					class="btn btn-accent btn-lg mt-2"

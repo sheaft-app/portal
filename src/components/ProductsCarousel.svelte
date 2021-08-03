@@ -112,7 +112,9 @@
 						>
 							{#if product.picture && product.picture.includes("pictures/tags/") && !suggestedProductIsInCart(product)}
 								<div class="absolute" style="z-index: 1; left: 50%; top: 40%; margin-left: -94px;">
-									<div class="text-white text-sm p-2 bg-gray-800 text-center">Aucune image disponible</div>
+									<div class="text-white text-sm p-2 bg-gray-800 text-center">
+										Aucune image disponible
+									</div>
 								</div>
 							{/if}
 						</div>
@@ -124,7 +126,12 @@
 								<img src="{config.content + '/pictures/tags/icons/bio.png'}" alt="Bio" class="mb-1" />
 								{/if} -->
 								{#if product.isReturnable}
-									<img src="./img/returnable.svg" alt="Consigné" class="mb-1" style="transform: scale(0.7);" />
+									<img
+										src="./img/returnable.svg"
+										alt="Consigné"
+										class="mb-1"
+										style="transform: scale(0.7);"
+									/>
 								{/if}
 							</div>
 							<div class="py-2 lg:py-0 lg:pr-8">
@@ -150,7 +157,11 @@
 										{formatMoney(product.onSalePricePerUnit)}
 									{/if}
 									<span class="text-xxs lg:text-sm lg:inline hidden font-normal">
-										{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+										{formatConditioningDisplay(
+											product.conditioning,
+											product.quantityPerUnit,
+											product.unit
+										)}
 									</span>
 								</div>
 							</div>

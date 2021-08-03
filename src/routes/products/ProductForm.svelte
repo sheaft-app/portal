@@ -222,8 +222,8 @@
 						<Icon data={faInfoCircle} />
 					</label>
 					<div class="text-xxs mb-3">
-						L'image en première position sera celle affichée par défaut, vous pouvez changer l'ordre des images en
-						restant cliqué sur l'image et en la faisant glisser à la position voulue.
+						L'image en première position sera celle affichée par défaut, vous pouvez changer l'ordre des
+						images en restant cliqué sur l'image et en la faisant glisser à la position voulue.
 					</div>
 					<GalleryConfigurator
 						bind:elements={product.pictures}
@@ -317,7 +317,9 @@
 								class:skeleton-box={$isLoading}
 								disabled={$isLoading}
 							>
-								<option selected="true" value={UnitKind.NotSpecified.Value} disabled>unité de mesure</option>
+								<option selected="true" value={UnitKind.NotSpecified.Value} disabled
+									>unité de mesure</option
+								>
 								<option value={UnitKind.ML.Value}>{UnitKind.ML.Label}</option>
 								<option value={UnitKind.L.Value}>{UnitKind.L.Value}</option>
 								<option value={UnitKind.G.Value}>{UnitKind.G.Value}</option>
@@ -393,7 +395,10 @@
 			<label>Evaluations client</label>
 			<RatingStars rating={product.rating} />
 			{#if product.ratingsCount > 0}
-				<a href="javascript:void(0)" on:click={() => routerInstance.goTo(ProductRoutes.Ratings, { id: product.id })}>
+				<a
+					href="javascript:void(0)"
+					on:click={() => routerInstance.goTo(ProductRoutes.Ratings, { id: product.id })}
+				>
 					Voir les {product.ratingsCount} avis
 				</a>
 			{/if}

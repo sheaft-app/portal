@@ -65,16 +65,28 @@
 		</ul>
 		<div class="form-control w-full mt-3">
 			<label for="reasonAll"> Raison </label>
-			<input bind:value={reason} id="reasonAll" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
+			<input
+				bind:value={reason}
+				id="reasonAll"
+				type="text"
+				placeholder="Expliquez brièvement la raison (optionnel)"
+			/>
 		</div>
 	{:else}
 		<p class="leading-5">
-			Vous vous apprêtez à annuler l'accord avec {isProducer ? agreements[0].store.name : agreements[0].producer.name}.
+			Vous vous apprêtez à annuler l'accord avec {isProducer
+				? agreements[0].store.name
+				: agreements[0].producer.name}.
 		</p>
 		{#if agreements[0].status.indexOf("WAITING") < 0}
 			<div class="form-control w-full mt-3">
 				<label for="reason"> Raison </label>
-				<input bind:value={reason} id="reason" type="text" placeholder="Expliquez brièvement la raison (optionnel)" />
+				<input
+					bind:value={reason}
+					id="reason"
+					type="text"
+					placeholder="Expliquez brièvement la raison (optionnel)"
+				/>
 			</div>
 		{/if}
 	{/if}

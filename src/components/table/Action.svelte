@@ -22,7 +22,9 @@
 		on:click={handleClick}
 		{disabled}
 		aria-label={text}
-		class="{!disabled ? `text-${color}-500 hover:text-${color}-300 cursor-pointer` : `text-gray-500 cursor-not-allowed`}
+		class="{!disabled
+			? `text-${color}-500 hover:text-${color}-300 cursor-pointer`
+			: `text-gray-500 cursor-not-allowed`}
 		py-3 px-3 md:py-1 rounded items-center flex transition duration-300 ease-in-out"
 	>
 		{#if icon}

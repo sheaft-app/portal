@@ -27,7 +27,6 @@
 		}
 		itemClasses = classes.join(" ");
 	}
-
 </script>
 
 <div class="ssp-item {itemClasses}">
@@ -69,5 +68,4 @@
 	.ssp-item.ssp-hover:not(.ssp-active) {
 		background: var(--itemHoverBG, #e7f2ff);
 	}
-
 </style>

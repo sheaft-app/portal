@@ -57,7 +57,10 @@
 				{/if}
 			</button>
 			{#if $toggleMoreActions}
-				<div class="absolute bg-white shadow-xl border border-gray-400" style="right: 0; bottom: 80px; width: max-content;">
+				<div
+					class="absolute bg-white shadow-xl border border-gray-400"
+					style="right: 0; bottom: 80px; width: max-content;"
+				>
 					{#each actions as act}
 						<Action
 							{selectedItemsNumber}

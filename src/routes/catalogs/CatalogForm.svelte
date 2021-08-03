@@ -60,13 +60,23 @@
 	{/if}
 	<div class="form-control" style="display: block;">
 		<label>Actif</label>
-		<Toggle labelPosition="left" disabled={$form.isSubmitting} classNames="ml-1" bind:isChecked={catalog.available} />
+		<Toggle
+			labelPosition="left"
+			disabled={$form.isSubmitting}
+			classNames="ml-1"
+			bind:isChecked={catalog.available}
+		/>
 	</div>
 
 	{#if catalog.kind == CatalogKind.Stores.Value}
 		<div class="form-control" style="display: block;">
 			<label>Utiliser comme catalogue par défaut pour les professionels</label>
-			<Toggle labelPosition="left" disabled={$form.isSubmitting} classNames="ml-1" bind:isChecked={catalog.isDefault} />
+			<Toggle
+				labelPosition="left"
+				disabled={$form.isSubmitting}
+				classNames="ml-1"
+				bind:isChecked={catalog.isDefault}
+			/>
 		</div>
 	{/if}
 	<CatalogProducts {catalog} {errorsHandler} bind:invalidCatalogProducts />
@@ -78,7 +88,11 @@
 			class:disabled={$form.isSubmitting || !$form.valid || invalidCatalogProducts}
 			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
 		>
-			<Icon data={$form.isSubmitting ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={$form.isSubmitting} />
+			<Icon
+				data={$form.isSubmitting ? faCircleNotch : faPaperPlane}
+				class="mr-2 inline"
+				spin={$form.isSubmitting}
+			/>
 			Valider
 		</button>
 	</div>

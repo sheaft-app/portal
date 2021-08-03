@@ -99,7 +99,6 @@
 
 	$: history.pushState({ selected: $selectedItem }, "Trouver des producteurs");
 	$: refetch($querystring);
-
 </script>
 
 <Meta />
@@ -323,5 +322,4 @@
 			transform: translateY(0px);
 		}
 	}
-
 </style>

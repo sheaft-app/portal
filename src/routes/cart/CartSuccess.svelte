@@ -66,22 +66,20 @@
 					<p class="text-xl font-semibold mb-2 mt-10">Et maintenant ?</p>
 					{#if order.deliveries && order.deliveries.length > 1}
 						<p class="mb-2">
-							Vos commandes ont été envoyées aux producteurs concernés, qui doivent maintenant les accepter. Vous
-							recevrez une notification pour chaque mise à jour.
+							Vos commandes ont été envoyées aux producteurs concernés, qui doivent maintenant les
+							accepter. Vous recevrez une notification pour chaque mise à jour.
 						</p>
 					{:else}
 						<p class="mb-2">
-							Votre commande a été envoyée au producteur, qui doit maintenant l'accepter. Vous recevrez une notification
-							pour chaque mise à jour.
+							Votre commande a été envoyée au producteur, qui doit maintenant l'accepter. Vous recevrez
+							une notification pour chaque mise à jour.
 						</p>
 					{/if}
 					<p class="text-xl font-semibold mb-2 mt-6">Besoin d'une information ?</p>
 					<p>
-						Vous voulez savoir où en est votre commande ? Vous avez oublié où aller la chercher ? À quelle heure ? Vous
-						pouvez trouver toutes les informations dans les détails de la commande dans votre espace <a
-							href="javascript:void(0)"
-							on:click={() => routerInstance.goTo(MyOrderRoutes.List)}
-						>
+						Vous voulez savoir où en est votre commande ? Vous avez oublié où aller la chercher ? À quelle
+						heure ? Vous pouvez trouver toutes les informations dans les détails de la commande dans votre
+						espace <a href="javascript:void(0)" on:click={() => routerInstance.goTo(MyOrderRoutes.List)}>
 							Mes Commandes
 						</a> .
 					</p>
@@ -123,7 +121,8 @@
 				{#each order.deliveries as delivery}
 					<div class="mb-1">
 						- {delivery.deliveryMode.producer.name} prévue pour le
-						<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong>.
+						<strong>{new Date(delivery.expectedDelivery.expectedDeliveryDate).toLocaleDateString()}</strong
+						>.
 					</div>
 				{/each}
 			{/if}

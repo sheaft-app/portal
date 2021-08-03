@@ -25,7 +25,9 @@
 </script>
 
 <div class="delivery-card rounded-3xl px-4 py-2 bg-white">
-	<div class="flex justify-between py-2 border-b border-gray-300 flex-wrap flex-col-reverse xl:flex-nowrap xl:flex-row">
+	<div
+		class="flex justify-between py-2 border-b border-gray-300 flex-wrap flex-col-reverse xl:flex-nowrap xl:flex-row"
+	>
 		<div style="max-width: 190px;">
 			<p class="font-semibold text-xl">{deliveryBatch.name}</p>
 			<p>{format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}</p>
@@ -37,7 +39,12 @@
 			</span>
 			{#if deliveryBatch?.deliveryFormsUrl}
 				<div class="xl:w-full">
-					<a target="_blank" href={deliveryBatch.deliveryFormsUrl} class="btn-link" style="display: inline-block;">
+					<a
+						target="_blank"
+						href={deliveryBatch.deliveryFormsUrl}
+						class="btn-link"
+						style="display: inline-block;"
+					>
 						<Icon data={faEye} class="mr-1" />
 						Voir les B.L
 					</a>

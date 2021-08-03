@@ -26,7 +26,8 @@
 		groupBy(deliveryHours, (item) => [item.day]).map((g) =>
 			g.filter(
 				(delivery, index, self) =>
-					index === self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
+					index ===
+					self.findIndex((d) => d.day === delivery.day && d.from === delivery.from && d.to === delivery.to)
 			)
 		);
 
@@ -133,7 +134,11 @@
 									{DayOfWeekKind.label(deliveryHour.day)}
 								</p>
 								<div>
-									<p>{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(deliveryHour.to)}`}</p>
+									<p>
+										{`${timeSpanToFrenchHour(deliveryHour.from)} à ${timeSpanToFrenchHour(
+											deliveryHour.to
+										)}`}
+									</p>
 								</div>
 							</div>
 						{/each}
@@ -157,7 +162,11 @@
 										</p>
 										<div>
 											{#each deliveryHour as hours}
-												<p>{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(hours.to)}`}</p>
+												<p>
+													{`${timeSpanToFrenchHour(hours.from)} à ${timeSpanToFrenchHour(
+														hours.to
+													)}`}
+												</p>
 											{/each}
 										</div>
 									</div>

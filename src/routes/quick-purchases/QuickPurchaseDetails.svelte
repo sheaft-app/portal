@@ -66,7 +66,9 @@
 		return (
 			sum +
 			producer.products.reduce((productSum, product) => {
-				return productSum + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0);
+				return (
+					productSum + (product.returnable ? product.returnable.wholeSalePrice : 0) * (product.quantity || 0)
+				);
 			}, 0)
 		);
 	}, 0);
@@ -99,7 +101,8 @@
 			producer.products.reduce((productSum, product) => {
 				return (
 					productSum +
-					(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) * (product.quantity || 0)
+					(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) *
+						(product.quantity || 0)
 				);
 			}, 0)
 		);
@@ -149,9 +152,15 @@
 								<div class="text-lg leading-5 font-medium">
 									<p>{product.name}</p>
 								</div>
-								<div class="text-sm leading-5">{formatMoney(product.wholeSalePricePerUnit)} / unité</div>
 								<div class="text-sm leading-5">
-									{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+									{formatMoney(product.wholeSalePricePerUnit)} / unité
+								</div>
+								<div class="text-sm leading-5">
+									{formatConditioningDisplay(
+										product.conditioning,
+										product.quantityPerUnit,
+										product.unit
+									)}
 								</div>
 							</div>
 							<div class="md:w-2/12 px-3 block md:hidden">
@@ -163,7 +172,9 @@
 							</div>
 							<div class="w-12/12 md:w-5/12 xl:w-3/12 px-3">
 								{#if product.available}
-									<div class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity">
+									<div
+										class="flex m-auto border border-gray-400 border-solid rounded-full product-quantity"
+									>
 										<button
 											disabled={product.quantity === 0}
 											style="height: 36px;"

@@ -89,16 +89,18 @@
 		if (currentMarker) map.removeLayer(currentMarker);
 
 		if (hoveredProduct.producer.address.latitude && hoveredProduct.producer.address.longitude) {
-			currentMarker = L.marker([hoveredProduct.producer.address.latitude, hoveredProduct.producer.address.longitude], {
-				icon: hoverMarker,
-			}).addTo(map);
+			currentMarker = L.marker(
+				[hoveredProduct.producer.address.latitude, hoveredProduct.producer.address.longitude],
+				{
+					icon: hoverMarker,
+				}
+			).addTo(map);
 			currentMarker.bindPopup(`<b>${hoveredProduct.name}</b><br>${hoveredProduct.producer.name}`).openPopup();
 		}
 	} else {
 		if (currentMarker) map.removeLayer(currentMarker);
 		currentMarker = null;
 	}
-
 </script>
 
 <div {id} style="height: {height}; z-index: 1;" />

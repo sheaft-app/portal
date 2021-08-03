@@ -6,7 +6,6 @@
 	export let icon = faCircleNotch,
 		color = "#a0aec0",
 		text = null;
-
 </script>
 
 <div style="color:{color}; height:250px;" class="flex text-xl text-center items-center justify-center">

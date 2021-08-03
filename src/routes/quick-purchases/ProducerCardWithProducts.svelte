@@ -8,20 +8,17 @@
 
 	export let producer;
 
-	$: totalHT =
-		producer.products.reduce((sum, product) => {
-			return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
-		}, 0);
+	$: totalHT = producer.products.reduce((sum, product) => {
+		return parseFloat(sum) + product.wholeSalePricePerUnit * (product.quantity || 0);
+	}, 0);
 
-	$: returnablesHT =
-		producer.products.reduce((sum, product) => {
-			return parseFloat(sum) + (product.returnable?.wholeSalePrice || 0) * (product.quantity || 0);
-		}, 0);
+	$: returnablesHT = producer.products.reduce((sum, product) => {
+		return parseFloat(sum) + (product.returnable?.wholeSalePrice || 0) * (product.quantity || 0);
+	}, 0);
 
-	$: returnablesVAT =
-		producer.products.reduce((sum, product) => {
-			return parseFloat(sum) + (product.returnable?.vatPrice || 0) * (product.quantity || 0);
-		}, 0);
+	$: returnablesVAT = producer.products.reduce((sum, product) => {
+		return parseFloat(sum) + (product.returnable?.vatPrice || 0) * (product.quantity || 0);
+	}, 0);
 
 	$: totalTTC = totalHT + returnablesHT + returnablesVAT;
 
@@ -35,11 +32,17 @@
 		<p class="mb-1">Consignes HT : {formatMoney(returnablesHT)} (+ {formatMoney(returnablesVAT)} TVA)</p>
 		<p class="mb-1">Montant TTC : {formatMoney(totalTTC)}</p>
 	{/if}
-	<p class="mb-2">Livraison le {format(new Date(producer.deliveryHour.expectedDeliveryDate), "PP", { locale: fr })}</p>
+	<p class="mb-2">
+		Livraison le {format(new Date(producer.deliveryHour.expectedDeliveryDate), "PP", { locale: fr })}
+	</p>
 	<div on:click={() => (productsExpanded = !productsExpanded)} class="font-semibold text-accent cursor-pointer mt-1">
 		{#if !productsExpanded}
 			<Icon data={faChevronDown} class="mr-2" />
-			<span>{producer.products.length > 1 ? `Voir les ${producer.products.length} articles` : "Voir l'article"}</span>
+			<span
+				>{producer.products.length > 1
+					? `Voir les ${producer.products.length} articles`
+					: "Voir l'article"}</span
+			>
 		{:else}
 			<Icon data={faChevronUp} class="mr-2" />
 			<span>Replier le bandeau</span>

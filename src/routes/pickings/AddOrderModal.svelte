@@ -88,7 +88,9 @@
 					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.name}</p>
 					<p class="mb-1">Montant HT : {formatMoney(order.totalWholeSalePrice)}</p>
 					<p class="mb-1">Produits dans la commande : {order.productsCount}</p>
-					<p class="mb-2">Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}</p>
+					<p class="mb-2">
+						Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}
+					</p>
 				</div>
 			</div>
 		{/each}

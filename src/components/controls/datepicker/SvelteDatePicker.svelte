@@ -248,7 +248,6 @@
 		document.addEventListener("keydown", handleKeyPress);
 		dispatch("open");
 	}
-
 </script>
 
 <div class="scal-datepicker" class:open={isOpen} class:closing={isClosing} style={wrapperStyle}>
@@ -357,5 +356,4 @@
 		display: inline-block;
 		text-align: center;
 	}
-
 </style>

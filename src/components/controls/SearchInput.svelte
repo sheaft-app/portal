@@ -29,7 +29,6 @@
 	const handleInput = debounce((e) => {
 		if (searchQuery.length == 0 || searchQuery.length > 2) routerInstance.replaceQueryParams({ text: searchQuery });
 	}, 500);
-
 </script>
 
 <div class="sticky shadow-md rounded {containerClasses}">

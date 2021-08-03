@@ -27,7 +27,6 @@
 			to: data.deliveryHour.to,
 		};
 	});
-
 </script>
 
 {#if delivery}
