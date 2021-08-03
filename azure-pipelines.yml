@@ -21,6 +21,11 @@ steps:
       cacheHitVar: CACHE_RESTORED
     displayName: Cache npm    
   - script: npm ci
+  - task: PowerShell@2
+    displayName: 'Create Config'
+    inputs:
+      targetType: inline
+      script: Copy-Item -Path "src/configs/config.local.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
   - script: npm run build
   - task: ArchiveFiles@2
     displayName: "Archive files"
