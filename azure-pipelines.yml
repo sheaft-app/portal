@@ -21,51 +21,14 @@ steps:
       cacheHitVar: CACHE_RESTORED
     displayName: Cache npm    
   - script: npm ci
-  - task: PowerShell@2
-    displayName: 'Replace Sprint Config'
-    inputs:
-      targetType: inline
-      script: Copy-Item -Path "src/configs/config.sprint.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
-  - script: npm run sprint
+  - script: npm run build
   - task: ArchiveFiles@2
     displayName: "Archive files"
     inputs:
       rootFolderOrFile: "$(System.DefaultWorkingDirectory)/public/"
       includeRootFolder: false
-      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-sprint.zip"
+      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip"
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-sprint.zip'
-      artifactName: 'sheaft-portal-sprint'
-  - task: PowerShell@2
-    displayName: 'Replace Staging Config'
-    inputs:
-      targetType: inline
-      script: Copy-Item -Path "src/configs/config.staging.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
-  - script: npm run staging
-  - task: ArchiveFiles@2
-    displayName: "Archive files"
-    inputs:
-      rootFolderOrFile: "$(System.DefaultWorkingDirectory)/public/"
-      includeRootFolder: false
-      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip"
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-staging.zip'
-      artifactName: 'sheaft-portal-staging'
-  - task: PowerShell@2
-    displayName: 'Replace Production Config'
-    inputs:
-      targetType: inline
-      script: Copy-Item -Path "src/configs/config.production.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
-  - script: npm run production
-  - task: ArchiveFiles@2
-    displayName: "Archive files"
-    inputs:
-      rootFolderOrFile: "$(System.DefaultWorkingDirectory)/public/"
-      includeRootFolder: false
-      archiveFile: "$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-production.zip"
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId)-production.zip'
+      PathtoPublish: '$(System.DefaultWorkingDirectory)/publish_output/build$(Build.BuildId).zip'
       artifactName: 'sheaft-portal'

@@ -1,16 +1,29 @@
 import svelte from "rollup-plugin-svelte";
+
 import resolve from "rollup-plugin-node-resolve";
+
 import commonjs from "rollup-plugin-commonjs";
+
 import postcss from "rollup-plugin-postcss";
+
 import { terser } from "rollup-plugin-terser";
+
 import del from "rollup-plugin-delete";
+
 import babel from "rollup-plugin-babel";
+
 import svelteSVG from "rollup-plugin-svelte-svg";
+
 import { generateSW } from "rollup-plugin-workbox";
+
 import autoPreprocess from "svelte-preprocess";
+
 import alias from "rollup-plugin-alias";
+
 import define from "rollup-plugin-define";
+
 import serve from "rollup-plugin-serve";
+
 import { livereload } from "./livereload";
 
 const isNollup = !!process.env.NOLLUP;
@@ -21,7 +34,7 @@ const isDev = isWatch || isLiveReload;
 const production = !isDev;
 
 export default {
-	input: ["src/index.js"],
+	input: ["src/index.js","src/configs/config.production.js","src/configs/config.staging.js","src/configs/config.sprint.js","src/configs/config.js"],
 	output: [
 		{
 			dir: "public",
@@ -34,8 +47,15 @@ export default {
 	manualChunks(id) {
 		if (id.includes("node_modules")) return "vendor";
 
-		if (id.includes("src/configs")) return "config";
-
+		if (id.includes("src/configs/config.production.js")) 
+			return "config.production";
+		else if (id.includes("src/configs/config.remote.js")) 
+			return "config.remote";
+		else if (id.includes("src/configs/config.sprint.js")) 
+			return "config.sprint";
+		else if(id.includes("src/configs/config.js"))
+			return "config";
+			
 		if (
 			id.includes("src/routes") ||
 			id.includes("src/components") ||
@@ -53,7 +73,7 @@ export default {
 			forms: __dirname + "vendors/svelte-forms",
 		}),
 		del({
-			targets: ["public/app-*", "public/vendor-*"],
+			targets: ["public/app-*", "public/vendor-*", "public/config*"],
 			runOnce: true,
 		}),
 		define({

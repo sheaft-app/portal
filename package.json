@@ -4,14 +4,12 @@
   "scripts": {
     "nol": "nollup -cw --port 4200 --content-base ./public",
     "rol": "rollup -cw",
-    "sprint": "set NODE_ENV=PRODUCTION && rollup -c",
-    "staging": "set NODE_ENV=PRODUCTION && rollup -c",
-    "production": "set NODE_ENV=PRODUCTION && rollup -c",
     "portal:docker": "npm install && cpy ./src/configs/config.docker.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL",
     "rollup:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
     "rollup:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p rol",
     "nollup:local": "npm install && cpy ./src/configs/config.local.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
     "nollup:remote": "npm install && cpy ./src/configs/config.remote.js ./src/configs --rename=config.js && set NODE_ENV=LOCAL && run-p nol",
+    "build": "set NODE_ENV=PRODUCTION && rollup -c",
     "start": "sirv public --dev --single --port 4200"
   },
   "dependencies": {
