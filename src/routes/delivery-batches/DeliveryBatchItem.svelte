@@ -83,7 +83,7 @@
 					<button
 						on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
 						class="btn btn-lg btn-accent text-lg font-semibold"
-						>Lancer
+						>Démarrer
 						<Icon class="ml-2" data={faChevronRight} />
 					</button>
 				{:else}

@@ -12,7 +12,10 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import { normalizeDeliveryBatch, denormalizeDeliveryBatch } from "./deliveryBatchForm";
 	import PostponeDeliveryBatchModal from "./PostponeDeliveryBatchModal.svelte";
+	import SetDeliveryBatchAsReadyModal from "./SetDeliveryBatchAsReadyModal.svelte";
+	import StartDeliveryModal from "./StartDeliveryModal.svelte";
 	import { querystring } from "svelte-spa-router";
+	import DeliveryBatchStatus from "./../../enums/DeliveryBatchStatus";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -61,6 +64,30 @@
 	$: getDeliveryBatch($querystring);
 	$: buttons = [
 		{
+			text: "Confirmer",
+			color: "green",
+			click: () =>
+				open(SetDeliveryBatchAsReadyModal, {
+					id: deliveryBatch.id,
+				}),
+			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Waiting.Value,
+		},
+		{
+			text: "Démarrer",
+			color: "green",
+			click: () =>
+				open(StartDeliveryModal, {
+					id: deliveryBatch.id,
+				}),
+			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Ready.Value,
+		},
+		{
+			text: "Reprendre",
+			color: "green",
+			click: () => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id }),
+			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.InProgress.Value,
+		},
+		{
 			text: "Décaler",
 			color: "blue",
 			click: () =>
@@ -81,12 +108,17 @@
 						if (res.success) routerInstance.goTo(DeliveryBatchesRoutes.List);
 					},
 				}),
+			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Waiting.Value,
 		},
 	];
 </script>
 
 <TransitionWrapper>
-	<PageHeader name="Modifier une livraison programmée" previousPage={DeliveryBatchesRoutes.List} {buttons} />
+	<PageHeader
+		name="Programation {deliveryBatch ? deliveryBatch.name : ''}"
+		previousPage={DeliveryBatchesRoutes.List}
+		{buttons}
+	/>
 	<PageBody {errorsHandler} {isLoading} {loadingMessage}>
 		<DeliveryBatchForm submit={handleSubmit} bind:deliveryBatch />
 	</PageBody>

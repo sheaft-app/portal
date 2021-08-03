@@ -153,6 +153,7 @@ export const GET_ORDER_DETAILS = gql`
 			}
 			delivery {
 				id
+				kind
 				scheduledOn
 				deliveredOn
 				status

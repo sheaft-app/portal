@@ -45,7 +45,7 @@
 						.flat()
 						.map((po) => {
 							if (selectedIds.includes(po.id)) return { ...po, selected: true };
-							else return po;
+							else return { ...po };
 						}),
 					(x) => x.id
 				)),

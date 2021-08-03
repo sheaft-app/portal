@@ -2,13 +2,15 @@
 	let savedValue = 0;
 
 	export let time = {
-		hours: 0,
-		minutes: 0,
-	};
+			hours: 0,
+			minutes: 0,
+		},
+		disabled = false;
 
 	let hourInput, minuteInput;
 
 	function handleChangeHours(e) {
+		if (disabled) return;
 		if (e.target.value > 23) {
 			e.target.value = 2;
 		}
@@ -24,6 +26,7 @@
 	}
 
 	function handleChangeMinutes(e) {
+		if (disabled) return;
 		if (e.target.value > 59 && e.target.value.length <= 2) {
 			e.target.value = e.target.value[0];
 		}
@@ -61,6 +64,7 @@
 		on:focus={handleHoursFocus}
 		on:blur={handleBlur}
 		on:input={(e) => handleChangeHours(e)}
+		{disabled}
 	/>
 	<span class="text-gray-600">h</span>
 	<input
@@ -73,6 +77,7 @@
 		on:focus={handleMinutesFocus}
 		on:blur={handleBlur}
 		on:input={(e) => handleChangeMinutes(e)}
+		{disabled}
 	/>
 </div>
 

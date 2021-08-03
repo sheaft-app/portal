@@ -188,11 +188,7 @@
 								{#if order.delivery.status === DeliveryStatus.Waiting.Value}
 									<p>Cette commande est en attente de validation de la tournée de livraison.</p>
 								{:else if order.delivery.status === DeliveryStatus.Ready.Value}
-									<p>
-										Cette commande est prête à être livrée. (<a
-											href={order.delivery.deliveryFormUrl}>bon de livraison</a
-										>)
-									</p>
+									<p>Cette commande est prête à être livrée.</p>
 								{:else if order.delivery.status === DeliveryStatus.InProgress.Value}
 									<p>Cette commande est en cours de livraison.</p>
 								{:else if order.delivery.status === DeliveryStatus.Delivered.Value}
@@ -200,7 +196,7 @@
 								{:else if order.delivery.status === DeliveryStatus.Rejected.Value}
 									<p>Cette commande a été refusée à la livraison.</p>
 								{:else if order.delivery.status === DeliveryStatus.Skipped.Value}
-									<p>Cette commande a été passée lors de la livraison.</p>
+									<p>Cette commande a été mise de coté lors de la livraison.</p>
 								{/if}
 							</div>
 						{:else}

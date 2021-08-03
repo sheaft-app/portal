@@ -8,6 +8,10 @@
 	import SortList from "../../components/SortList.svelte";
 	import DeliveryWithOrdersCard from "./DeliveryWithOrdersCard.svelte";
 	import { getContext } from "svelte";
+	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
+	import TimePicker from "../../components/controls/TimePicker.svelte";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
 
 	export let submit,
 		deliveryBatch = { ...initialValues };
@@ -38,7 +42,7 @@
 					bind:value={deliveryBatch.name}
 					class:disabled={isLoading}
 					use:bindClass={{ form: deliveryBatchForm, name: "name" }}
-					disabled={isLoading}
+					disabled={isLoading || deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
 					id="grid-product"
 					type="text"
 					placeholder="Livraison centre Annecy"
@@ -46,18 +50,25 @@
 			</div>
 			<ErrorContainer field={$deliveryBatchForm.fields.name} />
 		</div>
-		<!-- <div class="form-control">
+		<div class="form-control">
 			<div class="w-full flex space-x-4">
 				<div>
 					<label>Date de départ</label>
-					<DatePickerWrapper bind:selected={deliveryBatch.scheduledOn} dateChosen={true} />
+					<input
+						type="text"
+						value={format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}
+						disabled={deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
+					/>
 				</div>
 				<div>
 					<label>Heure de départ</label>
-					<TimePicker bind:time={deliveryBatch.from} />
+					<TimePicker
+						bind:time={deliveryBatch.from}
+						disabled={deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
+					/>
 				</div>
 			</div>
-		</div> -->
+		</div>
 		<div class="form-control">
 			<div class="w-full">
 				<label>Clients à livrer</label>
@@ -66,13 +77,16 @@
 						Vous pouvez faire glisser les blocs pour changer l'ordre de livraison.
 					</p>
 				{/if}
-				<button
-					type="button"
-					on:click|preventDefault={() => open(AddOrderModal, { deliveryBatch })}
-					class="btn btn-outline btn-lg mb-2">Ajouter une commande</button
-				>
+				{#if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
+					<button
+						type="button"
+						on:click|preventDefault={() => open(AddOrderModal, { deliveryBatch })}
+						class="btn btn-outline btn-lg mb-2">Ajouter une commande</button
+					>
+				{/if}
 				<SortList
-					disableGrab={deliveryBatch.deliveries.length <= 1}
+					disableGrab={deliveryBatch.deliveries.length <= 1 ||
+						deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
 					bind:data={deliveryBatch.deliveries}
 					component={DeliveryWithOrdersCard}
 				/>
@@ -82,13 +96,15 @@
 	</div>
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">
-		<button
-			type="submit"
-			class:disabled={isLoading || !$deliveryBatchForm.valid}
-			class="btn btn-primary btn-xl justify-center w-full md:w-auto"
-		>
-			<Icon data={isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isLoading} />
-			Valider
-		</button>
+		{#if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
+			<button
+				type="submit"
+				class:disabled={isLoading || !$deliveryBatchForm.valid}
+				class="btn btn-primary btn-xl justify-center w-full md:w-auto"
+			>
+				<Icon data={isLoading ? faCircleNotch : faPaperPlane} class="mr-2 inline" spin={isLoading} />
+				Valider
+			</button>
+		{/if}
 	</div>
 </form>
