@@ -5,5 +5,3 @@ const app = new App({
 });
 
 export default app;
-
-// recreate the whole app if an HMR update touches this module

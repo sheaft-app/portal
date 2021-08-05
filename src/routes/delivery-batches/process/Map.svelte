@@ -98,7 +98,7 @@
 >
 <div class="map" style="height:100%;width:100%" use:mapAction />
 
-<style>
+<style lang="postcss">
 	.exit-button {
 		top: 1em;
 		right: 1em;
@@ -108,7 +108,7 @@
 	}
 
 	.map :global(.marker-text) {
-		@apply bg-white text-gray-800 shadow px-2 py-1 rounded-full shadow;
+		@apply bg-white text-gray-800 shadow px-2 py-1 rounded-full;
 		text-align: center;
 		width: max-content;
 		font-weight: 600;

@@ -250,7 +250,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	.sorting-list {
 		position: relative;
 		@apply mb-2;

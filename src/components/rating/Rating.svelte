@@ -93,9 +93,6 @@
 				on:keyup={() => {
 					onOver(n);
 				}}
-				on:keyup.enter={() => {
-					setRate(n);
-				}}
 				{disabled}
 			>
 				★

@@ -1,8 +1,3 @@
-const tailwind = require("tailwindcss");
-const autoPrefixer = require("autoprefixer");
-const cssImport = require("postcss-import");
-const cssNesting = require("postcss-nesting");
-
 const purgecss = require("@fullhuman/postcss-purgecss")({
 	safelist: [/svelte/, /fa/, /notyf/, /swiper/, /leaflet/, /ssp-/, /scal-/, /tw-/, /bg-.*-[0-9]{3}/, /border-.*-[0-9]{3}/, /text-.*-[0-9]{3}/,/cropper-/,/line-/,/point-/,/dashed-/],
 	content: ["./src/**/*.html", "./src/**/*.svelte"],
@@ -32,10 +27,14 @@ const production = !process.env.ROLLUP_WATCH;
 module.exports = {
 	parser: "postcss-scss",
 	plugins: [
-		cssImport,
-		tailwind,
-		cssNesting,
-		production && autoPrefixer,
+		require("postcss-import"),
+		require("tailwindcss"),
+		require("postcss-nested"),
+		require('postcss-preset-env')({
+			features: { 'nesting-rules': false }
+		}),
+		require('postcss-nested-ancestors'),
+		production && require("autoprefixer"),
 		production && purgecss,
 	].filter(plugin => plugin)
 };

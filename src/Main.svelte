@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import AcceptCookiePlaceholder from "./components/modal/AcceptCookiePlaceholder.svelte";
 	import { allDepartmentsProgress } from "./stores/app";
 	import cart from "./stores/cart";
@@ -28,7 +28,6 @@
 	export let guardInstance;
 	export let routerInstance;
 	export let signalrInstance;
-	export let notificationsInstance;
 
 	mangoPay.cardRegistration.baseURL = config.psp.url;
 	mangoPay.cardRegistration.clientId = config.psp.clientId;
@@ -75,7 +74,7 @@
 		}
 	});
 
-	window.mobileAndTabletCheck = function () {
+	(window as any).mobileAndTabletCheck = function () {
 		let check = false;
 		(function (a) {
 			if (
@@ -87,13 +86,9 @@
 				)
 			)
 				check = true;
-		})(navigator.userAgent || navigator.vendor || window.opera);
+		})(navigator.userAgent || navigator.vendor || (window as any).opera);
 		return check;
 	};
-
-	window.addEventListener("beforeinstallprompt", () => {});
-	window.addEventListener("appinstalled", () => {});
-	window.addEventListener("load", () => {});
 
 	onMount(async () => {
 		isLoading = true;
@@ -120,13 +115,10 @@
 	});
 
 	onDestroy(async () => {
-		window.removeEventListener("beforeinstallprompt");
-		window.removeEventListener("load");
-		window.removeEventListener("appinstalled");
 
-		if (authSubscription && authSubscription.unsubscribe) authSubscription.unsubscribe();
+		if (authSubscription) authSubscription();
 
-		if (initSubscription && initSubscription.unsubscribe) initSubscription.unsubscribe();
+		if (initSubscription) initSubscription();
 
 		if (authInstance) authInstance.unregister();
 
@@ -725,10 +717,6 @@
 			}
 		}
 	}
-
-	@use postcss-preset-env;
-	@use postcss-nested-ancestors;
-	@use postcss-nested;
 
 	.skeleton-box {
 		position: relative;

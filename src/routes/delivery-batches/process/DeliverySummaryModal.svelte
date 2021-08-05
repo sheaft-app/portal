@@ -173,7 +173,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	.cancel:not(:hover) {
 		@apply bg-white !important;
 	}

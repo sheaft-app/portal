@@ -41,7 +41,7 @@
 	</label>
 </div>
 
-<style>
+<style lang="postcss">
 	.toggle {
 		z-index: 0;
 		@apply flex !important;

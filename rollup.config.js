@@ -26,6 +26,11 @@ import serve from "rollup-plugin-serve";
 
 import { livereload } from "./livereload";
 
+import typescript from '@rollup/plugin-typescript';
+
+import nodePolyfills from 'rollup-plugin-polyfill-node';
+
+const svelteConfig = require('./svelte.config.js');
 const isNollup = !!process.env.NOLLUP;
 const isWatch = !!process.env.ROLLUP_WATCH;
 const isLiveReload = !!process.env.LIVERELOAD;
@@ -41,7 +46,7 @@ export default {
 			format: "es",
 			chunkFileNames: "[name]-[hash].js",
 			sourcemap: isNollup || !production,
-			compact: production,
+			compact: production,			
 		},
 	],
 	manualChunks(id) {
@@ -69,6 +74,7 @@ export default {
 		}
 	},
 	plugins: [
+		nodePolyfills({include:["util"]}),
 		alias({
 			forms: __dirname + "vendors/svelte-forms",
 		}),
@@ -90,12 +96,8 @@ export default {
 			compilerOptions: {
 				dev: !production,
 			},
-			emitCss: true,
-			preprocess: autoPreprocess({
-				globalStyle: true,
-				postcss: true,
-				scss: true,
-			}),
+			emitCss: svelteConfig.emitCss,
+			preprocess: svelteConfig.preprocess
 		}),
 		svelteSVG(),
 		postcss(),

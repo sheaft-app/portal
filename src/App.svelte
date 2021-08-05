@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { InitGraphQL } from "./services/SheaftGraphQL.js";
 	import { InitAuth } from "./services/SheaftAuth.js";
 	import { InitSignalr } from "./services/SheaftSignalr.js";
@@ -30,5 +30,5 @@
 </script>
 
 <GraphQLContext>
-	<Main {authInstance} {errorsHandlers} {guardInstance} {routerInstance} {signalrInstance} {notificationsInstance} />
+	<Main {authInstance} {errorsHandlers} {guardInstance} {routerInstance} {signalrInstance} />
 </GraphQLContext>
