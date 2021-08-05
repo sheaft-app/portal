@@ -1,5 +1,7 @@
 import { querystring, push, pop, replace, location as locat } from "svelte-spa-router";
+
 import qs from "qs";
+
 import Guid from "../helpers/Guid";
 
 class SheaftRouter {
@@ -59,9 +61,8 @@ class SheaftRouter {
 	}
 
 	unregister() {
-		if (this.locSubscription && this.locSubscription.unsubscribe) this.locSubscription.unsubscribe();
-
-		if (this.queryStrSubscription && this.queryStrSubscription.unsubscribe) this.queryStrSubscription.unsubscribe();
+		if (this.locSubscription) this.locSubscription();
+		if (this.queryStrSubscription) this.queryStrSubscription();
 	}
 }
 

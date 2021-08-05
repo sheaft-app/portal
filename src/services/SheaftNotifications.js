@@ -1,6 +1,7 @@
 import { Notyf } from "notyf";
-import { notifications, notificationsCount } from "./../components/notifications/store.js";
+
 import { getFormattedNotification } from "./../components/notifications/helpers.js";
+import { notifications, notificationsCount } from "./../components/notifications/store.js";
 
 let allNotifications = [];
 
@@ -165,7 +166,7 @@ class SheaftNotificationManager {
 	}
 
 	unregister() {
-		this.notificationSubscribe.unsubscribe();
+		if(this.notificationSubscribe) this.notificationSubscribe();
 	}
 }
 

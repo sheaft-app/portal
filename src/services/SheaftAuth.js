@@ -95,16 +95,7 @@ class SheaftAuth {
 			console.error(err ? err.toString() : "An authorization exception occurred.");
 			this.setAuthStatus(user, true, true, !user.profile.role.includes("ANONYMOUS"), true);
 			return;
-		}
-
-		if (localUser) {
-			this.setAuthStatus(user, localUser.authenticated, localUser.authorized, localUser.registered, true);
-			return;
-		}
-
-		user.id = null;
-		user.profile.id = null;
-		this.setAuthStatus(user, true, true, false, true);
+		}		
 	}
 
 	setAuthStatus(user, authenticated, authorized, registered, initialized) {
@@ -223,15 +214,11 @@ class SheaftAuth {
 	}
 
 	unregister() {
-		if (this.authorizedSub && this.authorizedSub.unsubscribe) this.authorizedSub.unsubscribe();
-
-		if (this.authenticatedSub && this.authenticatedSub.unsubscribe) this.authenticatedSub.unsubscribe();
-
-		if (this.registeredSub && this.registeredSub.unsubscribe) this.registeredSub.unsubscribe();
-
-		if (this.initializedSub && this.initializedSub.unsubscribe) this.initializedSub.unsubscribe();
-
-		if (this.userSub && this.userSub.unsubscribe) this.userSub.unsubscribe();
+		if (this.authorizedSub) this.authorizedSub();
+		if (this.authenticatedSub) this.authenticatedSub();
+		if (this.registeredSub) this.registeredSub();
+		if (this.initializedSub) this.initializedSub();
+		if (this.userSub) this.userSub();
 
 		this.userManager.events.removeAccessTokenExpiring();
 		this.userManager.events.removeAccessTokenExpired();
