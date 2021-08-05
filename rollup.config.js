@@ -1,33 +1,16 @@
 import svelte from "rollup-plugin-svelte";
-
 import resolve from "rollup-plugin-node-resolve";
-
 import commonjs from "rollup-plugin-commonjs";
-
 import postcss from "rollup-plugin-postcss";
-
 import { terser } from "rollup-plugin-terser";
-
 import del from "rollup-plugin-delete";
-
 import babel from "rollup-plugin-babel";
-
 import svelteSVG from "rollup-plugin-svelte-svg";
-
 import { generateSW } from "rollup-plugin-workbox";
-
-import autoPreprocess from "svelte-preprocess";
-
 import alias from "rollup-plugin-alias";
-
 import define from "rollup-plugin-define";
-
 import serve from "rollup-plugin-serve";
-
 import { livereload } from "./livereload";
-
-import typescript from '@rollup/plugin-typescript';
-
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const svelteConfig = require('./svelte.config.js');
