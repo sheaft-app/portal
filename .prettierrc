@@ -5,5 +5,5 @@
 	"semi": true,
 	"bracketSpacing": true,
 	"jsxBracketSameLine": true,
-	"plugins": ["prettier-plugin-svelte"]
+	"plugins": ["./node_modules/prettier-plugin-svelte"]
 }
