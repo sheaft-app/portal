@@ -1,6 +1,6 @@
 <script>
 	import { onMount, createEventDispatcher, tick } from "svelte";
-	import portal from "svelte-portal/src/Portal.svelte";
+	import { portal } from "svelte-portal";
 
 	const dispatch = createEventDispatcher();
 

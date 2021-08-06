@@ -19,10 +19,7 @@
 	import DeliveryKind from "../../enums/DeliveryKind";
 	import { groupBy, encodeQuerySearchUrl } from "../../helpers/app";
 	import "leaflet/dist/leaflet.css";
-	import Tabs from "svelte-tabs/src/Tabs.svelte";
-	import Tab from "svelte-tabs/src/Tab.svelte";
-	import TabList from "svelte-tabs/src/TabList.svelte";
-	import TabPanel from "svelte-tabs/src/TabPanel.svelte";
+	import { Tabs, Tab, TabList, TabPanel } from "svelte-tabs";
 	import { selectedItem } from "../../stores/app.js";
 	import SkeletonCard from "../search-products/SkeletonCard.svelte";
 	import { format } from "date-fns";

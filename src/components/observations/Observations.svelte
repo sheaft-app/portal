@@ -9,7 +9,7 @@
 	import Icon from "svelte-awesome";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
-	import portal from "svelte-portal/src/Portal.svelte";
+	import { portal } from "svelte-portal";
 	import CreateObservation from "./CreateObservation.svelte";
 	import { flip } from "svelte/animate";
 	import { quintOut } from "svelte/easing";
