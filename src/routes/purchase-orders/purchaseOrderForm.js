@@ -1,5 +1,6 @@
-import { getDefaultFields } from "../../stores/form";
 import omit from "lodash/omit";
+
+import { getDefaultFields } from "../../stores/form";
 
 export const initialValues = {
 	client: null,
@@ -15,7 +16,7 @@ export const validators = (values) => ({
 	...getDefaultFields(values, initialValues, ["comment"]),
 	from: { value: values.from, validators: ["required"], enabled: true },
 	to: { value: values.to, validators: ["required"], enabled: true },
-	products: { value: values.products, validators: ["required"], enabled: true },
+	products: { value: values.products, validators: ["required"], enabled: false },
 	client: { value: values.client, validators: ["required"], enabled: true },
 	expectedDeliveryDate: { value: values.expectedDeliveryDate, validators: ["required"], enabled: true },
 });

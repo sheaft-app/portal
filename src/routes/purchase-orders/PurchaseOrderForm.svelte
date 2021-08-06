@@ -127,7 +127,7 @@
 			</div>
 			<ErrorContainer field={$form.fields.to} />
 		</div>
-		<PurchaseOrderProducts {errorsHandler} {purchaseOrder} storeProducts={purchaseOrder.client?.products} />
+		<PurchaseOrderProducts {errorsHandler} {purchaseOrder} storeProducts={purchaseOrder.client?.products} {form} />
 		<div class="form-control pt-4">
 			<div class="w-full">
 				<label for="grid-comment">Remarques</label>

@@ -5,10 +5,13 @@
 	import Icon from "svelte-awesome";
 	import { faPlus } from "@fortawesome/free-solid-svg-icons";
 	import { products } from "./stores";
+import { bindClass } from "../../../vendors/svelte-forms/src";
 
 	export let purchaseOrder,
 		storeProducts = [],
 		errorsHandler;
+
+	export let form;
 
 	const routerInstance = GetRouterInstance();
 	const { open } = getContext("modal");
@@ -38,6 +41,9 @@
 			errorsHandler,
 			storeProducts,
 			alreadyPresentProducts: $products.map((p) => p.id),
+			onClose: (res) => {
+				if(res.success) purchaseOrder.products = $products;
+			}
 		});
 
 	$: purchaseOrder.products = $products;
@@ -94,6 +100,7 @@
 							bind:value={product.quantity}
 							id="grid-price"
 							required
+							use:bindClass={{ form, name: "quantity" }}
 							type="number"
 							step="1"
 							name="quantity"
