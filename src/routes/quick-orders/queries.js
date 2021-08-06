@@ -78,6 +78,7 @@ export const GET_ALL_PRODUCTS = gql`
 				vat
 				vatPricePerUnit
 				returnable {
+					id
 					wholeSalePrice
 					onSalePrice
 					vatPrice

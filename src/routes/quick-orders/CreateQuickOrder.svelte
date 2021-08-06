@@ -31,7 +31,7 @@
 			mutation: CREATE_QUICKORDER,
 			variables: normalizeCreateQuickOrder(form.values()),
 			errorsHandler,
-			success: () => routerInstance.goTo(QuickOrderRoutes.List),
+			success: () => routerInstance.goTo(QuickOrderRoutes.List, null, true),
 			successNotification: "Votre modèle de commande a bien été créé",
 			errorNotification: "Impossible de créer votre modèle de commande",
 			clearCache: [GET_QUICKORDERS],

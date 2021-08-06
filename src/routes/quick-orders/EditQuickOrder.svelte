@@ -43,7 +43,7 @@
 			mutation: UPDATE_QUICKORDER,
 			variables: normalizeUpdateQuickOrder(form.values()),
 			errorsHandler,
-			success: () => routerInstance.goTo(QuickOrderRoutes.List),
+			success: () => routerInstance.goTo(QuickOrderRoutes.List, null, true),
 			successNotification: "Votre modèle de commande a bien été mise à jour",
 			errorNotification: "Impossible de mettre à jour votre modèle de commande",
 			clearCache: [GET_QUICKORDERS],
