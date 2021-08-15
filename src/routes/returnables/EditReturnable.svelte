@@ -11,6 +11,7 @@
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
 	import { querystring } from "svelte-spa-router";
+	import { normalizeReturnable } from "./returnableForm";
 
 	export let params;
 
@@ -29,7 +30,7 @@
 	const handleSubmit = async () =>
 		await mutate({
 			mutation: UPDATE_RETURNABLE,
-			variables: returnable,
+			variables: normalizeReturnable(returnable),
 			errorsHandler,
 			success: () => routerInstance.goTo(ReturnableRoutes.List),
 			successNotification: "La consigne a bien été modifiée",
@@ -50,11 +51,13 @@
 		returnable = await query({
 			query: GET_RETURNABLE_DETAILS,
 			variables: { id: params.id },
-			errorsHandler,
+			errorsHandler,			
 			error: () => routerInstance.goTo(ReturnableRoutes.List),
 			errorNotification: "Impossible de récupérer les informations de la consigne.",
 			skipCache: routerInstance.shouldSkipCache(),
 		});
+
+		returnable.noVat = returnable.vat <= 0;
 		isLoading = false;
 	};
 

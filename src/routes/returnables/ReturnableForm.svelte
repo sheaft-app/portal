@@ -4,6 +4,7 @@
 	import { form, bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import { validators, initialValues } from "./returnableForm";
+	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 
 	export let submit,
 		returnable = { ...initialValues },
@@ -60,6 +61,16 @@
 					/>
 					<ErrorContainer field={$returnableForm.fields.wholeSalePrice} />
 				</div>
+			</div>
+		</div>
+		<div class="form-control">
+			<div class="mt-2 mb-2">
+				<label class="cursor-pointer">
+					<InputCheckbox checked={returnable.noVat} onClick={() => (returnable.noVat = !returnable.noVat)} />
+					Ma consigne ne possède pas de TVA
+				</label>
+			</div>
+			{#if !returnable.noVat}
 				<div class="w-full">
 					<label>TVA *</label>
 					<div
@@ -96,7 +107,7 @@
 					</div>
 					<ErrorContainer field={$returnableForm.fields.vat} />
 				</div>
-			</div>
+			{/if}
 		</div>
 		<div class="form-control">
 			<div class="w-full">

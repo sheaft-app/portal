@@ -10,6 +10,7 @@
 	import { getContext } from "svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
 	import PageBody from "../../components/PageBody.svelte";
+	import { normalizeReturnable } from "./returnableForm";
 
 	export let isInModal = false,
 		onClose,
@@ -21,10 +22,10 @@
 
 	let returnable = undefined; // hack en attendant le multi form
 
-	const handleSubmit = async () => {
-		return await mutate({
+	const handleSubmit = async () =>
+		await mutate({
 			mutation: CREATE_RETURNABLE,
-			variables: returnable,
+			variables: normalizeReturnable(returnable),
 			errorsHandler,
 			success: async (res) => {
 				if (isInModal) await handleClose(res);
@@ -34,7 +35,6 @@
 			errorNotification: "Impossible de créer votre consigne",
 			clearCache: [GET_RETURNABLES],
 		});
-	};
 
 	const handleClose = async (res) => {
 		close();
