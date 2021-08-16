@@ -66,7 +66,7 @@
 		<div class="form-control">
 			<div class="mt-2 mb-2">
 				<label class="cursor-pointer">
-					<InputCheckbox checked={returnable.noVat} onClick={() => (returnable.noVat = !returnable.noVat)} />
+					<InputCheckbox checked={returnable.noVat} onClick={() => {returnable.noVat = !returnable.noVat; returnable.vat = returnable.noVat ? 0 : null;}} />
 					Ma consigne ne possède pas de TVA
 				</label>
 			</div>
