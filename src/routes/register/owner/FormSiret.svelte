@@ -27,6 +27,8 @@
 			variables: { input: `${$siret}` },
 			errorsHandler,
 			success: (res) => {
+				if(!res)
+					return;
 				$company.address = res.address;
 				$company.kind = res.kind;
 				$company.name = res.name;

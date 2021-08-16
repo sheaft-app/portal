@@ -3,7 +3,7 @@ import GetEnumObjectFor from "./helpers.js";
 let enums = {
 	RCS: { Value: "RCS", Label: "Registre du commerce et des sociétés" },
 	RM: { Value: "RM", Label: "Répertoire des métiers" },
-	NotSpecified: { Value: "NA", Label: "Non applicable" },
+	NotSpecified: { Value: "NOT_SPECIFIED", Label: "Non applicable" },
 };
 
 let RegistrationKind = {
