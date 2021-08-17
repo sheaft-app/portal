@@ -10,7 +10,6 @@ const history = "/history";
 const summary = "/summary/:id";
 const details = "/:id";
 const process = `${details}/process`;
-const processProduct = `${process}/:productId`;
 
 const PickingRoutes = {
 	Prefix: `${prefix}`,
@@ -69,17 +68,7 @@ const PickingRoutes = {
 		Params: {
 			id: null,
 		},
-	},
-	ProcessProduct: {
-		Name: "Préparation en cours - Produit",
-		Icon: faClipboardList,
-		Path: `${prefix}${processProduct}`,
-		SubPart: `${processProduct}`,
-		Params: {
-			id: null,
-			productId: null,
-		},
-	},
+	}
 };
 
 export default PickingRoutes;
