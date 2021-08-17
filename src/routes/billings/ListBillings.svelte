@@ -1,5 +1,5 @@
 <script>
-	import { faCheck, faFileExport, faCalendarCheck, faPlus, faHistory } from "@fortawesome/free-solid-svg-icons";
+	import { faCheck, faFileExport, faCalendarCheck, faPlus, faHistory, faArchive } from "@fortawesome/free-solid-svg-icons";
 	import TransitionWrapper from "./../../components/TransitionWrapper.svelte";
 	import Table from "./../../components/table/Table.svelte";
 	import Actions from "./../../components/table/Actions.svelte";
@@ -15,6 +15,7 @@
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import BillingRoutes from "./routes";
+	import MarkTimeRangeDeliveriesAsBilled from "./MarkTimeRangeDeliveriesAsBilled.svelte";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -36,7 +37,7 @@
 		routerInstance.goTo(BillingRoutes.Details, { id: item.id });
 	};
 
-	const markAsBilled = () => {
+	const markSelectionAsBilled = () => {
 		open(MarkDeliveriesAsBilled, {
 			deliveries: selectedItems,
 			onClose: (res) => {
@@ -48,15 +49,20 @@
 		});
 	};
 
-	const exportTimeRange = () => {
-		open(ExportTimeRangeAccounting, {
+	const markTimeRangeAsBilled = () => {
+		open(MarkTimeRangeDeliveriesAsBilled, {
 			onClose: (res) => {
-				if (res.success) selectedItems = [];
+				if (res.success) 
+					routerInstance.refresh();
 			},
 		});
 	};
 
-	const exportToBill = () => {
+	const exportTimeRange = () => {
+		open(ExportTimeRangeAccounting);
+	};
+
+	const exportSelectionToBill = () => {
 		open(ExportSelectedAccountings, {
 			deliveries: selectedItems,
 			onClose: (res) => {
@@ -65,42 +71,47 @@
 		});
 	};
 
-	const canMarkAsBilled = (items) => {
-		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
+	const canSelect = (selected) => {
+		return selectedItems && selectedItems.length > 0 && selectedItems.filter((i) => i.billedOn).length === 0;
 	};
 
-	const canExportToBill = (items) => {
-		return items && items.length > 0 && items.filter((i) => i.billedOn).length === 0;
-	};
-
-	const canExportTimeRange = (items) => {
-		return !items || items.length < 1;
+	const canTimeRange = (selected) => {
+		return items && items.length > 0 && (!selectedItems || selectedItems.length < 1);
 	};
 
 	$: actions = [
 		{
-			click: () => markAsBilled(),
-			disabled: !canMarkAsBilled(selectedItems),
-			text: "Marquer comme facturée(s)",
-			icon: faCheck,
-			color: "green",
+			click: () => exportSelectionToBill(),
+			disabled: !canSelect(selectedItems),
+			text: "Exporter ces livraisons",
+			icon: faFileExport,
+			color: "teal",
+			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
 		{
-			click: () => exportToBill(),
-			disabled: !canExportToBill(selectedItems),
-			text: "Exporter ces livraison(s)",
-			icon: faFileExport,
-			color: "orange",
+			click: () => markSelectionAsBilled(),
+			disabled: !canSelect(selectedItems),
+			text: "Archiver ces livraisons",
+			icon: faArchive,
+			color: "green",
 			hideIfDisabled: true,
 			displaySelectedItemsNumber: true,
 		},
 		{
 			click: () => exportTimeRange(),
-			disabled: !canExportTimeRange(selectedItems),
+			disabled: !canTimeRange(items, selectedItems),
 			text: "Exporter",
 			icon: faFileExport,
-			color: "orange",
+			color: "teal",
+			hideIfDisabled: true,
+		},
+		{
+			click: () => markTimeRangeAsBilled(),
+			disabled: !canTimeRange(items, selectedItems),
+			text: "Archiver",
+			icon: faArchive,
+			color: "green",
 			hideIfDisabled: true,
 		},
 		{

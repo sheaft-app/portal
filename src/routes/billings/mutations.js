@@ -7,6 +7,7 @@ export const EXPORT_TIMERANGED_BILLINGS = gql`
 		}
 	}
 `;
+
 export const EXPORT_BILLINGS = gql`
 	mutation ExportBillings($input: QueueExportBillingsInput) {
 		exportBillings(input: $input) {
@@ -18,6 +19,14 @@ export const EXPORT_BILLINGS = gql`
 export const MARK_DELIVERIES_AS_BILLED = gql`
 	mutation MarkAsBilled($input: MarkDeliveriesAsBilledInput) {
 		markDeliveriesAsBilled(input: $input) {
+			id
+		}
+	}
+`;
+
+export const MARK_TIME_RANGE_DELIVERIES_AS_BILLED = gql`
+	mutation MarkTimeRangeAsBilled($input: MarkTimeRangeDeliveriesAsBilledInput) {
+		markTimeRangeDeliveriesAsBilled(input: $input) {
 			id
 		}
 	}
