@@ -1,8 +1,8 @@
 <!-- détails d'un produit -->
 <script>
 	import { fly } from "svelte/transition";
-	import { getContext } from "svelte";
-	import { GET_PICKINGS } from "../queries";
+	import { getContext, onMount } from "svelte";
+	import { GET_BATCHES } from "../queries";
 	import { SET_PICKING_PRODUCT_PREPARED_QUANTITY } from "../mutations";
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import SheaftErrors from "../../../services/SheaftErrors";
@@ -17,21 +17,32 @@
 
 	export let pickingId;
 	export let products = [];
-	export let batches = [];
 
 	const errorsHandler = new SheaftErrors();
 	const { query, mutate } = getContext("api");
 	const { open } = getContext("modal");
 	const routerInstance = GetRouterInstance();
 
-	let preparedBy = null;
 	let previousStepper = 0;
 	let isSubmitting = false;
 	let selectedBatches = [];
 	let stepper = 0;
 	let displayedBatches = [];
+	let batches = [];
+
+	onMount(async () => {
+		batches = await query({
+			query: GET_BATCHES,
+			errorsHandler,
+			errorNotification: "Impossible de charger les lots"
+		});
+
+		displayedBatches = batches;
+	});
 
 	const handleSaveAndContinue = async (product, end = false) => {
+		// simple denormalization for getSelectedBatches
+		products[stepper].selectedBatches = selectedBatches.map(b => ({ id: b })); 
 		await mutate({
 			mutation: SET_PICKING_PRODUCT_PREPARED_QUANTITY,
 			variables: {
@@ -49,8 +60,7 @@
 				if (end) routerInstance.goTo(PickingRoutes.List)
 			},
 			errorsHandler,
-			errorNotification: "Impossible de sauvegarder la préparation.",
-			clearCache: [pickingId, GET_PICKINGS],
+			errorNotification: "Impossible de sauvegarder la préparation."
 		});
 	};
 
@@ -70,8 +80,8 @@
 	const next = (product) => {
 		if (stepper < products.length - 1) {
 			previousStepper = stepper;
-			++stepper;
 			handleSaveAndContinue(product);
+			++stepper;
 		} else {
 			openValidateModal(product);
 		}
@@ -106,6 +116,11 @@
 		}
 	};
 
+	const getSelectedBatches = async (product) => {
+		selectedBatches = products[stepper].selectedBatches.map((b) => b.id);
+	}
+
+	$: stepper, getSelectedBatches();
 	$: disabledStep3 = isSubmitting;
 </script>
 

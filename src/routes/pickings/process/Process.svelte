@@ -25,7 +25,6 @@
 
 	let picking = null;
 	let products = [];
-	let batches = [];
 	let isLoading = true;
 	let loadingMessage = "Chargement des informations de la préparation en cours...";
 
@@ -37,25 +36,10 @@
 			errorsHandler,
 			success: async (res) => {
 				products = denormalizeProducts(res.productsToPrepare, res.preparedProducts);
-
-				// if (products.length == 0) {
-				// 	routerInstance.goTo(PickingRoutes.Process, { id: params.id });
-				// }
-
-				batches = await query({
-					query: GET_BATCHES,
-					errorsHandler,
-					errorNotification: "Impossible de charger les lots",
-				});
-
-				// displayedBatches = batches;
-
-				// if (preparedProducts[0] && preparedProducts[0].batches) {
-				// 	selectedBatches = preparedProducts[0].batches.map((b) => b.id);
-				// }
 			},
 			error: () => routerInstance.goTo(PickingRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
+			skipCache: true
 		});
 		isLoading = false;
 	});
@@ -113,7 +97,6 @@
 				<ProcessProducts 
 					pickingId={params.id}
 					{products}
-					{batches}
 				/>
 			</div>
 		{/if}

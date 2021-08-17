@@ -32,7 +32,7 @@ export const denormalizeProducts = (products, productsPrepared) => {
 			purchaseOrderId: p.purchaseOrder.id,
 			expected: p.quantity,
 			prepared: 0,
-		}],
+		}];
 		product["prepared"] = 0;
 
 
@@ -45,6 +45,7 @@ export const denormalizeProducts = (products, productsPrepared) => {
 				if (p2) {
 					p2.prepared = _p.quantity;
 					product["prepared"] += _p.quantity;
+					product["selectedBatches"] = _p.batches || [];
 				}
 
 				if (!_p.completed) product["completed"] = false;
