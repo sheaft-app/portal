@@ -29,7 +29,7 @@
 			errorNotification: "Impossible de terminer la préparation",
 			clearCache: [variables.id, GET_PICKINGS],
 		});
-		isSubmitting = true;
+		isSubmitting = false;
 	};
 </script>
 
