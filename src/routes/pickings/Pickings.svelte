@@ -5,7 +5,6 @@
 	import PickingSummary from "./PickingSummary.svelte";
 	import EditPicking from "./EditPicking.svelte";
 	import Process from "./process/Process.svelte";
-	import ProcessProduct from "./process/ProcessProduct.svelte";
 	import Router from "svelte-spa-router";
 	import Meta from "../../components/Meta.svelte";
 
@@ -18,7 +17,6 @@
 	routes[PickingRoutes.History.SubPart] = ListPickingHistory;
 	routes[PickingRoutes.Edit.SubPart] = EditPicking;
 	routes[PickingRoutes.Process.SubPart] = Process;
-	routes[PickingRoutes.ProcessProduct.SubPart] = ProcessProduct;
 </script>
 
 <Meta />

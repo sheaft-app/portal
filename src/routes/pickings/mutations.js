@@ -16,6 +16,14 @@ export const UPDATE_PICKING = gql`
 	}
 `;
 
+export const COMPLETE_PICKING = gql`
+	mutation CompletePicking($input: CompletePickingInput) {
+		completePicking(input: $input) {
+			id
+		}
+	}
+`;
+
 export const START_PICKING = gql`
 	mutation StartPicking($input: StartPickingInput) {
 		startPicking(input: $input) {

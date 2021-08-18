@@ -2,12 +2,12 @@
 <script>
 	import { onMount, getContext } from "svelte";
 	import GetRouterInstance from "./../../../services/SheaftRouter.js";
-	import { GET_PICKING_DETAILS } from "../queries";
+	import { GET_BATCHES, GET_PICKING_DETAILS } from "../queries";
 	import SheaftErrors from "../../../services/SheaftErrors";
 	import PickingRoutes from "../routes";
 	import TransitionWrapper from "../../../components/TransitionWrapper.svelte";
 	import PageHeader from "../../../components/PageHeader.svelte";
-	import { denormalizePickingProducts } from "../pickingForm";
+	import { denormalizeProducts } from "../pickingForm";
 	import PageBody from "../../../components/PageBody.svelte";
 	import PickingStatus from "../../../enums/PickingStatus.js";
 	import DeliveryKind from "../../../enums/DeliveryKind.js";
@@ -15,6 +15,7 @@
 	import RetrievalRoutes from "../../retrievals/routes";
 	import Icon from "svelte-awesome";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
+	import ProcessProducts from "./ProcessProducts.svelte";
 
 	export let params;
 
@@ -33,15 +34,12 @@
 			query: GET_PICKING_DETAILS,
 			variables: { id: params.id },
 			errorsHandler,
-			success: (res) => {
-				products = denormalizePickingProducts(res.productsToPrepare, res.preparedProducts);
-
-				// la préparation est terminée
-				if (res.status !== PickingStatus.Waiting.Value) {
-				}
+			success: async (res) => {
+				products = denormalizeProducts(res.productsToPrepare, res.preparedProducts);
 			},
 			error: () => routerInstance.goTo(PickingRoutes.List),
 			errorNotification: "La préparation à laquelle vous essayez d'accéder n'existe plus.",
+			skipCache: true
 		});
 		isLoading = false;
 	});
@@ -82,59 +80,24 @@
 								Vous pouvez programmer une livraison pour les commandes concernées en <a
 									href="javascript:void(0)"
 									on:click={() =>
-										routerInstance.goTo(DeliveryBatchRoutes.List, { Query: { selectModal: true } })}
-									>cliquant ici</a
-								>.
+										routerInstance.goTo(DeliveryBatchRoutes.List, { Query: { selectModal: true } })}>cliquant ici</a>.
 							</p>
 						{/if}
 						{#if picking.purchaseOrders.some( (p) => [DeliveryKind.Market.Value, DeliveryKind.Farm.Value, DeliveryKind.Withdrawal.Value, DeliveryKind.Collective.Value].includes(p.expectedDelivery.kind) )}
 							<p class="my-2">
 								Vous pouvez accéder aux informations de distribution pour les commandes concernées en <a
 									href="javascript:void(0)"
-									on:click={() => routerInstance.goTo(RetrievalRoutes.List)}>cliquant ici</a
-								>.
+									on:click={() => routerInstance.goTo(RetrievalRoutes.List)}>cliquant ici</a>.
 							</p>
 						{/if}
 					</div>
 				</div>
 			{/if}
 			<div class="pt-2">
-				{#each products as product}
-					<div class="bg-white shadow px-4 py-2 rounded mb-2 flex justify-between flex-wrap">
-						<div>
-							<p class="text-lg font-semibold">{product.name}</p>
-							{#if product.prepared == 0}
-								<p>{product.total} à préparer</p>
-							{:else if product.prepared > 0 && !product.completed}
-								<p>{product.prepared} préparé(s) sur {product.total}</p>
-							{:else if product.completed}
-								<p>{product.prepared} préparé(s)</p>
-							{/if}
-						</div>
-						<div class="w-full md:w-auto mt-2 md:mt-0">
-							{#if [PickingStatus.Waiting.Value, PickingStatus.InProgress.Value].includes(picking.status)}
-								<button
-									type="button"
-									class:btn-outline={product.completed}
-									class:btn-accent={!product.completed}
-									on:click={routerInstance.goTo(PickingRoutes.ProcessProduct, {
-										id: picking.id,
-										productId: product.id,
-									})}
-									class="btn btn-lg"
-								>
-									{#if product.completed}
-										Modifier
-									{:else if !product.completed && product.prepared > 0}
-										Continuer
-									{:else}
-										Préparer
-									{/if}
-								</button>
-							{/if}
-						</div>
-					</div>
-				{/each}
+				<ProcessProducts 
+					pickingId={params.id}
+					{products}
+				/>
 			</div>
 		{/if}
 	</PageBody>

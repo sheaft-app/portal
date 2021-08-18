@@ -9,40 +9,56 @@ export const validators = (delivery) => ({
 	...getDefaultFields(delivery, initialValues, []),
 });
 
-export const denormalizeProduct = (products, productsPrepared) => {
-	let product = {};
+export const denormalizeProduct = () => {}; // todo remove
 
-	product["id"] = products[0].productId;
-	product["name"] = products[0].name;
-	product["completed"] = true;
-	product["total"] = products.reduce((acc, curr) => {
-		acc += curr.quantity;
-		return acc;
-	}, 0);
-	product["clients"] = products.map((p) => ({
-		name: p.purchaseOrder.sender.name,
-		purchaseOrderId: p.purchaseOrder.id,
-		expected: p.quantity,
-		prepared: 0,
-	}));
-	product["prepared"] = 0;
+export const denormalizeProducts = (products, productsPrepared) => {
+	let _products = [];
+	
+	products.map(p => {
+		let foundProduct = true;
+		let product = _products.find(p2 => p2?.id == p?.productId);
 
-	if (productsPrepared && productsPrepared.length) {
-		productsPrepared.forEach((p) => {
-			let p2 = product.clients.find((c) => c.purchaseOrderId == p.purchaseOrder.id);
+		if (!product) {
+			foundProduct = false;
+			product = {};
+		}
 
-			if (p2) {
-				p2.prepared = p.quantity;
-				product["prepared"] += p.quantity;
-			}
+		product["id"] = p.productId;
+		product["name"] = p.name;
+		product["completed"] = true;
+		product["total"] = (product?.total || 0) + p.quantity;
+		product["clients"] = [...(product?.clients || []), {
+			name: p.purchaseOrder.sender.name,
+			purchaseOrderId: p.purchaseOrder.id,
+			expected: p.quantity,
+			prepared: 0,
+		}];
+		product["prepared"] = 0;
 
-			if (!p.completed) product["completed"] = false;
-		});
-	} else {
-		product["completed"] = false;
-	}
 
-	return product;
+		let _productsPrepared = productsPrepared?.filter((_p) => _p.productId == p.productId);
+
+		if (_productsPrepared) {
+			_productsPrepared.forEach((_p) => {
+				let p2 = product.clients.find((c) => c.purchaseOrderId == _p.purchaseOrder.id);
+
+				if (p2) {
+					p2.prepared = _p.quantity;
+					product["prepared"] += _p.quantity;
+					product["selectedBatches"] = _p.batches || [];
+				}
+
+				if (!_p.completed) product["completed"] = false;
+			});
+		} else {
+			product["completed"] = false;
+		}
+
+		if (!foundProduct) {
+			_products = [..._products, product];
+		}
+	});
+	return _products;
 };
 
 export const denormalizePickingProducts = (products, productsPrepared) =>

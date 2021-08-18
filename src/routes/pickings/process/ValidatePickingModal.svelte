@@ -1,41 +1,41 @@
 <script>
 	import { getContext } from "svelte";
 	import { GET_PICKINGS } from "../queries";
-	import { SET_PICKING_PRODUCT_PREPARED_QUANTITY } from "../mutations";
+	import { COMPLETE_PICKING } from "../mutations";
 	import ActionConfirm from "../../../components/modal/ActionConfirm.svelte";
 	import GetRouterInstance from "../../../services/SheaftRouter";
 	import SheaftErrors from "../../../services/SheaftErrors";
 	import { faCheck } from "@fortawesome/free-solid-svg-icons";
 	import PickingRoutes from "../routes";
-	import { authUserAccount } from "./../../../stores/auth.js";
+	import { authUserAccount } from "../../../stores/auth.js";
 
 	const errorsHandler = new SheaftErrors();
 	const { mutate } = getContext("api");
 	const routerInstance = GetRouterInstance();
 
-	export let close, variables;
+	export let close, variables, save = () => {};
 
 	let isSubmitting = false;
 	let preparedBy = $authUserAccount.profile.given_name;
 
 	const handleSubmit = async () => {
 		isSubmitting = true;
+		await save();
 		await mutate({
-			mutation: SET_PICKING_PRODUCT_PREPARED_QUANTITY,
+			mutation: COMPLETE_PICKING,
 			variables,
 			errorsHandler,
-			success: () => routerInstance.goTo(PickingRoutes.Process, { id: variables.id }),
-			successNotification: "Préparation du produit terminée",
-			errorNotification: "Impossible de terminer la préparation du produit",
+			success: () => routerInstance.goTo(PickingRoutes.List),
+			errorNotification: "Impossible de terminer la préparation",
 			clearCache: [variables.id, GET_PICKINGS],
 		});
-		isSubmitting = true;
+		isSubmitting = false;
 	};
 </script>
 
 <ActionConfirm
 	{errorsHandler}
-	title="Valider la préparation du produit"
+	title="Valider la préparation"
 	icon={faCheck}
 	isLoading={isSubmitting}
 	submit={handleSubmit}
