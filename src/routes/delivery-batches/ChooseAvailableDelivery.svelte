@@ -101,8 +101,8 @@
 		name.length > 0 &&
 		scheduledOn &&
 		from &&
-		from.hours &&
-		from.minutes;
+		from.hours !== null &&
+		from.minutes !== null;
 </script>
 
 <ActionConfirm
