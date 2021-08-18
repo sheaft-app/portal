@@ -117,7 +117,7 @@
 	};
 
 	const getSelectedBatches = async (product) => {
-		selectedBatches = products[stepper].selectedBatches.map((b) => b.id);
+		selectedBatches = products[stepper]?.selectedBatches?.map((b) => b.id) || [];
 	}
 
 	$: stepper, getSelectedBatches();
