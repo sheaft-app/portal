@@ -22,7 +22,7 @@
 			mutation: START_DELIVERY_BATCH,
 			variables: { id, startFirstDelivery: true },
 			errorsHandler,
-			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: res.id }),
+			success: (res) => routerInstance.goTo(DeliveryBatchesRoutes.PickDeliveryMode, { id: res.id }),
 			errorNotification: "Impossible de démarrer la livraison",
 			clearCache: [GET_DELIVERY_BATCHES],
 		});
@@ -40,5 +40,5 @@
 	icon={faCheck}
 	closeText="Fermer"
 >
-	<p class="pt-2 pb-1 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
+	<p class="pt-2 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
 </ActionConfirm>

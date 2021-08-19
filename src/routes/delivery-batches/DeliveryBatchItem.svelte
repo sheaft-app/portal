@@ -88,7 +88,7 @@
 					</button>
 				{:else}
 					<button
-						on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Process, { id: deliveryBatch.id })}
+						on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.PickDeliveryMode, { id: deliveryBatch.id })}
 						class="btn btn-lg btn-accent text-lg font-semibold"
 						>Reprendre
 						<Icon class="ml-2" data={faChevronRight} />

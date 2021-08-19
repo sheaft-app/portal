@@ -11,6 +11,8 @@ const summary = "/summary/:id";
 const create = "/create";
 const edit = "/:id";
 const deliver = "/deliver/:id";
+const deliveryMode = "/delivery-mode/:id";
+const flatDelivery = "/flat-delivery/:id";
 const nextDelivery = `${deliver}/next`;
 const endDelivery = `${deliver}/end`;
 
@@ -75,6 +77,24 @@ const DeliveryBatchesRoutes = {
 		Icon: faPlay,
 		Path: `${prefix}${deliver}`,
 		SubPart: `${deliver}`,
+		Params: {
+			id: null,
+		},
+	},
+	PickDeliveryMode: {
+		Name: "Choisissez un mode de livraison",
+		Icon: faPlay,
+		Path: `${prefix}${deliveryMode}`,
+		SubPart: `${deliveryMode}`,
+		Params: {
+			id: null,
+		},
+	},
+	FlatProcess: {
+		Name: "Bilan de livraison",
+		Icon: faPlay,
+		Path: `${prefix}${flatDelivery}`,
+		SubPart: `${flatDelivery}`,
 		Params: {
 			id: null,
 		},

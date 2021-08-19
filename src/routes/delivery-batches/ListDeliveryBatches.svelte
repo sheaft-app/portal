@@ -84,7 +84,7 @@
 				>
 					<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
 						<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
-						<p class="font-semibold text-xl">Des commandes sont prêtes à être livrées !</p>
+						<p class="font-semibold text-xl">Des commandes sont prêtes à être livrées</p>
 					</div>
 					<div class="w-full mt-3 px-10 xl:px-12">
 						{#if $items.length > 0}
@@ -96,6 +96,9 @@
 								Programmer une autre livraison
 							</button>
 						{:else}
+							<p>
+								Commencez dès maintenant à livrer une ou plusieurs commandes en cliquant sur <strong>Programmer une livraison</strong>
+							</p>
 							<button on:click={handleCreateDeliveryBatch} class="btn btn-lg btn-accent mt-4">
 								Programmer une livraison
 							</button>
