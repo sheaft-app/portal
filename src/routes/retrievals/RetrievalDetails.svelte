@@ -52,7 +52,7 @@
 			skipCache: routerInstance.shouldSkipCache(),
 		});
 
-		purchaseOrder = getPurchaseOrderModel(retrieval.products, retrieval.returnedReturnables);
+		purchaseOrder = getPurchaseOrderModel(retrieval.products, retrieval.returnedReturnables, retrieval.deliveryFeesWholeSalePrice, retrieval.deliveryFeesVatPrice, retrieval.deliveryFeesOnSalePrice);
 
 		isLoading = false;
 	};
@@ -313,6 +313,59 @@
 											</td>
 										</tr>
 									{/each}
+
+									{#if purchaseOrder.deliveryFeesWholeSalePrice > 0}
+										<tr>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
+                        bg-white text-sm lg:text-base"
+											>
+												<div class="items-center">
+													<p>Livraison</p>
+													<p class="whitespace-no-wrap block lg:hidden">
+														{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+													</p>
+												</div>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base hidden md:table-cell"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">1</p></td
+											>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">1</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.deliveryFeesOnSalePrice)}
+												</p>
+												<p class="whitespace-no-wrap">TVA : 20%</p>
+											</td>
+										</tr>
+									{/if}
 									<tr>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8

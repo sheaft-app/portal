@@ -11,6 +11,8 @@
 	import { initialValues, validators } from "./deliveryForm";
 	import SortList from "../../components/SortList.svelte";
 	import SimpleStoreCard from "./SimpleStoreCard.svelte";
+	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
+	import DeliveryFeesApplication from "../../enums/DeliveryFeesApplication";
 
 	export let submit,
 		delivery = { ...initialValues };
@@ -18,9 +20,6 @@
 	(() => (delivery = form.initialize(delivery, validators, initialValues)))();
 
 	onDestroy(async () => await form.destroy());
-
-	$: if (delivery.limitOrders && !delivery.lockOrderHoursBeforeDelivery) delivery.lockOrderHoursBeforeDelivery = 24;
-	$: if (delivery.limitOrders && !delivery.maxPurchaseOrdersPerTimeSlot) delivery.maxPurchaseOrdersPerTimeSlot = 5;
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -77,63 +76,147 @@
 		</div>
 	{/if}
 	<hr class="my-5" />
-	<div class="form-control mt-6" style="display: block;">
-		<label>Limiter les commandes</label>
-		<Toggle
-			labelPosition="left"
-			disabled={$form.isSubmitting}
-			classNames="ml-1"
-			bind:isChecked={delivery.limitOrders}
-		/>
+	<div class="form-control">
+		<div class="w-full mt-5">
+			<label>Limitations</label>
+		</div>
 	</div>
-	{#if delivery.limitOrders}
-		<div class="form-control">
-			<div class="w-full">
-				<span class="mr-1">Autoriser la prise de commandes jusqu'à</span>
+	<div class="form-control">
+		<div class="w-full">
+			<InputCheckbox
+				checked={delivery.limitOrdersAmount}
+				onClick={() => (delivery.limitOrdersAmount = !delivery.limitOrdersAmount)}
+			/>
+			<span class="mx-1">Autoriser uniquement les commandes d'un montant supérieur ou égal à</span>
+			{#if delivery.limitOrdersAmount}
+				<input
+					id="refuseOrders"
+					type="number"
+					style="width: 80px; display: inline-block;"
+					bind:value={delivery.acceptPurchaseOrdersWithAmountGreaterThan}
+				/>
+			{:else}
+				x
+			{/if}
+			<span class="ml-1">€ HT.</span>
+		</div>
+	</div>
+	<div class="form-control">
+		<div class="w-full">
+			<InputCheckbox
+				checked={delivery.limitOrdersBefore}
+				onClick={() => (delivery.limitOrdersBefore = !delivery.limitOrdersBefore)}
+			/>
+			<span class="mr-1">Autoriser la prise de commandes jusqu'à</span>
+			{#if delivery.limitOrdersBefore}
 				<input
 					id="lockOrders"
 					type="number"
-					style="width: 70px; display: inline-block;"
+					style="width: 80px; display: inline-block;"
 					bind:value={delivery.lockOrderHoursBeforeDelivery}
 				/>
-				<span class="ml-1">heures avant l'horaire de livraison.</span>
-			</div>
+			{:else}
+				x
+			{/if}
+			<span class="ml-1">heures avant la livraison.</span>
 		</div>
-		<div class="form-control">
-			<div class="w-full">
-				<span class="mr-1">Autoriser un maximum de </span>
+	</div>
+	<div class="form-control">
+		<div class="w-full">
+			<InputCheckbox
+				checked={delivery.limitOrdersCount}
+				onClick={() => (delivery.limitOrdersCount = !delivery.limitOrdersCount)}
+			/>
+			<span class="mx-1">Autoriser un maximum de </span>
+			{#if delivery.limitOrdersCount}
 				<input
 					id="maxOrders"
 					type="number"
-					style="width: 70px; display: inline-block;"
+					style="width: 80px; display: inline-block;"
 					bind:value={delivery.maxPurchaseOrdersPerTimeSlot}
 				/>
-				<span class="ml-1">commandes par horaire de livraison.</span>
-			</div>
+			{:else}
+				x
+			{/if}
+			<span class="ml-1">commandes par créneau de livraison.</span>
 		</div>
-	{/if}
-	<h3 class="uppercase font-bold mt-6">Automatisations</h3>
-	<small
-		>Configurez ces composants uniquement si vous êtes en mesure d'assurer un approvisionnement pour le client (par
-		exemple, du lait frais, ou si vous avez un stock conséquent)</small
-	>
-	<div class="form-control mt-3" style="display: block;">
-		<label>Accepter automatiquement les nouvelles commandes</label>
-		<Toggle
-			labelPosition="left"
-			disabled={$form.isSubmitting}
-			classNames="ml-1"
-			bind:isChecked={delivery.autoAcceptRelatedPurchaseOrder}
-		/>
 	</div>
-	<div class="form-control" style="display: block;">
-		<label>Marquer automatiquement les commandes acceptées comme terminées</label>
-		<Toggle
-			labelPosition="left"
-			disabled={$form.isSubmitting}
-			classNames="ml-1"
-			bind:isChecked={delivery.autoCompleteRelatedPurchaseOrder}
+	<div class="form-control">
+		<div class="w-full mt-5">
+			<label>Frais de livraison</label>
+		</div>
+	</div>
+	<div class="form-control">
+		<div class="w-full">
+			<InputCheckbox
+				checked={delivery.applyDeliveryFees}
+				onClick={() => {
+					delivery.applyDeliveryFees = !delivery.applyDeliveryFees;
+					delivery.applyDeliveryFeesWhen = DeliveryFeesApplication.Always.Value;
+				}}
+			/>
+			<span class="mx-1">Appliquer des frais de livraison de </span>
+			{#if delivery.applyDeliveryFees}
+				<input
+					id="deliveryFees"
+					type="number"
+					style="width: 80px; display: inline-block;"
+					bind:value={delivery.deliveryFeesWholeSalePrice}
+				/>
+			{:else}
+				x
+			{/if}
+			<span class="ml-1">€ HT (TVA 20%) pour chaque livraison.</span>
+			{#if delivery.applyDeliveryFees}
+				<div class="mt-3">
+					Ces frais s'appliquent:
+					<div class="mt-4 ml-4">
+						<div>
+							<input
+								checked={delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.Always.Value}
+								on:change={(event) => (delivery.applyDeliveryFeesWhen = event.currentTarget.value)}
+								type="radio"
+								name="amount"
+								value={DeliveryFeesApplication.Always.Value}
+							/>
+							Quelque soit le montant de la commande
+						</div>
+						<div>
+							<input
+								checked={delivery.applyDeliveryFeesWhen ==
+									DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value}
+								on:change={(event) => (delivery.applyDeliveryFeesWhen = event.currentTarget.value)}
+								type="radio"
+								name="amount"
+								value={DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value}
+							/>
+							Si le montant de la commande est inférieur à
+							<input
+								id="applyWhen"
+								type="number"
+								style="width: 80px; display: inline-block;"
+								bind:value={delivery.deliveryFeesMinPurchaseOrdersAmount}
+							/> € HT
+						</div>
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
+	<div class="form-control">
+		<div class="w-full mt-5">
+			<label>Automatisations</label>
+		</div>
+	</div>
+	<div class="form-control mt-3" style="display: block;">
+		<InputCheckbox
+			checked={delivery.autoAcceptRelatedPurchaseOrder}
+			onClick={() => (delivery.autoAcceptRelatedPurchaseOrder = !delivery.autoAcceptRelatedPurchaseOrder)}
 		/>
+		<span class="mx-1"
+			>Accepter automatiquement les nouvelles commandes (les commandes non acceptées dans un délais de 72h sont
+			automatiquement refusées)</span
+		>
 	</div>
 	<p class="text-sm mt-5">* champs requis</p>
 	<div class="form-control mt-5">

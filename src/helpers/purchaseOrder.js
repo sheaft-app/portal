@@ -1,6 +1,6 @@
 import { denormalizeDeliveryBatchProducts } from "../routes/delivery-batches/deliveryBatchForm";
 
-export const getPurchaseOrderModel = (products, returnedReturnables) => {
+export const getPurchaseOrderModel = (products, returnedReturnables, deliveryFeesWholeSalePrice, deliveryFeesVatPrice, deliveryFeesOnSalePrice) => {
 	let returnablesGroupedToBill = {};
 	let model = {
 		products: [],
@@ -8,6 +8,9 @@ export const getPurchaseOrderModel = (products, returnedReturnables) => {
 		totalWholeSalePrice: 0,
 		totalVatPrice: 0,
 		totalOnSalePrice: 0,
+		deliveryFeesWholeSalePrice: deliveryFeesWholeSalePrice ? deliveryFeesWholeSalePrice : 0,
+		deliveryFeesVatPrice: deliveryFeesVatPrice ? deliveryFeesVatPrice : 0,
+		deliveryFeesOnSalePrice: deliveryFeesOnSalePrice ? deliveryFeesOnSalePrice : 0,
 	};
 
 	const accumulateProps = (obj, reference, propName) => {
@@ -79,6 +82,10 @@ export const getPurchaseOrderModel = (products, returnedReturnables) => {
 			model.returnables = [...model.returnables, value];
 		});
 	}
+
+	model.totalWholeSalePrice += model.deliveryFeesWholeSalePrice;
+	model.totalVatPrice += model.deliveryFeesVatPrice;
+	model.totalOnSalePrice += model.deliveryFeesOnSalePrice;
 
 	return model;
 };

@@ -18,6 +18,10 @@ export const GET_DELIVERIES = gql`
 				autoAcceptRelatedPurchaseOrder
 				autoCompleteRelatedPurchaseOrder
 				maxPurchaseOrdersPerTimeSlot
+				deliveryFeesWholeSalePrice
+				deliveryFeesMinPurchaseOrdersAmount
+				acceptPurchaseOrdersWithAmountGreaterThan
+				applyDeliveryFeesWhen
 				deliveryHours {
 					day
 					from
@@ -45,6 +49,10 @@ export const GET_DELIVERY_DETAILS = gql`
 			autoAcceptRelatedPurchaseOrder
 			maxPurchaseOrdersPerTimeSlot
 			autoCompleteRelatedPurchaseOrder
+			deliveryFeesWholeSalePrice
+			deliveryFeesMinPurchaseOrdersAmount
+			acceptPurchaseOrdersWithAmountGreaterThan
+			applyDeliveryFeesWhen
 			agreements {
 				id
 				position

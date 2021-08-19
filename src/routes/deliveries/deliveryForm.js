@@ -1,19 +1,22 @@
-import DeliveryKind from "../../enums/DeliveryKind.js";
-import { getDefaultFields } from "../../stores/form";
 import omit from "lodash/omit";
+
+import DeliveryKind from "../../enums/DeliveryKind.js";
 import {
 	normalizeOpeningHours,
 	normalizeClosingDates,
 	denormalizeClosingDates,
 	denormalizeOpeningHours,
 } from "./../../helpers/app";
+import { getDefaultFields } from "../../stores/form";
+	import DeliveryFeesApplication from "../../enums/DeliveryFeesApplication";
 
 export const initialValues = {
 	name: "",
 	kind: DeliveryKind.ProducerToStore.Value,
 	maxPurchaseOrdersPerTimeSlot: null,
 	autoAcceptRelatedPurchaseOrder: false,
-	limitOrders: false,
+	limitOrdersBefore: false,
+	limitOrdersCount: false,
 	autoCompleteRelatedPurchaseOrder: false,
 	deliveryHours: [
 		{
@@ -29,6 +32,9 @@ export const initialValues = {
 	denormalizedClosings: [],
 	agreements: [],
 	available: true,
+	applyDeliveryFeesWhen: null,
+	deliveryFeesWholeSalePrice: null,
+	deliveryFeesMinPurchaseOrdersAmount: null,
 };
 
 export const validators = (delivery) => ({
@@ -39,6 +45,9 @@ export const validators = (delivery) => ({
 		"closings",
 		"denormalizedClosings",
 		"agreements",
+		"deliveryFeesMinPurchaseOrdersAmount",
+		"deliveryFeesWholeSalePrice",
+		"applyDeliveryFeesWhen",
 	]),
 	openings: {
 		value: delivery.denormalizedDeliveryHours,
@@ -48,12 +57,27 @@ export const validators = (delivery) => ({
 	maxPurchaseOrders: {
 		value: delivery.maxPurchaseOrdersPerTimeSlot,
 		validators: ["min:1"],
-		enabled: delivery.limitOrders,
+		enabled: delivery.limitOrdersCount,
 	},
 	lockPurchaseOrders: {
 		value: delivery.lockOrderHoursBeforeDelivery,
-		validators: ["min:0"],
-		enabled: delivery.limitOrders,
+		validators: ["min:1"],
+		enabled: delivery.limitOrdersBefore,
+	},
+	refusePurchaseOrders: {
+		value: delivery.acceptPurchaseOrdersWithAmountGreaterThan,
+		validators: ["min:1"],
+		enabled: delivery.limitOrdersAmount,
+	},
+	deliveryFeesMinAmount: {
+		value: delivery.deliveryFeesMinPurchaseOrdersAmount,
+		validators: ["min:1"],
+		enabled: delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value,
+	},
+	deliveryFees: {
+		value: delivery.deliveryFeesWholeSalePrice,
+		validators: ["min:1"],
+		enabled: delivery.applyDeliveryFees,
 	},
 	name: { value: delivery.name, validators: ["required", "minLength:3"], enabled: true },
 });
@@ -68,7 +92,10 @@ export const denormalizeDelivery = (delivery) => ({
 			: [],
 	denormalizedDeliveryHours: denormalizeOpeningHours(delivery.deliveryHours),
 	denormalizedClosings: denormalizeClosingDates(delivery.closings),
-	limitOrders: delivery.lockOrderHoursBeforeDelivery != null || delivery.maxPurchaseOrdersPerTimeSlot != null,
+	limitOrdersBefore: delivery.lockOrderHoursBeforeDelivery != null,
+	limitOrdersCount: delivery.maxPurchaseOrdersPerTimeSlot != null,
+	limitOrdersAmount: delivery.acceptPurchaseOrdersWithAmountGreaterThan != null,
+	applyDeliveryFees: delivery.deliveryFeesWholeSalePrice != null,
 });
 
 export const normalizeDelivery = (delivery) =>
@@ -78,8 +105,23 @@ export const normalizeDelivery = (delivery) =>
 			deliveryHours: normalizeOpeningHours(delivery.denormalizedDeliveryHours),
 			closings: normalizeClosingDates(delivery.denormalizedClosings),
 			agreements: delivery.agreements.map((store, position) => ({ id: store.agreementId, position })),
-			lockOrderHoursBeforeDelivery: delivery.limitOrders ? delivery.lockOrderHoursBeforeDelivery : null,
-			maxPurchaseOrdersPerTimeSlot: delivery.limitOrders ? delivery.maxPurchaseOrdersPerTimeSlot : null,
+			lockOrderHoursBeforeDelivery: delivery.limitOrdersBefore ? delivery.lockOrderHoursBeforeDelivery : null,
+			maxPurchaseOrdersPerTimeSlot: delivery.limitOrdersCount ? delivery.maxPurchaseOrdersPerTimeSlot : null,
+			deliveryFeesMinPurchaseOrdersAmount:
+				delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value
+					? delivery.deliveryFeesMinPurchaseOrdersAmount
+					: null,
+			deliveryFeesWholeSalePrice: delivery.applyDeliveryFees ? delivery.deliveryFeesWholeSalePrice : null,
+			acceptPurchaseOrdersWithAmountGreaterThan: delivery.limitOrdersAmount
+				? delivery.acceptPurchaseOrdersWithAmountGreaterThan
+				: null,
 		},
-		["denormalizedDeliveryHours", "denormalizedClosings", "limitOrders"]
+		[
+			"denormalizedDeliveryHours",
+			"denormalizedClosings",
+			"limitOrdersCount",
+			"limitOrdersBefore",
+			"limitOrdersAmount",
+			"applyDeliveryFees",
+		]
 	);

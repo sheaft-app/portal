@@ -86,6 +86,12 @@ export const GET_STORE_DELIVERIES_FOR_PRODUCERS = gql`
 					latitude
 					longitude
 				}
+				deliveryFeesWholeSalePrice
+				deliveryFeesVatPrice
+				deliveryFeesOnSalePrice
+				deliveryFeesMinPurchaseOrdersAmount
+				acceptPurchaseOrdersWithAmountGreaterThan
+				applyDeliveryFeesWhen
 				deliveryHours {
 					day
 					from

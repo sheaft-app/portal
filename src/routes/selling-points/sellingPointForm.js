@@ -1,6 +1,7 @@
-import { getDefaultFields } from "../../stores/form";
 import omit from "lodash/omit";
+
 import { normalizeOpeningHours, normalizeClosingDates } from "./../../helpers/app";
+import { getDefaultFields } from "../../stores/form";
 
 export const initialValues = {
 	name: "",
@@ -8,7 +9,8 @@ export const initialValues = {
 	address: null,
 	maxPurchaseOrdersPerTimeSlot: null,
 	autoAcceptRelatedPurchaseOrder: false,
-	limitOrders: false,
+	limitOrdersBefore: false,
+	limitOrdersCount: false,
 	autoCompleteRelatedPurchaseOrder: false,
 	deliveryHours: [
 		{
@@ -42,12 +44,12 @@ export const validators = (values) => ({
 	maxPurchaseOrders: {
 		value: values.maxPurchaseOrdersPerTimeSlot,
 		validators: ["min:1"],
-		enabled: values.limitOrders,
+		enabled: values.limitOrdersCount,
 	},
 	lockPurchaseOrders: {
 		value: values.lockOrderHoursBeforeDelivery,
-		validators: ["min:0"],
-		enabled: values.limitOrders,
+		validators: ["min:1"],
+		enabled: values.limitOrdersBefore,
 	},
 });
 
@@ -58,8 +60,12 @@ export const normalizeSellingPoint = (sellingPoint) =>
 			address: { ...omit(sellingPoint.address, ["insee"]), country: "FR" },
 			deliveryHours: normalizeOpeningHours(sellingPoint.denormalizedDeliveryHours),
 			closings: normalizeClosingDates(sellingPoint.denormalizedClosings),
-			lockOrderHoursBeforeDelivery: sellingPoint.limitOrders ? sellingPoint.lockOrderHoursBeforeDelivery : null,
-			maxPurchaseOrdersPerTimeSlot: sellingPoint.limitOrders ? sellingPoint.maxPurchaseOrdersPerTimeSlot : null,
+			lockOrderHoursBeforeDelivery: sellingPoint.limitOrdersBefore
+				? sellingPoint.lockOrderHoursBeforeDelivery
+				: null,
+			maxPurchaseOrdersPerTimeSlot: sellingPoint.limitOrdersCount
+				? sellingPoint.maxPurchaseOrdersPerTimeSlot
+				: null,
 		},
-		["denormalizedDeliveryHours", "denormalizedClosings", "limitOrders"]
+		["denormalizedDeliveryHours", "denormalizedClosings", "limitOrdersBefore", "limitOrdersCount"]
 	);

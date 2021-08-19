@@ -52,7 +52,7 @@
 		>
 			<div class="flex text-accent">
 				<Icon data={faEdit} class="mr-2 w-4" />
-				<p class="uppercase font-medium text-xs">Sélectionner l'horaire et le lieu de récupération</p>
+				<p class="uppercase font-medium text-xs">Sélectionner l'horaire de livraison</p>
 			</div>
 		</div>
 	{/if}
@@ -83,7 +83,7 @@
 			{:else}
 				<div class="flex text-accent mt-2 cursor-pointer" on:click={showDeliveryPickModal}>
 					<Icon data={faEdit} class="mr-2 w-4" />
-					<p class="uppercase font-medium text-xs">Modifier l'horaire et/ou le lieu de récupération</p>
+					<p class="uppercase font-medium text-xs">Modifier l'horaire de livraison</p>
 				</div>
 			{/if}
 		</div>

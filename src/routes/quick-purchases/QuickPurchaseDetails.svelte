@@ -6,16 +6,14 @@
 	import { formatMoney, formatConditioningDisplay } from "./../../helpers/app.js";
 	import ConfirmPurchaseModal from "./ConfirmPurchaseModal.svelte";
 	import MyOrdersRoutes from "../my-orders/routes";
+	import DeliveryFeesApplication from "../../enums/DeliveryFeesApplication.js";
 
 	const { open } = getContext("modal");
-	const { query } = getContext("api");
-	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
 
 	export let producers = [],
 		isLoadingDeliveries = false;
 
-	let isLoading = false;
 	let dirty = false;
 
 	const handleLess = (producerId, productId) => {
@@ -44,6 +42,17 @@
 			producers: producerWithProducts,
 			onClose: () => routerInstance.goTo(MyOrdersRoutes.List),
 		});
+	};
+
+	const resetProducer = (producer) => {
+		producer.delivery = null;
+		producer.deliveryHour = null;
+		producer.products = producer.products.map((p) => {
+			p.quantity = 0;
+			return p;
+		});
+
+		producers = producers;
 	};
 
 	$: producerWithProducts = producers
@@ -121,7 +130,89 @@
 		);
 	}, 0);
 
-	$: isValid = producerWithProducts.filter((p) => !p.delivery).length === 0;
+	$: totalDeliveriesFeesHt = producerWithProducts
+		.filter(
+			(pwp) =>
+				pwp.delivery && pwp.delivery.deliveryFeesWholeSalePrice && pwp.delivery.deliveryFeesWholeSalePrice > 0
+		)
+		.reduce((deliveryFeesSum, producer) => {
+			return deliveryFeesSum + producerDeliveryFees(producer).deliveryFeesHt;
+		}, 0);
+
+	$: totalDeliveriesFeesVat = producerWithProducts
+		.filter(
+			(pwp) =>
+				pwp.delivery && pwp.delivery.deliveryFeesWholeSalePrice && pwp.delivery.deliveryFeesWholeSalePrice > 0
+		)
+		.reduce((deliveryFeesSum, producer) => {
+			return deliveryFeesSum + producerDeliveryFees(producer).deliveryFeesVat;
+		}, 0);
+
+	$: totalDeliveriesFeesTtc = producerWithProducts
+		.filter(
+			(pwp) =>
+				pwp.delivery && pwp.delivery.deliveryFeesWholeSalePrice && pwp.delivery.deliveryFeesWholeSalePrice > 0
+		)
+		.reduce((deliveryFeesSum, producer) => {
+			return deliveryFeesSum + producerDeliveryFees(producer).deliveryFeesTtc;
+		}, 0);
+
+	$: producerDeliveryFees = (producer) => {
+		if (
+			producer.delivery &&
+			producer.delivery.applyDeliveryFeesWhen &&
+			producer.delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value
+		) {
+			let totalProducerOrder = producer.products.reduce((productSum, product) => {
+				return (
+					productSum +
+					(product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) *
+						(product.quantity || 0)
+				);
+			}, 0);
+
+			if (totalProducerOrder < producer.delivery.deliveryFeesMinPurchaseOrdersAmount)
+				return {
+					deliveryFeesHt: producer.delivery.deliveryFeesWholeSalePrice,
+					deliveryFeesVat: producer.delivery.deliveryFeesVatPrice,
+					deliveryFeesTtc: producer.delivery.deliveryFeesOnSalePrice,
+				};
+		} else if (
+			producer.delivery &&
+			producer.delivery.applyDeliveryFeesWhen &&
+			producer.delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.Always.Value
+		)
+			return {
+				deliveryFeesHt: producer.delivery.deliveryFeesWholeSalePrice,
+				deliveryFeesVat: producer.delivery.deliveryFeesVatPrice,
+				deliveryFeesTtc: producer.delivery.deliveryFeesOnSalePrice,
+			};
+
+		return {
+			deliveryFeesHt: 0,
+			deliveryFeesVat: 0,
+			deliveryFeesTtc: 0,
+		};
+	};
+
+	$: producerRequireMoreProducts = (producer) => {
+		if (producer.delivery && producer.delivery.acceptPurchaseOrdersWithAmountGreaterThan) {
+			let totalProducerOrder = producer.products.reduce((productSum, product) => {
+				return (
+					productSum +
+					(product.wholeSalePricePerUnit + (product.returnable ? product.returnable.wholeSalePrice : 0)) *
+						(product.quantity || 0)
+				);
+			}, 0);
+
+			return totalProducerOrder < producer.delivery.acceptPurchaseOrdersWithAmountGreaterThan;
+		}
+		return false;
+	};
+
+	$: isValid =
+		producerWithProducts.filter((p) => !p.delivery).length === 0 &&
+		producerWithProducts.filter((p) => producerRequireMoreProducts(p)).length === 0;
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -129,12 +220,22 @@
 		<div class="mx-0 overflow-x-auto w-full lg:w-8/12 lg:pr-12">
 			<div class="align-middle inline-block min-w-full overflow-hidden items mb-5">
 				{#each producers.filter((p) => !p.hide) as producer}
-					<p
+					<div
 						style="border-bottom: 0;"
-						class="text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100 mt-5"
+						class="flex align-middle justify-between text-lg font-semibold uppercase border border-gray-400 py-2 pl-3 bg-gray-100 mt-5"
 					>
-						{producer.name}
-					</p>
+						<div>
+							{producer.name}
+						</div>
+						{#if producer.delivery || producer.products.filter((p) => p.quantity > 0).length > 0}
+							<div
+								class="text-accent mt-1 mr-2 cursor-pointer uppercase font-medium text-xs"
+								on:click={() => resetProducer(producer)}
+							>
+								Réinitialiser
+							</div>
+						{/if}
+					</div>
 					<QuickDeliveryModePicker
 						bind:selected={producer.delivery}
 						bind:selectedDeliveryHour={producer.deliveryHour}
@@ -142,6 +243,35 @@
 						displayLocation={false}
 						isLoading={isLoadingDeliveries}
 					/>
+					{#if producerRequireMoreProducts(producer)}
+						<div
+							class="px-2 md:px-3 py-4 block bg-red-100 border-b border-l border-r
+              border-gray-400 border-solid items-center"
+						>
+							Ce producteur n'accepte que des commandes de plus de <strong
+								>{producer.delivery.acceptPurchaseOrdersWithAmountGreaterThan}€ HT</strong
+							>
+						</div>
+					{/if}
+					{#if producerDeliveryFees(producer).deliveryFeesTtc > 0}
+						<div
+							class="px-2 md:px-3 py-4 block bg-teal-100 border-b border-l border-r
+              border-gray-400 border-solid items-center"
+						>
+							<div>
+								<strong
+									>Frais de livraison : {producerDeliveryFees(producer).deliveryFeesHt}€ HT</strong
+								>
+							</div>
+							{#if producer.delivery.applyDeliveryFeesWhen && producer.delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value}
+								<div>
+									Ces frais peuvent être supprimés si vous dépassez <strong
+										>{producer.delivery.deliveryFeesMinPurchaseOrdersAmount}€ HT</strong
+									> de commande.
+								</div>
+							{/if}
+						</div>
+					{/if}
 					{#each producer.products as product}
 						<div
 							class="px-2 md:px-3 py-4 block md:flex md:flex-row bg-white border-b border-l border-r
@@ -153,7 +283,10 @@
 									<p>{product.name}</p>
 								</div>
 								<div class="text-sm leading-5">
-									{formatMoney(product.wholeSalePricePerUnit)} / unité
+									{formatMoney(
+										product.wholeSalePricePerUnit +
+											(product.returnable ? product.returnable.wholeSalePrice : 0)
+									)} / unité
 								</div>
 								<div class="text-sm leading-5">
 									{formatConditioningDisplay(
@@ -166,7 +299,11 @@
 							<div class="md:w-2/12 px-3 block md:hidden">
 								<p>
 									<span class="font-bold text-xl">
-										{formatMoney(product.wholeSalePricePerUnit * product.quantity || 0)} HT
+										{formatMoney(
+											(product.wholeSalePricePerUnit +
+												(product.returnable ? product.returnable.wholeSalePrice : 0)) *
+												product.quantity || 0
+										)} HT
 									</span>
 								</p>
 							</div>
@@ -221,7 +358,11 @@
 							</div>
 							<div class="md:w-3/12 px-3 text-right hidden md:block">
 								<p class="font-semibold text-lg">
-									{formatMoney(product.wholeSalePricePerUnit * product.quantity || 0)}
+									{formatMoney(
+										(product.wholeSalePricePerUnit +
+											(product.returnable ? product.returnable.wholeSalePrice : 0)) *
+											product.quantity || 0
+									)}
 								</p>
 								<p class="text-sm">H.T</p>
 							</div>
@@ -243,7 +384,7 @@
 				>
 					<div class="flex justify-between w-full lg:px-3 pb-2">
 						<div class="text-left">
-							<p>Montant HT</p>
+							<p>Produits HT</p>
 							<p class="text-sm text-gray-600">
 								{#if productsCount > 0}
 									{productsCount} article{productsCount > 1 ? "s" : ""}
@@ -261,12 +402,20 @@
 						</div>
 						<p>{formatMoney(totalReturnable)}</p>
 					</div>
+					{#if totalDeliveriesFeesHt > 0}
+						<div class="flex justify-between w-full lg:px-3 pb-2">
+							<div class="text-left">
+								<p>Livraisons HT</p>
+							</div>
+							<p>{formatMoney(totalDeliveriesFeesHt)}</p>
+						</div>
+					{/if}
 					<div class="flex justify-between w-full lg:px-3 border-t border-gray-400 pt-2">
 						<div class="text-left">
 							<p class="uppercase font-semibold">Total HT</p>
 						</div>
 						<div>
-							<p class="font-bold text-lg">{formatMoney(totalHt)}</p>
+							<p class="font-bold text-lg">{formatMoney(totalHt + totalDeliveriesFeesHt)}</p>
 						</div>
 					</div>
 					<div class="flex justify-between w-full lg:px-3 pt-2">
@@ -274,7 +423,7 @@
 							<p class="uppercase font-semibold">Total TVA</p>
 						</div>
 						<div>
-							<p class="font-bold text-lg">{formatMoney(totalVat)}</p>
+							<p class="font-bold text-lg">{formatMoney(totalVat + totalDeliveriesFeesVat)}</p>
 						</div>
 					</div>
 					<div class="flex justify-between w-full lg:px-3 pt-2">
@@ -282,7 +431,7 @@
 							<p class="uppercase font-semibold">Total TTC</p>
 						</div>
 						<div>
-							<p class="font-bold text-lg">{formatMoney(totalTtc)}</p>
+							<p class="font-bold text-lg">{formatMoney(totalTtc + totalDeliveriesFeesTtc)}</p>
 						</div>
 					</div>
 					<div class="pt-2 lg:pt-3">

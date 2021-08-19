@@ -106,6 +106,9 @@ export const GET_DELIVERY_DETAILS = gql`
 				email
 				phone
 			}
+			deliveryFeesWholeSalePrice
+			deliveryFeesVatPrice
+			deliveryFeesOnSalePrice
 			productsToDeliverCount
 			productsDeliveredCount
 			purchaseOrdersCount

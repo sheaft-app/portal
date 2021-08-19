@@ -93,6 +93,9 @@ export const GET_DELIVERY_DETAILS = gql`
 					city
 				}
 			}
+			deliveryFeesWholeSalePrice
+			deliveryFeesVatPrice
+			deliveryFeesOnSalePrice
 			productsToDeliverCount
 			productsDeliveredCount
 			purchaseOrdersCount

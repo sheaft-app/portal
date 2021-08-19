@@ -450,17 +450,17 @@
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-center md:text-left text-xs font-semibold
-                      text-gray-600 uppercase tracking-wider"
-										>
-											Qté
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-left text-xs font-semibold text-gray-600
                       uppercase tracking-wider hidden lg:table-cell"
 										>
 											PU HT
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
+                      bg-gray-100 text-center md:text-left text-xs font-semibold
+                      text-gray-600 uppercase tracking-wider"
+										>
+											Qté
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -494,17 +494,17 @@
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-200
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">{line.quantity}</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-200
                         bg-white text-sm lg:text-base hidden lg:table-cell"
 											>
 												<p class="whitespace-no-wrap">
 													{formatMoney(line.unitWholeSalePrice)}
 												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-200
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{line.quantity}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-200
@@ -535,6 +535,49 @@
 											</td>
 										</tr>
 									{/each}
+									{#if purchaseOrder.expectedDelivery.deliveryFeesWholeSalePrice > 0 }
+										<tr>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
+                        bg-white text-sm lg:text-base"
+											>
+												<div class="items-center">
+													<p>Livraison</p>
+													<p class="whitespace-no-wrap block lg:hidden">
+														{formatMoney(purchaseOrder.expectedDelivery.deliveryFeesWholeSalePrice)}
+													</p>
+												</div>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base hidden md:table-cell"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.expectedDelivery.deliveryFeesWholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">1</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">20%</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.expectedDelivery.deliveryFeesOnSalePrice)}
+												</p>
+											</td>
+										</tr>
+									{/if}
 									<tr>
 										<td
 											class="bg-white px-4 md:px-8

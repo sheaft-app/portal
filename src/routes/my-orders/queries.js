@@ -84,6 +84,8 @@ export const GET_MY_ORDER_DETAILS = gql`
 				to
 				name
 				kind
+				deliveryFeesWholeSalePrice
+				deliveryFeesOnSalePrice
 				address {
 					line1
 					zipcode
