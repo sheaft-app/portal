@@ -265,9 +265,9 @@
 							</div>
 							{#if producer.delivery.applyDeliveryFeesWhen && producer.delivery.applyDeliveryFeesWhen == DeliveryFeesApplication.TotalLowerThanPurchaseOrderAmount.Value}
 								<div>
-									Ces frais peuvent être supprimés si vous dépassez <strong
+									Ces frais s'appliquent uniquement sur les commandes inférieures à <strong
 										>{producer.delivery.deliveryFeesMinPurchaseOrdersAmount}€ HT</strong
-									> de commande.
+									>
 								</div>
 							{/if}
 						</div>
