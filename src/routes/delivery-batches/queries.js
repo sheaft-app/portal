@@ -95,6 +95,45 @@ export const GET_DELIVERY_BATCHES_HISTORY = gql`
 	}
 `;
 
+export const GET_COMPLETED_ORDERS = gql`
+	query GetCompletedOrders {
+		purchaseOrders(
+			first: 50
+			where: { and: [{ deliveryId: { eq: null } }, { status: { in: [COMPLETED] } }] }
+		) {
+			pageInfo {
+				startCursor
+				endCursor
+				hasNextPage
+				hasPreviousPage
+			}
+			edges {
+				cursor
+				node {
+					id
+					totalOnSalePrice
+					totalWholeSalePrice
+					totalVatPrice
+					reference
+					productsCount
+					expectedDelivery {
+						kind
+						name
+						expectedDeliveryDate
+						from
+						to
+					}
+					createdOn
+					sender {
+						id
+						name
+					}
+				}
+			}
+		}
+	}
+`;
+
 export const GET_AVAILABLE_DELIVERY_BATCHES = gql`
 	query GetAvailableDeliveryBatches($includeProcessingPurchaseOrders: Boolean!) {
 		availableDeliveryBatches(includeProcessingPurchaseOrders: $includeProcessingPurchaseOrders) {

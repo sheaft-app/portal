@@ -9,7 +9,7 @@
 	import PageBody from "../../components/PageBody.svelte";
 	import Icon from "svelte-awesome";
 	import AddOrderModal from "./AddOrderModal.svelte";
-	import { faCircleNotch, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+	import { faCircleNotch, faPaperPlane, faTrash } from "@fortawesome/free-solid-svg-icons";
 	import PickingRoutes from "./routes";
 	import PurchaseOrderRoutes from "./../purchase-orders/routes";
 	import PickingStatus from "../../enums/PickingStatus";
@@ -64,6 +64,10 @@
 		isLoading = false;
 	};
 
+	const removePurchaseOrder = (id) => {
+		picking.purchaseOrders = picking.purchaseOrders.filter(po => po.id !== id);
+	}
+
 	const showDeleteModal = () =>
 		open(DeletePicking, {
 			picking,
@@ -79,8 +83,7 @@
 					{
 						text: "Bon de préparation",
 						color: "teal",
-						click: () =>
-							window.open(picking.preparationUrl, "_blank")
+						click: () => window.open(picking.preparationUrl, "_blank"),
 					},
 					{
 						text: "Supprimer",
@@ -111,18 +114,23 @@
 					</button>
 				{/if}
 				{#each picking.purchaseOrders as purchaseOrder}
-					<div class="bg-white px-4 py-2 shadow rounded">
-						<p class="font-semibold mb-2">
-							{purchaseOrder.sender.name} (<a
-								href="javascript:void(0)"
-								on:click={() =>
-									routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
-								>{purchaseOrder.reference}</a
-							>)
-						</p>
-						{#each purchaseOrder.products as product}
-							<p>{product.name} x{product.quantity}</p>
-						{/each}
+					<div class="flex justify-between items-center bg-white px-4 py-2 mb-1 shadow rounded">
+						<div>
+							<p class="font-semibold mb-2">
+								{purchaseOrder.sender.name} (<a
+									href="javascript:void(0)"
+									on:click={() =>
+										routerInstance.goTo(PurchaseOrderRoutes.Details, { id: purchaseOrder.id })}
+									>{purchaseOrder.reference}</a
+								>)
+							</p>
+							{#each purchaseOrder.products as product}
+								<p>{product.name} x{product.quantity}</p>
+							{/each}
+						</div>
+						<div class="hover:text-accent cursor-pointer" on:click={() => removePurchaseOrder(purchaseOrder.id)}>
+							<Icon data={faTrash} class="mr-2 inline" />
+						</div>
 					</div>
 				{/each}
 			</div>

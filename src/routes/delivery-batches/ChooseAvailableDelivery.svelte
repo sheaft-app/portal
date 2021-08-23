@@ -1,6 +1,6 @@
 <script>
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES } from "./queries.js";
+	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES } from "./queries.js";
 	import { CREATE_DELIVERY_BATCH } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { getContext, onMount } from "svelte";
@@ -13,6 +13,7 @@
 	import groupBy from "lodash/groupBy";
 	import uniqBy from "lodash/uniqBy";
 	import TimePicker from "../../components/controls/TimePicker.svelte";
+	import { timeSpanToTime } from "../../helpers/app";
 
 	const errorsHandler = new SheaftErrors();
 	const routerInstance = GetRouterInstance();
@@ -22,33 +23,58 @@
 		selectedItems = [];
 
 	let isLoading = false;
-	let selected = null;
 	let purchaseOrders = [];
 	let selectedIds = selectedItems.map((s) => s.id);
-	let name = `Livraison du ${format(new Date(), "P", {
-		locale: fr,
-	})}`;
-	let scheduledOn = new Date();
+	let name = "";
+	let scheduledOn = null;
 	let from = { hours: null, minutes: null };
 
 	onMount(async () => {
 		isLoading = true;
 		await query({
-			query: GET_AVAILABLE_DELIVERY_BATCHES,
-			variables: { includeProcessingPurchaseOrders: false },
-			success: (res) =>
-				(purchaseOrders = uniqBy(
-					res.data
-						.map((r) => r.clients)
-						.flat()
-						.map((r) => r.purchaseOrders)
-						.flat()
-						.map((po) => {
-							if (selectedIds.includes(po.id)) return { ...po, selected: true };
-							else return { ...po };
-						}),
+			query: GET_COMPLETED_ORDERS,
+			success: (res) => {
+				purchaseOrders = uniqBy(
+					res.data.map((po) => {
+						if (selectedIds.includes(po.id)) return { ...po, selected: true };
+						return { ...po };
+					}),
 					(x) => x.id
-				)),
+				);
+
+				purchaseOrders.map((po) => {
+					let expectedDate = new Date(po.expectedDelivery.expectedDeliveryDate);
+					if (!scheduledOn || expectedDate < scheduledOn) {
+						scheduledOn = expectedDate;
+
+						let timespan = timeSpanToTime(po.expectedDelivery.from);
+						from.hours = timespan.hours;
+						from.minutes = timespan.minutes;
+					}
+
+					return po;
+				});
+
+				purchaseOrders.map((po) => {
+					let date = new Date(po.expectedDelivery.expectedDeliveryDate);
+
+					if (
+						date.getDate() == scheduledOn.getDate() &&
+						date.getMonth() == scheduledOn.getMonth() &&
+						date.getFullYear() == scheduledOn.getFullYear() &&
+						!po.selected
+					) {
+						po.selected = true;
+						selectedIds = [...selectedIds, po.id];
+					}
+
+					return po;
+				});
+
+				name = `Livraison du ${format(scheduledOn, "P", {
+					locale: fr,
+				})}`;
+			},
 			errorsHandler,
 			errorNotification: "Impossible de charger les commandes en attente de livraison",
 		});
@@ -78,7 +104,7 @@
 
 	const getClientPurchaseOrders = (items) => {
 		let selected = items.filter((i) => i.selected);
-		let grouped = groupBy(selected, (x) => x.clientId);
+		let grouped = groupBy(selected, (x) => x.sender.id);
 		return Object.keys(grouped).map((clientId) => ({
 			clientId: clientId,
 			purchaseOrderIds: grouped[clientId].map((po) => po.id),
@@ -123,7 +149,7 @@
 			<input bind:value={name} id="name" type="text" placeholder="Donnez un nom à votre livraison (optionnel)" />
 		</div>
 		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4 text-left">Prévue le *</label>
-		<DatePickerWrapper bind:selected={scheduledOn} dateChosen={false} />
+		<DatePickerWrapper bind:selected={scheduledOn} dateChosen={scheduledOn != null} />
 		<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-4 text-left">A partir de *</label
 		>
 		<TimePicker bind:time={from} />
@@ -172,16 +198,22 @@
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
 									border-gray-200"
 						>
-							<p>{purchaseOrder.client}</p>
+							<p>{purchaseOrder.sender.name}</p>
 							<small>{purchaseOrder.reference}</small>
 						</td>
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
-									border-gray-200 hidden">{format(new Date(purchaseOrder.expectedDeliveryDate), "PPPP", { locale: fr })}</td
+									border-gray-200 hidden"
+							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "PPPP", {
+								locale: fr,
+							})}</td
 						>
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
-									border-gray-200 md:table-cell">{format(new Date(purchaseOrder.expectedDeliveryDate), "P", { locale: fr })}</td
+									border-gray-200 md:table-cell"
+							>{format(new Date(purchaseOrder.expectedDelivery.expectedDeliveryDate), "P", {
+								locale: fr,
+							})}</td
 						>
 						<td
 							class="px-3 md:px-6 py-4 whitespace-no-wrap border-b
