@@ -252,7 +252,7 @@
 				</p>
 				<p>
 					Vous pouvez également proposer ce produit à un prix différent dans un catalogue en particulier (par
-					exemple, vos yaourts en pot sont moins cher pour les professionels car vous les vendez en volume.)
+					exemple, si vos yaourts en pot sont moins chers pour les professionels car vous les vendez en volume.)
 				</p>
 			</div>
 		{/if}

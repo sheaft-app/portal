@@ -1,8 +1,11 @@
-import Guid from "./Guid";
+import orderBy from "lodash/orderBy";
+
+import format from "date-fns/format";
+
 import ConditioningKind from "../enums/ConditioningKind";
 import DayOfWeekKind from "../enums/DayOfWeekKind";
-import orderBy from "lodash/orderBy";
-import format from "date-fns/format";
+
+import Guid from "./Guid";
 
 export const getIsoDate = (_date) => format(_date, "yyyy-MM-dd'T'00:00:00'Z'");
 
@@ -189,6 +192,19 @@ export const unfreezeBody = () => {
 	mainContent.style.top = "";
 	window.scrollTo(0, parseInt(scrollY || "0") * -1);
 };
+
+export const getNextAvailableDateFromDay = (day, start) => {
+		let date = new Date(
+			2021,
+			5,
+			1,
+			start.hours,
+			start.minutes
+		);
+		while (date.getDay() - 1 !== day) date.setDate(date.getDate() + 1);
+
+		return date;
+	};
 
 export const formatMoney = (price) => (price ? `${price.toFixed(2).replace(".", ",")}€` : "");
 

@@ -13,6 +13,9 @@
 	import SimpleStoreCard from "./SimpleStoreCard.svelte";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 	import DeliveryFeesApplication from "../../enums/DeliveryFeesApplication";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
+import { getNextAvailableDateFromDay } from "../../helpers/app";
 
 	export let submit,
 		delivery = { ...initialValues };
@@ -20,6 +23,21 @@
 	(() => (delivery = form.initialize(delivery, validators, initialValues)))();
 
 	onDestroy(async () => await form.destroy());
+
+	$: lastOrderingDay = () => {
+		let orderingDay = firstSelectedOrderingDay();
+		if (!orderingDay) return null;
+
+		return new Date(firstSelectedOrderingDay().getTime() - delivery.lockOrderHoursBeforeDelivery * 60 * 60 * 1000);
+	};
+
+	$: firstSelectedOrderingDay = () => {
+		if (!delivery.denormalizedDeliveryHours || delivery.denormalizedDeliveryHours.length < 1) return null;
+
+		return new Date(
+			getNextAvailableDateFromDay(delivery.denormalizedDeliveryHours[0].days.filter((d) => d.checked)[0].Index, delivery.denormalizedDeliveryHours[0].start)
+		);
+	};
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
@@ -87,7 +105,7 @@
 				checked={delivery.limitOrdersAmount}
 				onClick={() => (delivery.limitOrdersAmount = !delivery.limitOrdersAmount)}
 			/>
-			<span class="mx-1">Autoriser uniquement les commandes d'un montant supérieur ou égal à</span>
+			<span class="mr-1">Autoriser uniquement les commandes d'un montant supérieur ou égal à</span>
 			{#if delivery.limitOrdersAmount}
 				<input
 					id="refuseOrders"
@@ -98,7 +116,7 @@
 			{:else}
 				x
 			{/if}
-			<span class="ml-1">€ HT.</span>
+			<span class="ml-1">€ HT</span>
 		</div>
 	</div>
 	<div class="form-control">
@@ -118,7 +136,15 @@
 			{:else}
 				x
 			{/if}
-			<span class="ml-1">heures avant la livraison.</span>
+			<span class="ml-1">heures avant la livraison </span>
+			{#if delivery.limitOrdersBefore}
+				<strong
+					>(soit avant le {format(lastOrderingDay(), "EEEE H", { locale: fr })}h si la livraison a lieu le {format(
+						firstSelectedOrderingDay(),
+						"EEEE à H",
+						{ locale: fr }
+					)}h)</strong>
+			{/if}
 		</div>
 	</div>
 	<div class="form-control">
@@ -138,7 +164,7 @@
 			{:else}
 				x
 			{/if}
-			<span class="ml-1">commandes par créneau de livraison.</span>
+			<span class="ml-1">commandes par créneau de livraison</span>
 		</div>
 	</div>
 	<div class="form-control">
@@ -166,7 +192,7 @@
 			{:else}
 				x
 			{/if}
-			<span class="ml-1">€ HT (TVA 20%) pour chaque livraison.</span>
+			<span class="ml-1">€ HT (TVA 20%) pour chaque livraison</span>
 			{#if delivery.applyDeliveryFees}
 				<div class="mt-3">
 					Ces frais s'appliquent:

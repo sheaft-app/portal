@@ -4,7 +4,7 @@
 	import CitySearch from "./../../components/search/CitySearch.svelte";
 	import OpeningHoursContainer from "./../../components/opening-hours/OpeningHoursContainer.svelte";
 	import Toggle from "./../../components/controls/Toggle.svelte";
-	import { denormalizeOpeningHours, denormalizeClosingDates } from "./../../helpers/app";
+	import { denormalizeOpeningHours, denormalizeClosingDates, getNextAvailableDateFromDay } from "./../../helpers/app";
 	import { bindClass } from "../../../vendors/svelte-forms/src/index";
 	import ErrorContainer from "./../../components/ErrorContainer.svelte";
 	import ClosingDates from "./../../components/ClosingDates.svelte";
@@ -12,6 +12,8 @@
 	import { validators, initialValues } from "./sellingPointForm";
 	import { onDestroy } from "svelte";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
+	import { format } from "date-fns";
+	import fr from "date-fns/locale/fr";
 
 	export let submit,
 		sellingPoint = { ...initialValues };
@@ -26,12 +28,27 @@
 	sellingPoint.denormalizedClosings = denormalizeClosingDates(sellingPoint.closings);
 	sellingPoint.limitOrdersBefore = sellingPoint.lockOrderHoursBeforeDelivery != null;
 	sellingPoint.limitOrdersCount = sellingPoint.maxPurchaseOrdersPerTimeSlot != null;
+
+	$: lastOrderingDay = () => {
+		let orderingDay = firstSelectedOrderingDay();
+		if (!orderingDay) return null;
+
+		return new Date(firstSelectedOrderingDay().getTime() - sellingPoint.lockOrderHoursBeforeDelivery * 60 * 60 * 1000);
+	};
+
+	$: firstSelectedOrderingDay = () => {
+		if (!sellingPoint.denormalizedDeliveryHours || sellingPoint.denormalizedDeliveryHours.length < 1) return null;
+
+		return new Date(
+			getNextAvailableDateFromDay(sellingPoint.denormalizedDeliveryHours[0].days.filter((d) => d.checked)[0].Index, sellingPoint.denormalizedDeliveryHours[0].start)
+		);
+	};
 </script>
 
 <!-- svelte-ignore component-name-lowercase -->
 <form class="w-full pb-5" on:submit|preventDefault={() => form.validateAndSubmit(submit)}>
 	<div class="flex flex-wrap mb-6 lg:mb-0">
-		<div class="w-full lg:w-1/2">
+		<div class="w-full">
 			<div class="form-control">
 				<div class="w-full">
 					<label for="grid-name">Nom *</label>
@@ -138,7 +155,15 @@
 					{:else}
 						x
 					{/if}
-					<span class="ml-1">heures avant la distribution.</span>
+					<span class="ml-1">heures avant la distribution</span>
+					{#if sellingPoint.limitOrdersBefore}
+						<strong
+							>(soit avant le {format(lastOrderingDay(), "EEEE H", { locale: fr })}h si la distribution a lieu le {format(
+								firstSelectedOrderingDay(),
+								"EEEE à H",
+								{ locale: fr }
+							)}h)</strong>
+					{/if}
 				</div>
 			</div>
 			<div class="form-control">
@@ -147,7 +172,7 @@
 						checked={sellingPoint.limitOrdersCount}
 						onClick={() => (sellingPoint.limitOrdersCount = !sellingPoint.limitOrdersCount)}
 					/>
-					<span class="mx-1">Autoriser un maximum de </span>
+					<span class="mr-1">Autoriser un maximum de </span>
 					{#if sellingPoint.limitOrdersCount}
 						<input
 							id="maxOrders"
@@ -172,7 +197,7 @@
 					onClick={() =>
 						(sellingPoint.autoAcceptRelatedPurchaseOrder = !sellingPoint.autoAcceptRelatedPurchaseOrder)}
 				/>
-				<span class="mx-1"
+				<span class="mr-1"
 					>Accepter automatiquement les nouvelles commandes (les commandes non acceptées dans un délais de 72h
 					sont automatiquement refusées)</span
 				>
