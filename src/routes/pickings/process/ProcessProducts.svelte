@@ -68,6 +68,7 @@ import { formatConditioningDisplay } from "../../../helpers/app";
 	const openValidateModal = (product) =>
 		open(ValidatePickingModal, {
 			variables: { id: pickingId },
+			products,
 			save: () => handleSaveAndContinue(product),
 		});
 
@@ -136,11 +137,17 @@ import { formatConditioningDisplay } from "../../../helpers/app";
 
 {#each products as product, index (product.id)}
 	{#if index == stepper}
+		<p class="text-xl text-primary font-semibold">
+			<select on:change={(e) => stepper = e.target.value}>
+				{#each products as product, index}
+					<option selected={index == stepper} value={index}>
+						{product.name}
+						{formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}
+					</option>
+				{/each}
+			</select>
+		</p>
 		<div in:fly|local={{ x: previousStepper > stepper ? -800 : 800, duration: 400 }}>
-			<p class="text-xl text-primary font-semibold">{product.name} {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</p>
-			{#if products.length > 1}
-				<p class="text-xl text-primary font-semibold">{stepper + 1}/{products.length}</p>
-			{/if}
 			<p class="font-semibold py-4">Quantités par magasin <span on:click={() => autoFillStoresProduct()} class="cursor-pointer text-accent">(tout pré-remplir)</span></p>
 			<div class="m-auto">
 				{#each product.clients as client, index}
@@ -196,20 +203,18 @@ import { formatConditioningDisplay } from "../../../helpers/app";
 					type="button"
 					class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button
 				>
-				{#if index == products.length - 1}
-					<button
-						type="button"
-						class="block btn btn-lg btn-accent w-full text-center justify-center"
-						disabled={disabledStep3}
-						class:disabled={disabledStep3}
-						on:click={() => handleSaveAndContinue(product, true)}
-					>
-						{#if isSubmitting}
-							<Icon data={faCircleNotch} class="mr-2" spin />
-						{/if}
-						Sauvegarder et continuer plus tard
-					</button>
-				{/if}
+				<button
+					type="button"
+					class="block btn btn-lg btn-outline w-full text-center justify-center"
+					disabled={disabledStep3}
+					class:disabled={disabledStep3}
+					on:click={() => handleSaveAndContinue(product, true)}
+				>
+					{#if isSubmitting}
+						<Icon data={faCircleNotch} class="mr-2" spin />
+					{/if}
+					Sauvegarder et continuer plus tard
+				</button>
 				<button
 					type="button"
 					class="block btn btn-lg btn-accent w-full text-center justify-center"
