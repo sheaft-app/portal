@@ -1,6 +1,6 @@
 <script>
 	import { getContext, onMount } from "svelte";
-	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "./queries";
+	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "./queries";
 	import { UPDATE_DELIVERY_BATCH } from "./mutations";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -25,26 +25,11 @@
 
 	onMount(async () => {
 		await query({
-			query: GET_AVAILABLE_DELIVERY_BATCHES,
+			query: GET_COMPLETED_ORDERS,
 			variables: { includeProcessingPurchaseOrders: false },
 			errorsHandler,
 			success: (res) => {
-				res.data.map(
-					(availableOrder) =>
-						(availableOrders = [
-							...availableOrders,
-							...availableOrder.clients
-								.map((c) =>
-									c.purchaseOrders.map((p) => ({
-										...p,
-										name: c.name,
-										clientId: c.id,
-										position: c.position,
-									}))
-								)
-								.flat(),
-						])
-				);
+				availableOrders = res.data;
 			},
 			error: () => close(),
 			errorNotification: "Impossible de récupérer les informations des commandes",
@@ -62,7 +47,7 @@
 		availableOrders
 			.filter((a) => a.checked)
 			.forEach((availableOrder) => {
-				const client = deliveriesToSend.find((d) => d.clientId === availableOrder.clientId);
+				const client = deliveriesToSend.find((d) => d.clientId === availableOrder.sender.id);
 
 				if (client) {
 					client.purchaseOrderIds = [...client.purchaseOrderIds, availableOrder.id];
@@ -70,7 +55,7 @@
 					deliveriesToSend = [
 						...deliveriesToSend,
 						{
-							clientId: availableOrder.clientId,
+							clientId: availableOrder.sender.id,
 							position: deliveriesToSend.length,
 							purchaseOrderIds: [availableOrder.id],
 						},
@@ -115,11 +100,12 @@
 					<InputCheckbox checked={order.checked} />
 				</div>
 				<div class="px-4 py-2 shadow rounded">
-					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.name}</p>
+					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.sender.name}</p>
+					<p class="mb-1">Référence : {order.reference}</p>
 					<p class="mb-1">Montant HT : {formatMoney(order.totalWholeSalePrice)}</p>
 					<p class="mb-1">Produits dans la commande : {order.productsCount}</p>
 					<p class="mb-2">
-						Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}
+						Livraison demandée le {format(new Date(order.expectedDelivery.expectedDeliveryDate), "PP", { locale: fr })}
 					</p>
 				</div>
 			</div>
