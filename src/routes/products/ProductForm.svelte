@@ -240,6 +240,22 @@
 	</div>
 	<div class="form-control" style="display: block;">
 		<label>Présent dans les catalogues</label>
+		{#if !product.id}
+			<div class="rounded bg-blue-100 w-full p-4 mb-2">
+				<p class="pb-2">
+					Pour que vos clients puissent commander ce produit, vous devez l'ajouter à un catalogue et lui
+					assigner un prix de vente HT.
+				</p>
+				<p class="pb-2">
+					Les catalogues vous permettent de proposer ce produit à une clientèle spécifique (par exemple, vous
+					pouvez vendre des seaux de yaourt aux professionels mais pas aux consommateurs.)
+				</p>
+				<p>
+					Vous pouvez également proposer ce produit à un prix différent dans un catalogue en particulier (par
+					exemple, vos yaourts en pot sont moins cher pour les professionels car vous les vendez en volume.)
+				</p>
+			</div>
+		{/if}
 		<ProductCatalogs bind:catalogs={product.catalogs} {form} />
 	</div>
 	<div class="form-control" style="display: block;">
