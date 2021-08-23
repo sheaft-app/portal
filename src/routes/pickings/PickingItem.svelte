@@ -31,9 +31,9 @@
 			<span class="rounded-full px-4 py-1 text-gray-800 bg-green-200 delivery-status mb-1 xl:mb-0">
 				{PickingStatus.label(picking.status)}
 			</span>
-			{#if picking?.pickingUrl}
+			{#if picking?.preparationUrl}
 				<div class="xl:w-full">
-					<a target="_blank" href={picking.pickingUrl} class="btn-link" style="display: inline-block;">
+					<a target="_blank" href={picking.preparationUrl} class="btn-link" style="display: inline-block;">
 						<Icon data={faEye} class="mr-1" />
 						Voir le bon de prépa.
 					</a>

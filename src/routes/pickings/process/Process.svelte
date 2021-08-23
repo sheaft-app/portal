@@ -48,6 +48,12 @@
 		picking && picking.status != PickingStatus.Completed.Value
 			? [
 					{
+						text: "Bon de préparation",
+						color: "teal",
+						click: () =>
+							window.open(picking.preparationUrl, "_blank")
+					},
+					{
 						text: "Modifier",
 						color: "blue",
 						click: () =>

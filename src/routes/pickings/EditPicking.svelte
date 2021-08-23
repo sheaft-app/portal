@@ -77,6 +77,12 @@
 		picking && picking.status != PickingStatus.Completed.Value
 			? [
 					{
+						text: "Bon de préparation",
+						color: "teal",
+						click: () =>
+							window.open(picking.preparationUrl, "_blank")
+					},
+					{
 						text: "Supprimer",
 						color: "red",
 						click: () => showDeleteModal(),

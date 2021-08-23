@@ -14,6 +14,7 @@
 	import ValidatePickingModal from "./ValidatePickingModal.svelte";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
+import { formatConditioningDisplay } from "../../../helpers/app";
 
 	export let pickingId;
 	export let products = [];
@@ -34,7 +35,7 @@
 		batches = await query({
 			query: GET_BATCHES,
 			errorsHandler,
-			errorNotification: "Impossible de charger les lots"
+			errorNotification: "Impossible de charger les lots",
 		});
 
 		displayedBatches = batches;
@@ -42,7 +43,7 @@
 
 	const handleSaveAndContinue = async (product, end = false) => {
 		// simple denormalization for getSelectedBatches
-		products[stepper].selectedBatches = selectedBatches.map(b => ({ id: b })); 
+		products[stepper].selectedBatches = selectedBatches.map((b) => ({ id: b }));
 		await mutate({
 			mutation: SET_PICKING_PRODUCT_PREPARED_QUANTITY,
 			variables: {
@@ -57,17 +58,17 @@
 				})),
 			},
 			success: () => {
-				if (end) routerInstance.goTo(PickingRoutes.List)
+				if (end) routerInstance.goTo(PickingRoutes.List);
 			},
 			errorsHandler,
-			errorNotification: "Impossible de sauvegarder la préparation."
+			errorNotification: "Impossible de sauvegarder la préparation.",
 		});
 	};
 
 	const openValidateModal = (product) =>
 		open(ValidatePickingModal, {
 			variables: { id: pickingId },
-			save: () => handleSaveAndContinue(product)
+			save: () => handleSaveAndContinue(product),
 		});
 
 	const previous = () => {
@@ -75,7 +76,7 @@
 			previousStepper = stepper;
 			--stepper;
 		}
-	}
+	};
 
 	const next = (product) => {
 		if (stepper < products.length - 1) {
@@ -85,7 +86,7 @@
 		} else {
 			openValidateModal(product);
 		}
-	}
+	};
 
 	const openCreateBatchModal = () =>
 		open(CreateBatchModal, {
@@ -118,18 +119,29 @@
 
 	const getSelectedBatches = async (product) => {
 		selectedBatches = products[stepper]?.selectedBatches?.map((b) => b.id) || [];
+	};
+
+	const autoFillStoresProduct = () => {
+		products[stepper].clients = products[stepper].clients.map(c => {
+			if(!c.prepared)
+				c.prepared = c.expected;
+
+			return c;
+		});
 	}
 
 	$: stepper, getSelectedBatches();
 	$: disabledStep3 = isSubmitting;
 </script>
 
-
 {#each products as product, index (product.id)}
 	{#if index == stepper}
 		<div in:fly|local={{ x: previousStepper > stepper ? -800 : 800, duration: 400 }}>
-			<p class="text-xl text-primary font-semibold">{product.name}</p>
-			<p class="text-xl text-primary font-semibold">{stepper + 1}/{products.length}</p>
+			<p class="text-xl text-primary font-semibold">{product.name} {formatConditioningDisplay(product.conditioning, product.quantityPerUnit, product.unit)}</p>
+			{#if products.length > 1}
+				<p class="text-xl text-primary font-semibold">{stepper + 1}/{products.length}</p>
+			{/if}
+			<p class="font-semibold py-4">Quantités par magasin <span on:click={() => autoFillStoresProduct()} class="cursor-pointer text-accent">(tout pré-remplir)</span></p>
 			<div class="m-auto">
 				{#each product.clients as client, index}
 					<div
@@ -138,7 +150,7 @@
 					>
 						<div>
 							<p class="font-semibold">{client.name}</p>
-							<p>{client.expected} à préparer</p>
+							<p>{client.expected} commandé(s)</p>
 						</div>
 						<div class="w-1/2">
 							<ProductCounter label="préparé(s)" bind:value={client.prepared} />
@@ -146,6 +158,7 @@
 					</div>
 				{/each}
 			</div>
+			<p class="font-semibold py-4">Numéros de lots des quantités préparées</p>
 			{#if batches.length}
 				<div class="form-control">
 					<label>Chercher par numéro de lot</label>
@@ -158,7 +171,7 @@
 						on:click={() => handleBatchSelect(batch.id)}
 						class:bg-primary={selectedBatches.includes(batch.id)}
 					>
-						<p class="font-semibold">Lot {batch.number}</p>
+						<p class="font-semibold">{batch.number}</p>
 						{#if batch.dlc}
 							<p>DLC : {format(new Date(batch.dlc), "PPPP", { locale: fr })}</p>
 						{/if}
@@ -171,7 +184,8 @@
 				<p>
 					Si nécessaire, vous pouvez lier la préparation du produit à un lot. Dans ce cas, <a
 						href="javascript:void(0)"
-						on:click={openCreateBatchModal}>cliquez ici</a> pour créer un lot.
+						on:click={openCreateBatchModal}>cliquez ici</a
+					> pour créer un lot.
 				</p>
 			{/if}
 			<div class="mt-5 pb-5 w-full px-4 space-y-3 m-auto" style="max-width: 500px;">
@@ -180,7 +194,8 @@
 					class:disabled={stepper == 0}
 					on:click={() => previous()}
 					type="button"
-					class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button>
+					class="block btn btn-lg btn-outline w-full text-center justify-center">Retour</button
+				>
 				{#if index == products.length - 1}
 					<button
 						type="button"
@@ -200,7 +215,8 @@
 					class="block btn btn-lg btn-accent w-full text-center justify-center"
 					disabled={disabledStep3}
 					class:disabled={disabledStep3}
-					on:click={() => next(product)}>
+					on:click={() => next(product)}
+				>
 					{#if index == products.length - 1}
 						Terminer la préparation
 					{:else}

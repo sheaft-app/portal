@@ -9,7 +9,7 @@
 	import PickingRoutes from "./routes";
 	import Icon from "svelte-awesome";
 	import { faEye } from "@fortawesome/free-solid-svg-icons";
-	import { denormalizePickingProducts } from "./pickingForm";
+	import { denormalizeProducts } from "./pickingForm";
 	import PickingStatus from "../../enums/PickingStatus";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";
@@ -32,7 +32,7 @@
 			success: (res) => {
 				picking = {
 					...res,
-					products: denormalizePickingProducts(res.productsToPrepare, res.preparedProducts),
+					products: denormalizeProducts(res.productsToPrepare, res.preparedProducts),
 				};
 			},
 			error: () => routerInstance.goTo(PickingRoutes.History),
@@ -44,11 +44,11 @@
 
 <TransitionWrapper>
 	<PageHeader name="Résumé de la préparation" previousPage={PickingRoutes.History}>
-		{#if picking?.pickingUrl}
+		{#if picking?.preparationUrl}
 			<div class="mt-2">
 				<a
 					target="_blank"
-					href={picking.pickingUrl}
+					href={picking.preparationUrl}
 					class="btn btn-outline btn-lg"
 					style="display: inline-block;"
 				>

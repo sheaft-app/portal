@@ -9,14 +9,12 @@ export const validators = (delivery) => ({
 	...getDefaultFields(delivery, initialValues, []),
 });
 
-export const denormalizeProduct = () => {}; // todo remove
-
 export const denormalizeProducts = (products, productsPrepared) => {
 	let _products = [];
-	
-	products.map(p => {
+
+	products.map((p) => {
 		let foundProduct = true;
-		let product = _products.find(p2 => p2?.id == p?.productId);
+		let product = _products.find((p2) => p2?.id == p?.productId);
 
 		if (!product) {
 			foundProduct = false;
@@ -25,16 +23,21 @@ export const denormalizeProducts = (products, productsPrepared) => {
 
 		product["id"] = p.productId;
 		product["name"] = p.name;
+		product["conditioning"] = p.conditioning;
+		product["quantityPerUnit"] = p.quantityPerUnit;
+		product["unit"] = p.unit;
 		product["completed"] = true;
 		product["total"] = (product?.total || 0) + p.quantity;
-		product["clients"] = [...(product?.clients || []), {
-			name: p.purchaseOrder.sender.name,
-			purchaseOrderId: p.purchaseOrder.id,
-			expected: p.quantity,
-			prepared: 0,
-		}];
+		product["clients"] = [
+			...(product?.clients || []),
+			{
+				name: p.purchaseOrder.sender.name,
+				purchaseOrderId: p.purchaseOrder.id,
+				expected: p.quantity,
+				prepared: 0,
+			},
+		];
 		product["prepared"] = 0;
-
 
 		let _productsPrepared = productsPrepared?.filter((_p) => _p.productId == p.productId);
 
@@ -60,18 +63,3 @@ export const denormalizeProducts = (products, productsPrepared) => {
 	});
 	return _products;
 };
-
-export const denormalizePickingProducts = (products, productsPrepared) =>
-	products.reduce((acc, curr) => {
-		if (!acc.find((p) => p.id == curr.productId)) {
-			acc = [
-				...acc,
-				denormalizeProduct(
-					products.filter((p) => p.productId == curr.productId),
-					productsPrepared.filter((p) => p.productId == curr.productId)
-				),
-			];
-		}
-
-		return acc;
-	}, []);

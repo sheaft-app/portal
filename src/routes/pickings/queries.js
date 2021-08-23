@@ -152,6 +152,9 @@ export const GET_PICKING_DETAILS = gql`
 				name
 				productId
 				quantity
+				conditioning
+				quantityPerUnit
+				unit
 				purchaseOrder {
 					id
 					reference
