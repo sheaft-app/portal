@@ -137,7 +137,7 @@
 			{/each}
 		{/if}
 		<div class="form-control w-full mt-3">
-			<label for="receptionedBy">Livraison réceptionnée par *</label>
+			<label for="receptionedBy">Livraison réceptionnée par</label>
 			<input
 				id="receptionedBy"
 				bind:value={receptionedBy}
@@ -160,8 +160,8 @@
 			<button
 				type="button"
 				class="block btn btn-lg btn-accent w-full text-center justify-center"
-				disabled={isSubmitting || !receptionedBy}
-				class:disabled={isSubmitting || !receptionedBy}
+				disabled={isSubmitting}
+				class:disabled={isSubmitting}
 				on:click={handleSubmit}
 			>
 				{#if isSubmitting}
