@@ -70,6 +70,15 @@ export const GET_MY_ORDER_DETAILS = gql`
 			reason
 			productsCount
 			comment
+			preparedProducts {
+				productId
+				batches {
+					id
+					number
+					dlc
+					ddm
+				}
+			}
 			delivery {
 				status
 				scheduledOn

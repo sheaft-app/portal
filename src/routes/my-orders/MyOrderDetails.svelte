@@ -80,6 +80,9 @@
 		isLoading = false;
 	};
 
+	const getBatches = (productId) => 
+		purchaseOrder.preparedProducts.find(p => p.productId == productId)?.batches || [];
+
 	$: getOrder($querystring);
 
 	$: canCancelOrder =
@@ -487,6 +490,15 @@
 											>
 												<div class="items-center">
 													<p>{line.name}</p>
+													{#each getBatches(line.id) as batch}
+														<p class="whitespace-no-wrap lg:block hidden text-sm">
+															Lot {batch.number} 
+															(
+																{batch.dlc ? "DLC : " : "DLM : "}
+																{format(new Date(batch.dlc ?? batch.dlm), "P", { locale: fr })}
+															)
+														</p>
+													{/each}
 													<p class="whitespace-no-wrap block lg:hidden">
 														{formatMoney(line.unitWholeSalePrice)} / unité
 													</p>
