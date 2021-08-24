@@ -82,14 +82,10 @@
 				: timeSpanToTime(deliveryBatch.from).minutes}
 		</p>
 		<p>complétée le {format(new Date(deliveryBatch.completedOn), "PPPP", { locale: fr })}</p>
-		<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 mt-3 shadow py-2">
+		<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 mt-3 shadow py-2">
 			<div class="text-center">
 				<p class="text-green-500 font-semibold text-2xl">{Math.abs(deliveryBatch.productsDeliveredCount)}</p>
 				<p>Produits livrés</p>
-			</div>
-			<div class="text-center">
-				<p class="text-red-500 font-semibold text-2xl">{Math.abs(deliveryBatch.brokenProductsCount)}</p>
-				<p>Produits cassés</p>
 			</div>
 			<div class="text-center">
 				<p class="text-orange-500 font-semibold text-2xl">{Math.abs(deliveryBatch.missingProductsCount)}</p>
@@ -130,27 +126,6 @@
 													Attendus
 												</th>
 												<th
-													class="px-4 md:px-8 py-3 border-b border-gray-400
-                            bg-gray-100 text-center md:text-left text-xs font-semibold
-                            text-gray-600 uppercase tracking-wider"
-												>
-													Cassés
-												</th>
-												<th
-													class="px-4 md:px-8 py-3 border-b border-gray-400
-                            bg-gray-100 text-center md:text-left text-xs font-semibold
-                            text-gray-600 uppercase tracking-wider"
-												>
-													Manquants
-												</th>
-												<th
-													class="px-4 md:px-8 py-3 border-b border-gray-400
-                            bg-gray-100 text-center md:text-left text-xs font-semibold
-                            text-gray-600 uppercase tracking-wider"
-												>
-													Excès
-												</th>
-												<th
 													class="px-4 md:px-8 py-3 border-b border-r border-gray-400
                             bg-gray-100 text-right text-xs font-semibold text-gray-600
                             uppercase tracking-wider"
@@ -176,30 +151,6 @@
 													>
 														<p class="whitespace-no-wrap">
 															{product.productsToDeliver}
-														</p>
-													</td>
-													<td
-														class="px-4 md:px-8 py-5 border-b border-gray-400
-                                bg-white text-sm lg:text-base text-center md:text-left"
-													>
-														<p class="whitespace-no-wrap">
-															{Math.abs(product.productsBroken)}
-														</p>
-													</td>
-													<td
-														class="px-4 md:px-8 py-5 border-b border-gray-400
-                                bg-white text-sm lg:text-base text-center md:text-left"
-													>
-														<p class="whitespace-no-wrap">
-															{Math.abs(product.productsMissing)}
-														</p>
-													</td>
-													<td
-														class="px-4 md:px-8 py-5 border-b border-gray-400
-                                bg-white text-sm lg:text-base text-center md:text-left"
-													>
-														<p class="whitespace-no-wrap">
-															{product.productsInExcess}
 														</p>
 													</td>
 													<td

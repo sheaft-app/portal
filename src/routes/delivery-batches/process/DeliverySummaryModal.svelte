@@ -30,12 +30,15 @@
 	let step = 1;
 
 	onMount(async () => {
+		delivery.products = delivery.products.map(p => {p.delivered = p.quantity; return p;});
+		
 		isLoadingReturnables = true;
 		returnables = await query({
 			query: GET_RETURNABLES,
 			errorsHandler,
 			errorNotification: "Un problème est survenu pendant la récupération des consignes.",
 		});
+
 		isLoadingReturnables = false;
 	});
 
@@ -44,18 +47,25 @@
 
 		let returnedProducts = [];
 		delivery.products.forEach((p) => {
-			["EXCESS", "MISSING", "BROKEN"].map((status) => {
-				if (p[status.toLowerCase()] > 0) {
-					returnedProducts = [
-						...returnedProducts,
-						{
-							id: p.productId,
-							kind: status,
-							quantity: p[status.toLowerCase()],
-						},
-					];
-				}
-			});
+			if (p.delivered > p.quantity) {
+				returnedProducts = [
+					...returnedProducts,
+					{
+						id: p.productId,
+						kind: "EXCESS",
+						quantity: p.delivered - p.quantity,
+					},
+				];
+			} else if (p.delivered < p.quantity) {
+				returnedProducts = [
+					...returnedProducts,
+					{
+						id: p.productId,
+						kind: "MISSING",
+						quantity: p.quantity - p.delivered,
+					},
+				];
+			}
 		});
 
 		await mutate({
@@ -92,7 +102,6 @@
 	<p>{delivery.address.line1}</p>
 	<p>{delivery.address.zipcode} {delivery.address.city}</p>
 	{#if step == 1}
-		<p class="mt-2 text-gray-600">{delivery.productsToDeliverCount} produits attendus</p>
 		<div>
 			{#each delivery.products as product, index}
 				<DeliverySummaryProduct {product} {index} numberOfProducts={delivery.products.length - 1} />
@@ -143,7 +152,7 @@
 				bind:value={receptionedBy}
 				disabled={isSubmitting}
 				type="text"
-				placeholder="ex: Stéphanie A."
+				placeholder="ex: Stéphanie A. (optionel)"
 			/>
 		</div>
 		<div class="form-control w-full">
