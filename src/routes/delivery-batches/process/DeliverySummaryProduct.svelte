@@ -7,8 +7,9 @@
 	export let product;
 	export let index;
 	export let numberOfProducts;
+	export let isExpandedByDefault = false;
 
-	let displayQuantifier = false;
+	let displayQuantifier = isExpandedByDefault;
 </script>
 
 <div class="py-3 flex-wrap border-b border-gray-300 flex justify-between" class:border-b={index !== numberOfProducts}>
@@ -30,11 +31,12 @@
 			{/if}
 		{/if}
 	</div>
-	<div>
-		<button type="button" on:click={() => (displayQuantifier = !displayQuantifier)} class="btn btn-link"
-			>{#if !displayQuantifier}Modifier{:else}Valider{/if}</button
-		>
-	</div>
+	{#if !isExpandedByDefault}
+		<div>
+			<button type="button" on:click={() => (displayQuantifier = !displayQuantifier)} class="btn btn-link"
+				>{#if !displayQuantifier}Modifier{:else}Valider{/if}</button>
+		</div>
+	{/if}
 	<div class="w-full" transition:slide|local>
 		{#if displayQuantifier}
 			<ProductCounter bind:value={product.broken} max={product.quantity} label="Cassés" color="red-500" />

@@ -84,7 +84,7 @@
 				>
 					<div class="flex py-2 border-b border-gray-300 pb-3 items-center">
 						<Icon data={faInfoCircle} style="width: 30px; height:30px;" class="mr-5" />
-						<p class="font-semibold text-xl">Des commandes sont prêtes à être préparées !</p>
+						<p class="font-semibold text-xl">Des commandes sont prêtes à être préparées</p>
 					</div>
 					<div class="w-full mt-3 px-10 xl:px-12">
 						{#if $items.length > 0}
@@ -96,6 +96,9 @@
 								Créer une autre préparation
 							</button>
 						{:else}
+							<p>
+								Commencez dès maintenant la préparation d'une ou plusieurs commandes en cliquant sur <strong>Lancer une préparation</strong>
+							</p>
 							<button on:click={handleCreatePicking} class="btn btn-lg btn-accent mt-4">
 								Lancer une préparation
 							</button>
