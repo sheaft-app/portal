@@ -72,28 +72,18 @@
 			<p class="font-medium text-lg">{deliveryBatch.assignedTo.firstName}</p>
 		</div>
 		<div class="flex space-x-2 w-full md:w-auto justify-center md:justify-start mt-1 md:mt-0">
-			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value || deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
+			{#if deliveryBatch.status == DeliveryBatchStatus.InProgress.Value}
 				<button
 					on:click={() => open(PostponeDeliveryBatchModal, { id: deliveryBatch.id })}
 					class="btn btn-lg btn-outline text-lg font-semibold"
 					>Décaler
 				</button>
-
-				{#if deliveryBatch.status == DeliveryBatchStatus.Ready.Value}
-					<button
-						on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
-						class="btn btn-lg btn-accent text-lg font-semibold"
-						>Démarrer
-						<Icon class="ml-2" data={faChevronRight} />
-					</button>
-				{:else}
-					<button
-						on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.PickDeliveryMode, { id: deliveryBatch.id })}
-						class="btn btn-lg btn-accent text-lg font-semibold"
-						>Reprendre
-						<Icon class="ml-2" data={faChevronRight} />
-					</button>
-				{/if}
+				<button
+					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.PickDeliveryMode, { id: deliveryBatch.id })}
+					class="btn btn-lg btn-accent text-lg font-semibold"
+					>Reprendre
+					<Icon class="ml-2" data={faChevronRight} />
+				</button>
 			{:else if deliveryBatch.status == DeliveryBatchStatus.Waiting.Value}
 				<button
 					on:click={() => routerInstance.goTo(DeliveryBatchesRoutes.Edit, { id: deliveryBatch.id })}
@@ -101,9 +91,9 @@
 					>Modifier
 				</button>
 				<button
-					on:click={() => open(SetDeliveryBatchAsReadyModal, { id: deliveryBatch.id })}
+					on:click={() => open(StartDeliveryModal, { id: deliveryBatch.id })}
 					class="btn btn-lg btn-accent text-lg font-semibold"
-					>Confirmer
+					>Lancer
 					<Icon class="ml-2" data={faCheck} />
 				</button>
 			{/if}
