@@ -64,22 +64,13 @@
 	$: getDeliveryBatch($querystring);
 	$: buttons = [
 		{
-			text: "Confirmer",
-			color: "green",
-			click: () =>
-				open(SetDeliveryBatchAsReadyModal, {
-					id: deliveryBatch.id,
-				}),
-			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Waiting.Value,
-		},
-		{
-			text: "Démarrer",
+			text: "Lancer",
 			color: "green",
 			click: () =>
 				open(StartDeliveryModal, {
 					id: deliveryBatch.id,
 				}),
-			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Ready.Value,
+			hidden: !deliveryBatch || deliveryBatch.status != DeliveryBatchStatus.Waiting.Value,
 		},
 		{
 			text: "Reprendre",
