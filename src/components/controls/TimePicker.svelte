@@ -53,7 +53,7 @@
 	}
 </script>
 
-<div class="time-group">
+<div class="time-group" class:disabled>
 	<input
 		min="0"
 		max="23"

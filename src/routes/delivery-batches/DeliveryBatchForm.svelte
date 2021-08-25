@@ -56,15 +56,16 @@
 					<label>Date de départ</label>
 					<input
 						type="text"
+						class="disabled"
 						value={format(new Date(deliveryBatch.scheduledOn), "PPPP", { locale: fr })}
-						disabled={deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
+						disabled
 					/>
 				</div>
 				<div>
 					<label>Heure de départ</label>
 					<TimePicker
 						bind:time={deliveryBatch.from}
-						disabled={deliveryBatch.status != DeliveryBatchStatus.Waiting.Value}
+						disabled
 					/>
 				</div>
 			</div>
