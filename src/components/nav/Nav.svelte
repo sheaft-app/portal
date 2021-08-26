@@ -349,8 +349,8 @@
 				{#if isInRole($authUserAccount, [Roles.Producer.Value])}
 					<NavLink route={PurchaseOrderRoutes.List} />
 					<NavLink route={PickingRoutes.List} />
-					<NavLink route={RetrievalRoutes.List} />
 					<NavLink route={DeliveryBatchesRoutes.List} />
+					<NavLink route={RetrievalRoutes.List} />
 					<NavLink route={BillingRoutes.List} />
 					<hr class="my-2 mx-4" />
 					<NavLink route={BatchesRoutes.List} />
