@@ -29,13 +29,6 @@
 	let receptionedBy = null;
 	let stepper = 0;
 
-	// const previous = () => {
-	// 	if (stepper > 0) {
-	// 		previousStepper = stepper;
-	// 		--stepper;
-	// 	}
-	// }
-
 	const next = async (delivery, end) => {
 		await handleSubmit(delivery, end);
 		if (stepper < deliveries.length - 1) {
