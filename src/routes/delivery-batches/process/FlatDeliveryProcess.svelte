@@ -101,7 +101,7 @@
 		await mutate({
 			mutation: COMPLETE_DELIVERY,
 			variables: {
-				id: delivery.id,
+				id: delivery.id,	
 				receptionedBy,
 				comment,
 				returnedProducts,
@@ -115,7 +115,7 @@
 				comment = null;
 
 				if (end) {
-					routerInstance.goTo(DeliveryBatchesRoutes.List);
+					routerInstance.goTo(DeliveryBatchesRoutes.Summary, { id: params.id });
 				}
 			},
 			errorsHandler,
