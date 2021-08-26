@@ -41,5 +41,5 @@
 	closeText="Fermer"
 >
 	<p class="pt-2 leading-5">Vous vous apprêtez à démarrer la livraison.</p>
-	<p class="pt-2 leading-5">Vous pourrez ainsi télécharger les bons de livraisons correspondant.</p>
+	<p class="pt-2 leading-5">Vous pourrez ainsi télécharger les bons de livraison correspondants.</p>
 </ActionConfirm>
