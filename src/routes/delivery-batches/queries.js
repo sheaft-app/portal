@@ -134,34 +134,6 @@ export const GET_COMPLETED_ORDERS = gql`
 	}
 `;
 
-export const GET_AVAILABLE_DELIVERY_BATCHES = gql`
-	query GetAvailableDeliveryBatches($includeProcessingPurchaseOrders: Boolean!) {
-		availableDeliveryBatches(includeProcessingPurchaseOrders: $includeProcessingPurchaseOrders) {
-			name
-			day
-			from
-			to
-			expectedDeliveryDate
-			purchaseOrdersCount
-			clientsCount
-			clients {
-				id
-				name
-				position
-				purchaseOrders {
-					id
-					client
-					clientId
-					reference
-					productsCount
-					expectedDeliveryDate
-					totalWholeSalePrice
-				}
-			}
-		}
-	}
-`;
-
 export const GET_DELIVERY_BATCH_DETAILS = gql`
 	query GetDeliveryBatchDetails($id: ID!) {
 		deliveryBatch(id: $id) {

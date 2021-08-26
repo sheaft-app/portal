@@ -1,6 +1,6 @@
 <script>
 	import { getContext, onMount } from "svelte";
-	import { GET_AVAILABLE_PICKINGS, GET_PICKINGS } from "./queries";
+	import { GET_ACCEPTED_ORDERS, GET_PICKINGS } from "./queries";
 	import { UPDATE_PICKING } from "./mutations";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";
@@ -26,17 +26,10 @@
 	onMount(async () => {
 		isFetching = true;
 		await query({
-			query: GET_AVAILABLE_PICKINGS,
+			query: GET_ACCEPTED_ORDERS,
 			variables: { includePendingPurchaseOrders: true },
-			success: (res) => {
-				res.data.map((availablePicking) => {
-					availableOrders = [
-						...availableOrders,
-						...availablePicking.clients
-							.map((c) => c.purchaseOrders.map((p) => ({ ...p, name: c.name, clientId: c.id })))
-							.flat(),
-					];
-				});
+			success: (res) => {				
+				availableOrders = res.data;
 			},
 			errorsHandler,
 			errorNotification: "Impossible de charger les préparations disponibles",
@@ -63,7 +56,7 @@
 			},
 			successNotification: "Commande(s) ajoutée(s) avec succès !",
 			errorNotification: "Impossible d'ajouter une commande",
-			clearCache: [picking.id, GET_AVAILABLE_PICKINGS, GET_PICKINGS],
+			clearCache: [picking.id, GET_ACCEPTED_ORDERS, GET_PICKINGS],
 		});
 		isLoading = false;
 	};
@@ -85,11 +78,11 @@
 					<InputCheckbox checked={order.checked} />
 				</div>
 				<div class="px-4 py-2 shadow rounded">
-					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.name}</p>
+					<p class="font-semibold mb-1 -mx-4 -my-2 bg-gray-200 px-4 py-2">{order.sender.name}</p>
 					<p class="mb-1">Montant HT : {formatMoney(order.totalWholeSalePrice)}</p>
 					<p class="mb-1">Produits dans la commande : {order.productsCount}</p>
 					<p class="mb-2">
-						Livraison demandée le {format(new Date(order.expectedDeliveryDate), "PP", { locale: fr })}
+						Livraison demandée le {format(new Date(order.expectedDelivery.expectedDeliveryDate), "PP", { locale: fr })}
 					</p>
 				</div>
 			</div>

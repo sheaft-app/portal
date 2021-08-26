@@ -1,6 +1,6 @@
 <script>
 	import ActionConfirm from "./../../components/modal/ActionConfirm.svelte";
-	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES } from "./queries.js";
+	import { GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES } from "./queries.js";
 	import { CREATE_DELIVERY_BATCH } from "./mutations.js";
 	import SheaftErrors from "./../../services/SheaftErrors";
 	import { getContext, onMount } from "svelte";
@@ -97,7 +97,7 @@
 			},
 			errorsHandler,
 			errorNotification: "Impossible de programmer la livraison",
-			clearCache: [GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES],
+			clearCache: [GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES],
 		});
 		isLoading = false;
 	};

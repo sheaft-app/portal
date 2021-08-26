@@ -3,7 +3,7 @@
 	import GetRouterInstance from "../../services/SheaftRouter";
 	import DeliveryBatchForm from "./DeliveryBatchForm.svelte";
 	import { CREATE_DELIVERY_BATCH } from "./mutations";
-	import { GET_DELIVERY_BATCHES, GET_AVAILABLE_DELIVERY_BATCHES } from "./queries";
+	import { GET_DELIVERY_BATCHES, GET_COMPLETED_ORDERS } from "./queries";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { getContext } from "svelte";
 	import PageHeader from "../../components/PageHeader.svelte";
@@ -24,7 +24,7 @@
 			success: async () => await routerInstance.goTo(DeliveryBatchesRoutes.List),
 			successNotification: "Votre livraison a bien été programmée",
 			errorNotification: "Impossible de programmer la livraison",
-			clearCache: [GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES],
+			clearCache: [GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES],
 		});
 </script>
 

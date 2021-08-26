@@ -1,6 +1,6 @@
 <script>
 	import { getContext, onMount } from "svelte";
-	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES, GET_DELIVERY_BATCH_DETAILS } from "./queries";
+	import { GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES } from "./queries";
 	import { UPDATE_DELIVERY_BATCH } from "./mutations";
 	import InputCheckbox from "../../components/controls/InputCheckbox.svelte";
 	import SheaftErrors from "../../services/SheaftErrors";

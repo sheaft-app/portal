@@ -1,7 +1,7 @@
 <script>
 	import { getContext, onMount } from "svelte";
 	import TransitionWrapper from "../../components/TransitionWrapper.svelte";
-	import { GET_AVAILABLE_DELIVERY_BATCHES, GET_DELIVERY_BATCHES } from "./queries.js";
+	import { GET_DELIVERY_BATCHES, GET_COMPLETED_ORDERS } from "./queries.js";
 	import SheaftErrors from "../../services/SheaftErrors";
 	import { faHistory, faPlus } from "@fortawesome/free-solid-svg-icons";
 	import GetRouterInstance from "../../services/SheaftRouter";
@@ -12,7 +12,6 @@
 	import DeliveryBatchesRoutes from "./routes";
 	import Actions from "./../../components/table/Actions.svelte";
 	import ChooseAvailableDelivery from "./ChooseAvailableDelivery.svelte";
-	import Guid from "../../helpers/Guid";
 	import Icon from "svelte-awesome";
 	import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 	import { querystring } from "svelte-spa-router";
@@ -45,9 +44,9 @@
 	const loadDeliveryBatches = async () => {
 		isLoading = true;
 		await query({
-			query: GET_AVAILABLE_DELIVERY_BATCHES,
+			query: GET_COMPLETED_ORDERS,
 			variables: { includeProcessingPurchaseOrders: false },
-			success: (res) => (deliveries = res.data.map((r) => ({ ...r, id: Guid.NewGuid() }))),
+			success: (res) => (deliveries = res.data),
 			errorsHandler,
 			errorNotification: "Impossible de charger les livraisons disponibles",
 			skipCache: true,
