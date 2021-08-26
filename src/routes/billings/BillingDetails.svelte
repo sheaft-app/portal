@@ -69,7 +69,7 @@
 		delivery && !delivery.billedOn
 			? [
 					{
-						text: "Marquer comme facturée",
+						text: "Archiver",
 						color: "green",
 						click: () => markAsBilled(),
 					},
