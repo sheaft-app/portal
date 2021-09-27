@@ -16,6 +16,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			unit
 			conditioning
 			tags {
+				id
 				name
 			}
 			returnable {
@@ -33,6 +34,7 @@ export const GET_PRODUCT_DETAILS = gql`
 			ratings(first: 10, order: { createdOn: DESC }) {
 				nodes {
 					user {
+						id
 						name
 						picture
 					}
@@ -223,6 +225,7 @@ export const GET_STORE_PROFILE = gql`
 export const GET_PRODUCER_PRODUCTS = gql`
 	query ($id: ID!) {
 		producer(id: $id) {
+			id
 			products {
 				id
 				name
