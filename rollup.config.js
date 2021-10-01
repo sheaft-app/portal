@@ -22,28 +22,32 @@ const isDev = isWatch || isLiveReload;
 const production = !isDev;
 
 export default {
-	input: ["src/index.js","src/configs/config.production.js","src/configs/config.staging.js","src/configs/config.sprint.js","src/configs/config.js"],
+	input: [
+		"src/index.js",
+		"src/configs/config.production.js",
+		"src/configs/config.staging.js",
+		"src/configs/config.sprint.js",
+		"src/configs/config.docker.js",
+		"src/configs/config.js",
+	],
 	output: [
 		{
 			dir: "public",
 			format: "es",
 			chunkFileNames: "[name]-[hash].js",
 			sourcemap: isNollup || !production,
-			compact: production,			
+			compact: production,
 		},
 	],
 	manualChunks(id) {
 		if (id.includes("node_modules")) return "vendor";
 
-		if (id.includes("src/configs/config.production.js")) 
-			return "config.production";
-		else if (id.includes("src/configs/config.remote.js")) 
-			return "config.remote";
-		else if (id.includes("src/configs/config.sprint.js")) 
-			return "config.sprint";
-		else if(id.includes("src/configs/config.js"))
-			return "config";
-			
+		if (id.includes("src/configs/config.production.js")) return "config.production";
+		else if (id.includes("src/configs/config.remote.js")) return "config.remote";
+		else if (id.includes("src/configs/config.sprint.js")) return "config.sprint";
+		else if (id.includes("src/configs/config.docker.js")) return "config.docker";
+		else if (id.includes("src/configs/config.js")) return "config";
+
 		if (
 			id.includes("src/routes") ||
 			id.includes("src/components") ||
@@ -57,7 +61,7 @@ export default {
 		}
 	},
 	plugins: [
-		nodePolyfills({include:["util"]}),
+		nodePolyfills({ include: ["util"] }),
 		alias({
 			forms: __dirname + "vendors/svelte-forms",
 		}),
@@ -80,7 +84,7 @@ export default {
 				dev: !production,
 			},
 			emitCss: svelteConfig.emitCss,
-			preprocess: svelteConfig.preprocess
+			preprocess: svelteConfig.preprocess,
 		}),
 		svelteSVG(),
 		postcss(),
