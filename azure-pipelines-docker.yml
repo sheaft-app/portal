@@ -20,6 +20,11 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - task: PowerShell@2
+      displayName: 'Create Config'
+      inputs:
+        targetType: inline
+        script: Copy-Item -Path "src/configs/config.local.js" -Destination "$(System.DefaultWorkingDirectory)/src/configs/config.js"
     - task: Docker@2
       displayName: Build an image
       inputs:
