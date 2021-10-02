@@ -32,7 +32,9 @@
 			return;
 		}
 
-		selectedAddress = res.data[0];
+		if(res.data && res.data.length > 0){
+			selectedAddress = res.data[0];
+		}
 	};
 
 	const setLocation = async (position) => {

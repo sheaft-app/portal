@@ -63,7 +63,7 @@
 					variables: { input: [params.id] },
 					errorsHandler,
 					success: (res) => {
-						if (res.data[0] && res.data[0].deliveries)
+						if (res.data && res.data.length > 0 && res.data[0].deliveries)
 							deliveries = res.data[0].deliveries.map((d) => ({
 								...d,
 								deliveryHours: groupBy(d.deliveryHours, (item) => [item.day]).map((g) =>

@@ -97,22 +97,22 @@
 			{onRowClick}
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium truncate">
 					{quickOrder.name}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium truncate">
 					{format(new Date(quickOrder.createdOn), "P", { locale: fr })}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium truncate">
 					{quickOrder.isDefault ? "Oui" : "Non"}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+				<div class="text-sm leading-5 font-medium truncate">
 					{quickOrder.productsCount}
 				</div>
 			</td>

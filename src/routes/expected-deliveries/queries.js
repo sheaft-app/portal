@@ -10,7 +10,7 @@ export const GET_PENDING_DELIVERIES = gql`
 			order: $orderBy
 			where: {
 				kind: { in: [PRODUCER_TO_STORE] }
-				and: [{ or: [{ status: { eq: READY } }, { status: { eq: IN_PROGRESS } }] }]
+				and: [{ or: [{ status: { eq: WAITING } }, { status: { eq: READY } }, { status: { eq: IN_PROGRESS } }] }]
 			}
 		) {
 			pageInfo {

@@ -37,6 +37,7 @@
 	const headers = [
 		{ name: "Nom" },
 		{ name: "Producteur" },
+		{ name: "Concerné" },
 		{ name: "Créée le", sortLabel: "createdOn" },
 		{ name: "Produits" },
 		{ name: "Lots" },
@@ -62,7 +63,6 @@
 			noResultsPage={MyRecallRoutes.NoResults}
 			loadingMessage="Chargement de vos campagnes de rappel en cours."
 			defaultSearchValues={MyRecallRoutes.List.Params.Query}
-			getRowBackgroundColor={(recall) => (recall.userAffected ? "bg-red-100" : "")}
 			{onRowClick}
 		>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -73,6 +73,11 @@
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
 				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
 					{recall.producer.name}
+				</div>
+			</td>
+			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+				<div class="text-sm leading-5 font-medium truncate" style="max-width: 180px;">
+					{recall.userAffected ? 'Oui':'Non'}
 				</div>
 			</td>
 			<td class="px-3 md:px-6 py-4 whitespace-no-wrap border-b border-gray-200">

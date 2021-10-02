@@ -122,9 +122,11 @@
 									{delivery.productsDeliveredCount}
 								</p>
 							</div>
-							<div class="flex items-center mb-2">
-								<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
-							</div>
+							{#if delivery.deliveryFormUrl}
+								<div class="flex items-center mb-2">
+									<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
+								</div>
+							{/if}
 						{:else}
 							<div class="flex items-center mb-2">
 								<p>
@@ -132,9 +134,11 @@
 									{delivery.productsToDeliverCount}
 								</p>
 							</div>
-							<div class="flex items-center mb-2">
-								<a href={delivery.deliveryReceiptUrl}>Bon de réception</a>
-							</div>
+							{#if delivery.deliveryReceiptUrl}
+								<div class="flex items-center mb-2">
+									<a href={delivery.deliveryReceiptUrl}>Bon de réception</a>
+								</div>
+							{/if}
 						{/if}
 					</div>
 				</div>
