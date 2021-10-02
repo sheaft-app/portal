@@ -16,7 +16,8 @@
 
 	let deliveryBatch = undefined;
 
-	const handleSubmit = async () =>
+	const handleSubmit = async () => {
+		deliveryBatch.setAsReady = true;
 		await mutate({
 			mutation: CREATE_DELIVERY_BATCH,
 			variables: deliveryBatch,
@@ -26,6 +27,8 @@
 			errorNotification: "Impossible de programmer la livraison",
 			clearCache: [GET_COMPLETED_ORDERS, GET_DELIVERY_BATCHES],
 		});
+	}
+	
 </script>
 
 <TransitionWrapper>

@@ -89,6 +89,7 @@
 				from: `PT${from.hours}H${from.minutes ? `${from.minutes}M` : ""}`,
 				name: name,
 				scheduledOn: scheduledOn,
+				setAsReady: true,
 				deliveries: getClientPurchaseOrders(purchaseOrders),
 			},
 			success: async (res) => {
