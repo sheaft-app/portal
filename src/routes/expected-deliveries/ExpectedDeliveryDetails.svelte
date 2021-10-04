@@ -11,7 +11,7 @@
 	import { formatMoney } from "../../helpers/app";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
-	import { getPurchaseOrderModel } from "../../helpers/purchaseOrder";
+	import { getDeliveryProductsQuantites, getPurchaseOrderModel, getPurchaseOrdersProductsQuantites } from "../../helpers/purchaseOrder";
 
 	const errorsHandler = new SheaftErrors();
 	const { open } = getContext("modal");
@@ -39,13 +39,16 @@
 			skipCache: routerInstance.shouldSkipCache(),
 		});
 
-		purchaseOrder = getPurchaseOrderModel(delivery.products, delivery.returnedReturnables, delivery.deliveryFeesWholeSalePrice, delivery.deliveryFeesVatPrice, delivery.deliveryFeesOnSalePrice);
+		let { orderedProducts, preparedProducts, orderedReturnables, preparedReturnables } = getPurchaseOrdersProductsQuantites(delivery.purchaseOrders);
+		let { deliveredProducts, deliveredReturnables, returnedReturnables } = getDeliveryProductsQuantites(delivery);
+
+		purchaseOrder = getPurchaseOrderModel(
+			{orderedProducts, preparedProducts, deliveredProducts}, 
+			{orderedReturnables, preparedReturnables, deliveredReturnables, returnedReturnables}, 
+			{wholeSalePrice : delivery.deliveryFeesWholeSalePrice, vatPrice: delivery.deliveryFeesVatPrice, onSalePrice : delivery.deliveryFeesOnSalePrice});
 
 		isLoading = false;
 	});
-
-	const calculateDelivered = (product) =>
-		product.productsToDeliver + product.productsInExcess + product.productsBroken + product.productsMissing;
 
 	onDestroy(() => (delivery = null));
 </script>
@@ -185,17 +188,17 @@
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider hidden md:table-cell"
+                      bg-gray-100 text-center md:text-left text-xs font-semibold
+                      text-gray-600 uppercase tracking-wider"
 										>
-											PU HT
+											Qté commandée
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
                       bg-gray-100 text-center md:text-left text-xs font-semibold
                       text-gray-600 uppercase tracking-wider"
 										>
-											Qté demandée
+											Qté préparée
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -203,6 +206,13 @@
                       text-gray-600 uppercase tracking-wider"
 										>
 											Qté livrée
+										</th>
+										<th
+											class="px-4 md:px-8 py-3 border-b border-gray-400
+                      bg-gray-100 text-xs font-semibold text-gray-600
+                      uppercase tracking-wider hidden md:table-cell text-right"
+										>
+											PU HT
 										</th>
 										<th
 											class="px-4 md:px-8 py-3 border-b border-gray-400
@@ -239,7 +249,25 @@
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden md:table-cell"
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{product.ordered}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{product.prepared}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{product.delivered}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base hidden md:table-cell text-right"
 											>
 												<p class="whitespace-no-wrap">
 													{formatMoney(product.unitWholeSalePrice)}
@@ -247,22 +275,10 @@
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">{product.productsToDeliver}</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">{calculateDelivered(product)}</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(product.totalProductWholeSalePrice)}
+													{formatMoney(product.totalWholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -270,7 +286,7 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(product.totalProductOnSalePrice)}
+													{formatMoney(product.totalOnSalePrice)}
 												</p>
 												<p class="whitespace-no-wrap">TVA : {product.vat}%</p>
 											</td>
@@ -284,6 +300,7 @@
 											>
 												<div class="items-center">
 													<p>{returnable.name}</p>
+													<small>Consignes déposée(s)</small>
 													<p class="whitespace-no-wrap block lg:hidden">
 														{formatMoney(returnable.unitWholeSalePrice)}
 													</p>
@@ -291,21 +308,29 @@
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden md:table-cell"
+                        bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(returnable.unitWholeSalePrice)}
-												</p>
+												<p class="whitespace-no-wrap">{returnable.ordered}</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
-											/>
+											>
+												<p class="whitespace-no-wrap">{returnable.prepared}</p>
+											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">{returnable.quantity}</p>
+												<p class="whitespace-no-wrap">{returnable.delivered}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base hidden md:table-cell text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(returnable.unitWholeSalePrice)}
+												</p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
@@ -326,27 +351,76 @@
 											</td>
 										</tr>
 									{/each}
-
-									{#if purchaseOrder.deliveryFeesWholeSalePrice > 0}
+									{#each purchaseOrder.returnedReturnables as returnedReturnable, index}
 										<tr>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
                         bg-white text-sm lg:text-base"
 											>
 												<div class="items-center">
-													<p>Livraison</p>
+													<p>{returnedReturnable.name}</p>
+													<small>Consignes récupérée(s)</small>
 													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+														{formatMoney(returnedReturnable.unitWholeSalePrice)}
 													</p>
 												</div>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden md:table-cell"
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap">{returnedReturnable.delivered}</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base hidden md:table-cell text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+													{formatMoney(returnedReturnable.unitWholeSalePrice)}
 												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(returnedReturnable.totalWholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(returnedReturnable.totalOnSalePrice)}
+												</p>
+												<p class="whitespace-no-wrap">TVA : {returnedReturnable.vat}%</p>
+											</td>
+										</tr>
+									{/each}
+
+									{#if purchaseOrder.deliveryFees.wholeSalePrice > 0}
+										<tr>
+											<td 
+												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
+                        bg-white text-sm lg:text-base"
+											>
+												<div class="items-center">
+													<p>Livraison</p>
+													<p class="whitespace-no-wrap block lg:hidden">
+														{formatMoney(purchaseOrder.deliveryFees.wholeSalePrice)}
+													</p>
+												</div>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
@@ -358,14 +432,28 @@
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-center md:text-left"
 											>
-												<p class="whitespace-no-wrap">1</p>
+												<p class="whitespace-no-wrap"></p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-center md:text-left"
+											>
+												<p class="whitespace-no-wrap"></p>
 											</td>
 											<td
 												class="px-4 md:px-8 py-5 border-b border-gray-400
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(purchaseOrder.deliveryFeesWholeSalePrice)}
+													{formatMoney(purchaseOrder.deliveryFees.wholeSalePrice)}
+												</p>
+											</td>
+											<td
+												class="px-4 md:px-8 py-5 border-b border-gray-400
+                        bg-white text-sm lg:text-base text-right"
+											>
+												<p class="whitespace-no-wrap">
+													{formatMoney(purchaseOrder.deliveryFees.wholeSalePrice)}
 												</p>
 											</td>
 											<td
@@ -373,7 +461,7 @@
                         bg-white text-sm lg:text-base text-right"
 											>
 												<p class="whitespace-no-wrap">
-													{formatMoney(purchaseOrder.deliveryFeesOnSalePrice)}
+													{formatMoney(purchaseOrder.deliveryFees.onSalePrice)}
 												</p>
 												<p class="whitespace-no-wrap">TVA : 20%</p>
 											</td>
@@ -383,14 +471,14 @@
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colSpan="5"
+											colSpan="6"
 										>
 											Total HT:
 										</td>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colSpan="5"
+											colSpan="6"
 										>
 											Total HT:
 										</td>
@@ -399,21 +487,21 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colSpan="1"
 										>
-											{formatMoney(purchaseOrder.totalWholeSalePrice)}
+											{formatMoney(purchaseOrder.totalWholeSalePrice + purchaseOrder.deliveryFees.wholeSalePrice)}
 										</td>
 									</tr>
 									<tr>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="5"
+											colspan="6"
 										>
 											Total TVA:
 										</td>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="5"
+											colspan="6"
 										>
 											Total TVA:
 										</td>
@@ -422,21 +510,21 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colspan="1"
 										>
-											{formatMoney(purchaseOrder.totalVatPrice)}
+											{formatMoney(purchaseOrder.totalVatPrice + purchaseOrder.deliveryFees.vatPrice)}
 										</td>
 									</tr>
 									<tr>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="5"
+											colspan="6"
 										>
 											Total TTC:
 										</td>
 										<td
 											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
                       py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="5"
+											colspan="6"
 										>
 											Total TTC:
 										</td>
@@ -445,7 +533,7 @@
                       py-5 text-lg text-right font-bold col-span-1 border-r"
 											colspan="1"
 										>
-											{formatMoney(purchaseOrder.totalOnSalePrice)}
+											{formatMoney(purchaseOrder.totalOnSalePrice + purchaseOrder.deliveryFees.onSalePrice)}
 										</td>
 									</tr>
 								</tbody>

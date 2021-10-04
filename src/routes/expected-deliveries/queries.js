@@ -75,6 +75,7 @@ export const GET_DELIVERY_DETAILS = gql`
 				zipcode
 				city
 			}
+			status
 			reference
 			scheduledOn
 			deliveredOn
@@ -102,6 +103,44 @@ export const GET_DELIVERY_DETAILS = gql`
 				id
 				reference
 				createdOn
+				products {
+					id
+					name
+					quantity
+					reference
+					vat
+					isReturnable
+					unitWholeSalePrice
+					totalProductWholeSalePrice
+					totalProductOnSalePrice
+					totalProductVatPrice
+					returnableId
+					returnableName
+					returnableVat
+					returnableWholeSalePrice
+					totalReturnableWholeSalePrice
+					totalReturnableOnSalePrice
+					totalReturnableVatPrice
+				}
+				preparedProducts {
+					id
+					name
+					quantity
+					reference
+					vat
+					isReturnable
+					unitWholeSalePrice
+					totalProductWholeSalePrice
+					totalProductOnSalePrice
+					totalProductVatPrice
+					returnableId
+					returnableName
+					returnableVat
+					returnableWholeSalePrice
+					totalReturnableWholeSalePrice
+					totalReturnableOnSalePrice
+					totalReturnableVatPrice
+				}
 			}
 			products {
 				id
