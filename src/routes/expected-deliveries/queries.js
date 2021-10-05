@@ -91,9 +91,6 @@ export const GET_DELIVERY_DETAILS = gql`
 					city
 				}
 			}
-			deliveryFeesWholeSalePrice
-			deliveryFeesVatPrice
-			deliveryFeesOnSalePrice
 			productsToDeliverCount
 			productsDeliveredCount
 			purchaseOrdersCount
@@ -101,78 +98,9 @@ export const GET_DELIVERY_DETAILS = gql`
 			deliveryReceiptUrl
 			purchaseOrders {
 				id
+				status
 				reference
 				createdOn
-				products {
-					id
-					name
-					quantity
-					reference
-					vat
-					isReturnable
-					unitWholeSalePrice
-					totalProductWholeSalePrice
-					totalProductOnSalePrice
-					totalProductVatPrice
-					returnableId
-					returnableName
-					returnableVat
-					returnableWholeSalePrice
-					totalReturnableWholeSalePrice
-					totalReturnableOnSalePrice
-					totalReturnableVatPrice
-				}
-				preparedProducts {
-					id
-					name
-					quantity
-					reference
-					vat
-					isReturnable
-					unitWholeSalePrice
-					totalProductWholeSalePrice
-					totalProductOnSalePrice
-					totalProductVatPrice
-					returnableId
-					returnableName
-					returnableVat
-					returnableWholeSalePrice
-					totalReturnableWholeSalePrice
-					totalReturnableOnSalePrice
-					totalReturnableVatPrice
-				}
-			}
-			products {
-				id
-				productId
-				name
-				kind
-				quantity
-				reference
-				vat
-				isReturnable
-				unitWholeSalePrice
-				totalProductWholeSalePrice
-				totalProductOnSalePrice
-				totalProductVatPrice
-				returnableId
-				returnableName
-				returnableVat
-				returnableWholeSalePrice
-				totalReturnableWholeSalePrice
-				totalReturnableOnSalePrice
-				totalReturnableVatPrice
-			}
-			returnedReturnables {
-				id
-				returnableId
-				name
-				quantity
-				vat
-				unitWholeSalePrice
-				totalWholeSalePrice
-				totalOnSalePrice
-				totalVatPrice
 			}
 		}
 	}

@@ -44,6 +44,7 @@
 	import CreateDeliveryBatchForPurchaseOrders from "./CreateDeliveryBatchForPurchaseOrders.svelte";
 	import ChooseAvailablePickingModal from "./../pickings/ChooseAvailablePickingModal.svelte";
 	import { querystring } from "svelte-spa-router";
+	import PurchaseOrderProductsTable from "./../../components/products-table/PurchaseOrderProductsTable.svelte";
 
 	export let params = {};
 
@@ -345,7 +346,7 @@
         border-gray-400"
 			>
 				<div
-					class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
+					class="w-full lg:w-3/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
           lg:border-r border-solid border-gray-400"
 				>
 					<p class="uppercase font-bold pb-2">Commande</p>
@@ -377,30 +378,7 @@
 					</div>
 				</div>
 				<div
-					class="w-full lg:w-2/6 px-4 lg:px-8 py-5 border-b lg:border-b-0
-          lg:border-r border-solid border-gray-400"
-				>
-					<p class="uppercase font-bold pb-2">Contenu</p>
-					<div class="mt-3">
-						<div class="flex items-center mb-2">
-							<p>
-								<span class="text-gray-600">Articles :</span>
-								{order.productsCount}
-							</p>
-						</div>
-						<div class="flex items-center mb-2">
-							<p>
-								<span class="text-gray-600">Montant TTC :</span>
-								{formatMoney(order.totalOnSalePrice)}
-								{#if order.totalReturnableOnSalePrice > 0}
-									(dont {formatMoney(order.totalReturnableOnSalePrice)} consignes)
-								{/if}
-							</p>
-						</div>
-					</div>
-				</div>
-				<div
-					class="w-full lg:w-2/6 border-b md:border-b-0 border-solid
+					class="w-full lg:w-3/6 border-b md:border-b-0 border-solid
           border-gray-400 px-4 lg:px-8 py-5"
 				>
 					<p class="uppercase font-bold pb-2">Client</p>
@@ -425,235 +403,6 @@
 				</div>
 			</div>
 		</div>
-		{#if order.comment && order.comment.length > 0}
-			<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:mx-0 bg-white border-t md:border border-gray-400">
-				<div class=" px-4 py-5">
-					<p class="uppercase font-bold pb-2">Remarques</p>
-					<p>{order.comment}</p>
-				</div>
-			</div>
-		{/if}
-		<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5">
-			<div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
-				<div class="w-full">
-					<section>
-						<div class="-mx-4 lg:-mx-8">
-							<table class="min-w-full leading-normal">
-								<thead>
-									<tr>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-l border-gray-400
-                      bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider"
-										>
-											Produit
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-left text-xs font-semibold text-gray-600
-                      uppercase tracking-wider hidden md:table-cell"
-										>
-											PU HT
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-center md:text-left text-xs font-semibold
-                      text-gray-600 uppercase tracking-wider"
-										>
-											Qté
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-gray-400
-                      bg-gray-100 text-center md:text-left text-xs font-semibold
-                      text-gray-600 uppercase tracking-wider"
-										>
-											TVA
-										</th>
-										<th
-											class="px-4 md:px-8 py-3 border-b border-r border-gray-400
-                      bg-gray-100 text-right text-xs font-semibold text-gray-600
-                      uppercase tracking-wider"
-										>
-											Total TTC
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{#each order.products as line, index}
-										<tr>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
-                        bg-white text-sm lg:text-base"
-											>
-												<div class="items-center">
-													<p>{line.name}</p>
-													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(line.unitWholeSalePrice)}
-													</p>
-													<p class="text-gray-600 whitespace-no-wrap">
-														#{line.reference}
-													</p>
-												</div>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden md:table-cell"
-											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(line.unitWholeSalePrice)}
-												</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">{line.quantity}</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">{line.vat}%</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
-                        bg-white text-sm lg:text-base text-right"
-											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(line.totalProductOnSalePrice)}
-												</p>
-												{#if line.totalReturnableOnSalePrice > 0}
-													<p class="text-blue-500 whitespace-no-wrap">
-														<img
-															src="./img/returnable.svg"
-															alt="Consigné"
-															class="mr-1"
-															style="width: 15px; display: inline;"
-														/>
-														{formatMoney(line.totalReturnableOnSalePrice)}
-													</p>
-												{/if}
-											</td>
-										</tr>
-									{/each}
-									{#if order.expectedDelivery.deliveryFeesWholeSalePrice > 0}
-										<tr>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-l border-gray-400
-                        bg-white text-sm lg:text-base"
-											>
-												<div class="items-center">
-													<p>Livraison</p>
-													<p class="whitespace-no-wrap block lg:hidden">
-														{formatMoney(order.expectedDelivery.deliveryFeesWholeSalePrice)}
-													</p>
-												</div>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base hidden md:table-cell"
-											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(order.expectedDelivery.deliveryFeesWholeSalePrice)}
-												</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">1</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-gray-400
-                        bg-white text-sm lg:text-base text-center md:text-left"
-											>
-												<p class="whitespace-no-wrap">20%</p>
-											</td>
-											<td
-												class="px-4 md:px-8 py-5 border-b border-r border-gray-400
-                        bg-white text-sm lg:text-base text-right"
-											>
-												<p class="whitespace-no-wrap">
-													{formatMoney(order.expectedDelivery.deliveryFeesOnSalePrice)}
-												</p>
-											</td>
-										</tr>
-									{/if}
-									<tr>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colSpan="3"
-										>
-											Total HT:
-										</td>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colSpan="4"
-										>
-											Total HT:
-										</td>
-										<td
-											class="border-b border-gray-400 bg-white px-4 md:px-8
-                      py-5 text-lg text-right font-bold col-span-1 border-r"
-											colSpan="1"
-										>
-											{formatMoney(order.totalWholeSalePrice)}
-										</td>
-									</tr>
-									<tr>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="3"
-										>
-											Total TVA:
-										</td>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="4"
-										>
-											Total TVA:
-										</td>
-										<td
-											class="border-b border-gray-400 bg-white px-4 md:px-8
-                      py-5 text-lg text-right font-bold col-span-1 border-r"
-											colspan="1"
-										>
-											{formatMoney(order.totalVatPrice)}
-										</td>
-									</tr>
-									<tr>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:hidden table-cell"
-											colspan="3"
-										>
-											Total TTC:
-										</td>
-										<td
-											class="border-b border-gray-400 border-l bg-white px-4 md:px-8
-                      py-5 text-lg text-right uppercase font-semibold md:table-cell hidden"
-											colspan="4"
-										>
-											Total TTC:
-										</td>
-										<td
-											class="border-b border-gray-400 bg-white px-4 md:px-8
-                      py-5 text-lg text-right font-bold col-span-1 border-r"
-											colspan="1"
-										>
-											{formatMoney(order.totalOnSalePrice)}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</section>
-				</div>
-			</div>
-		</div>
+		<PurchaseOrderProductsTable purchaseOrderId={order.id} />
 	</PageBody>
 </TransitionWrapper>

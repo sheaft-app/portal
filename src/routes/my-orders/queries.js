@@ -55,6 +55,7 @@ export const MY_ORDERS = gql`
 	}
 `;
 
+
 export const GET_MY_ORDER_DETAILS = gql`
 	query GetMyOrderDetails($id: ID!) {
 		purchaseOrder(id: $id) {
@@ -70,16 +71,8 @@ export const GET_MY_ORDER_DETAILS = gql`
 			reason
 			productsCount
 			comment
-			preparedProducts {
-				productId
-				batches {
-					id
-					number
-					dlc
-					ddm
-				}
-			}
 			delivery {
+				id
 				status
 				scheduledOn
 				deliveredOn
@@ -93,8 +86,6 @@ export const GET_MY_ORDER_DETAILS = gql`
 				to
 				name
 				kind
-				deliveryFeesWholeSalePrice
-				deliveryFeesOnSalePrice
 				address {
 					line1
 					zipcode
@@ -112,19 +103,6 @@ export const GET_MY_ORDER_DETAILS = gql`
 				name
 				email
 				phone
-			}
-			products {
-				id
-				name
-				reference
-				quantity
-				vat
-				totalOnSalePrice
-				totalWholeSalePrice
-				unitOnSalePrice
-				unitWholeSalePrice
-				totalReturnableOnSalePrice
-				totalReturnableWholeSalePrice
 			}
 		}
 	}

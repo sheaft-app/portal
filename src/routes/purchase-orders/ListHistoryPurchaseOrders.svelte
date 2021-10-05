@@ -83,14 +83,6 @@
 			{errorsHandler}
 			loadingMessage="Chargement de vos commandes en cours."
 			defaultSearchValues={PurchaseOrderRoutes.List.Params.Query}
-			bind:selectedItems
-			disableRowSelection={(order) =>
-				order &&
-				(order.status === PurchaseOrderStatusKind.Cancelled.Value ||
-					order.status === PurchaseOrderStatusKind.Refused.Value ||
-					order.status === PurchaseOrderStatusKind.Withdrawned.Value ||
-					order.status === PurchaseOrderStatusKind.Delivered.Value ||
-					order.status === PurchaseOrderStatusKind.Expired.Value)}
 			{getRowBackgroundColor}
 			{onRowClick}
 		>

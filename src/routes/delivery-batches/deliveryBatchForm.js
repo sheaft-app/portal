@@ -27,3 +27,38 @@ export const denormalizeDeliveryBatch = (delivery) => ({
 	from: timeSpanToTime(delivery.from),
 	scheduledOn: new Date(delivery.scheduledOn),
 });
+
+export const denormalizeDeliveryBatchProducts = (products) =>
+	products.reduce((acc, curr) => {
+		let product;
+
+		if (acc.length > 0) {
+			product = acc.find((_product) => _product.productId == curr.productId);
+		}
+
+		if (!product) {
+			product = curr;
+			product.productsToDeliver = 0;
+			product.productsBroken = 0;
+			product.productsMissing = 0;
+			product.productsInExcess = 0;
+			acc = [...acc, product];
+		}
+
+		switch (curr.kind) {
+			case ModificationKind.ToDeliver.Value:
+				product.productsToDeliver = curr.quantity;
+				break;
+			case ModificationKind.Broken.Value:
+				product.productsBroken = curr.quantity;
+				break;
+			case ModificationKind.Missing.Value:
+				product.productsMissing = curr.quantity;
+				break;
+			case ModificationKind.Excess.Value:
+				product.productsInExcess = curr.quantity;
+				break;
+		}
+
+		return acc;
+	}, []);

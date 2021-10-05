@@ -9,7 +9,7 @@
 	import DeliveryBatchesRoutes from "./routes";
 	import Icon from "svelte-awesome";
 	import { faEye } from "@fortawesome/free-solid-svg-icons";
-	import { denormalizeDeliveryProducts } from "../../helpers/purchaseOrder";
+	import { denormalizeDeliveryBatchProducts } from "./deliveryBatchForm";
 	import DeliveryBatchStatus from "../../enums/DeliveryBatchStatus";
 	import format from "date-fns/format";
 	import fr from "date-fns/locale/fr";

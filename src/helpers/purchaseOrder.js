@@ -1,5 +1,5 @@
-import ModificationKind from "./../enums/ModificationKind";
 import DeliveryStatus from "./../enums/DeliveryStatus";
+import ModificationKind from "./../enums/ModificationKind";
 
 export const getPurchaseOrdersProductsQuantites = (purchaseOrders) => {
 	const products = {
@@ -112,14 +112,16 @@ const getProductModel = (product, deliveryStatus) => {
 	};
 };
 
-export const getPurchaseOrderModel = (products, returnables, deliveryFees) => {
+export const getProductsProgress = (products, returnables, deliveryFees) => {
 	let model = {
 		products: [],
 		returnables: [],
 		returnedReturnables: [],
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		total: {
+			wholeSalePrice: 0,
+			vatPrice: 0,
+			onSalePrice: 0
+		},
 		deliveryFees: deliveryFees,
 	};
 
@@ -140,14 +142,14 @@ export const getPurchaseOrderModel = (products, returnables, deliveryFees) => {
 	model.returnables = returnablesFormatted.returnables;
 	model.returnedReturnables = returnablesFormatted.returnedReturnables;
 
-	model.totalWholeSalePrice += productsFormatted.totalWholeSalePrice;
-	model.totalWholeSalePrice += returnablesFormatted.totalWholeSalePrice;
+	model.total.wholeSalePrice += productsFormatted.wholeSalePrice;
+	model.total.wholeSalePrice += returnablesFormatted.wholeSalePrice;
 
-	model.totalVatPrice += productsFormatted.totalVatPrice;
-	model.totalVatPrice += returnablesFormatted.totalVatPrice;
+	model.total.vatPrice += productsFormatted.vatPrice;
+	model.total.vatPrice += returnablesFormatted.vatPrice;
 
-	model.totalOnSalePrice += productsFormatted.totalOnSalePrice;
-	model.totalOnSalePrice += returnablesFormatted.totalOnSalePrice;
+	model.total.onSalePrice += productsFormatted.onSalePrice;
+	model.total.onSalePrice += returnablesFormatted.onSalePrice;
 
 	return model;
 };
@@ -155,9 +157,9 @@ export const getPurchaseOrderModel = (products, returnables, deliveryFees) => {
 const formatProducts = (orderedProducts, preparedProducts, deliveredProducts) => {
 	let products = [];
 	let total = {
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		wholeSalePrice: 0,
+		vatPrice: 0,
+		onSalePrice: 0,
 	};
 
 	products = updateFormattedProducts(products, formatData(orderedProducts), "ordered");
@@ -182,19 +184,19 @@ const formatProducts = (orderedProducts, preparedProducts, deliveredProducts) =>
 
 const getResourcesTotal = (resources, property) => {
 	let total = {
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		wholeSalePrice: 0,
+		vatPrice: 0,
+		onSalePrice: 0,
 	};
 
 	resources.forEach((r) => {
-		r.totalWholeSalePrice = r[property] * r.unitWholeSalePrice;
-		r.totalVatPrice = r[property] * ((r.unitWholeSalePrice * r.vat) / 100);
-		r.totalOnSalePrice = r.totalWholeSalePrice + r.totalVatPrice;
+		r.wholeSalePrice = r[property] * r.unitWholeSalePrice;
+		r.vatPrice = r[property] * ((r.unitWholeSalePrice * r.vat) / 100);
+		r.onSalePrice = r.wholeSalePrice + r.vatPrice;
 
-		total.totalWholeSalePrice += r.totalWholeSalePrice;
-		total.totalVatPrice += r.totalVatPrice;
-		total.totalOnSalePrice += r.totalOnSalePrice;
+		total.wholeSalePrice += r.wholeSalePrice;
+		total.vatPrice += r.vatPrice;
+		total.onSalePrice += r.onSalePrice;
 	});
 
 	return total;
@@ -224,9 +226,9 @@ const updateFormattedProducts = (model, products, property) => {
 const formatReturnables = (orderedReturnables, preparedReturnables, deliveredReturnables, returnedReturnables) => {
 	let returnables = [];
 	let total = {
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		wholeSalePrice: 0,
+		vatPrice: 0,
+		onSalePrice: 0,
 	};
 
 	returnables = updateFormattedReturnables(returnables, formatData(orderedReturnables), "ordered");
@@ -242,9 +244,9 @@ const formatReturnables = (orderedReturnables, preparedReturnables, deliveredRet
 	}
 
 	let formattedReturnedReturnables = updateFormattedReturnedReturnables(formatData(returnedReturnables));
-	total.totalWholeSalePrice += formattedReturnedReturnables.totalWholeSalePrice;
-	total.totalVatPrice += formattedReturnedReturnables.totalVatPrice;
-	total.totalOnSalePrice += formattedReturnedReturnables.totalOnSalePrice;
+	total.wholeSalePrice += formattedReturnedReturnables.wholeSalePrice;
+	total.vatPrice += formattedReturnedReturnables.vatPrice;
+	total.onSalePrice += formattedReturnedReturnables.onSalePrice;
 
 	return {
 		returnables,
@@ -278,9 +280,9 @@ const updateFormattedReturnables = (model, returnables, property) => {
 const updateFormattedReturnedReturnables = (returnables) => {
 	let newReturnedReturnables = [];
 	let total = {
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		wholeSalePrice: 0,
+		vatPrice: 0,
+		onSalePrice: 0,
 	};
 	
 	returnables.data.forEach((returnable) => {
@@ -300,13 +302,13 @@ const updateFormattedReturnedReturnables = (returnables) => {
 	});
 
 	newReturnedReturnables.forEach(r => {
-		r.totalWholeSalePrice = r.delivered * r.unitWholeSalePrice;
-		r.totalVatPrice = r.delivered * ((r.unitWholeSalePrice * r.vat) / 100);
-		r.totalOnSalePrice = r.totalWholeSalePrice + r.totalVatPrice;
+		r.wholeSalePrice = r.delivered * r.unitWholeSalePrice;
+		r.vatPrice = r.delivered * ((r.unitWholeSalePrice * r.vat) / 100);
+		r.onSalePrice = r.wholeSalePrice + r.vatPrice;
 
-		total.totalWholeSalePrice += r.totalWholeSalePrice;
-		total.totalVatPrice += r.totalVatPrice;
-		total.totalOnSalePrice += r.totalOnSalePrice;
+		total.wholeSalePrice += r.wholeSalePrice;
+		total.vatPrice += r.vatPrice;
+		total.onSalePrice += r.onSalePrice;
 	});
 
 	return {
@@ -318,9 +320,9 @@ const updateFormattedReturnedReturnables = (returnables) => {
 const formatData = (data) => {
 	let model = {
 		data: [],
-		totalWholeSalePrice: 0,
-		totalVatPrice: 0,
-		totalOnSalePrice: 0,
+		wholeSalePrice: 0,
+		vatPrice: 0,
+		onSalePrice: 0,
 	};
 
 	if (!data || data.length < 1) {
@@ -334,17 +336,17 @@ const formatData = (data) => {
 		if (!grouped) {
 			groupedData = [...groupedData, item];
 		} else {
-			grouped.totalWholeSalePrice += item.totalWholeSalePrice;
-			grouped.totalVatPrice += item.totalVatPrice;
-			grouped.totalOnSalePrice += item.totalOnSalePrice;
+			grouped.wholeSalePrice += item.wholeSalePrice;
+			grouped.vatPrice += item.vatPrice;
+			grouped.onSalePrice += item.onSalePrice;
 			grouped.quantity += item.quantity;
 		}
 	});
 
 	Object.values(groupedData).map((value) => {
-		model.totalWholeSalePrice += value.totalWholeSalePrice;
-		model.totalVatPrice += value.totalVatPrice;
-		model.totalOnSalePrice += value.totalOnSalePrice;
+		model.wholeSalePrice += value.wholeSalePrice;
+		model.vatPrice += value.vatPrice;
+		model.onSalePrice += value.onSalePrice;
 	});
 
 	model.data = groupedData;
