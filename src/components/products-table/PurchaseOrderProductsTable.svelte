@@ -51,7 +51,8 @@
                 wholeSalePrice : purchaseOrder.expectedDelivery.deliveryFeesWholeSalePrice, 
                 vatPrice: purchaseOrder.expectedDelivery.deliveryFeesVatPrice, 
                 onSalePrice : purchaseOrder.expectedDelivery.deliveryFeesOnSalePrice
-            });
+            },
+            purchaseOrder.status);
 
         isLoading = false;
     }

@@ -73,13 +73,13 @@
                                                 Qté livrée
                                             </th>
                                         {/if}
-										<th class="px-4 md:px-8 py-3 text-left text-xs tracking-widerhidden md:table-cell text-right font-semibold uppercase">
+										<th class="px-4 md:px-8 py-3 text-xs tracking-widerhidden md:table-cell text-right font-semibold uppercase">
 											PU HT
 										</th>
-										<th class="px-4 md:px-8 py-3 text-left text-xs tracking-wider text-right font-semibold uppercase">
+										<th class="px-4 md:px-8 py-3 text-xs tracking-wider text-right font-semibold uppercase">
 											Total HT
 										</th>
-										<th class="px-4 md:px-8 py-3 text-left text-xs tracking-wider text-right font-semibold uppercase">
+										<th class="px-4 md:px-8 py-3 text-xs tracking-wider text-right font-semibold uppercase">
 											Total TTC
 										</th>
 									</tr>
@@ -94,8 +94,15 @@
 														{formatMoney(product.unitWholeSalePrice)}
 													</p>
 													<p class="text-gray-600 whitespace-no-wrap">
-														#{product.reference}
+														<small>#{product.reference}</small>
 													</p>
+													{#if product.batches && product.batches.length > 0}
+													<ul>
+														{#each product.batches as batch}
+															<li><small><strong>Lot: {batch.number} {batch.dlc||batch.dlm ? (`(${format(new Date(batch.dlc||batch.dlm), "P", { locale: fr })})`) : ""}</strong></small></li>
+														{/each}
+													</ul>
+													{/if}
 												</div>
 											</td>
 											<td class="px-4 md:px-8 py-5">
@@ -167,7 +174,7 @@
 												<p class="whitespace-no-wrap">
 													{formatMoney(returnable.onSalePrice)}
 												</p>
-												<p class="whitespace-no-wrap">TVA : {returnable.vat}%</p>
+												<small class="whitespace-no-wrap">TVA : {returnable.vat}%</small>
 											</td>
 										</tr>
 									{/each}
@@ -182,11 +189,15 @@
 													</p>
 												</div>
 											</td>
-											<td/>
-                                        {#if showPrepared}
-											<td/>
+											<td class="px-4 md:px-8 py-5">
+												<p class="whitespace-no-wrap">0</p>
+                                            </td>
+                                        	{#if showPrepared}
+											<td class="px-4 md:px-8 py-5">
+												<p class="whitespace-no-wrap">0</p>
+                                            </td>
                                             {/if}
-                                        {#if showDelivered}
+                                        	{#if showDelivered}
 											<td class="px-4 md:px-8 py-5">
 												<p class="whitespace-no-wrap">{returnedReturnable.delivered}</p>
 											</td>
@@ -205,7 +216,7 @@
 												<p class="whitespace-no-wrap">
 													{formatMoney(returnedReturnable.onSalePrice)}
 												</p>
-												<p class="whitespace-no-wrap">TVA : {returnedReturnable.vat}%</p>
+												<small class="whitespace-no-wrap">TVA : {returnedReturnable.vat}%</small>
 											</td>
 										</tr>
 									{/each}

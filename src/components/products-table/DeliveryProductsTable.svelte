@@ -38,7 +38,8 @@
 		progress = getProductsProgress(
 			{orderedProducts, preparedProducts, deliveredProducts}, 
 			{orderedReturnables, preparedReturnables, deliveredReturnables, returnedReturnables}, 
-			{wholeSalePrice : delivery.deliveryFeesWholeSalePrice, vatPrice: delivery.deliveryFeesVatPrice, onSalePrice : delivery.deliveryFeesOnSalePrice});
+			{wholeSalePrice : delivery.deliveryFeesWholeSalePrice, vatPrice: delivery.deliveryFeesVatPrice, onSalePrice : delivery.deliveryFeesOnSalePrice},
+            null);
 
         isLoading = false;
     }

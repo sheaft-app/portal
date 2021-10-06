@@ -10,11 +10,9 @@
 	import AccountingRoutes from "./routes";
 	import PurchaseOrderRoutes from "./../purchase-orders/routes";
 	import MarkDeliveriesAsBilled from "./MarkDeliveriesAsBilled.svelte";
-	import { formatMoney } from "../../helpers/app";
 	import { format } from "date-fns";
 	import fr from "date-fns/locale/fr";
 	import { querystring } from "svelte-spa-router";
-	import { getProductsProgress } from "../../helpers/purchaseOrder";
 	import DeliveryProductsTable from './../../components/products-table/DeliveryProductsTable.svelte';
 
 	const errorsHandler = new SheaftErrors();

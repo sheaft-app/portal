@@ -1,5 +1,6 @@
 import DeliveryStatus from "./../enums/DeliveryStatus";
 import ModificationKind from "./../enums/ModificationKind";
+import PurchaseOrderStatusKind from "../enums/PurchaseOrderStatusKind";
 
 export const getPurchaseOrdersProductsQuantites = (purchaseOrders) => {
 	const products = {
@@ -109,10 +110,11 @@ const getProductModel = (product, deliveryStatus) => {
 		reference: product.reference,
 		isReturnable: product.isReturnable,
 		returnableId: product.returnableId,
+		batches: product.batches
 	};
 };
 
-export const getProductsProgress = (products, returnables, deliveryFees) => {
+export const getProductsProgress = (products, returnables, deliveryFees, purchaseOrderStatus) => {
 	let model = {
 		products: [],
 		returnables: [],
@@ -128,14 +130,16 @@ export const getProductsProgress = (products, returnables, deliveryFees) => {
 	let productsFormatted = formatProducts(
 		products.orderedProducts,
 		products.preparedProducts,
-		products.deliveredProducts
+		products.deliveredProducts,
+		purchaseOrderStatus
 	);
 
 	let returnablesFormatted = formatReturnables(
 		returnables.orderedReturnables,
 		returnables.preparedReturnables,
 		returnables.deliveredReturnables,
-		returnables.returnedReturnables
+		returnables.returnedReturnables,
+		purchaseOrderStatus
 	);
 
 	model.products = productsFormatted.products;
@@ -154,7 +158,7 @@ export const getProductsProgress = (products, returnables, deliveryFees) => {
 	return model;
 };
 
-const formatProducts = (orderedProducts, preparedProducts, deliveredProducts) => {
+const formatProducts = (orderedProducts, preparedProducts, deliveredProducts, purchaseOrderStatus) => {
 	let products = [];
 	let total = {
 		wholeSalePrice: 0,
@@ -166,19 +170,18 @@ const formatProducts = (orderedProducts, preparedProducts, deliveredProducts) =>
 	products = updateFormattedProducts(products, formatData(preparedProducts), "prepared");
 	products = updateFormattedProducts(products, formatData(deliveredProducts), "delivered");
 
-	if (products.filter(p => p.delivered > 0).length > 0) {
+	if (products.filter((p) => p.delivered > 0).length > 0) {
 		total = getResourcesTotal(products, "delivered");
-	}
-	else if (products.filter((p) => p.prepared > 0).length > 0) {
+	} else if (purchaseOrderStatus === PurchaseOrderStatusKind.Completed.Value) {
 		total = getResourcesTotal(products, "prepared");
-	}
-	else {
+	} else {
 		total = getResourcesTotal(products, "ordered");
 	}
 
+	console.log(products);
 	return {
 		products,
-		...total
+		...total,
 	};
 };
 
@@ -209,13 +212,16 @@ const updateFormattedProducts = (model, products, property) => {
 			(processedProduct) => processedProduct.reference === product.reference
 		);
 		if (!existingProcessedProduct) {
+			product[property] = product.quantity;
+			product.quantity = null;
 			product["ordered"] = product["ordered"] ? product["ordered"] : 0;
 			product["prepared"] = product["prepared"] ? product["prepared"] : 0;
 			product["delivered"] = product["delivered"] ? product["delivered"] : 0;
-			product[property] = product.quantity;
-			product.quantity = null;
 			newProducts = [...newProducts, product];
 		} else {
+			existingProcessedProduct["batches"] = existingProcessedProduct["batches"]
+				? existingProcessedProduct["batches"]
+				: product["batches"];
 			existingProcessedProduct[property] += product.quantity;
 		}
 	});
@@ -223,7 +229,13 @@ const updateFormattedProducts = (model, products, property) => {
 	return newProducts;
 };
 
-const formatReturnables = (orderedReturnables, preparedReturnables, deliveredReturnables, returnedReturnables) => {
+const formatReturnables = (
+	orderedReturnables,
+	preparedReturnables,
+	deliveredReturnables,
+	returnedReturnables,
+	purchaseOrderStatus
+) => {
 	let returnables = [];
 	let total = {
 		wholeSalePrice: 0,
@@ -237,7 +249,7 @@ const formatReturnables = (orderedReturnables, preparedReturnables, deliveredRet
 
 	if (returnables.filter((p) => p.delivered > 0).length > 0) {
 		total = getResourcesTotal(returnables, "delivered");
-	} else if (returnables.filter((p) => p.prepared > 0).length > 0) {
+	} else if (purchaseOrderStatus === PurchaseOrderStatusKind.Completed.Value) {
 		total = getResourcesTotal(returnables, "prepared");
 	} else {
 		total = getResourcesTotal(returnables, "ordered");
