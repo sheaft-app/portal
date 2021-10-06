@@ -94,23 +94,29 @@ const getReturnableModel = (product, deliveryStatus) => {
 		vat: product.returnableVat ? product.returnableVat : product.vat,
 		name: product.returnableName ? product.returnableName : product.name,
 		unitWholeSalePrice: product.returnableWholeSalePrice ? product.returnableWholeSalePrice : product.unitWholeSalePrice,
-		quantity: !deliveryStatus ? product.quantity : (deliveryStatus === DeliveryStatus.Delivered.Value ? product.quantity + product.productsBroken + product.productsMissing + product.productsInExcess : 0),
+		quantity: !deliveryStatus ? product.quantity : (deliveryStatus === DeliveryStatus.Delivered.Value ? product.productsToDeliver + product.productsBroken + product.productsMissing + product.productsInExcess : 0),
 		kind: product.kind,
 	};
 };
 
 const getProductModel = (product, deliveryStatus) => {
+
+	console.log(product, deliveryStatus);
 	return {
 		id: product.productId ? product.productId : product.id,
 		vat: product.vat,
 		name: product.name,
 		unitWholeSalePrice: product.unitWholeSalePrice,
-		quantity: !deliveryStatus ? product.quantity : (deliveryStatus === DeliveryStatus.Delivered.Value ? product.quantity + product.productsBroken + product.productsMissing + product.productsInExcess : 0),
+		quantity: !deliveryStatus
+			? product.quantity
+			: deliveryStatus === DeliveryStatus.Delivered.Value
+			? product.productsToDeliver + product.productsBroken + product.productsMissing + product.productsInExcess
+			: 0,
 		kind: product.kind,
 		reference: product.reference,
 		isReturnable: product.isReturnable,
 		returnableId: product.returnableId,
-		batches: product.batches
+		batches: product.batches,
 	};
 };
 
@@ -178,7 +184,6 @@ const formatProducts = (orderedProducts, preparedProducts, deliveredProducts, pu
 		total = getResourcesTotal(products, "ordered");
 	}
 
-	console.log(products);
 	return {
 		products,
 		...total,
