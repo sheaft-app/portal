@@ -33,7 +33,7 @@
 			variables: {
 				from: `PT${selectedDelivery.from.hours ?? 0}H${selectedDelivery.from.minutes ?? 0}M`,
 				name: selectedDelivery.name,
-				setAsReady: true,
+				setAsReady: false,
 				scheduledOn: new Date(selectedDelivery.expectedDeliveryDate),
 				deliveries: Object.keys(deliveries).map((c, index) => ({
 					clientId: c,

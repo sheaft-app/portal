@@ -17,7 +17,7 @@
 	let deliveryBatch = undefined;
 
 	const handleSubmit = async () => {
-		deliveryBatch.setAsReady = true;
+		deliveryBatch.setAsReady = false;
 		await mutate({
 			mutation: CREATE_DELIVERY_BATCH,
 			variables: deliveryBatch,
