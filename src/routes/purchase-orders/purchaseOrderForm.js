@@ -5,8 +5,8 @@ import { getDefaultFields } from "../../stores/form";
 export const initialValues = {
 	client: null,
 	expectedDeliveryDate: new Date(),
-	from: null,
-	to: null,
+	from: 8,
+	to: 19,
 	products: [],
 	comment: null,
 	skipNotification: false,
