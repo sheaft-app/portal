@@ -141,9 +141,11 @@
 								</ul>
 							</div>
 						</div>
-						<div class="flex items-center mb-2">
-							<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
-						</div>
+						{#if delivery.deliveryFormUrl}
+							<div class="flex items-center mb-2">
+								<a href={delivery.deliveryFormUrl}>Bon de livraison</a>
+							</div>
+						{/if}
 					</div>
 				</div>
 				<div

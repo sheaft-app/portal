@@ -99,10 +99,12 @@
 		{#each deliveryBatch.deliveries as delivery (delivery.id)}
 			<div class="px-4 bg-white mb-3 mt-3 rounded-lg shadow py-3">
 				<p class="font-semibold text-xl">{delivery.client.name}</p>
-				<a target="_blank" href={delivery.deliveryFormUrl} class="btn-link mt-1">
-					<Icon data={faEye} class="mr-2" />
-					Voir le bon de livraison
-				</a>
+				{#if delivery.deliveryFormUrl}
+					<a target="_blank" href={delivery.deliveryFormUrl} class="btn-link mt-1">
+						<Icon data={faEye} class="mr-2" />
+						Voir le bon de livraison
+					</a>
+				{/if}
 				<div class="px-0 md:px-5 overflow-x-auto -mx-4 md:-mx-5 md:mb-5 mt-2">
 					<div class="flex flex-wrap bg-white w-full lg:w-auto px-4 lg:px-8">
 						<div class="w-full">
