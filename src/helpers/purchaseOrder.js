@@ -50,7 +50,6 @@ export const getDeliveryProductsQuantites = (delivery) => {
 	return products;
 };
 
-
 export const denormalizeDeliveryProducts = (products) =>
 	products.reduce((acc, curr) => {
 		let product;
@@ -86,12 +85,10 @@ export const denormalizeDeliveryProducts = (products) =>
 		return acc;
 	}, []);
 
-
-
 const getReturnableModel = (product, deliveryStatus) => {
 	return {
 		id: product.returnableId ? product.returnableId : product.id,
-		vat: product.returnableVat ? product.returnableVat : product.vat,
+		vat: product.returnableVat || product.returnableVat === 0 ? product.returnableVat : product.vat,
 		name: product.returnableName ? product.returnableName : product.name,
 		unitWholeSalePrice: product.returnableWholeSalePrice ? product.returnableWholeSalePrice : product.unitWholeSalePrice,
 		quantity: !deliveryStatus ? product.quantity : (deliveryStatus === DeliveryStatus.Delivered.Value ? product.productsToDeliver + product.productsBroken + product.productsMissing + product.productsInExcess : 0),
