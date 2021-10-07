@@ -198,8 +198,8 @@ const getResourcesTotal = (resources, property) => {
 	};
 
 	resources.forEach((r) => {
-		r.wholeSalePrice = r[property] * r.unitWholeSalePrice;
-		r.vatPrice = r[property] * ((r.unitWholeSalePrice * r.vat) / 100);
+		r.wholeSalePrice = roundToTwo(r[property] * r.unitWholeSalePrice);
+		r.vatPrice = roundToTwo(r[property] * ((r.unitWholeSalePrice * r.vat) / 100));
 		r.onSalePrice = r.wholeSalePrice + r.vatPrice;
 
 		total.wholeSalePrice += r.wholeSalePrice;
@@ -210,9 +210,13 @@ const getResourcesTotal = (resources, property) => {
 	return total;
 }
 
+const roundToTwo = (num) => {
+	return +(Math.round(num + "e+2") + "e-2");
+}
+
 const updateFormattedProducts = (model, products, property) => {
 	let newProducts = [...model];
-	products.data.forEach((product) => {
+	products.forEach((product) => {
 		let existingProcessedProduct = newProducts.find(
 			(processedProduct) => processedProduct.reference === product.reference
 		);
@@ -274,7 +278,7 @@ const formatReturnables = (
 
 const updateFormattedReturnables = (model, returnables, property) => {
 	let newReturnables = [...model];
-	returnables.data.forEach((returnable) => {
+	returnables.forEach((returnable) => {
 		let existingProcessedReturnable = newReturnables.find(
 			(processedReturnable) => processedReturnable.id === returnable.id
 		);
@@ -302,7 +306,7 @@ const updateFormattedReturnedReturnables = (returnables) => {
 		onSalePrice: 0,
 	};
 	
-	returnables.data.forEach((returnable) => {
+	returnables.forEach((returnable) => {
 		let existingProcessedReturnable = newReturnedReturnables.find(
 			(processedReturnable) => processedReturnable.id === returnable.id
 		);
@@ -319,8 +323,8 @@ const updateFormattedReturnedReturnables = (returnables) => {
 	});
 
 	newReturnedReturnables.forEach(r => {
-		r.wholeSalePrice = r.delivered * r.unitWholeSalePrice;
-		r.vatPrice = r.delivered * ((r.unitWholeSalePrice * r.vat) / 100);
+		r.wholeSalePrice = roundToTwo(r.delivered * r.unitWholeSalePrice);
+		r.vatPrice = roundToTwo(r.delivered * ((r.unitWholeSalePrice * r.vat) / 100));
 		r.onSalePrice = r.wholeSalePrice + r.vatPrice;
 
 		total.wholeSalePrice += r.wholeSalePrice;
@@ -334,39 +338,20 @@ const updateFormattedReturnedReturnables = (returnables) => {
 	};
 };
 
-const formatData = (data) => {
-	let model = {
-		data: [],
-		wholeSalePrice: 0,
-		vatPrice: 0,
-		onSalePrice: 0,
-	};
-
-	if (!data || data.length < 1) {
-		return model;
-	}
-
+const formatData = (data) => {	
 	let groupedData = [];
+	if (!data || data.length < 1) {
+		return groupedData;
+	}
 	
 	data.filter(d => d).forEach((item) => {
 		let grouped = groupedData.find(gd => gd.id === item.id);
 		if (!grouped) {
 			groupedData = [...groupedData, item];
 		} else {
-			grouped.wholeSalePrice += item.wholeSalePrice;
-			grouped.vatPrice += item.vatPrice;
-			grouped.onSalePrice += item.onSalePrice;
 			grouped.quantity += item.quantity;
 		}
 	});
-
-	Object.values(groupedData).map((value) => {
-		model.wholeSalePrice += value.wholeSalePrice;
-		model.vatPrice += value.vatPrice;
-		model.onSalePrice += value.onSalePrice;
-	});
-
-	model.data = groupedData;
-
-	return model;
+	
+	return groupedData;
 };
