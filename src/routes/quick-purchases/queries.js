@@ -29,6 +29,7 @@ export const GET_PURCHASE_QUICKORDERS = gql`
 						wholeSalePrice
 						onSalePrice
 						vatPrice
+						vat
 					}
 					producer {
 						id
@@ -60,6 +61,7 @@ export const GET_ALL_PRODUCTS = gql`
 					wholeSalePrice
 					onSalePrice
 					vatPrice
+					vat
 				}
 				producer {
 					id

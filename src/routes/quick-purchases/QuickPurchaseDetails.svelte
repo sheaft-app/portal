@@ -110,7 +110,7 @@
 			producer.products.reduce((productSum, product) => {
 				return (
 					productSum +
-					(product.vatPricePerUnit + (product.returnable ? product.returnable.vatPrice : 0)) *
+					((product.wholeSalePricePerUnit * product.vat / 100) + (product.returnable ? (product.returnable.wholeSalePrice * product.returnable.vat / 100) : 0)) *
 						(product.quantity || 0)
 				);
 			}, 0)
@@ -123,7 +123,7 @@
 			producer.products.reduce((productSum, product) => {
 				return (
 					productSum +
-					(product.onSalePricePerUnit + (product.returnable ? product.returnable.onSalePrice : 0)) *
+					((product.wholeSalePricePerUnit * (1+product.vat / 100)) + (product.returnable ? (product.returnable.wholeSalePrice * (1+product.returnable.vat / 100)) : 0)) *
 						(product.quantity || 0)
 				);
 			}, 0)
