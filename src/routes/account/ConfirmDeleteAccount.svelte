@@ -20,7 +20,6 @@
 		isRemoving = true;
 		await mutate({
 			mutation: DELETE_ACCOUNT,
-			variables: { input: { id: user.id, reason } },
 			errorsHandler,
 			success: (res) => closeModal(res),
 			errorNotification: "Impossible de supprimer votre compte, veuillez réessayer ultérieurement",

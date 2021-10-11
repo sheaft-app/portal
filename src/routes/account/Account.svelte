@@ -2,7 +2,6 @@
 	import Router from "svelte-spa-router";
 
 	import Profile from "./Profile.svelte";
-	import GetAuthInstance from "./../../services/SheaftAuth.js";
 	import AccountRoutes from "./routes.js";
 	import Meta from "../../components/Meta.svelte";
 

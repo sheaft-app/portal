@@ -5,7 +5,7 @@
 	import Icon from "svelte-awesome";
 	import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 	import form from "../../../stores/form";
-	import { siret, company, stepper } from "../registerCompanyForm";
+	import { siret, company, stepper, owner } from "../registerCompanyForm";
 	import { getContext } from "svelte";
 
 	export let siretWasNotFound = false,
@@ -27,14 +27,18 @@
 			variables: { input: `${$siret}` },
 			errorsHandler,
 			success: (res) => {
-				if(!res)
+				if(!res){
+					siretWasNotFound = true;
 					return;
+				}
 				$company.address = res.address;
 				$company.kind = res.kind;
 				$company.name = res.name;
-				$company.firstName = $company.firstName ?? res.firstName;
-				$company.lastName = $company.lastName ?? res.lastName;
+				$company.commercialName = res.name;
 				$company.vatIdentifier = res.owner.vatNumber ? res.owner.vatNumber.substr(2, 2) : null;
+
+				$owner.firstName = $owner.firstName ?? res.owner.firstName;
+				$owner.lastName = $owner.lastName ?? res.owner.lastName;
 			},
 			error: () => (siretWasNotFound = true),
 			errorNotification: "Impossible de trouver des informations pour ce SIRET",
@@ -62,7 +66,7 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="text-center pb-8 px-5">
-	Étape 1/5
+	Étape {$stepper + 1}/5
 	<p class="font-bold text-xl">Commençons par votre SIRET</p>
 	<p class="text-gray-600">Grâce à votre SIRET, nous pourrons charger certaines informations de base.</p>
 </div>

@@ -18,7 +18,8 @@
 		selectedAddress = null,
 		invalid = false,
 		bindClassData = null,
-		isDisabled = false;
+		isDisabled = false,
+		placeholder = null;
 
 	let isLoading = false;
 
@@ -137,7 +138,7 @@
 		optionIdentifier="id"
 		TopItem={withGeolocationButton ? TopItem : undefined}
 		TopItemHandleClick={() => handleUserLocation()}
-		placeholder="Entrez une adresse"
+		placeholder={placeholder}
 		inputAttributes={{ style: "cursor: pointer !important;" }}
 		Item={CityItem}
 		noOptionsMessage="Aucune correspondance trouvée pour cette adresse"

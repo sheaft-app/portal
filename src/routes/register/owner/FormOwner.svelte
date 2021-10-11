@@ -27,7 +27,7 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="text-center pb-8 px-5">
-	Étape 3/5
+	Étape {$stepper + 1}/5
 	<p class="font-bold text-xl">Qui est le représentant légal ?</p>
 	<p class="text-gray-600">S'il y en a plusieurs, renseignez un seul d'entre eux.</p>
 </div>
@@ -60,6 +60,7 @@
 		<div>
 			<button
 				on:click={next}
+				disabled={!$form.valid}
 				class:disabled={!$form.valid}
 				aria-label="Suivant"
 				class="form-button uppercase text-sm cursor-pointer text-white

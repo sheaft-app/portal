@@ -11,7 +11,9 @@
 	import "cleave.js/dist/addons/cleave-phone.fr";
 	import InputCheckbox from "./../../../components/controls/InputCheckbox.svelte";
 	import form from "../../../stores/form";
-	import { company, stepper, siret, companyValidators, companyInitialValues } from "../registerCompanyForm";
+	import { company, owner, stepper, siret, companyValidators, companyInitialValues, productionSite } from "../registerCompanyForm";
+	import {authUserAccount} from "./../../../stores/auth";
+	import {onMount} from "svelte";
 
 	export let isStore = false,
 		errorsHandler = null,
@@ -20,7 +22,7 @@
 	let cleave = null;
 
 	$company = form.initialize($company, companyValidators, companyInitialValues);
-
+	
 	const selectKind = (kind) => ($company.kind = kind);
 	const selectRegistrationKind = (kind) => {
 		if (kind !== $company.registrationKind) {
@@ -31,7 +33,20 @@
 		$company.registrationKind = kind;
 	};
 
-	const next = () => ++$stepper;
+	const next = () => {
+		if (!form) return;
+
+		if (!$form.valid) {
+			return;
+		}
+
+		if(isStore) {
+			stepper.set($stepper + 2)
+		}
+		else { 
+			++$stepper;
+		}
+	};
 
 	const handleKeydown = (event) => {
 		if (event.key == "Enter") {
@@ -46,12 +61,33 @@
 			phoneRegionCode: "fr",
 		});
 	};
+
+	onMount(() => {
+		$company.email = $company.email ?? ($authUserAccount.profile.email || null);
+		$company.phone = $company.phone ?? ($authUserAccount.profile.phone || null);
+
+		$company.address.line1 =  $company.address.line1 ?? ($productionSite.address.line1 || null);
+		$company.address.line2 = $company.address.line2 ?? ($productionSite.address.line2 || null);
+		$company.address.zipcode = $company.address.zipcode ?? ($productionSite.address.zipcode || null);
+		$company.address.city = $company.address.city ?? ($productionSite.address.city || null);
+
+		$owner.firstName = $owner.firstName ?? ($authUserAccount.profile.given_name || null);
+		$owner.lastName = $owner.lastName ?? ($authUserAccount.profile.family_name || null);
+		$owner.email = $owner.email ?? ($authUserAccount.profile.email || null);
+		$owner.phone = $owner.phone ?? ($authUserAccount.profile.phone || null);
+
+		$owner.address.line1 = $owner.address.line1 ?? ($productionSite.address.line1 || null);
+		$owner.address.line2 = $owner.address.line2 ?? ($productionSite.address.line2 || null);
+		$owner.address.zipcode = $owner.address.zipcode ?? ($productionSite.address.zipcode || null);
+		$owner.address.city = $owner.address.city ?? ($productionSite.address.city || null);
+		$owner.address.country = $owner.address.country ?? ($productionSite.address.country || null);		
+	})
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="text-center pb-8 px-5">
-	Étape 2/5
+	Étape {$stepper + 1}/5
 	<p class="font-bold text-xl">
 		Identifiez votre {isStore ? "magasin" : "entreprise"}
 	</p>
@@ -59,10 +95,9 @@
 {#if siretWasNotFound}
 	<div class="mb-3 p-4 border border-orange-500 text-orange-500 lg:flex flex-row" in:slide>
 		<div class="text-center lg:text-left" style="word-break: break-word;">
-			<p class="font-semibold">SIRET {$siret} introuvable</p>
-			<p class="mt-2">Nous n'avons pas réussi à récupérer les informations pour ce SIRET.</p>
-			<p>Si vous êtes sûr que votre SIRET est bien valide, vous pouvez ignorer ce message.</p>
-			<button class="btn btn-link mt-2" on:click={() => --$stepper}>Modifier le SIRET</button>
+			<p class="font-semibold">Votre SIRET {$siret} est introuvable</p>
+			<p>Si vous êtes sûr que votre SIRET est bien valide, vous pouvez ignorer ce message sinon, cliquez sur modifier.</p>
+			<button class="btn btn-link mt-2" on:click={() => stepper.set(0)}>Modifier le SIRET</button>
 		</div>
 	</div>
 {/if}
@@ -313,6 +348,7 @@
 		<button
 			on:click={() => form.validateAndSubmit(next)}
 			aria-label="Suivant"
+			disabled={!$form.valid}
 			class:disabled={!$form.valid}
 			class="form-button uppercase text-sm cursor-pointer text-white
         shadow rounded-full px-6 py-2 flex items-center justify-center

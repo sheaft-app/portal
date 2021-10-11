@@ -25,4 +25,41 @@ export const config = {
 		},
 	},
 	production: true,
+	roles: {
+		admin: {
+			value: "ADMIN",
+			label: "Administrateur",
+		},
+		support: {
+			value: "SUPPORT",
+			label: "Support",
+		},
+		owner: {
+			value: "OWNER",
+			label: "Propriétaire",
+		},
+		store: {
+			id: "f81030de",
+			value: "STORE",
+			label: "Commerce",
+		},
+		producer: {
+			id: "e4a370fe",
+			value: "PRODUCER",
+			label: "Producteur",
+		},
+		consumer: {
+			id: "",
+			value: "CONSUMER",
+			label: "Consommateur",
+		},
+		anonymous: {
+			value: "ANONYMOUS",
+			label: "Anonyme",
+		},
+		registered: {
+			value: "REGISTERED",
+			label: "Enregistré",
+		},
+	},
 };

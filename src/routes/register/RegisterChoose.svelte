@@ -75,7 +75,7 @@
 			<div
 				on:click={() =>
 					routerInstance.goTo(RegisterRoutes.Owner, {
-						id: Roles.Producer.Value,
+						id: Roles.Producer.Id,
 					})}
 				class="mx-0 lg:w-1/3 py-2 overflow-x-auto sm:px-6 lg:px-8 w-full lg:ml-3
         lg:mr-3 inline-block hover:bg-gray-100 bg-white shadow lg:block flex
@@ -106,7 +106,7 @@
 			<div
 				on:click={() =>
 					routerInstance.goTo(RegisterRoutes.Owner, {
-						id: Roles.Store.Value,
+						id: Roles.Store.Id,
 					})}
 				class="mx-0 lg:w-1/3 py-2 overflow-x-auto sm:px-6 lg:px-8 w-full
         inline-block hover:bg-gray-100 bg-white shadow lg:block flex

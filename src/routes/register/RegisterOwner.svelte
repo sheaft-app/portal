@@ -49,7 +49,7 @@
 		if (sub != null) sub.unsubscribe();
 	});
 
-	$: isStore = params.id == Roles.Store.Value;
+	$: isStore = params.id == Roles.Store.Id;
 </script>
 
 <svelte:head>
@@ -58,7 +58,7 @@
 
 <TransitionWrapper classNames="m-auto">
 	<!-- hack avec h-full pour éviter que le citysearch dépasse du cadre -->
-	<div class="-my-2 -mx-4 py-2 overflow-x-auto mt-2 mb-8" class:h-full={$stepper == 4}>
+	<div class="-my-2 -mx-4 py-2 mt-2 mb-8" class:h-full={$stepper == 4}>
 		<ErrorCard {errorsHandler} />
 		<div class="w-full md:w-3/5 lg:w-4/5 m-auto">
 			{#if isRegistering}
@@ -66,13 +66,13 @@
 			{:else if $stepper <= 0}
 				<FormSiret {errorsHandler} bind:siretWasNotFound />
 			{:else if $stepper == 1}
-				<FormCompany {isStore} {errorsHandler} {siretWasNotFound} />
+				<FormProductionSite {isStore} />
 			{:else if $stepper == 2}
-				<FormOwner {errorsHandler} />
+				<FormCompany {isStore} {errorsHandler} {siretWasNotFound} />
 			{:else if $stepper == 3}
-				<FormBusinessHours {isStore} />
+				<FormOwner {errorsHandler} />
 			{:else if $stepper == 4}
-				<FormProductionSite {isStore} submit={handleSubmit} />
+				<FormBusinessHours {isStore} submit={handleSubmit}/>
 			{/if}
 		</div>
 	</div>

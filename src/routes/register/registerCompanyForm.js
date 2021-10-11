@@ -26,6 +26,7 @@ export const companyInitialValues = {
 	registrationCode: null,
 	registrationCity: null,
 };
+
 export const company = writable({ ...companyInitialValues });
 
 export const owner = writable({
@@ -75,39 +76,42 @@ export const companyValidators = (values) => ({
 });
 
 export const normalizeCompany = (profile) => {
-	const dateParts = get(owner).birthDate.trim().split("/");
+	let ownerInfos = get(owner);
+	let companyInfos = get(company);
+
+	const dateParts = ownerInfos?.birthDate?.trim()?.split("/") || null;
 
 	return {
 		openForNewBusiness: get(openForBusiness),
 		sponsoringCode: get(sponsor),
-		firstName: profile.given_name || null,
-		lastName: profile.family_name || null,
-		name: get(company).commercialName,
-		email: profile.email || null,
-		notSubjectToVat: get(company).notSubjectToVat,
-		phone: get(company).phone,
+		firstName: ownerInfos.firstName,
+		lastName: ownerInfos.lastName,
+		name: companyInfos.commercialName,
+		email: ownerInfos.email,
+		notSubjectToVat: companyInfos.notSubjectToVat,
+		phone: companyInfos.phone,
 		picture: profile.picture || null,
 		address: { ...omit(get(productionSite).address, ["insee", "id"]), country: "FR" },
 		legals: {
-			...omit(get(company), ["commercialName", "notSubjectToVat", "phone"]),
+			...omit(companyInfos, ["commercialName", "notSubjectToVat", "phone"]),
 			siret: get(siret).toString(),
-			address: {
-				...get(company).address,
-				country: get(company).address.country.code,
-			},
+			address: companyInfos.address ? {
+				...companyInfos.address,
+				country: companyInfos.address?.country?.code || (companyInfos.address?.country ?? "FR"),
+			} : null,
 			vatIdentifier:
-				get(company).vatIdentifier && !get(company).notSubjectToVat
-					? "FR" + get(company).vatIdentifier + get(siret).toString().substring(0, 9)
+				companyInfos.vatIdentifier && !companyInfos.notSubjectToVat
+					? "FR" + companyInfos.vatIdentifier + get(siret).toString().substring(0, 9)
 					: null,
 			owner: {
-				...get(owner),
-				address: {
-					...get(owner).address,
-					country: get(owner).address.country.code,
-				},
-				countryOfResidence: get(owner).address.country.code,
-				nationality: get(owner).nationality.code,
-				birthDate: formatISO(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])),
+				...omit(ownerInfos, ["phone"]),
+				address: ownerInfos.address ? {
+					...ownerInfos.address,
+					country: ownerInfos.address?.country?.code || (ownerInfos.address?.country ?? "FR"),
+				} : null,
+				countryOfResidence: ownerInfos.address?.country?.code || null,
+				nationality: ownerInfos.nationality?.code || null,
+				birthDate: dateParts ? formatISO(new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])) : null,
 			},
 		},
 	};
