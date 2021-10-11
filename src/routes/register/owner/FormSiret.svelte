@@ -96,10 +96,10 @@
 		</div>
 		<div>
 			<button
-				class:disabled={isSearchingSiret || !isValid}
 				on:click={() => validateSiret()}
 				aria-label="Suivant"
 				disabled={isSearchingSiret || !isValid}
+				class:disabled={isSearchingSiret || !isValid}
 				class="form-button uppercase text-sm cursor-pointer text-white
         shadow rounded-full px-6 py-2 flex items-center justify-center
         m-auto bg-primary"

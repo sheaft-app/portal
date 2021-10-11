@@ -6,10 +6,10 @@
 
 	let form = null;
 
-	const next = () => {
+	const next = async () => {
 		if (!form) return;
 
-		form.validate();
+		await form.validate();
 
 		if ($form.valid) {
 			++$stepper;
@@ -59,9 +59,7 @@
 		</div>
 		<div>
 			<button
-				on:click={next}
-				disabled={!$form.valid}
-				class:disabled={!$form.valid}
+				on:click={() => next()}
 				aria-label="Suivant"
 				class="form-button uppercase text-sm cursor-pointer text-white
         shadow rounded-full px-6 py-2 flex items-center justify-center

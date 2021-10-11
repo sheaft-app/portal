@@ -73,6 +73,9 @@ export const companyValidators = (values) => ({
 		validators: ["required"],
 		enabled: values.registrationKind === RegistrationKind.RCS.Value,
 	},
+	city: { value: values.address.city, validators: ["required"], enabled: true },
+	zipcode: { value: values.address.zipcode, validators: ["required"], enabled: true },
+	line1: { value: values.address.line1, validators: ["required"], enabled: true },
 });
 
 export const normalizeCompany = (profile) => {

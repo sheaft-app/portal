@@ -18,6 +18,13 @@
 		}
 	};
 
+	const sendForm = async () => {
+		if(!valid)
+			return;
+
+		await submit();
+	}
+
 	$: valid = acceptCgv && acceptMangoCgv;
 </script>
 
@@ -94,8 +101,8 @@
 	</div>
 	<div>
 		<button
-			on:click={submit}
-			aria-label="Valider"
+			on:click={() => sendForm()}
+			aria-label="Terminer"
 			disabled={!valid}
 			class:disabled={!valid}
 			class="form-button uppercase text-sm cursor-pointer text-white

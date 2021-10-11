@@ -176,13 +176,14 @@
 				{#if !$company.notSubjectToVat}
 					<div class="w-full form-control">
 						<label for="vat">N° de TVA *</label>
-						<div class="flex flex-wrap" use:bindClass={{ form, name: "vatIdentifier" }}>
+						<div class="flex flex-wrap">
 							<input id="vat-ctry" type="text" disabled={true} value="FR" class="w-3/12 disabled" />
 							<input
 								id="vat"
 								type="text"
 								maxlength="2"
 								minlength="2"
+								use:bindClass={{ form, name: "vatIdentifier" }}
 								bind:value={$company.vatIdentifier}
 								class="w-3/12"
 							/>
@@ -348,8 +349,6 @@
 		<button
 			on:click={() => form.validateAndSubmit(next)}
 			aria-label="Suivant"
-			disabled={!$form.valid}
-			class:disabled={!$form.valid}
 			class="form-button uppercase text-sm cursor-pointer text-white
         shadow rounded-full px-6 py-2 flex items-center justify-center
         m-auto bg-primary"
