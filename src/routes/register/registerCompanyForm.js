@@ -1,9 +1,12 @@
-import { getDefaultFields } from "../../stores/form";
 import formatISO from "date-fns/formatISO";
-import { normalizeOpeningHours, getDefaultDenormalizedOpeningHours } from "../../helpers/app";
+
 import { writable, get } from "svelte/store";
+
 import omit from "lodash/omit";
+
 import RegistrationKind from "../../enums/RegistrationKind";
+import { normalizeOpeningHours, getDefaultDenormalizedOpeningHours } from "../../helpers/app";
+import { getDefaultFields } from "../../stores/form";
 
 export const siret = writable(null);
 
@@ -13,9 +16,18 @@ export const companyInitialValues = {
 	vatIdentifier: null,
 	kind: null,
 	notSubjectToVat: false,
+	differentBillingAddress: false,
 	email: null, //$authUserAccount?.profile?.email ||
 	phone: null, // $authUserAccount?.profile?.phone
 	address: {
+		line1: null,
+		line2: null,
+		city: null,
+		zipcode: null,
+		country: "FR",
+	},
+	billing: {
+		name: null,
 		line1: null,
 		line2: null,
 		city: null,
@@ -76,6 +88,10 @@ export const companyValidators = (values) => ({
 	city: { value: values.address.city, validators: ["required"], enabled: true },
 	zipcode: { value: values.address.zipcode, validators: ["required"], enabled: true },
 	line1: { value: values.address.line1, validators: ["required"], enabled: true },
+	billingCity: { value: values.billing.city, validators: ["required"], enabled: values.differentBillingAddress },
+	billingZipcode: { value: values.billing.zipcode, validators: ["required"], enabled: values.differentBillingAddress },
+	billingLine1: { value: values.billing.line1, validators: ["required"], enabled: values.differentBillingAddress },
+	billingName: { value: values.billing.name, validators: ["required"], enabled: values.differentBillingAddress },
 });
 
 export const normalizeCompany = (profile) => {
@@ -96,11 +112,15 @@ export const normalizeCompany = (profile) => {
 		picture: profile.picture || null,
 		address: { ...omit(get(productionSite).address, ["insee", "id"]), country: "FR" },
 		legals: {
-			...omit(companyInfos, ["commercialName", "notSubjectToVat", "phone"]),
+			...omit(companyInfos, ["commercialName", "notSubjectToVat", "phone", "differentBillingAddress"]),
 			siret: get(siret).toString(),
 			address: companyInfos.address ? {
 				...companyInfos.address,
 				country: companyInfos.address?.country?.code || (companyInfos.address?.country ?? "FR"),
+			} : null,
+			billing: companyInfos.differentBillingAddress ? {
+				...companyInfos.billing,
+				country: companyInfos.billing?.country?.code || (companyInfos.billing?.country ?? "FR")
 			} : null,
 			vatIdentifier:
 				companyInfos.vatIdentifier && !companyInfos.notSubjectToVat

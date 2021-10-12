@@ -143,7 +143,7 @@
 					<input
 						id="company_legalName"
 						type="text"
-						placeholder="ex : G.A.E.C des balmettes"
+						placeholder="ex : EARL xxxxx"
 						use:bindClass={{ form, name: "legalName" }}
 						bind:value={$company.name}
 					/>
@@ -156,21 +156,23 @@
 					<input
 						id="name"
 						type="text"
-						placeholder="ex : La ferme des balmettes"
+						placeholder="ex : O'légumes d'autrefois"
 						use:bindClass={{ form, name: "commercialName" }}
 						bind:value={$company.commercialName}
 					/>
 					<ErrorContainer field={$form.fields.commercialName} />
 				</div>
 				{#if !isStore}
-					<div class="mt-2 mb-2">
-						<label class="cursor-pointer">
-							<InputCheckbox
-								checked={$company.notSubjectToVat}
-								onClick={() => ($company.notSubjectToVat = !$company.notSubjectToVat)}
-							/>
-							Mon entreprise n'est pas assujettie à la TVA
-						</label>
+					<div class="w-full form-control">
+						<div class="mt-2 mb-2">
+							<label class="cursor-pointer">
+								<InputCheckbox
+									checked={$company.notSubjectToVat}
+									onClick={() => ($company.notSubjectToVat = !$company.notSubjectToVat)}
+								/>
+								Mon entreprise n'est pas assujettie à la TVA
+							</label>
+						</div>
 					</div>
 				{/if}
 				{#if !$company.notSubjectToVat}
@@ -219,10 +221,16 @@
 					/>
 					<ErrorContainer field={$form.fields.phone} />
 				</div>
+				{#if isStore}
+				<small class="text-gray-600"
+					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les producteurs partenaires peuvent voir votre mail et votre téléphone.</small
+				>
+				{:else}
 				<small class="text-gray-600"
 					><Icon data={faInfoCircle} scale="0.8" class="mr-2" />Seuls l'équipe Sheaft et les clients ayant
 					commandé auprès de vous peuvent voir votre mail et votre téléphone.</small
 				>
+				{/if}
 			</div>
 			<div class="px-5 py-3 bg-white lg:w-6/12 w-full">
 				<div
@@ -330,6 +338,91 @@
 						{errorsHandler}
 					/>
 				</div>
+			</div><div class="px-5 py-3 bg-white w-full">
+				<div
+					class="-my-3 -mx-5 px-5 py-3 mb-4 bg-gray-100 border-b border-gray-400 lg:rounded-t font-semibold flex justify-between items-center"
+				>
+					<p>Adresse de Facturation</p>
+				</div>
+				<div class="w-full form-control">
+					<div class="mt-2 mb-2">
+						<label class="cursor-pointer">
+							<InputCheckbox
+								checked={!$company.differentBillingAddress}
+								onClick={() => ($company.differentBillingAddress = !$company.differentBillingAddress)}
+							/>
+							Mon adresse de facturation est identique à celle du siège social
+						</label>
+					</div>
+				</div>
+				{#if $company.differentBillingAddress}
+				<div class="w-full form-control">
+					<label for="billingName">Nom de la structure *</label>
+					<input
+						id="billingName"
+						placeholder="ex : SARL xxxxx"
+						use:bindClass={{ form, name: "billingName" }}
+						bind:value={$company.billing.name}
+						autocomplete="name"
+					/>
+					<ErrorContainer field={$form.fields.billingLine1} />
+				</div>
+				<div class="w-full form-control">
+					<label for="billingLine1">Adresse *</label>
+					<input
+						id="billingLine1"
+						placeholder="ex : 210 Avenue de la Liberté"
+						use:bindClass={{ form, name: "billingLine1" }}
+						bind:value={$company.billing.line1}
+						autocomplete="address-line1"
+					/>
+					<ErrorContainer field={$form.fields.billingLine1} />
+				</div>
+				<div class="w-full form-control">
+					<label for="billingLine2">Complément d'adresse</label>
+					<input
+						id="billingLine2"
+						placeholder="ex : Appartement 15"
+						bind:value={$company.billing.line2}
+						autocomplete="address-line2"
+					/>
+				</div>
+				<div class="form-control">
+					<div class="flex flex-wrap lg:flex-row lg:flex-no-wrap w-full">
+						<div class="w-full pr-0 lg:pr-2">
+							<label for="billingPostcode">Code postal *</label>
+							<input
+								id="billingPostcode"
+								placeholder="ex : 74000"
+								bind:value={$company.billing.zipcode}
+								use:bindClass={{ form, name: "billingZipcode" }}
+								autocomplete="postal-code"
+							/>
+							<ErrorContainer field={$form.fields.billingZipcode} />
+						</div>
+						<div class="w-full">
+							<label for="billingCity">Ville *</label>
+							<input
+								id="billingCity"
+								placeholder="ex : Annecy"
+								bind:value={$company.billing.city}
+								use:bindClass={{ form, name: "billingCity" }}
+								autocomplete="address-level2"
+							/>
+							<ErrorContainer field={$form.fields.billingCity} />
+						</div>
+					</div>
+				</div>
+				<div class="w-full form-control" style="display: block">
+					<label for="billingCountry">Pays *</label>
+					<CountrySelect
+						bind:selectedValue={$company.billing.country}
+						formName={form}
+						name="billingCountry"
+						{errorsHandler}
+					/>
+				</div>
+				{/if}
 			</div>
 		</div>
 	</fieldset>
