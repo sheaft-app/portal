@@ -39,8 +39,19 @@
 	$: firstSelectedOrderingDay = () => {
 		if (!sellingPoint.denormalizedDeliveryHours || sellingPoint.denormalizedDeliveryHours.length < 1) return null;
 
+		let firstSelectedDay = null;
+		for(let i = 0; i < sellingPoint.denormalizedDeliveryHours.length; i++){
+		 	firstSelectedDay = sellingPoint.denormalizedDeliveryHours[i].days?.find((d) => d.checked);
+			 
+			if(firstSelectedDay)
+				break;
+		}
+
+		if(!firstSelectedDay)
+			return null;
+			
 		return new Date(
-			getNextAvailableDateFromDay(sellingPoint.denormalizedDeliveryHours[0].days.filter((d) => d.checked)[0].Index, sellingPoint.denormalizedDeliveryHours[0].start)
+			getNextAvailableDateFromDay(firstSelectedDay.Index, sellingPoint.denormalizedDeliveryHours[0].start)
 		);
 	};
 </script>
@@ -156,7 +167,7 @@
 						x
 					{/if}
 					<span class="ml-1">heures avant la distribution</span>
-					{#if sellingPoint.limitOrdersBefore}
+					{#if sellingPoint.limitOrdersBefore && lastOrderingDay()}
 						<strong
 							>(soit avant le {format(lastOrderingDay(), "EEEE H", { locale: fr })}h si la distribution a lieu le {format(
 								firstSelectedOrderingDay(),

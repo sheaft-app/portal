@@ -34,8 +34,19 @@ import { getNextAvailableDateFromDay } from "../../helpers/app";
 	$: firstSelectedOrderingDay = () => {
 		if (!delivery.denormalizedDeliveryHours || delivery.denormalizedDeliveryHours.length < 1) return null;
 
+		let firstSelectedDay = null;
+		for(let i = 0; i < delivery.denormalizedDeliveryHours.length; i++){
+		 	firstSelectedDay = delivery.denormalizedDeliveryHours[i].days.find((d) => d.checked);
+			 
+			if(firstSelectedDay)
+				break;
+		}
+
+		if(!firstSelectedDay)
+			return null;
+
 		return new Date(
-			getNextAvailableDateFromDay(delivery.denormalizedDeliveryHours[0].days.filter((d) => d.checked)[0].Index, delivery.denormalizedDeliveryHours[0].start)
+			getNextAvailableDateFromDay(firstSelectedDay.Index, delivery.denormalizedDeliveryHours[0].start)
 		);
 	};
 </script>
@@ -137,7 +148,7 @@ import { getNextAvailableDateFromDay } from "../../helpers/app";
 				x
 			{/if}
 			<span class="ml-1">heures avant la livraison </span>
-			{#if delivery.limitOrdersBefore}
+			{#if delivery.limitOrdersBefore && lastOrderingDay()}
 				<strong
 					>(soit avant le {format(lastOrderingDay(), "EEEE H", { locale: fr })}h si la livraison a lieu le {format(
 						firstSelectedOrderingDay(),
