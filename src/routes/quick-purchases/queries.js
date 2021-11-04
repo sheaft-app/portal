@@ -26,6 +26,7 @@ export const GET_PURCHASE_QUICKORDERS = gql`
 					vat
 					vatPricePerUnit
 					returnable {
+						id
 						wholeSalePrice
 						onSalePrice
 						vatPrice
@@ -58,6 +59,7 @@ export const GET_ALL_PRODUCTS = gql`
 				vat
 				vatPricePerUnit
 				returnable {
+					id
 					wholeSalePrice
 					onSalePrice
 					vatPrice
