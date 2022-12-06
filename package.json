@@ -38,7 +38,7 @@
 		"notyf": "~3.10.0",
 		"oidc-client": "~1.11.5",
 		"ping.js": "~0.3.0",
-		"qs": "~6.10.1",
+		"qs": "~6.10.3",
 		"sortablejs": "~1.14.0",
 		"svelte-apollo": "~0.3.0",
 		"svelte-awesome": "~2.4.2",
